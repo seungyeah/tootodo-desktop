@@ -3,4 +3,4 @@
 </script>
 
 {$auth.email}
-page~
+loading...

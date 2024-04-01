@@ -37,16 +37,14 @@
 	async function handleRegister(e) {
 		e.preventDefault();
 		try {
-			const result = await auth.register(registerForm);
-			if (result.ok) {
-				signUp = false;
-				registerForm = {
-					name: '',
-					email: '',
-					password: '',
-					passwordConfirm: ''
-				};                
-			}
+			await auth.register(registerForm);
+			signUp = false;
+			registerForm = {
+				name: '',
+				email: '',
+				password: '',
+				passwordConfirm: ''
+			};                
 		} catch (error) {
 			errorMessage = error.message;
 		}
