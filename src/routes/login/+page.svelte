@@ -4,7 +4,6 @@
 	import { Button, Input } from '$ui';
 
 	import { auth, isAuthed } from '$lib/store';
-	import { goto } from '$app/navigation';
 
 	let signUp = false;
 	let googleLoginUrl;
