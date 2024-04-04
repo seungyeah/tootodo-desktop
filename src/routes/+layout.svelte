@@ -17,7 +17,7 @@
 		}
 	});
 
-	$: console.log($isAuthed);	
+	// $: console.log($isAuthed);	
 
 	function getCookie(name) {
 		const value = `; ${document.cookie}`;
