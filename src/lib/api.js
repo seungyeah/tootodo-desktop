@@ -3,7 +3,7 @@ const send = async ({ method = '', path = '', data = {}, access_token = '' } = {
 	const url = commonUrl + '/api' + path;
   
 	const headers = {
-	//   "Access-Control-Allow-Origin": commonUrl,
+	  "Access-Control-Allow-Origin": commonUrl,
 	  "Content-Type": "application/json",
 	  "Accept": "application/json",
 	  "Authorization": access_token ? `Bearer ${access_token}` : undefined,
