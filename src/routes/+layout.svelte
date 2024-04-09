@@ -11,6 +11,7 @@
 	onMount(async ()=>{
 		const loggedIn = getCookie('logged_in');
 		if(loggedIn){
+			console.log('logged in');
 			await auth.getUserInfo();
 		}else{
 			goto('/login');
