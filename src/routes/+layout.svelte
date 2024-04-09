@@ -14,6 +14,7 @@
 			console.log('logged in');
 			await auth.getUserInfo();
 		}else{
+			console.log('login error');
 			goto('/login');
 		}
 	});
