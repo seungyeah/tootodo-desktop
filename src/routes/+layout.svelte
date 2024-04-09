@@ -11,10 +11,10 @@
 	onMount(async ()=>{
 		const loggedIn = getCookie('logged_in');
 		if(loggedIn){
-			console.log('logged in');
+			console.log('logged in' + loggedIn);
 			await auth.getUserInfo();
 		}else{
-			console.log('login error');
+			console.log('login error' + loggedIn);
 			goto('/login');
 		}
 	});
