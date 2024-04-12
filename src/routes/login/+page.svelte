@@ -66,7 +66,7 @@
 </script>
 
 {#if !$isAuthed}
-	<div class="flex w-full flex-col">
+	<div class="flex w-full h-full flex-col login">
 		{#if signUp}
 			<!-- sign up -->
 			<h1 class="text-center">Sign Up</h1>
@@ -124,3 +124,10 @@
 
 <slot />
 
+<style>
+	.login {
+		display: grid;
+		place-content: center;
+		font-family: 'Manrope Variable', sans-serif;
+	}
+</style>

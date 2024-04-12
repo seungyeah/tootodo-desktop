@@ -3,6 +3,7 @@ export * as Accordion from "./accordion";
 export * as AlertDialog from "./alert-dialog";
 export * as AspectRatio from "./aspect-ratio";
 export * as Avatar from "./avatar";
+export * as Breadcrumb from "./breadcrumb";
 export {Button} from "./button";
 export * as Calendar from "./calendar";
 export {Checkbox} from "./checkbox";
