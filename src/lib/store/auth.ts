@@ -71,7 +71,7 @@ const setAuth = () => {
 			await postApi(options);
 			getUserInfo();
 			alert('로그인이 완료되었습니다.');
-			goto('/');
+			goto('/do');
 		} catch (e) {
 			alert(e.message);
 			goto('/login');
@@ -149,7 +149,7 @@ const setAuth = () => {
 			await getApi(options);
 			console.log('구글 로그인 완료')
 			alert('구글 로그인 완료');
-			goto('/');
+			goto('/do');
 			getUserInfo();			
 		} catch (e) {
 			alert('구글 로그인시 오류가 발생했습니다. ' + e);

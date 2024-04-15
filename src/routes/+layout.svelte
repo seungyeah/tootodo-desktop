@@ -1,12 +1,12 @@
 <script lang="ts">
 	import '../app.pcss';
-	import { Button, Breadcrumb, Popover, Input } from '$ui';
+	import { Button, Breadcrumb, Popover, Input, Avatar } from '$ui';
 	import HeaderNav from '$components/HeaderNav.svelte';
 	import TWindicator from '$components/TWindicator.svelte';
 	import { auth, isAuthed } from '$lib/store';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { Search } from 'lucide-svelte';
+	import { Search, LogOut } from 'lucide-svelte';
 
 	let errorMessage = '';
 
@@ -39,11 +39,11 @@
 
 {#if $isAuthed}
 	<div class="flex h-14 w-screen items-center justify-between rounded-b-2xl bg-black p-4">
-		<div class="flex h-full  w-[340px] items-center space-x-2 relative">
+		<div class="relative flex h-full w-[200px] items-center space-x-2">
 			<!-- backward/forward page -->
 			<HeaderNav />
 			<!-- navigation -->
-			<Breadcrumb.Root class="absolute left-12 w-[300px]">
+			<Breadcrumb.Root class="absolute left-12 w-[200px]">
 				<Breadcrumb.List>
 					<Breadcrumb.Item>
 						<Breadcrumb.Link href="/" class="text-xl font-bold text-white hover:text-pink-100"
@@ -60,19 +60,21 @@
 			</Breadcrumb.Root>
 		</div>
 
-		<div class="flex h-full w-full justify-end items-center space-x-1 relative">
+		<div class="xxs:text-green relative flex h-full w-[calc(100%-400px)] items-center space-x-1">
 			<!-- search -->
-				<Input type="text" class="h-8 hidden md:block absolute md:right-28  w-4/5 " />
-				<Button variant="secondary" class="h-8 w-11 md:hidden absolute right-28">
-					<Search size={30} class="scale-125" strokeWidth={2.2}/>
-				</Button>
-			
+			<Input type="text" class="absolute hidden h-8 w-[calc(100%-112px)] md:block " />
+			<Button variant="secondary" class="absolute right-28 h-8 w-11 md:hidden">
+				<Search size={30} class="scale-125" strokeWidth={2.2} />
+			</Button>
+
 			<!-- timer -->
-			<Popover.Root >
+			<Popover.Root>
 				<Popover.Trigger asChild let:builder>
-					<Button builders={[builder]} variant="outline" class="h-8 absolute right-2" >00:00:00</Button>
+					<Button builders={[builder]} variant="outline" class="absolute right-2 h-8"
+						>00:00:00</Button
+					>
 				</Popover.Trigger>
-				<Popover.Content class="w-80">
+				<Popover.Content class="w-[95px]">
 					<div class="grid gap-4">
 						<div class="space-y-2">
 							<h4 class="font-medium leading-none">Dimensions</h4>
@@ -85,16 +87,21 @@
 		</div>
 
 		<!-- logout, user profile -->
-		<Button class="w-30 my-2 h-8 bg-white/10 " variant="secondary" on:click={handleLogout}>
-			<span class="text-pink-500 hidden md:block">
-				{$auth.email}
-			</span>
-			<span class="ml-2 text-lg font-bold text-white"> Logout </span>
-		</Button>
+		<div class="w-[120px] flex justify-end space-x-2 items-center" >
+			<Avatar.Root class=" text-pink-500 w-8 h-8 border-b-2 border-r-2">
+				<Avatar.Image src={$auth.photo} alt={$auth.email} />
+				<Avatar.Fallback class="bg-black font-bold" >Hi</Avatar.Fallback>
+			</Avatar.Root>
+			<Button class="w-30 my-2 h-8 bg-white/10 " variant="secondary" on:click={handleLogout}>
+				<LogOut color="white" strokeWidth={2.5} />
+			</Button>
+		</div>
 	</div>
-{:else}
-	<slot />
 {/if}
+
+<div class="p-2">
+	<slot />
+</div>
 
 <TWindicator />
 
