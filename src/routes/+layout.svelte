@@ -1,15 +1,16 @@
 <script lang="ts">
 	import '../app.pcss';
-	import { Button, Breadcrumb, Popover, Input, Avatar } from '$ui';
+	import { Button, Breadcrumb, Popover, Input, Avatar, DropdownMenu } from '$ui';
 	import HeaderNav from '$components/HeaderNav.svelte';
 	import TWindicator from '$components/TWindicator.svelte';
 	import { auth, isAuthed } from '$lib/store';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { Search, LogOut } from 'lucide-svelte';
+	import { Search, LogOut, Clock } from 'lucide-svelte';
 	import { page } from '$app/stores';
 
 	let errorMessage = '';
+	let searchMode = false;
 
 	onMount(async () => {
 		const loggedIn = getCookie('logged_in');
@@ -34,16 +35,18 @@
 			errorMessage = error.message;
 		}
 	}
-
 </script>
 
 {#if $isAuthed}
-	<div class="flex h-12 w-screen items-center justify-between rounded-b-2xl bg-black p-4">
-		<div class="relative flex h-full w-[200px] items-center space-x-2">
+	<div class="relative flex h-12 w-screen justify-between">
+		<!-- left menu (navigate page) -->
+		<div
+			class="z-10 absolute left-0 flex h-full w-[200px] items-center space-x-3 rounded-b-2xl rounded-r-2xl bg-black px-4"
+		>
 			<!-- backward/forward page -->
 			<HeaderNav />
 			<!-- navigation -->
-			<Breadcrumb.Root class="absolute left-12 w-[200px]">
+			<Breadcrumb.Root class="absolute left-16 w-[200px]">
 				<Breadcrumb.List>
 					<Breadcrumb.Item>
 						<Breadcrumb.Link href="/too" class="text-xl font-bold text-white hover:text-pink-100"
@@ -60,18 +63,30 @@
 			</Breadcrumb.Root>
 		</div>
 
-		<div class="xxs:text-green relative flex h-full w-[calc(100%-400px)] items-center space-x-1">
-			<!-- search -->
-			<Input type="text" class="absolute hidden h-8 w-[calc(100%-112px)] md:block " />
-			<Button variant="secondary" class="absolute right-28 h-8 w-11 md:hidden">
-				<Search size={30} class="scale-125" strokeWidth={2.2} />
-			</Button>
+		{#if searchMode}
+			<Input
+				type="text"
+				class="z-10 h-10 w-[calc(100%-450px)] translate-x-1/2 translate-y-2.5 border-2 shadow shadow-pink-100 "
+			/>
+		{/if}
 
+		<!-- right menu (profile, search, timer) -->
+		<div
+			class="z-10 absolute right-0 flex h-12 w-[200px] items-center justify-evenly space-x-2 rounded-b-2xl rounded-l-2xl bg-black px-4"
+		>
+			<!-- search -->
+			<Button
+				variant="ghost"
+				class="h-8 w-10 !p-1 hover:bg-violet-950"
+				on:click={() => (searchMode = !searchMode)}
+			>
+				<Search size={30} strokeWidth={2} color={searchMode ? 'pink' : 'white'} />
+			</Button>
 			<!-- timer -->
 			<Popover.Root>
 				<Popover.Trigger asChild let:builder>
-					<Button builders={[builder]} variant="outline" class="absolute right-2 h-8"
-						>00:00:00</Button
+					<Button builders={[builder]} variant="ghost" class="h-8 w-10 !p-1 hover:bg-violet-950"
+						><Clock size={30} color="white" class="" strokeWidth={2} /></Button
 					>
 				</Popover.Trigger>
 				<Popover.Content class="w-[95px]">
@@ -84,22 +99,31 @@
 					</div>
 				</Popover.Content>
 			</Popover.Root>
-		</div>
-
-		<!-- logout, user profile -->
-		<div class="flex w-[120px] items-center justify-end space-x-2">
-			<Avatar.Root class=" h-8 w-8 border-2 shadow-lg text-pink-500">
-				<Avatar.Image src={$auth.photo} alt={$auth.email} />
-				<Avatar.Fallback class="bg-black font-bold">Hi</Avatar.Fallback>
-			</Avatar.Root>
-			<Button class="w-30 my-2 h-8 bg-white/10 " variant="secondary" on:click={handleLogout}>
-				<LogOut color="white" strokeWidth={2.5} />
-			</Button>
+			<!-- profile -->
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger asChild let:builder>
+					<Button builders={[builder]} variant="ghost" class="h-8 w-8 hover:bg-pink-950 "
+						><Avatar.Root class=" h-8 w-8 border-2 text-pink-500 shadow-lg ">
+							<Avatar.Image src={$auth.photo} alt={$auth.email} />
+							<Avatar.Fallback class="bg-black font-bold">Hi</Avatar.Fallback>
+						</Avatar.Root></Button
+					>
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Content class="w-56">
+					<DropdownMenu.Label>My Account</DropdownMenu.Label>
+					<DropdownMenu.Separator />
+					<DropdownMenu.Item on:click={handleLogout}>
+						<LogOut size={18} class="mx-2" />
+						Log out
+						<DropdownMenu.Shortcut>⇧⌘Q</DropdownMenu.Shortcut>
+					</DropdownMenu.Item>
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
 		</div>
 	</div>
 {/if}
 
-<div class="h-[calc(100%-60px)]">
+<div class="">
 	<slot />
 </div>
 
@@ -115,6 +139,6 @@
 	}
 
 	.currentPage {
-		color: #f0f;
+		@apply text-pink-600;
 	}
 </style>

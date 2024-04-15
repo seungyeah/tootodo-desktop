@@ -21,7 +21,7 @@
 	let selectedDate: CalendarDate = today(getLocalTimeZone());
 </script>
 
-<div class="h-full w-full flex-col flex justify-center">
+<div class="h-full w-full flex-col flex justify-center absolute top-0">
 	<div class="flex h-10 w-full items-center justify-center space-x-2">
 		<Button
 			class="h-8 w-8 !p-1"
