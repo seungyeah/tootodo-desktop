@@ -38,7 +38,7 @@
 </script>
 
 {#if $isAuthed}
-	<div class="flex h-14 w-screen items-center justify-between rounded-b-2xl bg-black p-4">
+	<div class="flex h-12 w-screen items-center justify-between rounded-b-2xl bg-black p-4">
 		<div class="relative flex h-full w-[200px] items-center space-x-2">
 			<!-- backward/forward page -->
 			<HeaderNav />
@@ -99,7 +99,7 @@
 	</div>
 {/if}
 
-<div class="p-2">
+<div class="h-[calc(100%-60px)]">
 	<slot />
 </div>
 
