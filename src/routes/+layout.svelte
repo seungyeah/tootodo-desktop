@@ -41,7 +41,7 @@
 	<div class="relative flex h-12 w-screen justify-between">
 		<!-- left menu (navigate page) -->
 		<div
-			class="z-10 absolute left-0 flex h-full w-[200px] items-center space-x-3 rounded-b-2xl rounded-r-2xl bg-black px-4"
+			class="z-20 absolute left-0 flex h-full w-[200px] items-center space-x-3 rounded-b-2xl rounded-r-2xl bg-zinc-800 px-4"
 		>
 			<!-- backward/forward page -->
 			<HeaderNav />
@@ -72,12 +72,12 @@
 
 		<!-- right menu (profile, search, timer) -->
 		<div
-			class="z-10 absolute right-0 flex h-12 w-[200px] items-center justify-evenly space-x-2 rounded-b-2xl rounded-l-2xl bg-black px-4"
+			class="z-10 absolute right-0 flex h-12 w-[200px] items-center justify-evenly space-x-2 rounded-b-2xl rounded-l-2xl bg-zinc-800 px-4"
 		>
 			<!-- search -->
 			<Button
 				variant="ghost"
-				class="h-8 w-10 !p-1 hover:bg-violet-950"
+				class="h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-pink-200"
 				on:click={() => (searchMode = !searchMode)}
 			>
 				<Search size={26} strokeWidth={2} color={searchMode ? 'pink' : 'white'} />
@@ -85,11 +85,11 @@
 			<!-- timer -->
 			<Popover.Root>
 				<Popover.Trigger asChild let:builder>
-					<Button builders={[builder]} variant="ghost" class="h-8 w-10 !p-1 hover:bg-violet-950"
+					<Button builders={[builder]} variant="ghost" class="h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-pink-200"
 						><Clock size={26} color="white" class="" strokeWidth={2} /></Button
 					>
 				</Popover.Trigger>
-				<Popover.Content class="w-[95px]">
+				<Popover.Content class="w-[300px] my-2">
 					<div class="grid gap-4">
 						<div class="space-y-2">
 							<h4 class="font-medium leading-none">Dimensions</h4>

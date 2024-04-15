@@ -46,7 +46,7 @@
 						: df.format(selectedDate.toDate(getLocalTimeZone()))}
 				</Button>
 			</Popover.Trigger>
-			<Popover.Content class="w-auto p-0">
+			<Popover.Content class="w-auto p-0 my-2 shadow shadow-pink">
 				<Calendar bind:value initialFocus />
 			</Popover.Content>
 		</Popover.Root>
