@@ -80,13 +80,13 @@
 				class="h-8 w-10 !p-1 hover:bg-violet-950"
 				on:click={() => (searchMode = !searchMode)}
 			>
-				<Search size={30} strokeWidth={2} color={searchMode ? 'pink' : 'white'} />
+				<Search size={26} strokeWidth={2} color={searchMode ? 'pink' : 'white'} />
 			</Button>
 			<!-- timer -->
 			<Popover.Root>
 				<Popover.Trigger asChild let:builder>
 					<Button builders={[builder]} variant="ghost" class="h-8 w-10 !p-1 hover:bg-violet-950"
-						><Clock size={30} color="white" class="" strokeWidth={2} /></Button
+						><Clock size={26} color="white" class="" strokeWidth={2} /></Button
 					>
 				</Popover.Trigger>
 				<Popover.Content class="w-[95px]">

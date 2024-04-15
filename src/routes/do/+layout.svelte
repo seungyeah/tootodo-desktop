@@ -22,7 +22,7 @@
 </script>
 
 <div class="h-full w-full flex-col flex justify-center absolute top-0">
-	<div class="flex h-10 w-full items-center justify-center space-x-2">
+	<div class="flex h-10 w-full items-center justify-center space-x-2 scale-110">
 		<Button
 			class="h-8 w-8 !p-1"
 			variant="ghost"
@@ -35,7 +35,7 @@
 				<Button
 					variant="outline"
 					class={cn(
-						'w-[280px] justify-start text-left font-normal',
+						'w-[280px]  text-center font-semibold text-md',
 						!value && 'text-muted-foreground'
 					)}
 					builders={[builder]}
