@@ -1,65 +1,47 @@
 <script lang="ts">
-	import { CalendarRange } from 'lucide-svelte';
-	import type { DateRange } from 'bits-ui';
-	import {
-		CalendarDate,
-		DateFormatter,
-		type DateValue,
-		getLocalTimeZone
-	} from '@internationalized/date';
+	import CalendarIcon from 'lucide-svelte/icons/calendar';
+	import { type DateValue, DateFormatter, getLocalTimeZone, today, CalendarDate } from '@internationalized/date';
 	import { cn } from '$lib/utils.js';
-
-    import{Button, RangeCalendar, Popover} from '$ui';
+	import { Button } from '$lib/components/ui/button';
+	import { Calendar } from '$lib/components/ui/calendar';
+	import * as Popover from '$lib/components/ui/popover';
+	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
 
 	const df = new DateFormatter('en-US', {
-		dateStyle: 'medium'
+		dateStyle: 'long'
 	});
 
-	let value: DateRange | undefined = {
-		start: new CalendarDate(2024, 4, 12),
-		end: new CalendarDate(2024, 4, 12).add({ days: 7 })
-	};
-
-	let startValue: DateValue | undefined = undefined;
+	let value: DateValue | undefined = undefined;
+	let selectedDate: CalendarDate = today(getLocalTimeZone());
+	 
 </script>
 
-<div class="grid gap-2 ">	
+<div class="w-full flex justify-center space-x-2 items-center">
+	<Button class="h-8 w-8 !p-1" variant="ghost" on:click={()=>selectedDate = selectedDate.subtract({days:1})}>
+		<ChevronLeft size={20}  />
+	</Button>
 	<Popover.Root openFocus>
 		<Popover.Trigger asChild let:builder>
 			<Button
 				variant="outline"
 				class={cn(
-					'w-[300px] justify-start text-left font-normal',
+					'w-[280px] justify-start text-left font-normal',
 					!value && 'text-muted-foreground'
 				)}
 				builders={[builder]}
 			>
-				<CalendarRange class="mr-2 h-4 w-4 " />
-				{#if value && value.start}
-					{#if value.end}
-						{df.format(value.start.toDate(getLocalTimeZone()))} - {df.format(
-							value.end.toDate(getLocalTimeZone())
-						)}
-					{:else}
-						{df.format(value.start.toDate(getLocalTimeZone()))}
-					{/if}
-				{:else if startValue}
-					{df.format(startValue.toDate(getLocalTimeZone()))}
-				{:else}
-					Pick a date
-				{/if}
+				<CalendarIcon class="mr-2 h-4 w-4" />
+				{value ? df.format(value.toDate(getLocalTimeZone())) : df.format(selectedDate.toDate(getLocalTimeZone()))}
 			</Button>
 		</Popover.Trigger>
-		<Popover.Content class="w-auto p-0" align="start">
-			<RangeCalendar
-				bind:value
-				bind:startValue
-				placeholder={value?.start}
-				initialFocus
-				numberOfMonths={2}
-			/>
+		<Popover.Content class="w-auto p-0">
+			<Calendar bind:value initialFocus />
 		</Popover.Content>
 	</Popover.Root>
+
+	<Button class="h-8 w-8 !p-1" variant="ghost" on:click={()=>selectedDate = selectedDate.add({days:1})}>
+		<ChevronRight size={20}  />
+	</Button>
 </div>
 
 <slot />
