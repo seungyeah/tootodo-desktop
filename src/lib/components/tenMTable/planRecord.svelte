@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Button, Input } from '$ui';
+	import { Button, Input, Tooltip } from '$ui';
 	import Timer from '$components/timer/Timer.svelte';
+	import TimerSetting from '$components/timer/TimerSetting.svelte';
 	import { X, Milestone } from 'lucide-svelte';
+	import { currentTime, formatTime } from '$store';
 
 	// timer
 	export let timerOpen = false;
@@ -16,7 +18,6 @@
 	const pmHours = Array.from({ length: 12 }, (_, i) => i + 12);
 
 	const columns = [0, 10, 20, 30, 40, 50]; // 10-minute intervals
-	import { currentTime, formatTime } from '$store';
 
 	$: currentTimeDisplay = formatTime($currentTime);
 	let isAM = new Date().getHours() < 12;
@@ -152,76 +153,55 @@
 	let tooltipVisible = false; // Tooltip visibility flag
 	let tooltipX = 0; // Tooltip X position
 	let tooltipY = 0; // Tooltip Y position
-	function showTooltip(event, record) {
-		if (record) {
-			tooltipVisible = true;
-			tooltip = `start: ${record.start}, end: ${record.end}`;
-			let [startHour, startMin] = record.start.split(':').map(Number);
-			let [endHour, endMin] = record.end.split(':').map(Number);
-			let min = endMin - startMin;
-			if (min < 0) {
-				min += 60;
-				endHour -= 1;
-			}
-			let hour = endHour - startHour;
-			duration = hour * 60 + min;
-			if (working > duration) {
-				working = duration;
-				breaking = 0;
-			}
-			durationString = `${hour}H ${min}M`;
-			getRemainAndCycle();
-		} else {
-			tooltip = '';
-			tooltipVisible = false;
-		}
-		tooltipX = event.clientX - 160; // Get the mouse X position
-		tooltipY = event.clientY + 5; // Get the mouse Y position
-		event.stopPropagation();
-	}
-	function getRemainAndCycle() {
-		remain = duration % (working + breaking);
-		cycle = Math.floor(duration / (working + breaking));
-	}
-	// $:console.log(timerOpen);
 </script>
 
 {#if timerOpen}
 	<Timer bind:timerOpen {duration} {working} {breaking} {cycle} {remain} />
 {:else}
-	<div class="relative m-auto h-full w-full flex-col border-4">
+	<div class="relative h-full w-full flex-col border-4 border-zinc-900">
 		<div class="m-2 flex justify-around">
 			<!-- AM -->
 			<div class="flex-col">
 				<div class="w-full text-center text-xl font-bold" class:active={isAM}>AM</div>
-				<table class="h-[450px]">
+				<table class="h-[380px]">
 					<tr>
 						<th></th>
 						{#each columns as column}
-							<th>{column + 10}</th>
+							<th class="!w-[27px] px-1 text-sm">{column + 10}</th>
 						{/each}
 					</tr>
 					{#each amHours as hour, index}
 						<tr>
-							<th rowspan="2">{hour}</th>
+							<th rowspan="2" class="px-1.5">{hour}</th>
 							{#each columns as column, columnIndex}
 								{#key cellColors}
 									<td
-										class="!py-[0.7rem]"
+										class=" !m-0 !h-[20px] !w-[20px] !p-0"
 										class:colored={cellColors[hour][0][columnIndex].colorFill}
-										on:mouseover={(event) =>
-											showTooltip(event, cellColors[hour][0][columnIndex].record)}
 										on:mousedown={(event) =>
 											handleMouseDown(hour, column, event, cellColors[hour][0][columnIndex].record)}
 										on:mouseup={() => handleMouseUp(hour, column)}
 										on:mousemove={(e) => handleMouseMove(hour, columnIndex)}
-									></td>
+									>
+										<Tooltip.Root openDelay={100}>
+											<Tooltip.Trigger asChild let:builder>
+												<Button
+													builders={[builder]}
+													variant="ghost"
+													class="h-full w-full !p-0 hover:bg-violet-50"
+												></Button>
+											</Tooltip.Trigger>
+											<Tooltip.Content>
+												<TimerSetting />
+											</Tooltip.Content>
+										</Tooltip.Root>
+									</td>
 								{/key}
 							{/each}
 						</tr>
 						<tr>
-							{#each columns as column, columnIndex}
-								<td class="!border-0"></td> <!-- 이 부분은 비어있는 하단 셀을 나타냅니다 -->
+							{#each columns as _}
+								<td class="!border-0 py-[0.18rem]"></td> <!-- 이 부분은 비어있는 하단 셀을 나타냅니다 -->
 							{/each}
 						</tr>
 					{/each}
@@ -231,111 +211,54 @@
 			<!-- PM -->
 			<div class="flex-col">
 				<div class="block w-full text-center text-xl font-bold" class:active={!isAM}>PM</div>
-				<table class="h-[450px]">
+				<table class="h-[380px]">
 					<tr>
 						<th></th>
 						{#each columns as column}
-							<th>{column + 10}</th>
+							<th class="!w-[27px] px-1 text-sm">{column + 10}</th>
 						{/each}
 					</tr>
 					{#each pmHours as hour, index}
 						<tr>
-							<th rowspan="2">{hour}</th>
+							<th rowspan="2" class="px-1.5">{hour}</th>
 							{#each columns as column, columnIndex}
 								{#key cellColors}
 									<td
-										class="!py-[0.7rem]"
+										class=" !m-0 !h-[20px] !w-[20px] !p-0"
 										class:colored={cellColors[hour][0][columnIndex].colorFill}
-										on:mouseover={(event) =>
-											showTooltip(event, cellColors[hour][0][columnIndex].record)}
 										on:mousedown={(event) =>
 											handleMouseDown(hour, column, event, cellColors[hour][0][columnIndex].record)}
 										on:mouseup={() => handleMouseUp(hour, column)}
 										on:mousemove={(e) => handleMouseMove(hour, columnIndex)}
-									></td>
+									>
+										<Tooltip.Root openDelay={100}>
+											<Tooltip.Trigger asChild let:builder>
+												<Button
+													builders={[builder]}
+													variant="ghost"
+													class="h-full w-full !p-0 hover:bg-violet-50"
+												></Button>
+											</Tooltip.Trigger>
+											<Tooltip.Content>
+												<TimerSetting />
+											</Tooltip.Content>
+										</Tooltip.Root>
+									</td>
 								{/key}
 							{/each}
 						</tr>
 						<tr>
-							{#each columns as column, columnIndex}
-								<td class="!border-0"></td> <!-- 이 부분은 비어있는 하단 셀을 나타냅니다 -->
+							{#each columns as _}
+							<td class="!border-0 py-[0.18rem]"></td> <!-- 이 부분은 비어있는 하단 셀을 나타냅니다 -->
 							{/each}
 						</tr>
 					{/each}
 				</table>
 			</div>
-
-			<!-- tooltip => check druation -> set working/breaking -> start timer -->
-			{#if tooltipVisible}
-				<div
-					class="custom-tooltip w-[220px] flex-col space-y-1 p-2 shadow-lg"
-					style="position: fixed; left: {tooltipX}px; top: {tooltipY}px;"
-				>
-					<span class="font-digital mx-2">{tooltip}</span>
-					<div class="flex-col space-y-2 border-2 border-dotted border-white px-1 py-2">
-						<div class="flex justify-center space-x-2">
-							<span class="leading-8 text-rose-200">working</span>
-							<Input
-								type="number"
-								class="w-1/2 translate-x-0.5 text-black"
-								bind:value={working}
-								step={5}
-								min={10}
-								max={duration}
-								on:change={() => {
-									if (working >= duration) {
-										breaking = 0;
-										remain = 0;
-										cycle = 1;
-									}
-									getRemainAndCycle();
-								}}
-							/>
-						</div>
-						<div class="flex w-full justify-center space-x-2">
-							<span class="leading-8 text-violet-200">breaking</span>
-							<Input
-								type="number"
-								disabled={working + breaking >= duration}
-								class="w-1/2 text-black"
-								bind:value={breaking}
-								min={0}
-								max={20}
-								on:change={() => {
-									if (working + breaking >= duration) {
-										remain = 0;
-										cycle = 1;
-									}
-									getRemainAndCycle();
-								}}
-							/>
-						</div>
-					</div>
-					<div class="font-digital relative flex-col">
-						<div>duration: {durationString}</div>
-						<Milestone class="absolute" />
-						<div class="w-full translate-x-2 text-center text-lg">
-							(<span class="text-rose-200">{working}</span>+<span class="text-violet-200"
-								>{breaking}</span
-							>)*{cycle}+<span class="text-blue-200">{remain}</span>
-						</div>
-					</div>
-					<div class="m-1 flex space-x-2">
-						<Button
-							variant="outline"
-							class="my-1 w-full font-bold text-lg text-black text-center"
-							on:click={() => (timerOpen = !timerOpen)}>Do!</Button
-						>
-						<Button variant="ghost" class="my-1 border border-pink-500" on:click={() => (tooltipVisible = false)}
-							><X /></Button
-						>
-					</div>
-				</div>
-			{/if}
 		</div>
 
 		<!-- current time -->
-		<div class="absolute left-[44%] top-2 m-auto w-full text-xl font-bold text-rose-800">
+		<div class="absolute left-[43.2%] top-2 m-auto w-full text-xl font-bold text-rose-800">
 			{currentTimeDisplay}
 		</div>
 	</div>
@@ -346,8 +269,6 @@
 	th,
 	td {
 		border: 1px solid #e4e4e7;
-		text-align: center;
-		padding: 5px;
 	}
 	input[type='step']:disabled {
 		background: #ccc;
@@ -358,29 +279,5 @@
 
 	.active {
 		@apply bg-rose-50;
-	}
-
-	.custom-tooltip {
-		position: fixed;
-		padding: 4px 8px;
-		background-color: #3f3f46;
-		color: white;
-		border-radius: 10px;
-		pointer-events: auto;
-		z-index: 1000; /* Make sure the tooltip is above other elements */
-		white-space: nowrap;
-	}
-
-	.custom-tooltip ::before {
-		content: '';
-		position: absolute;
-		display: block;
-		width: 0px;
-		left: 50%;
-		top: 0;
-		border: 10px solid transparent;
-		border-top: 0;
-		border-bottom: 10px solid #3f3f46;
-		transform: translate(100%, calc(-100% - 0px));
 	}
 </style>

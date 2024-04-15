@@ -13,6 +13,7 @@
 
 	let errorMessage = '';
 	let searchMode = false;
+	let timerMode = false;
 	let timerOpen = false;
 
 	onMount(async () => {
@@ -85,16 +86,17 @@
 			>
 				<Search size={26} strokeWidth={2} color={searchMode ? 'pink' : 'white'} />
 			</Button>
-			<!-- timer -->
-			<Popover.Root>
+			<!-- timer, tenMplanner -->
+			<Popover.Root onOutsideClick={()=>timerMode = false} openFocus={()=>timerMode = true}>
 				<Popover.Trigger asChild let:builder>
-					<Button builders={[builder]} variant="ghost" class="h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-pink-200"
-						><Clock size={26} color="white" class="" strokeWidth={2} /></Button
+					<Button builders={[builder]} variant="ghost" 
+					class="h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-pink-200"
+						><Clock size={26} color={timerMode ? 'pink' : 'white'} class="" strokeWidth={2} /></Button
 					>
 				</Popover.Trigger>
-				<Popover.Content class="w-[500px] my-2">
-						<div class="m-auto w-full h-[510px] relative">						
-							<ShowRecord {timerOpen}/>
+				<Popover.Content class="w-[470px] my-3 ">
+						<div class="m-auto w-full h-[460px] relative">						
+							<!-- <ShowRecord {timerOpen}/> -->
 							<div class="absolute top-0 w-full h-full">
 								<!-- plan record and start timer directly -->
 								<PlanRecord bind:timerOpen/>
