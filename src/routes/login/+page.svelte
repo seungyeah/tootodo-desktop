@@ -66,7 +66,7 @@
 </script>
 
 {#if !$isAuthed}
-	<div class="flex w-full h-full flex-col login">
+	<div class="w-screen h-screen login">
 		{#if signUp}
 			<!-- sign up -->
 			<h1 class="text-center">Sign Up</h1>

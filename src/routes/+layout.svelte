@@ -7,16 +7,15 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { Search, LogOut } from 'lucide-svelte';
+	import { page } from '$app/stores';
 
 	let errorMessage = '';
 
 	onMount(async () => {
 		const loggedIn = getCookie('logged_in');
 		if (loggedIn) {
-			console.log('logged in' + loggedIn);
 			await auth.getUserInfo();
 		} else {
-			console.log('login error' + loggedIn);
 			goto('/login');
 		}
 	});
@@ -35,6 +34,7 @@
 			errorMessage = error.message;
 		}
 	}
+
 </script>
 
 {#if $isAuthed}
@@ -46,15 +46,15 @@
 			<Breadcrumb.Root class="absolute left-12 w-[200px]">
 				<Breadcrumb.List>
 					<Breadcrumb.Item>
-						<Breadcrumb.Link href="/" class="text-xl font-bold text-white hover:text-pink-100"
-							>Too</Breadcrumb.Link
-						>
+						<Breadcrumb.Link href="/too" class="text-xl font-bold text-white hover:text-pink-100"
+							><div class:currentPage={$page.url.pathname.includes('too')}>Too</div>
+						</Breadcrumb.Link>
 					</Breadcrumb.Item>
 					<Breadcrumb.Separator class="text-pink-500" />
 					<Breadcrumb.Item>
-						<Breadcrumb.Link href="/" class="text-xl font-bold text-white hover:text-pink-100"
-							>Do</Breadcrumb.Link
-						>
+						<Breadcrumb.Link href="/do" class="text-xl font-bold text-white hover:text-pink-100"
+							><span class:currentPage={$page.url.pathname.includes('do')}>Do</span>
+						</Breadcrumb.Link>
 					</Breadcrumb.Item>
 				</Breadcrumb.List>
 			</Breadcrumb.Root>
@@ -87,10 +87,10 @@
 		</div>
 
 		<!-- logout, user profile -->
-		<div class="w-[120px] flex justify-end space-x-2 items-center" >
-			<Avatar.Root class=" text-pink-500 w-8 h-8 border-b-2 border-r-2">
+		<div class="flex w-[120px] items-center justify-end space-x-2">
+			<Avatar.Root class=" h-8 w-8 border-2 shadow-lg text-pink-500">
 				<Avatar.Image src={$auth.photo} alt={$auth.email} />
-				<Avatar.Fallback class="bg-black font-bold" >Hi</Avatar.Fallback>
+				<Avatar.Fallback class="bg-black font-bold">Hi</Avatar.Fallback>
 			</Avatar.Root>
 			<Button class="w-30 my-2 h-8 bg-white/10 " variant="secondary" on:click={handleLogout}>
 				<LogOut color="white" strokeWidth={2.5} />
@@ -112,5 +112,9 @@
 
 	:global(body) {
 		font-family: 'Manrope Variable', sans-serif;
+	}
+
+	.currentPage {
+		color: #f0f;
 	}
 </style>
