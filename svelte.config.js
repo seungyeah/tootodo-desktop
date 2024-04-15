@@ -28,7 +28,7 @@ const config = {
 			"@/*": "./path/to/lib/*",
 			$ui: 'src/lib/components/ui',
 			$components: 'src/lib/components',
-			$auth:'src/lib/auth',
+			$store:'src/lib/store',
 		  },
 	}
 };

@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { Button } from 'svelte-ux';
+	import { Button } from '$ui';
 	import PomoIcon from './PomoIcon.svelte';
-	import { mdiBackburger, mdiForwardburger } from '@mdi/js';
 	import TimerLayout from './TimerLayout.svelte';
+	import { StepBack, StepForward } from 'lucide-svelte';
+
 	export let timerOpen = false;
 	export let goalTime = {
 		total: 80,
@@ -24,22 +25,22 @@
 	let timerWork = false;
 </script>
 
-<div class="relative">
+<div class="relative h-full w-full">
 	<TimerLayout {leftSessionTime} {leftDuration} />
 
 	<Button
-		icon={mdiBackburger}
+		variant="ghost"
 		class="absolute top-0 left-0 z-10 text-lg"
 		on:click={() => {
 			timerOpen = false;
-		}}>Back</Button
+		}}><StepBack/>Back</Button
 	>
 	<Button
-		icon={mdiForwardburger}
+		variant="ghost"
 		class="absolute bottom-0 right-0 z-10 text-lg"
 		on:click={() => {
 			timerOpen = false;
-		}}>Next Session</Button
+		}}>Next Session <StepForward/></Button
 	>
 	<Button
 		on:click={() => {

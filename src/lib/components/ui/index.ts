@@ -5,7 +5,7 @@ export * as AspectRatio from "./aspect-ratio";
 export * as Avatar from "./avatar";
 export * as Breadcrumb from "./breadcrumb";
 export {Button} from "./button";
-export * as Calendar from "./calendar";
+export  {Calendar} from "./calendar";
 export {Checkbox} from "./checkbox";
 export * as Collapsible from "./collapsible";
 export * as ContextMenu from "./context-menu";

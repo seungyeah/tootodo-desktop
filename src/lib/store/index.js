@@ -1,8 +1,8 @@
-import { derived } from 'svelte/store'
+// import { derived } from 'svelte/store'
 
 // export const isLogin = setIsLogin();
 export * from './auth';
-
+export * from './timerStore';
 // function setIsLogin() {
 // 	const checkLogin = derived(auth, $auth => $auth.Authorization ? true : false)
 //   return checkLogin

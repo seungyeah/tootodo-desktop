@@ -3,14 +3,17 @@
 	import { Button, Breadcrumb, Popover, Input, Avatar, DropdownMenu } from '$ui';
 	import HeaderNav from '$components/HeaderNav.svelte';
 	import TWindicator from '$components/TWindicator.svelte';
-	import { auth, isAuthed } from '$lib/store';
+	import { auth, isAuthed } from '$store';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { Search, LogOut, Clock } from 'lucide-svelte';
 	import { page } from '$app/stores';
+	import ShowRecord from '$components/tenMTable/showRecord.svelte';
+	import PlanRecord from '$components/tenMTable/planRecord.svelte';
 
 	let errorMessage = '';
 	let searchMode = false;
+	let timerOpen = false;
 
 	onMount(async () => {
 		const loggedIn = getCookie('logged_in');
@@ -89,14 +92,14 @@
 						><Clock size={26} color="white" class="" strokeWidth={2} /></Button
 					>
 				</Popover.Trigger>
-				<Popover.Content class="w-[300px] my-2">
-					<div class="grid gap-4">
-						<div class="space-y-2">
-							<h4 class="font-medium leading-none">Dimensions</h4>
-							<p class="text-sm text-muted-foreground">Set the dimensions for the layer.</p>
+				<Popover.Content class="w-[500px] my-2">
+						<div class="m-auto w-full h-[510px] relative">						
+							<ShowRecord {timerOpen}/>
+							<div class="absolute top-0 w-full h-full">
+								<!-- plan record and start timer directly -->
+								<PlanRecord bind:timerOpen/>
+							</div>
 						</div>
-						<div class="grid gap-2">hi</div>
-					</div>
 				</Popover.Content>
 			</Popover.Root>
 			<!-- profile -->

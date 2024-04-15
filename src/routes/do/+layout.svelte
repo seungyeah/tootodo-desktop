@@ -8,9 +8,7 @@
 		CalendarDate
 	} from '@internationalized/date';
 	import { cn } from '$lib/utils.js';
-	import { Button } from '$lib/components/ui/button';
-	import { Calendar } from '$lib/components/ui/calendar';
-	import * as Popover from '$lib/components/ui/popover';
+	import {Button, Calendar, Popover} from '$ui';
 	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
 
 	const df = new DateFormatter('en-US', {

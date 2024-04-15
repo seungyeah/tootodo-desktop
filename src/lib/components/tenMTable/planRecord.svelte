@@ -1,16 +1,8 @@
 <script lang="ts">
-	import { afterUpdate, onMount } from 'svelte';
-	import {
-		timerStore,
-		dateDisplay,
-		format,
-		Button,
-		Icon,
-		NumberStepper,
-		getDuration
-	} from 'svelte-ux';
+	import { onMount } from 'svelte';
+	import { Button, Input } from '$ui';
 	import Timer from '$components/timer/Timer.svelte';
-	import { mdiClose, mdiSignDirection } from '@mdi/js';
+	import { X, Milestone } from 'lucide-svelte';
 
 	// timer
 	export let timerOpen = false;
@@ -24,9 +16,10 @@
 	const pmHours = Array.from({ length: 12 }, (_, i) => i + 12);
 
 	const columns = [0, 10, 20, 30, 40, 50]; // 10-minute intervals
-	const dateTimer = timerStore();
+	import { currentTime, formatTime } from '$store';
+
+	$: currentTimeDisplay = formatTime($currentTime);
 	let isAM = new Date().getHours() < 12;
-	$: currentTime = dateDisplay($dateTimer, { format: 'KK:mm' });
 
 	// Convert a time string to minutes since midnight
 	function timeToMinutes(time) {
@@ -196,11 +189,11 @@
 {#if timerOpen}
 	<Timer bind:timerOpen {duration} {working} {breaking} {cycle} {remain} />
 {:else}
-	<div class="w-full h-full border-4 m-auto flex-col">
-		<div class="flex justify-around m-2">
+	<div class="relative m-auto h-full w-full flex-col border-4">
+		<div class="m-2 flex justify-around">
 			<!-- AM -->
 			<div class="flex-col">
-				<div class="text-xl font-bold text-center w-full block" class:active={isAM}>AM</div>
+				<div class="w-full text-center text-xl font-bold" class:active={isAM}>AM</div>
 				<table class="h-[450px]">
 					<tr>
 						<th></th>
@@ -214,7 +207,7 @@
 							{#each columns as column, columnIndex}
 								{#key cellColors}
 									<td
-										class="!py-[0.72rem]"
+										class="!py-[0.7rem]"
 										class:colored={cellColors[hour][0][columnIndex].colorFill}
 										on:mouseover={(event) =>
 											showTooltip(event, cellColors[hour][0][columnIndex].record)}
@@ -237,7 +230,7 @@
 
 			<!-- PM -->
 			<div class="flex-col">
-				<div class="text-xl font-bold text-center w-full block" class:active={!isAM}>PM</div>
+				<div class="block w-full text-center text-xl font-bold" class:active={!isAM}>PM</div>
 				<table class="h-[450px]">
 					<tr>
 						<th></th>
@@ -251,7 +244,7 @@
 							{#each columns as column, columnIndex}
 								{#key cellColors}
 									<td
-										class="!py-[0.72rem]"
+										class="!py-[0.7rem]"
 										class:colored={cellColors[hour][0][columnIndex].colorFill}
 										on:mouseover={(event) =>
 											showTooltip(event, cellColors[hour][0][columnIndex].record)}
@@ -275,15 +268,16 @@
 			<!-- tooltip => check druation -> set working/breaking -> start timer -->
 			{#if tooltipVisible}
 				<div
-					class="custom-tooltip w-[220px] p-2 flex-col space-y-1 shadow-lg"
+					class="custom-tooltip w-[220px] flex-col space-y-1 p-2 shadow-lg"
 					style="position: fixed; left: {tooltipX}px; top: {tooltipY}px;"
 				>
 					<span class="font-digital mx-2">{tooltip}</span>
-					<div class="border-2 border-dotted border-white px-1 py-2 flex-col space-y-2">
-						<div class="flex space-x-2 justify-center">
+					<div class="flex-col space-y-2 border-2 border-dotted border-white px-1 py-2">
+						<div class="flex justify-center space-x-2">
 							<span class="leading-8 text-rose-200">working</span>
-							<NumberStepper
-								class="text-black w-1/2 translate-x-0.5"
+							<Input
+								type="number"
+								class="w-1/2 translate-x-0.5 text-black"
 								bind:value={working}
 								step={5}
 								min={10}
@@ -298,11 +292,12 @@
 								}}
 							/>
 						</div>
-						<div class="flex w-full space-x-2 justify-center">
+						<div class="flex w-full justify-center space-x-2">
 							<span class="leading-8 text-violet-200">breaking</span>
-							<NumberStepper
+							<Input
+								type="number"
 								disabled={working + breaking >= duration}
-								class="text-black w-1/2"
+								class="w-1/2 text-black"
 								bind:value={breaking}
 								min={0}
 								max={20}
@@ -316,38 +311,32 @@
 							/>
 						</div>
 					</div>
-					<div class="font-digital flex-col relative">
+					<div class="font-digital relative flex-col">
 						<div>duration: {durationString}</div>
-						<Icon data={mdiSignDirection} class="absolute" />
-						<div class="w-full text-center text-lg translate-x-2">
+						<Milestone class="absolute" />
+						<div class="w-full translate-x-2 text-center text-lg">
 							(<span class="text-rose-200">{working}</span>+<span class="text-violet-200"
 								>{breaking}</span
 							>)*{cycle}+<span class="text-blue-200">{remain}</span>
 						</div>
 					</div>
-					<div class="flex space-x-2 m-1">
+					<div class="m-1 flex space-x-2">
 						<Button
-							color="violet"
-							variant="fill"
-							class="w-full my-1"
+							variant="outline"
+							class="my-1 w-full font-bold text-lg text-black text-center"
 							on:click={() => (timerOpen = !timerOpen)}>Do!</Button
 						>
-						<Button
-							color="rose"
-							variant="fill-light"
-							class="my-1"
-							rounded={false}
-							icon={mdiClose}
-							on:click={() => (tooltipVisible = false)}
-						></Button>
+						<Button variant="ghost" class="my-1 border border-pink-500" on:click={() => (tooltipVisible = false)}
+							><X /></Button
+						>
 					</div>
 				</div>
 			{/if}
 		</div>
 
 		<!-- current time -->
-		<div class="w-full m-auto absolute top-1.5 left-[44.2%] font-bold text-lg text-rose-800">
-			{currentTime}
+		<div class="absolute left-[44%] top-2 m-auto w-full text-xl font-bold text-rose-800">
+			{currentTimeDisplay}
 		</div>
 	</div>
 {/if}
