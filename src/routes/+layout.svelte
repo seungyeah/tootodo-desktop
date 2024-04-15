@@ -66,7 +66,7 @@
 		{#if searchMode}
 			<Input
 				type="text"
-				class="z-10 h-10 w-[calc(100%-450px)] translate-x-1/2 translate-y-2.5 border-2 shadow shadow-pink-100 "
+				class="z-10 h-10 w-[calc(100%-450px)] absolute right-0 -translate-x-[210px] translate-y-2.5 border-2 shadow shadow-pink-100 "
 			/>
 		{/if}
 
