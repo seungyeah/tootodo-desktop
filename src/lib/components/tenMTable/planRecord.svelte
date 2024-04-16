@@ -1,40 +1,27 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Button, Input, Tooltip } from '$ui';
+	import { Button, Tooltip } from '$ui';
 	import Timer from '$components/timer/Timer.svelte';
 	import TimerSetting from '$components/timer/TimerSetting.svelte';
-	import { X, Milestone } from 'lucide-svelte';
 	import { currentTime, formatTime } from '$store';
-
-	// timer
+	let tooltipVisible = false;
 	export let timerOpen = false;
 
-	let records = [
-		{ start: '9:20', end: '9:50', dragged: true },
-		{ start: '10:20', end: '11:40', dragged: true },
-		{ start: '12:10', end: '13:30', dragged: true } // Add a record with the 'dragged' property
-	];
-	const amHours = Array.from({ length: 12 }, (_, i) => i);
-	const pmHours = Array.from({ length: 12 }, (_, i) => i + 12);
-
-	const columns = [0, 10, 20, 30, 40, 50]; // 10-minute intervals
-
+	const hours = Array.from({ length: 24 }, (_, i) => i);
+	const columns = [0, 10, 20, 30, 40, 50];
 	$: currentTimeDisplay = formatTime($currentTime);
-	let isAM = new Date().getHours() < 12;
-
-	// Convert a time string to minutes since midnight
-	function timeToMinutes(time) {
-		const [hours, minutes] = time.split(':').map(Number);
-		return hours * 60 + minutes;
-	}
-	// Initialize cell colors
-	let cellColors = Array.from({ length: 24 }, () => [
-		Array.from({ length: 6 }, () => ({ colorFill: 0, record: null }))
-	]);
-
+	$: isAM = new Date().getHours() < 12;
 	onMount(() => {
 		cellColors = getCellColor();
 	});
+	let cellColors = Array.from({ length: 24 }, () => [
+		Array.from({ length: 6 }, () => ({ colorFill: 0, record: null }))
+	]);
+	let records = [
+		{ start: '9:20', end: '9:50', dragged: true },
+		{ start: '10:20', end: '11:40', dragged: true },
+		{ start: '12:10', end: '13:30', dragged: true }
+	];
 
 	function getCellColor() {
 		for (let record of records) {
@@ -100,7 +87,6 @@
 			if (dragStartHour === hour && column - dragStartColumn < 10) {
 				// Reset dragging state
 				dragging = false;
-				// console.log('dragging canceled')
 				dragEndHour = null;
 				dragEndColumn = null;
 				cellColors[hour][0][column / 10].colorFill = 0;
@@ -115,14 +101,18 @@
 			const startTime = startHour * 60 + startMinute;
 			const endTime = endHour * 60 + endMinute;
 
-			const newRecord = {
-				start: `${startHour}:${startMinute.toString().padStart(2, '0')}`,
-				end: `${endHour}:${endMinute.toString().padStart(2, '0')}`,
-				dragged: true // Indicate this record was added by dragging
-			};
-			records = [...records, newRecord];
-			cellColors = getCellColor();
-			console.log('Added new record:', newRecord);
+			if (startTime < endTime) {
+				const newRecord = {
+					start: `${startHour}:${startMinute.toString().padStart(2, '0')}`,
+					end: `${endHour}:${endMinute.toString().padStart(2, '0')}`,
+					dragged: true // Indicate this record was added by dragging
+				};
+				records = [...records, newRecord];
+				cellColors = getCellColor();
+				console.log('Added new record:', newRecord);
+			}else{
+				cellColors[startHour][0][startMinute / 10].colorFill = 0;
+			}
 
 			// Reset dragging state
 			dragging = false;
@@ -136,23 +126,11 @@
 		if (dragging) {
 			dragEndHour = hour;
 			dragEndColumn = columnIdx;
+			if (dragStartHour === dragEndHour && dragStartColumn === dragEndColumn) return;
+			if (dragStartHour > dragEndHour) return;
 			cellColors[dragEndHour][0][dragEndColumn].colorFill = 1;
 		}
 	}
-
-	// timer
-	let working = 25;
-	let breaking = 5;
-	let cycle = 1;
-	let remain = 0;
-	let duration = 0;
-	let durationString = '';
-
-	// tooltip
-	let tooltip = ''; // Tooltip text
-	let tooltipVisible = false; // Tooltip visibility flag
-	let tooltipX = 0; // Tooltip X position
-	let tooltipY = 0; // Tooltip Y position
 </script>
 
 {#if timerOpen}
@@ -160,104 +138,74 @@
 {:else}
 	<div class="relative h-full w-full flex-col border-4 border-zinc-900">
 		<div class="m-2 flex justify-around">
-			<!-- AM -->
-			<div class="flex-col">
-				<div class="w-full text-center text-xl font-bold" class:active={isAM}>AM</div>
-				<table class="h-[380px]">
-					<tr>
-						<th></th>
-						{#each columns as column}
-							<th class="!w-[27px] px-1 text-sm">{column + 10}</th>
+			{#each ['AM', 'PM'] as period, periodIndex}
+				<div class="flex-col">
+					<div
+						class="w-full text-center text-xl font-bold"
+						class:active={periodIndex === Number(!isAM)}
+					>
+						{period}
+					</div>
+					<table class="h-[380px]">
+						<tr>
+							<th></th>
+							{#each columns as column}
+								<th class="!w-[27px] px-1 text-sm">{column + 10}</th>
+							{/each}
+						</tr>
+						{#each hours.slice(periodIndex * 12, (periodIndex + 1) * 12) as hour}
+							<tr>
+								<th rowspan="2" class="px-1.5">{hour % 12 || 12}</th>
+								{#each columns as column, columnIndex}
+									{#key cellColors}
+										<td
+											class="!m-0 !h-[20px] !w-[20px] !p-0"
+											class:colored={cellColors[hour][0][columnIndex].colorFill}
+											on:mouseover={() => {
+												tooltipVisible = cellColors[hour][0][columnIndex].colorFill;
+											}}
+											on:mousedown={(event) =>
+												handleMouseDown(
+													hour,
+													column,
+													event,
+													cellColors[hour][0][columnIndex].record
+												)}
+											on:mouseup={() => handleMouseUp(hour, column)}
+											on:mousemove={() => handleMouseMove(hour, columnIndex)}
+										>
+											{#if tooltipVisible}
+												<Tooltip.Root openDelay={200} closeDelay={100}>
+													<Tooltip.Trigger asChild let:builder>
+														<Button
+															builders={[builder]}
+															variant="ghost"
+															class="h-full w-full !p-0 hover:bg-violet-50"
+														></Button>
+													</Tooltip.Trigger>
+													<Tooltip.Content class="translate-y-[0.2rem]">
+														<TimerSetting
+															record={cellColors[hour][0][columnIndex].record}
+														/>
+													</Tooltip.Content>
+												</Tooltip.Root>
+											{:else}
+												<div class="h-[24px] w-[24px]"></div>
+											{/if}
+										</td>
+									{/key}
+								{/each}
+							</tr>
+							<tr>
+								{#each columns as _}
+									<td class="!border-0 py-[0.18rem]"></td>
+								{/each}
+							</tr>
 						{/each}
-					</tr>
-					{#each amHours as hour, index}
-						<tr>
-							<th rowspan="2" class="px-1.5">{hour}</th>
-							{#each columns as column, columnIndex}
-								{#key cellColors}
-									<td
-										class=" !m-0 !h-[20px] !w-[20px] !p-0"
-										class:colored={cellColors[hour][0][columnIndex].colorFill}
-										on:mousedown={(event) =>
-											handleMouseDown(hour, column, event, cellColors[hour][0][columnIndex].record)}
-										on:mouseup={() => handleMouseUp(hour, column)}
-										on:mousemove={(e) => handleMouseMove(hour, columnIndex)}
-									>
-										<Tooltip.Root openDelay={100}>
-											<Tooltip.Trigger asChild let:builder>
-												<Button
-													builders={[builder]}
-													variant="ghost"
-													class="h-full w-full !p-0 hover:bg-violet-50"
-												></Button>
-											</Tooltip.Trigger>
-											<Tooltip.Content>
-												<TimerSetting />
-											</Tooltip.Content>
-										</Tooltip.Root>
-									</td>
-								{/key}
-							{/each}
-						</tr>
-						<tr>
-							{#each columns as _}
-								<td class="!border-0 py-[0.18rem]"></td> <!-- 이 부분은 비어있는 하단 셀을 나타냅니다 -->
-							{/each}
-						</tr>
-					{/each}
-				</table>
-			</div>
-
-			<!-- PM -->
-			<div class="flex-col">
-				<div class="block w-full text-center text-xl font-bold" class:active={!isAM}>PM</div>
-				<table class="h-[380px]">
-					<tr>
-						<th></th>
-						{#each columns as column}
-							<th class="!w-[27px] px-1 text-sm">{column + 10}</th>
-						{/each}
-					</tr>
-					{#each pmHours as hour, index}
-						<tr>
-							<th rowspan="2" class="px-1.5">{hour}</th>
-							{#each columns as column, columnIndex}
-								{#key cellColors}
-									<td
-										class=" !m-0 !h-[20px] !w-[20px] !p-0"
-										class:colored={cellColors[hour][0][columnIndex].colorFill}
-										on:mousedown={(event) =>
-											handleMouseDown(hour, column, event, cellColors[hour][0][columnIndex].record)}
-										on:mouseup={() => handleMouseUp(hour, column)}
-										on:mousemove={(e) => handleMouseMove(hour, columnIndex)}
-									>
-										<Tooltip.Root openDelay={100}>
-											<Tooltip.Trigger asChild let:builder>
-												<Button
-													builders={[builder]}
-													variant="ghost"
-													class="h-full w-full !p-0 hover:bg-violet-50"
-												></Button>
-											</Tooltip.Trigger>
-											<Tooltip.Content>
-												<TimerSetting />
-											</Tooltip.Content>
-										</Tooltip.Root>
-									</td>
-								{/key}
-							{/each}
-						</tr>
-						<tr>
-							{#each columns as _}
-							<td class="!border-0 py-[0.18rem]"></td> <!-- 이 부분은 비어있는 하단 셀을 나타냅니다 -->
-							{/each}
-						</tr>
-					{/each}
-				</table>
-			</div>
+					</table>
+				</div>
+			{/each}
 		</div>
-
-		<!-- current time -->
 		<div class="absolute left-[43.2%] top-2 m-auto w-full text-xl font-bold text-rose-800">
 			{currentTimeDisplay}
 		</div>
@@ -276,7 +224,6 @@
 	.colored {
 		background: #ddd6fe;
 	}
-
 	.active {
 		@apply bg-rose-50;
 	}
