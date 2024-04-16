@@ -115,12 +115,12 @@
 					>
 				</DropdownMenu.Trigger>
 				<DropdownMenu.Content class="w-56">
-					<DropdownMenu.Label>My Account</DropdownMenu.Label>
+					<DropdownMenu.Label>{$auth.email}</DropdownMenu.Label>
 					<DropdownMenu.Separator />
 					<DropdownMenu.Item on:click={handleLogout}>
 						<LogOut size={18} class="mx-2" />
 						Log out
-						<DropdownMenu.Shortcut>⇧⌘Q</DropdownMenu.Shortcut>
+						<!-- <DropdownMenu.Shortcut>⇧⌘Q</DropdownMenu.Shortcut> -->
 					</DropdownMenu.Item>
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
