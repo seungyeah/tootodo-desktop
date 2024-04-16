@@ -134,7 +134,7 @@
 </script>
 
 {#if timerOpen}
-	<Timer bind:timerOpen {duration} {working} {breaking} {cycle} {remain} />
+	<Timer bind:timerOpen  />
 {:else}
 	<div class="relative h-full w-full flex-col border-4 border-zinc-900">
 		<div class="m-2 flex justify-around">
@@ -186,6 +186,7 @@
 													<Tooltip.Content class="translate-y-[0.2rem]">
 														<TimerSetting
 															record={cellColors[hour][0][columnIndex].record}
+															bind:timerOpen
 														/>
 													</Tooltip.Content>
 												</Tooltip.Root>
@@ -206,7 +207,7 @@
 				</div>
 			{/each}
 		</div>
-		<div class="absolute left-[43.2%] top-2 m-auto w-full text-xl font-bold text-rose-800">
+		<div class="absolute left-[45%] top-2 m-auto w-full text-xl font-bold text-rose-800">
 			{currentTimeDisplay}
 		</div>
 	</div>
