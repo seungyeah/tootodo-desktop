@@ -7,7 +7,6 @@
 
 	let editor: Readable<Editor>;
 	export let content = 'how are you today';
-	export let date = '';
 
 	onMount(() => {
 		editor = createEditor({
@@ -16,7 +15,7 @@
 			editorProps: {
 				attributes: {
 					class:
-						'w-full h-[calc(100vh-155px)] border-2 border-black rounded-b-md p-3 outline-none overflow-y-auto no-scrollbar'
+						'w-full h-[calc(100vh-155px)] border-2 border-black rounded-b-md p-3 outline-none overflow-y-auto'
 				}
 			}
 		});

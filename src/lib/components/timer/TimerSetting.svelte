@@ -2,6 +2,7 @@
 	import { Button } from '$ui';
 	import { Milestone } from 'lucide-svelte';
 	import { onMount } from 'svelte';
+	import PomoIcon from '$components/PomoIcon.svelte';
 
 	export let timerOpen = false;
 	export let record = { start: '', end: '' };
@@ -16,7 +17,7 @@
 
 	onMount(() => {
 		if (record) {
-			tooltip = `start: ${record.start}, end: ${record.end}`;
+			tooltip = `---  ${record.start} ~ ${record.end} ---`;
 			calculateDuration();
 		}
 	});
@@ -51,13 +52,12 @@
 	}
 </script>
 
-<div class="z-20 w-[220px] flex-col space-y-1 bg-zinc-800 p-2 text-white shadow-lg">
-	<span class="font-digital mx-2">{tooltip}</span>
+<div class="z-20 w-[220px] flex-col items-center justify-center space-y-1 bg-zinc-800 p-2 text-white shadow-lg">
+	<div class="font-digital text-center w-full">{tooltip}</div>
 	<div class="flex-col space-y-2 border-2 border-dotted border-white px-1 py-2">
+		<!-- working time control  -->
 		<div class="flex justify-center space-x-2">
-			<span class="leading-8 text-rose-200">working</span>
-
-			<!-- working time control  -->
+			<span class="leading-8 text-rose-200">working</span>			
 			<div
 				class="flex h-[32px] w-[100px] items-center justify-between rounded-lg bg-white px-2 py-1"
 			>
@@ -75,7 +75,7 @@
 				<input
 					type="number"
 					class="w-12 text-center text-xl font-semibold text-zinc-900"
-                    disabled
+					disabled
 					bind:value={working}
 					min={10}
 					max={duration}
@@ -85,7 +85,7 @@
 					on:click={() => {
 						if (working < duration && working >= 10) {
 							working += 5;
-                            if (working === duration) working = duration;
+							if (working === duration) working = duration;
 							else updateCycleAndRemain();
 						}
 					}}
@@ -95,9 +95,9 @@
 			</div>
 		</div>
 
+		<!-- breaking time control -->
 		<div class="flex w-full justify-center space-x-2">
 			<span class="leading-8 text-violet-200">breaking</span>
-			<!-- breaking time control -->
 			<div
 				class="flex h-[32px] w-[100px] items-center justify-between rounded-lg bg-white px-2 py-1"
 			>
@@ -107,9 +107,9 @@
 						if (breaking > 0) {
 							breaking -= 1;
 							updateCycleAndRemain();
-						}else{
-                            breaking = 0;
-                        }
+						} else {
+							breaking = 0;
+						}
 					}}
 				>
 					-
@@ -125,16 +125,16 @@
 				<button
 					class="text-center text-2xl text-zinc-500 hover:text-zinc-700"
 					on:click={() => {
-                        if(breaking<=0) {
-                            breaking = 0; 
-                            return;
-                        }
+						if (breaking <= 0) {
+							breaking = 0;
+							return;
+						}
 						if (breaking < 20) {
 							breaking += 1;
 							updateCycleAndRemain();
-						}else{
-                            breaking = 20;
-                        }
+						} else {
+							breaking = 20;
+						}
 					}}
 				>
 					+
@@ -143,21 +143,20 @@
 		</div>
 	</div>
 
-	<div class="font-digital relative flex-col">
-		<div>duration: {durationString}</div>
-		<Milestone class="absolute" />
-		<div class="w-full translate-x-2 text-center text-lg">
-			(<span class="text-rose-200">{working}</span>+<span class="text-violet-200">{breaking}</span
-			>)*{cycle}+<span class="text-blue-200">{remain}</span>
+	<!-- check duration, -> start timer button -->
+	<div class="m-1 flex space-x-2 relative">
+		<div class="font-digital  flex-col">
+			<Milestone class="absolute"/>
+			<div class="text-end w-full">{durationString}</div>			
+			<div class="w-full text-center text-lg">
+				(<span class="text-rose-200">{working}</span>+<span class="text-violet-200">{breaking}</span
+				>)*{cycle}+<span class="text-blue-200">{remain}</span>
+			</div>
 		</div>
-	</div>
-
-	<!-- start timer button -->
-	<div class="m-1 flex space-x-2">
 		<Button
 			variant="outline"
-			class="my-1 w-full text-center text-lg font-bold text-black"
-			on:click={() => (timerOpen = !timerOpen)}>Do!</Button
+			class="absolute -top-1.5  right-0 m-2 px-2 h-12 w-18 text-2xl font-bold font-digital text-black "
+			on:click={() => (timerOpen = !timerOpen)}>D<PomoIcon />!</Button
 		>
 	</div>
 </div>

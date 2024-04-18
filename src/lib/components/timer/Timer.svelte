@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from '$ui';
-	import PomoIcon from './PomoIcon.svelte';
+	import PomoIcon from '$components/PomoIcon.svelte';
 	import TimerLayout from './TimerLayout.svelte';
 	import { StepBack, StepForward } from 'lucide-svelte';
 
@@ -25,8 +25,10 @@
 	let timerWork = false;
 </script>
 
-<div class="relative h-full w-full">
-	<TimerLayout {leftSessionTime} {leftDuration} />
+<div class="relative h-full w-full flex items-center justify-center bg-zinc-800 text-white">
+	<div class="w-full h-full">
+		<TimerLayout />
+	</div>
 
 	<Button
 		variant="ghost"
@@ -42,17 +44,19 @@
 			timerOpen = false;
 		}}>Next Session <StepForward/></Button
 	>
+	<!-- timer status -->
 	<Button
 		on:click={() => {
 			timerWork = !timerWork;
 		}}
-		class="w-1/2 flex-col absolute left-1/2 top-1/2 -translate-x-[120px] -translate-y-[50px] 
-		border-4 border-double border-violet-900  bg-white shadow opacity-90"
+		variant="ghost"
+		class="w-1/2 h-[80px]  flex-col absolute left-1/2 top-1/2 -translate-x-[108px] -translate-y-[44px] 
+		border-4 border-double border-zinc-400  bg-[#faf3f3] shadow rounded-xl "
 	>
-		<div class="text-[1.7rem] leading-8 font-bold font-digital text-violet-950">00:{cycleValue}:00</div>
-		<hr class="border-2 w-full bg-violet-950" />
-		<div class="text-3xl font-bold relative w-full text-rose-950">
-			<div class="absolute top-1 -left-1 w-full text-xl flex text-rose-900">
+		<div class="text-[1.7rem] leading-8 font-bold font-digital text-emerald-950">00:{cycleValue}:00</div>
+		<hr class="border-2 w-full border-zinc-500" />
+		<div class="text-2xl font-bold relative w-full text-[rgb(5,150,105)]">
+			<div class="absolute top-1 -left-1 w-full text-xl flex text-[#D92B3A]">
 				<PomoIcon />{currentCycle}
 			</div>
 			<div class="font-digital uppercase translate-x-4">{timerState}</div>

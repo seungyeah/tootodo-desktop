@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	export let timerOpen = false;
-
 	let records = [
 		//24시 단위.
 		{ start: '9:37', end: '10:13', study: '40' },
