@@ -87,7 +87,7 @@
 				<Search size={26} strokeWidth={2} color={searchMode ? 'pink' : 'white'} />
 			</Button>
 			<!-- timer, tenMplanner -->
-			<Popover.Root onOutsideClick={()=>timerMode = false} openFocus={()=>timerMode = true}>
+			<Popover.Root onOutsideClick={()=>timerMode = false} closeFocus={()=>timerMode = false} openFocus={()=>timerMode = true}>
 				<Popover.Trigger asChild let:builder>
 					<Button builders={[builder]} variant="ghost" 
 					class="h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-pink-200"

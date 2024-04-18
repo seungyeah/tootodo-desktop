@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Button, Tooltip } from '$ui';
+	import { Button, Tooltip, Popover } from '$ui';
 	import Timer from '$components/timer/Timer.svelte';
 	import TimerSetting from '$components/timer/TimerSetting.svelte';
 	import { currentTime, formatTime } from '$store';
-	let tooltipVisible = 0;
+	import { record } from 'zod';
+	let settingVisible = false;
 	export let timerOpen = false;
 
 	const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -15,7 +16,7 @@
 		cellColors = getCellColor();
 	});
 	let cellColors = Array.from({ length: 24 }, () => [
-		Array.from({ length: 6 }, () => ({ colorFill: 0, record: null }))
+		Array.from({ length: 6 }, () => ({ colorFill: false, record: null }))
 	]);
 	let records = [
 		{ start: '9:20', end: '9:50', dragged: true },
@@ -32,22 +33,22 @@
 			// console.log(startHour, startMin, endHour, endMin);
 			if (startHour === endHour) {
 				for (let j = startMin; j <= endMin - 1; j++) {
-					cellColors[startHour][0][j] = { colorFill: 1, record };
+					cellColors[startHour][0][j] = { colorFill: true, record };
 				}
 				continue;
 			}
 			for (let i = startHour; i <= endHour; i++) {
 				if (i === startHour) {
 					for (let j = startMin; j < 6; j++) {
-						cellColors[i][0][j] = { colorFill: 1, record };
+						cellColors[i][0][j] = { colorFill: true, record };
 					}
 				} else if (i === endHour) {
 					for (let j = 0; j <= endMin - 1; j++) {
-						cellColors[i][0][j] = { colorFill: 1, record };
+						cellColors[i][0][j] = { colorFill: true, record };
 					}
 				} else {
 					for (let j = 0; j < 6; j++) {
-						cellColors[i][0][j] = { colorFill: 1, record };
+						cellColors[i][0][j] = { colorFill: true, record };
 					}
 				}
 			}
@@ -110,7 +111,7 @@
 				records = [...records, newRecord];
 				cellColors = getCellColor();
 				console.log('Added new record:', newRecord);
-			}else{
+			} else {
 				cellColors[startHour][0][startMinute / 10].colorFill = 0;
 			}
 
@@ -131,10 +132,11 @@
 			cellColors[dragEndHour][0][dragEndColumn].colorFill = 1;
 		}
 	}
+	$:console.log(settingVisible)
 </script>
 
 {#if timerOpen}
-	<Timer bind:timerOpen  />
+	<Timer bind:timerOpen />
 {:else}
 	<div class="relative h-full w-full flex-col border-4 border-zinc-900">
 		<div class="m-2 flex justify-around">
@@ -157,45 +159,36 @@
 							<tr>
 								<th rowspan="2" class="px-1.5">{hour}</th>
 								{#each columns as column, columnIndex}
+									{@const colorFill = cellColors[hour][0][columnIndex].colorFill}
+									{@const record = cellColors[hour][0][columnIndex].record}
 									{#key cellColors}
 										<td
 											class="!m-0 !h-[24px] !w-[24px] !p-0"
-											class:colored={cellColors[hour][0][columnIndex].colorFill}
-											on:mouseover={() => {
-												tooltipVisible = cellColors[hour][0][columnIndex].colorFill;
-											}}
-											on:focus={() => {
-												
-											}}
-											on:mousedown={(event) =>
-												handleMouseDown(
-													hour,
-													column,
-													event,
-													cellColors[hour][0][columnIndex].record
-												)}
+											class:colored={colorFill}
+											on:mousedown={(event) => handleMouseDown(hour, column, event, record)}
 											on:mouseup={() => handleMouseUp(hour, column)}
 											on:mousemove={() => handleMouseMove(hour, columnIndex)}
 										>
-											{#if tooltipVisible}
-												<Tooltip.Root openDelay={200} closeDelay={100}>
-													<Tooltip.Trigger asChild let:builder>
-														<Button
-															builders={[builder]}
-															variant="ghost"
-															class="h-full w-full !p-0 hover:bg-violet-50"
-														></Button>
-													</Tooltip.Trigger>
-													<Tooltip.Content class="translate-y-[0.2rem]">
-														<TimerSetting
-															record={cellColors[hour][0][columnIndex].record}
-															bind:timerOpen
-														/>
-													</Tooltip.Content>
-												</Tooltip.Root>
-											{:else}
-												<div class="h-[24px] w-[24px]"></div>
-											{/if}
+											<Popover.Root
+												onOutsideClick={() => (settingVisible = false)}
+												closeFocus={() => (settingVisible = false)}
+												openFocus={() => {
+													settingVisible = colorFill;
+												}}
+											>
+												<Popover.Trigger asChild let:builder>
+													<Button
+														builders={[builder]}
+														variant="ghost"
+														class="h-full w-full !p-0 hover:bg-violet-800"
+													></Button>
+												</Popover.Trigger>
+												{#if settingVisible && record}
+													<Popover.Content class="translate-y-[0.2rem] w-auto" >
+														<TimerSetting {record} bind:timerOpen />
+													</Popover.Content>
+												{/if}
+											</Popover.Root>
 										</td>
 									{/key}
 								{/each}
