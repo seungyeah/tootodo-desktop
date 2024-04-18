@@ -58,31 +58,32 @@
 	}
 </script>
 
-<div class="w-full border-2 border-zinc-900">
-	<table class="w-full">
+<table class="w-full h-full border-collapse">
+    <thead  class="sticky top-0 bg-pink-50">
+            <th></th>
+            {#each columns as column}
+                <th colspan="10" class="!w-[27px] px-1 text-sm ">{column + 10}</th>
+            {/each}
+    </thead>
+	<tbody>
+	{#each hours as hour}
 		<tr>
-			<th></th>
-			{#each columns as column}
-				<th colspan="10" class="!w-[27px] px-1 text-sm">{column + 10}</th>
+			<th rowspan="1" class="px-1 text-[0.9rem] ">{hour}</th>
+			{#each minutes as min}
+				{#if min % 10 === 0}
+					<td
+						class=" !m-0 !h-[25px] !border-0 !border-l !p-0"
+						class:colored={cellColors[hour][0][min]}
+					></td>
+				{:else}
+					<td class="!m-0 !h-[25px] !border-0 !p-0" class:colored={cellColors[hour][0][min]}></td>
+				{/if}
 			{/each}
 		</tr>
-		{#each hours as hour}
-			<tr>
-				<th rowspan="1" class="px-1.5">{hour}</th>
-				{#each minutes as min}
-					{#if min % 10 === 0}
-						<td
-							class=" !m-0 !h-[25px] !border-0 !border-l !p-0"
-							class:colored={cellColors[hour][0][min]}
-						></td>
-					{:else}
-						<td class="!m-0 !h-[25px] !border-0 !p-0" class:colored={cellColors[hour][0][min]}></td>
-					{/if}
-				{/each}
-			</tr>
-		{/each}
-	</table>
-</div>
+	{/each}
+</tbody>
+
+</table>
 
 <style>
 	tr,
