@@ -42,7 +42,7 @@
 </script>
 
 {#if $isAuthed}
-	<div class="relative flex h-12 w-screen justify-between">
+	<div class="relative flex h-12 w-screen justify-between  ">
 		<!-- left menu (navigate page) -->
 		<div
 			class="z-20 absolute left-0 flex h-full w-[200px] items-center space-x-3 rounded-b-2xl rounded-r-2xl bg-zinc-800 px-4"
@@ -128,7 +128,7 @@
 	</div>
 {/if}
 
-<div class="">
+<div class="w-full h-full max-h-[calc(100vh-50px)]">
 	<slot />
 </div>
 

@@ -16,7 +16,7 @@
 			editorProps: {
 				attributes: {
 					class:
-						'w-full h-[calc(100vh-203px)] sm:h-[calc(100vh-155px)] border-2 border-black rounded-b-md p-3 outline-none overflow-y-auto no-scrollbar'
+						'w-full h-[calc(100vh-155px)] border-2 border-black rounded-b-md p-3 outline-none overflow-y-auto no-scrollbar'
 				}
 			}
 		});
@@ -105,12 +105,12 @@
 		</BubbleMenu>
 
 		<div
-			class="mt-2 flex h-10 w-full items-center space-x-1 rounded-t-md border-2 border-b-0 border-black p-2"
+			class="flex h-9 w-full items-center space-x-1 rounded-t-md border-2 border-b-0 border-black p-2"
 		>
 			{#each menuItems as item (item.name)}
 				<button
 					type="button"
-					class={cx('h-6 w-6 rounded hover:bg-black hover:text-white', {
+					class={cx('h-6 w-6 font-bold rounded hover:bg-black hover:text-white', {
 						'bg-black text-white': item.active()
 					})}
 					on:click={item.command}

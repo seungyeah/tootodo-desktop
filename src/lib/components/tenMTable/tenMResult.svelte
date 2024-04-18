@@ -24,7 +24,6 @@
 	const hours = Array.from({ length: 24 }, (_, i) => i);
 	const columns = [0, 10, 20, 30, 40, 50];
 	const minutes = Array.from({ length: 60 }, (_, i) => i);
-	let isAM = new Date().getHours() < 12;
 
 	// Initialize cell colors
 	let cellColors = Array.from({ length: 24 }, () => [Array.from({ length: 60 }, () => 0)]);
@@ -59,47 +58,31 @@
 	}
 </script>
 
-{#if !timerOpen}
-	<div class="relative h-full w-full flex-col border-4 border-zinc-900">
-		<div class="m-2 flex justify-around">
-			{#each ['AM', 'PM'] as period, periodIndex}
-				<div class="flex-col mx-1.5">
-					<div
-						class="w-full text-center text-xl font-bold"
-						class:active={periodIndex === Number(!isAM)}
-					>
-						{period}
-					</div>
-					<table class="h-[410px]">
-						<tr>
-							<th></th>
-							{#each columns as column}
-								<th colspan="10" class="!w-[27px] px-1 text-sm">{column + 10}</th>
-							{/each}
-						</tr>
-						{#each hours.slice(periodIndex * 12, (periodIndex + 1) * 12) as hour}
-							<tr>
-								<th rowspan="2" class="px-1.5">{hour}</th>
-								{#each minutes as min}
-									{#if min % 10 === 0}
-										<td class=" !border-0 !border-l !m-0 !h-[25px] !p-0"></td>
-									{:else}
-										<td class="!border-0 !m-0 !h-[25px]  !p-0"></td>
-									{/if}
-								{/each}
-							</tr>
-							<tr>
-								{#each minutes as min}
-									<td class="!border-0 py-[0.18rem] " class:colored={cellColors[hour][0][min]}></td>
-								{/each}
-							</tr>
-						{/each}
-					</table>
-				</div>
+<div class="w-full border-2 border-zinc-900">
+	<table class="w-full">
+		<tr>
+			<th></th>
+			{#each columns as column}
+				<th colspan="10" class="!w-[27px] px-1 text-sm">{column + 10}</th>
 			{/each}
-		</div>
-	</div>
-{/if}
+		</tr>
+		{#each hours as hour}
+			<tr>
+				<th rowspan="1" class="px-1.5">{hour}</th>
+				{#each minutes as min}
+					{#if min % 10 === 0}
+						<td
+							class=" !m-0 !h-[25px] !border-0 !border-l !p-0"
+							class:colored={cellColors[hour][0][min]}
+						></td>
+					{:else}
+						<td class="!m-0 !h-[25px] !border-0 !p-0" class:colored={cellColors[hour][0][min]}></td>
+					{/if}
+				{/each}
+			</tr>
+		{/each}
+	</table>
+</div>
 
 <style>
 	tr,

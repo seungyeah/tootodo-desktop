@@ -19,9 +19,9 @@
 	let selectedDate: CalendarDate = today(getLocalTimeZone());
 </script>
 
-<div class="h-12 w-full flex-col flex justify-center sm:absolute sm:top-0">
+<div class="h-full w-full flex-col flex justify-center sm:absolute sm:top-0">
 	<!-- header: select date -->
-	<div class="flex h-10 w-full items-center justify-center space-x-2 scale-105 translate-y-1">
+	<div class="flex h-10 w-full items-center justify-center space-x-2 translate-y-1">
 		<Button
 			class="h-8 w-8 !p-1"
 			variant="ghost"
