@@ -96,7 +96,7 @@
 				</Popover.Trigger>
 				<Popover.Content class="w-[470px] my-3 ">
 						<div class="m-auto w-full h-[460px] relative">						
-							<!-- <ShowRecord {timerOpen}/> -->
+							<ShowRecord {timerOpen}/>
 							<div class="absolute top-0 w-full h-full">
 								<!-- plan record and start timer directly -->
 								<PlanRecord bind:timerOpen/>

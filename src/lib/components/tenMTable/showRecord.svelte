@@ -21,9 +21,8 @@
 	};
 	let recordColorRanges: ColorRange[] = [];
 
-	const amHours = Array.from({ length: 12 }, (_, i) => i);
-	const pmHours = Array.from({ length: 12 }, (_, i) => i + 12);
-	const columns = [10, 20, 30, 40, 50, 60];
+	const hours = Array.from({ length: 24 }, (_, i) => i);
+	const columns = [0, 10, 20, 30, 40, 50];
 	const minutes = Array.from({ length: 60 }, (_, i) => i);
 	let isAM = new Date().getHours() < 12;
 
@@ -67,69 +66,43 @@
 </script>
 
 {#if !timerOpen}
-	<div class="relative m-auto h-full w-full flex-col border-4">
+	<div class="relative h-full w-full flex-col border-4 border-zinc-900">
 		<div class="m-2 flex justify-around">
-			<!-- AM -->
-			<div class="flex-col">
-				<div class=" w-full text-center text-xl font-bold" class:active={isAM}>AM</div>
-				<table class="h-[450px]">
-					<tr>
-						<th></th>
-						{#each columns as column}
-							<th colspan="10">{column}</th>
+			{#each ['AM', 'PM'] as period, periodIndex}
+				<div class="flex-col mx-1.5">
+					<div
+						class="w-full text-center text-xl font-bold"
+						class:active={periodIndex === Number(!isAM)}
+					>
+						{period}
+					</div>
+					<table class="h-[410px]">
+						<tr>
+							<th></th>
+							{#each columns as column}
+								<th colspan="10" class="!w-[27px] px-1 text-sm">{column + 10}</th>
+							{/each}
+						</tr>
+						{#each hours.slice(periodIndex * 12, (periodIndex + 1) * 12) as hour}
+							<tr>
+								<th rowspan="2" class="px-1.5">{hour}</th>
+								{#each minutes as min}
+									{#if min % 10 === 0}
+										<td class=" !border-0 !border-l !m-0 !h-[25px] !p-0"></td>
+									{:else}
+										<td class="!border-0 !m-0 !h-[25px]  !p-0"></td>
+									{/if}
+								{/each}
+							</tr>
+							<tr>
+								{#each minutes as min}
+									<td class="!border-0 py-[0.18rem] " class:colored={cellColors[hour][0][min]}></td>
+								{/each}
+							</tr>
 						{/each}
-					</tr>
-					{#each amHours as hour, index}
-						<tr>
-							<th rowspan="2">{hour}</th>
-							{#each minutes as min}
-								{#if min % 10 === 0}
-									<td class="!m-0 !border-0 !border-l !px-0 !py-[0.05rem]"></td>
-								{:else}
-									<td class="!m-0 !border-0 !px-0 !py-[0.05rem]"></td>
-								{/if}
-							{/each}
-						</tr>
-						<tr>
-							{#each minutes as min}
-								<td class="!m-0 !border-0 !p-0" class:colored={cellColors[hour][0][min]}
-								></td>
-							{/each}
-						</tr>
-					{/each}
-				</table>
-			</div>
-
-			<!-- PM -->
-			<div class="flex-col">
-				<div class="block w-full text-center text-xl font-bold" class:active={!isAM}>PM</div>
-				<table class="!m-0 h-[450px] !p-0">
-					<tr>
-						<th></th>
-						{#each columns as column}
-							<th colspan="10">{column}</th>
-						{/each}
-					</tr>
-					{#each pmHours as hour, index}
-						<tr>
-							<th rowspan="2">{hour}</th>
-							{#each minutes as min}
-								{#if min % 10 === 0}
-									<td class="!m-0 !border-0 !border-l !px-0 !py-[0.05rem]"></td>
-								{:else}
-									<td class="!m-0 !border-0 !px-0 !py-[0.05rem]"></td>
-								{/if}
-							{/each}
-						</tr>
-						<tr>
-							{#each minutes as min}
-								<td class="!m-0 !border-0 !p-0" class:colored={cellColors[hour][0][min]}
-								></td>
-							{/each}
-						</tr>
-					{/each}
-				</table>
-			</div>
+					</table>
+				</div>
+			{/each}
 		</div>
 	</div>
 {/if}
@@ -139,8 +112,6 @@
 	th,
 	td {
 		border: 1px solid #e4e4e7;
-		text-align: center;
-		padding: 5px;
 	}
 
 	.colored {

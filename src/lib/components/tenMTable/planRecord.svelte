@@ -4,7 +4,7 @@
 	import Timer from '$components/timer/Timer.svelte';
 	import TimerSetting from '$components/timer/TimerSetting.svelte';
 	import { currentTime, formatTime } from '$store';
-	let tooltipVisible = false;
+	let tooltipVisible = 0;
 	export let timerOpen = false;
 
 	const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -146,7 +146,7 @@
 					>
 						{period}
 					</div>
-					<table class="h-[380px]">
+					<table class="h-[410px]">
 						<tr>
 							<th></th>
 							{#each columns as column}
@@ -155,14 +155,17 @@
 						</tr>
 						{#each hours.slice(periodIndex * 12, (periodIndex + 1) * 12) as hour}
 							<tr>
-								<th rowspan="2" class="px-1.5">{hour % 12 || 12}</th>
+								<th rowspan="2" class="px-1.5">{hour}</th>
 								{#each columns as column, columnIndex}
 									{#key cellColors}
 										<td
-											class="!m-0 !h-[20px] !w-[20px] !p-0"
+											class="!m-0 !h-[24px] !w-[24px] !p-0"
 											class:colored={cellColors[hour][0][columnIndex].colorFill}
 											on:mouseover={() => {
 												tooltipVisible = cellColors[hour][0][columnIndex].colorFill;
+											}}
+											on:focus={() => {
+												
 											}}
 											on:mousedown={(event) =>
 												handleMouseDown(
