@@ -15,7 +15,7 @@
 			editorProps: {
 				attributes: {
 					class:
-						'w-full h-[calc(100vh-200px)] sm:h-[calc(100vh-152px)] border-2 border-black rounded-b-md p-3 outline-none overflow-y-auto'
+						'w-full h-[calc(100vh-200px)] sm:h-[calc(100vh-175px)] border-2 border-black rounded-b-md p-3 outline-none overflow-y-auto'
 				}
 			}
 		});
@@ -109,7 +109,7 @@
 			{#each menuItems as item (item.name)}
 				<button
 					type="button"
-					class={cx('h-6 w-6 font-bold rounded hover:bg-black hover:text-white', {
+					class={cx('h-6 w-6 rounded font-bold hover:bg-black hover:text-white', {
 						'bg-black text-white': item.active()
 					})}
 					on:click={item.command}
@@ -119,7 +119,7 @@
 			{/each}
 		</div>
 
-		<main >
+		<main>
 			<EditorContent editor={$editor} />
 			<!-- <pre class="h-[300px]">{content}</pre> -->
 		</main>
