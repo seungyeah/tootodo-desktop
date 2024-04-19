@@ -12,6 +12,7 @@
     { pin: true, alarm: true, item: 'task', title: 'project deadline', days: ['thu', 'fri'] },
     { pin: false, alarm: false, item: 'task', title: 'casual meeting', days: ['mon'] },
     { pin: true, alarm: true, item: 'task', title: 'team sync', days: ['wed', 'fri'] },
+    { pin: false, alarm: true, item: 'task', title: 'sleep', days: ['wed', 'fri'] },
     { pin: false, alarm: true, item: 'event', title: 'conference', days: ['tue', 'thu'] },
     { pin: true, alarm: false, item: 'habit', title: 'workshop', days: ['mon', 'tue'] },
     { pin: false, alarm: false, item: 'event', title: 'routine checkup', days: ['sat', 'sun'] }
@@ -53,7 +54,7 @@
 
 		<Tabs.Content value="alarm">
 			<div
-				class="card-list"
+				class="card-list space-y-2"
 			>
 				{#each alarmRecords as record}
 					<ScheduleCard {value} bind:record />
@@ -62,7 +63,7 @@
 		</Tabs.Content>
 		<Tabs.Content value="event">
 			<div
-				class="card-list"
+				class="card-list space-y-2"
 			>
 				{#each eventRecords as record}
 					<ScheduleCard {value} bind:record />
@@ -71,7 +72,7 @@
 		</Tabs.Content>
 		<Tabs.Content value="task">
 			<div
-				class="card-list"
+				class="card-list space-y-2"
 			>
 				{#each taskRecords as record}
 					<ScheduleCard {value} bind:record />
@@ -80,7 +81,7 @@
 		</Tabs.Content>
 		<Tabs.Content value="habit">
 			<div
-				class="card-list"
+				class="card-list space-y-2"
 			>
 				{#each habitRecords as record}
 					<ScheduleCard {value} bind:record />
@@ -92,6 +93,6 @@
 
 <style>
     .card-list{
-        @apply h-[calc(100vh-212px)] flex-col space-y-2.5 overflow-auto border-b-4 border-double border-zinc-900 pb-1.5;
+        @apply h-[calc(100vh-212px)] overflow-auto border-b-4 border-double border-zinc-900 pb-1.5;
     }
 </style>
