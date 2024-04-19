@@ -2,19 +2,41 @@
 	import { Tabs, Button, Input } from '$ui';
 	import { Bell, BellRing } from 'lucide-svelte';
 	import ScheduleCard from './ScheduleCard.svelte';
+
+	let record = {
+		pin: true,
+		alarm: false,
+		item: 'task',
+		title: 'happy',
+		days: ['tue']
+	};
+	let records = [
+    { pin: true, alarm: true, item: 'task', title: 'urgent task', days: ['mon', 'wed'] },
+    { pin: false, alarm: true, item: 'event', title: 'meeting', days: ['tue'] },
+    { pin: true, alarm: false, item: 'task', title: 'important review', days: ['fri', 'sat'] },
+    { pin: false, alarm: false, item: 'event', title: 'birthday party', days: ['sun'] },
+    { pin: true, alarm: true, item: 'task', title: 'project deadline', days: ['thu', 'fri'] },
+    { pin: false, alarm: false, item: 'task', title: 'casual meeting', days: ['mon'] },
+    { pin: true, alarm: true, item: 'task', title: 'team sync', days: ['wed', 'fri'] },
+    { pin: false, alarm: true, item: 'event', title: 'conference', days: ['tue', 'thu'] },
+    { pin: true, alarm: false, item: 'event', title: 'workshop', days: ['mon', 'tue'] },
+    { pin: false, alarm: true, item: 'task', title: 'routine checkup', days: ['sat', 'sun'] }
+];
+
+    $: records = records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
+
 </script>
 
 <div class="relative h-full w-full space-x-2">
-
 	<Tabs.Root value="task" class="h-full w-full" let:value>
 		<Tabs.List class="flex w-full ">
 			<Tabs.Trigger value="alarm" class="w-[40px] -translate-x-1.5 scale-75">
 				{#if value == 'alarm'}
 					<Button
 						variant="ghost"
-						class="absolute left-0 my-2 !p-3 bg-amber-700 hover:bg-amber-800  "
+						class="absolute left-0 my-2 bg-amber-700 !p-3 hover:bg-amber-800  "
 					>
-						<BellRing color="#fffbeb" fill="white"/>
+						<BellRing color="#fffbeb" fill="white" />
 					</Button>
 				{:else}
 					<Button
@@ -29,27 +51,28 @@
 			<Tabs.Trigger value="task" class="w-1/4">Task</Tabs.Trigger>
 			<Tabs.Trigger value="habit" class="w-1/4">Habit</Tabs.Trigger>
 		</Tabs.List>
-        <Input type="text" placeholder="search and add " class="h-9 w-full p-2 my-2 scale-95" />
+
+		<Input type="text" placeholder="search and add " class="my-2 h-9 w-full scale-95 p-2" />
 
 		<Tabs.Content value="alarm">
-			<ScheduleCard {value} />
+			<ScheduleCard {value} {record} />
 		</Tabs.Content>
 		<Tabs.Content value="event">
-			<ScheduleCard {value} />
+			<ScheduleCard {value} {record} />
 		</Tabs.Content>
 		<Tabs.Content value="task">
-			<div class="max-h-[calc(100vh-212px)] flex-col space-y-2.5 pb-1 overflow-auto border-b-4 border-double border-zinc-900">
-				{#each Array.from({ length: 30 }, (_, i) => i) as _}
-					<ScheduleCard {value} />
+			<div
+				class="h-[calc(100vh-212px)] flex-col space-y-2.5 overflow-auto border-b-4 border-double border-zinc-900 pb-1.5"
+			>
+				{#each records as record}
+					<ScheduleCard {value} bind:record />
 				{/each}
 			</div>
 		</Tabs.Content>
 		<Tabs.Content value="habit">
-			<ScheduleCard {value} />
+			<ScheduleCard {value} {record} />
 		</Tabs.Content>
 	</Tabs.Root>
-
-
 </div>
 
 <style>
