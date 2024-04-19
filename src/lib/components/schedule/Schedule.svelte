@@ -3,27 +3,24 @@
 	import { Bell, BellRing } from 'lucide-svelte';
 	import ScheduleCard from './ScheduleCard.svelte';
 
-	let record = {
-		pin: true,
-		alarm: false,
-		item: 'task',
-		title: 'happy',
-		days: ['tue']
-	};
+	
 	let records = [
     { pin: true, alarm: true, item: 'task', title: 'urgent task', days: ['mon', 'wed'] },
-    { pin: false, alarm: true, item: 'event', title: 'meeting', days: ['tue'] },
+    { pin: false, alarm: true, item: 'habit', title: 'meeting', days: ['tue'] },
     { pin: true, alarm: false, item: 'task', title: 'important review', days: ['fri', 'sat'] },
-    { pin: false, alarm: false, item: 'event', title: 'birthday party', days: ['sun'] },
+    { pin: false, alarm: false, item: 'habit', title: 'birthday party', days: ['sun'] },
     { pin: true, alarm: true, item: 'task', title: 'project deadline', days: ['thu', 'fri'] },
     { pin: false, alarm: false, item: 'task', title: 'casual meeting', days: ['mon'] },
     { pin: true, alarm: true, item: 'task', title: 'team sync', days: ['wed', 'fri'] },
     { pin: false, alarm: true, item: 'event', title: 'conference', days: ['tue', 'thu'] },
-    { pin: true, alarm: false, item: 'event', title: 'workshop', days: ['mon', 'tue'] },
-    { pin: false, alarm: true, item: 'task', title: 'routine checkup', days: ['sat', 'sun'] }
+    { pin: true, alarm: false, item: 'habit', title: 'workshop', days: ['mon', 'tue'] },
+    { pin: false, alarm: false, item: 'event', title: 'routine checkup', days: ['sat', 'sun'] }
 ];
-
-    $: records = records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
+        $: sortedRecords = records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
+        $:taskRecords = sortedRecords.filter(record => record.item === 'task');
+        $:eventRecords = sortedRecords.filter(record => record.item === 'event');
+        $:habitRecords = sortedRecords.filter(record => record.item === 'habit');
+        $:alarmRecords = sortedRecords.filter(record => record.alarm);
 
 </script>
 
@@ -55,25 +52,46 @@
 		<Input type="text" placeholder="search and add " class="my-2 h-9 w-full scale-95 p-2" />
 
 		<Tabs.Content value="alarm">
-			<ScheduleCard {value} {record} />
+			<div
+				class="card-list"
+			>
+				{#each alarmRecords as record}
+					<ScheduleCard {value} bind:record />
+				{/each}
+			</div>
 		</Tabs.Content>
 		<Tabs.Content value="event">
-			<ScheduleCard {value} {record} />
+			<div
+				class="card-list"
+			>
+				{#each eventRecords as record}
+					<ScheduleCard {value} bind:record />
+				{/each}
+			</div>
 		</Tabs.Content>
 		<Tabs.Content value="task">
 			<div
-				class="h-[calc(100vh-212px)] flex-col space-y-2.5 overflow-auto border-b-4 border-double border-zinc-900 pb-1.5"
+				class="card-list"
 			>
-				{#each records as record}
+				{#each taskRecords as record}
 					<ScheduleCard {value} bind:record />
 				{/each}
 			</div>
 		</Tabs.Content>
 		<Tabs.Content value="habit">
-			<ScheduleCard {value} {record} />
+			<div
+				class="card-list"
+			>
+				{#each habitRecords as record}
+					<ScheduleCard {value} bind:record />
+				{/each}
+			</div>
 		</Tabs.Content>
 	</Tabs.Root>
 </div>
 
 <style>
+    .card-list{
+        @apply h-[calc(100vh-212px)] flex-col space-y-2.5 overflow-auto border-b-4 border-double border-zinc-900 pb-1.5;
+    }
 </style>

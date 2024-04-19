@@ -1,10 +1,16 @@
 <script lang="ts">
 	import { Button, ToggleGroup, Separator, Toggle, DropdownMenu } from '$ui';
-	import { MessageCircle, Pin, Bell, EllipsisVertical, Trash2 } from 'lucide-svelte';
+	import { MessageCircle, Pin, Bell, BellRing,EllipsisVertical, Trash2 } from 'lucide-svelte';
 	export let value = '';
 	const week = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 	const weekShort = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-	export let record;
+	export let record = {
+		pin: true,
+		alarm: false,
+		item: 'task',
+		title: 'happy',
+		days: ['tue']
+	};;
 
 </script>
 
@@ -23,6 +29,9 @@
 		</DropdownMenu.Root>
 		{#if record.pin}
 			<Toggle class="h-6 px-1"><Pin size={16} fill="#e4e4e7" /></Toggle>
+		{/if}
+    {#if record.alarm}
+			<Toggle class="h-6 px-1"><BellRing size={16} fill="#d97706" /></Toggle>
 		{/if}
 
 		<div class="p-1 text-[1rem]">{record.title}</div>
