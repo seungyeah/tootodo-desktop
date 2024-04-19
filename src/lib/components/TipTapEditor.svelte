@@ -15,7 +15,7 @@
 			editorProps: {
 				attributes: {
 					class:
-						'w-full h-[calc(100vh-155px)] border-2 border-black rounded-b-md p-3 outline-none overflow-y-auto'
+						'w-full h-[calc(100vh-200px)] sm:h-[calc(100vh-152px)] border-2 border-black rounded-b-md p-3 outline-none overflow-y-auto'
 				}
 			}
 		});

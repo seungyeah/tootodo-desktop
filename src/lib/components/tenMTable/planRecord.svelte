@@ -132,7 +132,6 @@
 			cellColors[dragEndHour][0][dragEndColumn].colorFill = 1;
 		}
 	}
-	$:console.log(settingVisible)
 </script>
 
 {#if timerOpen}

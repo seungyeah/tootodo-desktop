@@ -66,15 +66,15 @@
 	<tbody>
 	{#each hours as hour}
 		<tr>
-			<th rowspan="1" class="px-1 text-[0.9rem] ">{hour}</th>
+			<th rowspan="1" class="px-1 py-0 text-[0.9rem] ">{hour}</th>
 			{#each minutes as min}
 				{#if min % 10 === 0}
 					<td
-						class=" !m-0 !h-[25px] !border-0 !border-l !p-0"
+						class=" !m-0 !border-0 !border-l !p-0"
 						class:colored={cellColors[hour][0][min]}
 					></td>
 				{:else}
-					<td class="!m-0 !h-[25px] !border-0 !p-0" class:colored={cellColors[hour][0][min]}></td>
+					<td class="!m-0 !border-0 !p-0" class:colored={cellColors[hour][0][min]}></td>
 				{/if}
 			{/each}
 		</tr>
