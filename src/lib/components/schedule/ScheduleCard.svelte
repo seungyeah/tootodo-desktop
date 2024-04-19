@@ -27,16 +27,17 @@
 				</DropdownMenu.Group>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
-		{#if record.pin}
+		
+    {#if record.pin}
 			<Toggle class="h-6 px-1"><Pin size={16} fill="#e4e4e7" /></Toggle>
 		{/if}
     {#if record.alarm}
-			<Toggle class="h-6 px-1"><BellRing size={16} fill="#d97706" /></Toggle>
+			<Toggle class="h-6 px-1"><BellRing size={16} fill="#fde68a" /></Toggle>
 		{/if}
 
 		<div class="p-1 text-[1rem]">{record.title}</div>
 		<Button variant="ghost" class="absolute right-0 h-6 px-2"
-			><MessageCircle size={16} fill="#fef08a" /></Button
+			><MessageCircle size={16} fill="#d4d4d8" /></Button
 		>
 	</div>
 	<hr class="border-dashed" />
