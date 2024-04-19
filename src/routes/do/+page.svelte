@@ -4,14 +4,15 @@
 	import TenMResult from '$components/tenMTable/tenMResult.svelte';
 	import Schedule from '$components/schedule/Schedule.svelte';
 	import { fly} from 'svelte/transition';
-	let condition = false;
-	
+	let condition = true;
 </script>
 
 <div class="m-2 h-full">
 	<Separator class="my-2.5" />
 	<div class="flex h-[calc(100%-1.6rem)] items-center space-x-4 text-sm">
-		<div class="h-full w-2/5 text-lg font-bold">
+
+		<!-- schedule or memo -->
+		<div class="h-full w-2/5 max-w-[400px] min-w-[210px] text-lg font-bold">
 			<label class="absolute">
 				<input type="checkbox" bind:checked={condition} />				
 			</label>
@@ -50,10 +51,13 @@
 			</div>
 		</div>
 	</div>
+
+
 </div>
 
 <style>
 	.title {
 		@apply h-[30px] text-center text-lg font-bold;
 	}
+	
 </style>

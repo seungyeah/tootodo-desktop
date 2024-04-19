@@ -60,14 +60,14 @@
 		<Tabs.Content value="event">
 			<div class="card-list space-y-2">
 				{#each eventRecords as record}
-					<ScheduleCard {value} bind:record />
+					<ScheduleCard {value} bind:record/>
 				{/each}
 			</div>
 		</Tabs.Content>
 		<Tabs.Content value="task">
 			<div class="card-list space-y-2">
 				{#each taskRecords as record}
-					<ScheduleCard {value} bind:record />
+					<ScheduleCard {value} bind:record/>
 				{/each}
 			</div>
 		</Tabs.Content>
@@ -85,4 +85,5 @@
 	.card-list {
 		@apply h-[calc(100vh-212px)] overflow-auto border-b-4 border-double border-zinc-900 pb-1.5;
 	}
+
 </style>
