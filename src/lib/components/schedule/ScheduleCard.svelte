@@ -46,7 +46,9 @@
 				<DropdownMenu.Group>
 					<DropdownMenu.Label class="text-center">Set {value}</DropdownMenu.Label>
 					<DropdownMenu.Separator />
-					<DropdownMenu.Item><Bell size={16} class="mr-2" />Set Alarm</DropdownMenu.Item>
+          <DropdownMenu.Item on:click={()=>record.pin= true}><Pin size={16} class="mr-2" />Set Pin</DropdownMenu.Item>
+
+					<DropdownMenu.Item on:click={()=>record.alarm= true}><Bell size={16} class="mr-2" />Set Alarm</DropdownMenu.Item>
 					<DropdownMenu.Item><Trash2 size={16} class="mr-2" />Delete</DropdownMenu.Item>
 				</DropdownMenu.Group>
 			</DropdownMenu.Content>
@@ -54,10 +56,10 @@
 
 		<!-- item content -->
 		{#if record.pin}
-			<Toggle class="h-6 px-1"><Pin size={16} fill="#e4e4e7" /></Toggle>
+			<Button variant = "ghost"  class="h-6 px-1" on:click={()=>record.pin= false}><Pin size={16} fill="#e4e4e7" /></Button>
 		{/if}
 		{#if record.alarm}
-			<Toggle class="h-6 px-1"><BellRing size={16} fill="#fde68a" /></Toggle>
+			<Button variant = "ghost" class="h-6 px-1" on:click={()=>record.alarm= false}><BellRing size={16} fill="#fde68a" /></Button>
 		{/if}
 		<div class="p-1 text-[1rem]">{record.title}</div>
 

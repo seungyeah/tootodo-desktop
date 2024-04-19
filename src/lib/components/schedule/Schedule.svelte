@@ -16,6 +16,7 @@
 		{ pin: true, alarm: false, item: 'habit', title: 'journaling', days: ['mon', 'tue'] },
 		{ pin: false, alarm: false, item: 'event', title: 'routine checkup', days: ['sat', 'sun'] }
 	];
+    
 	$: sortedRecords = records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
 	$: taskRecords = sortedRecords.filter((record) => record.item === 'task');
 	$: eventRecords = sortedRecords.filter((record) => record.item === 'event');
