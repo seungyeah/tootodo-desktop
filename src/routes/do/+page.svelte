@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Separator, ScrollArea } from '$ui';
-	import TipTapEditor from '$components/TipTapEditor.svelte';
+	// import TipTapEditor from '$components/TipTapEditor.svelte';
 	import TenMResult from '$components/tenMTable/tenMResult.svelte';
 	import Schedule from '$components/schedule/Schedule.svelte';
 	import { fly} from 'svelte/transition';
@@ -40,7 +40,7 @@
 			<div class="h-full w-full">
 				<div class="title">Diary</div>
 				<div class="h-full overflow-clip">
-					<TipTapEditor />
+					<!-- <TipTapEditor /> -->
 				</div>
 			</div>
 			<div class="h-full w-1/3 text-lg font-bold">
