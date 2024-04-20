@@ -36,6 +36,8 @@
 	"dependencies": {
 		"@internationalized/date": "^3.5.2",
 		"@tiptap/core": "^2.3.0",
+		"@tiptap/extension-bubble-menu": "^2.3.0",
+		"@tiptap/extension-floating-menu": "^2.3.0",
 		"@tiptap/pm": "^2.3.0",
 		"@tiptap/starter-kit": "^2.3.0",
 		"@unovis/svelte": "^1.4.0",
@@ -50,6 +52,7 @@
 		"paneforge": "^0.0.2",
 		"svelte-sonner": "^0.3.19",
 		"svelte-tiptap": "^1.1.2",
+		"sveltekit-superforms": "^2.11.0",
 		"tailwind-merge": "^2.2.2",
 		"tailwind-variants": "^0.2.1",
 		"vaul-svelte": "^0.3.0",
