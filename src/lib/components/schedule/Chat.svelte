@@ -3,8 +3,8 @@
 	import { Bookmark, Bot, CircleArrowOutUpRight, EllipsisVertical, Send, X } from 'lucide-svelte';
 	import ChatAsk from './ChatAsk.svelte';
 	import { onMount, tick } from 'svelte';
-	import { currentTime, formatTimeFull } from '$store';
-	$: currentTimeDisplay = formatTimeFull($currentTime);
+	import { currentTime, formatTimeFull,formatDay } from '$store';
+    
 	let askMsg = {
 		content: '',
 		ask: true,
@@ -110,7 +110,7 @@
 	) {
 		event.preventDefault();
 		if (newMsg.content.trim() === '') return;
-		messages = [...messages, { ...newMsg, time: currentTimeDisplay }];
+		messages = [...messages, { ...newMsg, time: formatTimeFull($currentTime), day: formatDay($currentTime)}];
 		newMsg = {
 			content: '',
 			ask: false,

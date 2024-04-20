@@ -21,7 +21,7 @@
 			answer: true,
 			save: true,
 			time: 'AM 10:32',
-			day: '2023-06-08'
+			day: '2024-04-19'
 		},
 		{
 			content: '그럼 배포 환경에서 Yarn 버전을 어떻게 맞출 수 있을까요?',
@@ -30,7 +30,7 @@
 			answer: false,
 			save: false,
 			time: 'AM 10:35',
-			day: '2023-06-08'
+			day: '2024-04-19'
 		},
 		{
 			content:
@@ -40,7 +40,7 @@
 			answer: true,
 			save: true,
 			time: 'AM 10:37',
-			day: '2023-06-08'
+			day: '2024-04-19'
 		},
 		{
 			content: '`.yarnrc` 파일을 사용하면 팀원들 모두 동일한 Yarn 버전을 사용할 수 있겠네요.',
@@ -49,7 +49,7 @@
 			answer: false,
 			save: true,
 			time: 'AM 10:40',
-			day: '2023-06-08'
+			day: '2024-04-19'
 		},
 		{
 			content:
@@ -59,7 +59,7 @@
 			answer: true,
 			save: false,
 			time: 'AM 10:42',
-			day: '2023-06-08'
+			day: '2024-04-19'
 		}
 	];
 
@@ -187,7 +187,7 @@
 								{/if}
 							</Button>
 							<div
-								class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[1.05rem] font-normal leading-6 text-zinc-800 shadow-sm shadow-emerald-300"
+								class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[1.05rem] font-normal leading-6 text-zinc-800 shadow-sm shadow-yellow-300"
 							>
 								{msg.content}
 							</div>
