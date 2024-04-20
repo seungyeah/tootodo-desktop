@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Button, Tooltip, Popover } from '$ui';
-	// import Timer from '$components/timer/Timer.svelte';
+	import Timer from '$components/timer/Timer.svelte';
 	import TimerSetting from '$components/timer/TimerSetting.svelte';
 	import { currentTime, formatTime } from '$store';
 	import { record } from 'zod';
@@ -135,7 +135,7 @@
 </script>
 
 {#if timerOpen}
-	<!-- <Timer bind:timerOpen /> -->
+	<Timer bind:timerOpen />
 {:else}
 	<div class="relative h-full w-full flex-col border-4 border-zinc-900">
 		<div class="m-2 flex justify-around">
