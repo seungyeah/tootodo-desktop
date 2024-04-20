@@ -2,8 +2,8 @@
 	import { onMount, tick } from 'svelte';
 	import { Button } from '$ui';
 	import { Bookmark, Bot, BotMessageSquare, EllipsisVertical, Send, X } from 'lucide-svelte';
-	import { currentTime, formatTimeFull } from '$store';
-	$: currentTimeDisplay = formatTimeFull($currentTime);
+	import { currentTime, formatTimeFull, formatDay } from '$store';
+
 	export let askMsg = {
 		content: '배포할 때 yarn_version이 왜 문제였을까.',
 		ask: true,
@@ -84,7 +84,7 @@
 		event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }
 	) {
 		if (newMsg.content.trim() === '') return;
-		messages = [...messages, { ...newMsg, time: currentTimeDisplay }];
+		messages = [...messages, { ...newMsg, time: formatTimeFull($currentTime), day: formatDay($currentTime)}];
 		newMsg = {
 			content: '',
 			ask: true,
