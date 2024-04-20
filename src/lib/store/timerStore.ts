@@ -78,4 +78,14 @@ export function formatTime(date) {
     return `${hours}:${minutes}`;
 }
 
+export function formatTimeFull(date) {
+  if (!date) {
+      return '__ --:-- '; 
+  }
+  const AMPM = date.getHours() >= 12 ? 'PM' : 'AM';
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  return `${AMPM} ${hours}:${minutes}`;
+}
+
 export const currentTime = timerStore();
