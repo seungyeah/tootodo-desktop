@@ -36,6 +36,8 @@
 	"dependencies": {
 		"@internationalized/date": "^3.5.2",
 		"@tiptap/core": "^2.3.0",
+		"@tiptap/pm": "^2.3.0",
+		"@tiptap/starter-kit": "^2.3.0",
 		"@unovis/svelte": "^1.4.0",
 		"@unovis/ts": "^1.4.0",
 		"bits-ui": "^0.20.1",
