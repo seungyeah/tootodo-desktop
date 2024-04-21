@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
-	import { Button } from '$ui';
-	import { Bookmark, Bot, BotMessageSquare, EllipsisVertical, Send, X } from 'lucide-svelte';
+	import { Button, Popover } from '$ui';
+	import { BookMarked, Bookmark, Bot, BotMessageSquare, Send, X } from 'lucide-svelte';
 	import { currentTime, formatTimeFull, formatDay } from '$store';
 
 	export let askMsg = {
@@ -83,6 +83,7 @@
 	async function handleSubmit(
 		event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }
 	) {
+		event.preventDefault();
 		if (newMsg.content.trim() === '') return;
 		messages = [...messages, { ...newMsg, time: formatTimeFull($currentTime), day: formatDay($currentTime)}];
 		newMsg = {
@@ -107,13 +108,52 @@
 		<div
 			class="flex h-10 w-full items-center justify-between rounded-lg rounded-b-none bg-emerald-500 px-2 text-white shadow"
 		>
-			<Button variant="ghost" class="h-6 p-1 hover:bg-emerald-600">
-				<EllipsisVertical size={20} />
-			</Button>
+			<!-- show bookmark list -->		
+			<Popover.Root closeOnOutsideClick={false} disableFocusTrap={true}>
+				<Popover.Trigger>
+					<Button variant="ghost" class="h-6 p-1 hover:bg-emerald-600 translate-y-0.5">
+						<BookMarked size={20} />	
+					</Button>											
+				</Popover.Trigger>
+				<Popover.Content  class=" pt-0 px-3 w-1/4 -translate-x-5 max-h-[calc(100%-1rem)] overflow-y-auto relative" side="left">					
+					<div class="flex-col items-center justify-between  pt-1">
+						<div class="sticky top-0  bg-white flex items-center justify-between mb-2 h-8 border-b-2">
+							<h4 class="font-bold">Bookmarked</h4>
+							<Popover.Close>
+								<Button
+								variant="ghost"
+								class="h-6 p-1 hover:bg-zinc-200 translate-y-0.5 "
+								><X color="#a1a1aa"/>
+							</Button>
+							</Popover.Close>							
+						</div>
+						<div class="flex-col space-y-2">
+							{#each messages as msg}
+								{#if msg.save}
+									<div class="flex items-start justify-start space-x-1 border-b border-dashed">
+										<Button
+											variant="ghost"
+											class="h-6 p-1 "
+											on:click={() => (msg.save = !msg.save)}
+										>											
+											{#if msg.answer}
+												<Bookmark size={20} color="#52525b" fill="#10b981" />
+											{:else}
+												<Bookmark size={20} color="#52525b"  fill="#facc15" />
+											{/if}
+										</Button>
+										<div class="text-[0.8rem] font-bold text-start text-ellipsis  line-clamp-3">{msg.content}</div>
+									</div>
+								{/if}
+							{/each}
+						</div>
+					</div>
+				</Popover.Content>
+			</Popover.Root>
 
 			<div class="flex translate-y-0.5 text-[1.1rem]">Q&A</div>
 			<Button
-				variant="ghost"
+				variant="ghost" 
 				class="h-6 p-1 hover:bg-emerald-600"
 				on:click={() => (askMsg.open = false)}
 			>
@@ -127,13 +167,11 @@
 			class="h-full max-h-[calc(100%-120px)] w-full flex-col space-y-2 overflow-y-auto pb-3"
 		>
 			<div
-				bind:clientHeight={askMsgHeight}
-				class="fixed z-10 max-h-[15%] w-full overflow-y-auto border-b-4 border-emerald-600 bg-emerald-50 px-2 py-1 font-mono text-[0.85rem] font-semibold text-emerald-900"
+				class="sticky top-0 z-10 p-1 max-h-[18%] w-full overflow-y-auto border-b-4 border-emerald-600 bg-emerald-50 px-2 py-1 font-mono text-[0.85rem] font-semibold text-emerald-900"
 			>
 				<BotMessageSquare class="mx-0.5 inline-block" />
 				{askMsg.content}
 			</div>
-			<div style="height: {askMsgHeight}px;"></div>
 			{#each messages as msg, i}
 				{#if i === 0 || msg.day !== messages[i - 1].day}
 					<hr class="bg-zinc-100 p-0.5" />
@@ -202,7 +240,7 @@
 			<div class="font-digital h-full w-12 flex-col">
 				<Button
 					variant="ghost"
-					class="h-1/2 px-2  hover:bg-emerald-50"
+					class="h-1/2 px-2  hover:bg-emerald-600"
 					on:click={() => (newMsg.save = !newMsg.save)}
 				>
 					{#if newMsg.save}
@@ -243,4 +281,6 @@
 	.time {
 		@apply w-[50px] translate-y-1 scale-90 font-mono text-xs font-light text-zinc-400;
 	}
+
+
 </style>
