@@ -71,9 +71,11 @@
 		event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }
 	) {
 		event.preventDefault();
+		if(newMemo.title.trim() === '') {
+			return;
+		}
 		if (newMemo.title.length <= 1) {
 			resetNewMemo();
-			alert("Please enter a title with more than 1 character")
 			return;
 		}
 		
@@ -177,7 +179,7 @@
 			</DropdownMenu.Root>
 			<Input
 				type="text"
-				placeholder="memo title"
+				placeholder="memo title : 한 글자 이상 입력"
 				bind:value={newMemo.title}
 				on:keydown={(e) => {
 					if (e.key === 'Enter' && !e.shiftKey) {
