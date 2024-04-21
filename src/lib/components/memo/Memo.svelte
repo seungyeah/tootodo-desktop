@@ -179,7 +179,7 @@
 			</DropdownMenu.Root>
 			<Input
 				type="text"
-				placeholder="memo title : 한 글자 이상 입력"
+				placeholder="title : put more than 1 char"
 				bind:value={newMemo.title}
 				on:keydown={(e) => {
 					if (e.key === 'Enter' && !e.shiftKey) {
