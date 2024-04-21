@@ -69,8 +69,9 @@
 				title: newMemo.title,
 				date: formatDay($currentTime),
 				color: newMemo.color,
-				content: ""
-			},...memos
+				content: ''
+			},
+			...memos
 		];
 		await tick();
 		newMemo = {
@@ -102,12 +103,14 @@
 
 <div class="relative h-full w-full space-x-2">
 	<!-- select color -->
-	<Tabs.Root value="all" class="h-full w-full" let:value >
+	<Tabs.Root value="all" class="h-full w-full" let:value>
 		<Tabs.List class="flex w-full ">
-			<Tabs.Trigger value="all" class="w-[40px] -translate-x-1.5 scale-75"
-			on:click={() => {
-				newMemo.color = 'default';
-			}}
+			<Tabs.Trigger
+				value="all"
+				class="w-[40px] -translate-x-1.5 scale-75"
+				on:click={() => {
+					newMemo.color = 'default';
+				}}
 			>
 				{#if value == 'all'}
 					<Button variant="ghost" class="absolute left-0 my-2 bg-zinc-700 !p-3 hover:bg-zinc-800  ">
@@ -141,7 +144,8 @@
 					<Button variant="ghost" size="sm" class="h-full rounded  p-0 shadow ">
 						<Droplet
 							size={30}
-							fill={colors.find((c) => c.name === newMemo.color)?.dark || colors.find((c) => c.name === 'default')?.dark}
+							fill={colors.find((c) => c.name === newMemo.color)?.dark ||
+								colors.find((c) => c.name === 'default')?.dark}
 							color="#f4f4f5"
 						/>
 					</Button>
