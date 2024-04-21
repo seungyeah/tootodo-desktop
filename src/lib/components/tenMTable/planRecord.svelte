@@ -202,7 +202,7 @@
 				</div>
 			{/each}
 		</div>
-		<div class="absolute left-[45%] top-2 m-auto w-full text-xl font-bold text-rose-800">
+		<div class="absolute left-[42%] top-1 m-auto w-[80px] text-[1.4rem] font-bold font-digital text-violet-950">
 			{currentTimeDisplay}
 		</div>
 	</div>
@@ -221,6 +221,6 @@
 		background: #ddd6fe;
 	}
 	.active {
-		@apply bg-rose-50;
+		@apply bg-zinc-200;
 	}
 </style>

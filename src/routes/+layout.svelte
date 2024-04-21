@@ -53,13 +53,13 @@
 			<Breadcrumb.Root class="absolute left-16 w-[200px]">
 				<Breadcrumb.List>
 					<Breadcrumb.Item>
-						<Breadcrumb.Link href="/too" class="text-xl font-bold text-white hover:text-pink-100"
+						<Breadcrumb.Link href="/too" class="text-xl font-bold text-white hover:text-zinc-100"
 							><div class:currentPage={$page.url.pathname.includes('too')}>Too</div>
 						</Breadcrumb.Link>
 					</Breadcrumb.Item>
-					<Breadcrumb.Separator class="text-pink-500" />
+					<Breadcrumb.Separator class="text-zinc-400" />
 					<Breadcrumb.Item>
-						<Breadcrumb.Link href="/do" class="text-xl font-bold text-white hover:text-pink-100"
+						<Breadcrumb.Link href="/do" class="text-xl font-bold text-white hover:text-zinc-100"
 							><span class:currentPage={$page.url.pathname.includes('do')}>Do</span>
 						</Breadcrumb.Link>
 					</Breadcrumb.Item>
@@ -70,7 +70,7 @@
 		{#if searchMode}
 			<Input
 				type="text"
-				class="z-10 h-10 w-[calc(100%-450px)] absolute right-0 -translate-x-[210px] translate-y-2.5 border-2 shadow shadow-pink-100 "
+				class="z-10 h-10 w-[calc(100%-450px)] absolute right-0 -translate-x-[210px] translate-y-2.5 border-2 shadow shadow-zinc-300 "
 			/>
 		{/if}
 
@@ -81,17 +81,17 @@
 			<!-- search -->
 			<Button
 				variant="ghost"
-				class="h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-pink-200"
+				class="h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200"
 				on:click={() => (searchMode = !searchMode)}
 			>
-				<Search size={26} strokeWidth={2} color={searchMode ? 'pink' : 'white'} />
+				<Search size={26} strokeWidth={2} color = white fill="#09090b" class={searchMode ? 'bg-zinc-900 shadow-xl shadow-zinc-50 scale-125 scale-1 rounded-full' : ''} />
 			</Button>
 			<!-- timer, tenMplanner -->
 			<Popover.Root onOutsideClick={()=>timerMode = false} closeFocus={()=>timerMode = false} openFocus={()=>timerMode = true}>
 				<Popover.Trigger asChild let:builder>
 					<Button builders={[builder]} variant="ghost" 
-					class="h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-pink-200"
-						><Clock size={26} color={timerMode ? 'pink' : 'white'} class="" strokeWidth={2} /></Button
+					class="h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200"
+						><Clock size={26} color = white fill="#09090b"  strokeWidth={2} class={timerMode ? 'bg-zinc-900 shadow-xl shadow-zinc-50 scale-125 rounded-full' : ''} /></Button
 					>
 				</Popover.Trigger>
 				<Popover.Content class="w-[470px] my-3 ">
@@ -107,8 +107,8 @@
 			<!-- profile -->
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger asChild let:builder>
-					<Button builders={[builder]} variant="ghost" class="h-8 w-8 hover:bg-pink-950 "
-						><Avatar.Root class=" h-8 w-8 border-2 text-pink-500 shadow-lg ">
+					<Button builders={[builder]} variant="ghost" class="h-8 w-8 hover:bg-zinc-950 "
+						><Avatar.Root class=" h-8 w-8 border-2 text-zinc-500 shadow-lg ">
 							<Avatar.Image src={$auth.photo} alt={$auth.email} />
 							<Avatar.Fallback class="bg-black font-bold">Hi</Avatar.Fallback>
 						</Avatar.Root></Button
@@ -144,6 +144,6 @@
 	}
 
 	.currentPage {
-		@apply text-pink-600;
+		@apply underline underline-offset-[3px];
 	}
 </style>
