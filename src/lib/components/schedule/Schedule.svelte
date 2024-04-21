@@ -137,14 +137,14 @@
 		<Tabs.Content value="alarm">
 			<div class="card-list space-y-2">
 				{#each alarmRecords as record}
-					<ScheduleCard {value} bind:record />
+					<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat}/>
 				{/each}
 			</div>
 		</Tabs.Content>
 		<Tabs.Content value="event">
 			<div class="card-list space-y-2">
 				{#each eventRecords as record}
-					<ScheduleCard {value} bind:record />
+					<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat}/>
 				{/each}
 			</div>
 		</Tabs.Content>
@@ -158,7 +158,7 @@
 		<Tabs.Content value="habit">
 			<div class="card-list space-y-2">
 				{#each habitRecords as record}
-					<ScheduleCard {value} bind:record />
+					<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat}/>
 				{/each}
 			</div>
 		</Tabs.Content>
