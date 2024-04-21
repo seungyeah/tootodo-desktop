@@ -81,7 +81,7 @@
 				{#if record.openChat}
 					<MessageCircle size={16} fill="#fef08a" class=" scale-125" />
 				{:else}
-					<MessageCircle size={16} fill="#f4f4f5" color="#71717a" />
+					<MessageCircle size={16} fill="#f4f4f5" color="#a1a1aa" />
 				{/if}
 			</Button>
 		{/if}
