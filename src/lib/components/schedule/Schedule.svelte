@@ -96,19 +96,25 @@
 	// 딱 하나의 record에 대한 채팅만을 open하기 위함.
 	function handleToggleOpenChat(event) {
 		let openChatRecord = event.detail;
+		console.log(openChatRecord)
 		if (openChatRecord) {
-			taskRecords = taskRecords.map((record) => {
-				if (record !== openChatRecord) {
-					record.openChat = false;
-				}
-				return record;
-			});
+			if(openChatRecord.item == "task") madeOtherRecordFalse(taskRecords,openChatRecord);
+			if(openChatRecord.item == "event") madeOtherRecordFalse(eventRecords,openChatRecord);
 		}
+	}
+
+	function madeOtherRecordFalse(records,record){
+		return records.map((r) => {
+			if (r !== record) {
+				r.openChat = false;
+			}
+			return r;
+		});	
 	}
 </script>
 
 <div class="relative h-full w-full space-x-2">
-	<Tabs.Root value="task" class="h-full w-full" let:value>
+	<Tabs.Root value="task" class="h-full w-full" let:value onValueChange={()=>madeOtherRecordFalse(records,{})}>
 		<Tabs.List class="flex w-full ">
 			<Tabs.Trigger value="alarm" class="w-[40px] -translate-x-1.5 scale-75">
 				{#if value == 'alarm'}
