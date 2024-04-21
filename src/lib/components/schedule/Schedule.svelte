@@ -96,7 +96,6 @@
 	// 딱 하나의 record에 대한 채팅만을 open하기 위함.
 	function handleToggleOpenChat(event) {
 		let openChatRecord = event.detail;
-		console.log(openChatRecord)
 		if (openChatRecord) {
 			madeOtherRecordFalse(taskRecords,openChatRecord);
 			madeOtherRecordFalse(eventRecords,openChatRecord);
