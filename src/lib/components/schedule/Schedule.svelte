@@ -98,8 +98,8 @@
 		let openChatRecord = event.detail;
 		console.log(openChatRecord)
 		if (openChatRecord) {
-			if(openChatRecord.item == "task") madeOtherRecordFalse(taskRecords,openChatRecord);
-			if(openChatRecord.item == "event") madeOtherRecordFalse(eventRecords,openChatRecord);
+			madeOtherRecordFalse(taskRecords,openChatRecord);
+			madeOtherRecordFalse(eventRecords,openChatRecord);
 		}
 	}
 
