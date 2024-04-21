@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Tabs, Button, Input, DropdownMenu } from '$ui';
-	import { CirclePlus, Droplet, Grip, PaintBucket, Palette } from 'lucide-svelte';
+	import { CirclePlus, Droplet, Grip} from 'lucide-svelte';
 	import MemoEditor from './MemoEditor.svelte';
 	import { currentTime, formatDay } from '$store';
 	import { onMount, tick } from 'svelte';

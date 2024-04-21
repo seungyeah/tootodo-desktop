@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import type { Readable } from 'svelte/store';
 	import StarterKit from '@tiptap/starter-kit';
 	import cx from 'clsx';
 	import { Editor, EditorContent, createEditor, BubbleMenu } from 'svelte-tiptap';
-	import { Button, DropdownMenu, Input } from '$ui';
+	import { Button, DropdownMenu} from '$ui';
 	import { Eclipse, Pin } from 'lucide-svelte';
 
 	let editor: Readable<Editor>;
@@ -20,7 +20,7 @@
 	};
 
 	onMount(() => {
-		selectedColor = colors.find((c) => c.name === memo.color)?.light || colors.find((c) => c.name === 'default')?.light || '#d1d5db' ;
+		selectedColor = colors.find((c) => c.name === memo.color)?.light ||  '#d1d5db' ;
 
 		editor = createEditor({
 			extensions: [StarterKit],
@@ -100,7 +100,7 @@
 		{ name: 'fuchsia', normal: '#d946ef', light: '#f0abfc', dark: '#a21caf' }
 	];
 
-	$: selectedColor = colors.find((c) => c.name === memo.color)?.light || colors.find((c) => c.name === 'default')?.light || '#d1d5db' ;
+	$: selectedColor = colors.find((c) => c.name === memo.color)?.light || '#d1d5db' ;
 </script>
 
 {#if editor}
@@ -134,8 +134,8 @@
 			style="border-color: {selectedColor}; border-bottom: 0;"
 		>
 			<DropdownMenu.Root>
-				<DropdownMenu.Trigger class="absolute -right-1.5 -top-1  h-9 -translate-y-1.5 rounded p-0">
-					<Button variant="ghost" size="sm" class="h-full rounded  p-0">
+				<DropdownMenu.Trigger class="absolute -right-[0.61rem] -top-1  h-9 -translate-y-1.5 rounded p-0">
+					<Button variant="ghost" size="sm" class="h-full rounded-full  py-0 px-1 hover:bg-zinc-50 ">
 						<Eclipse
 							size={24}
 							fill={colors.find((c) => c.name === memo.color)?.dark}
