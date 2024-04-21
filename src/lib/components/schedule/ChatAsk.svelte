@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, tick } from 'svelte';
+	import { onDestroy, onMount, tick } from 'svelte';
 	import { Button, Popover } from '$ui';
 	import { BookMarked, Bookmark, Bot, BotMessageSquare, Send, X } from 'lucide-svelte';
 	import { currentTime, formatTimeFull, formatDay } from '$store';
@@ -79,7 +79,7 @@
 			scrollToBottom();
 		}
 	});
-
+	
 	async function handleSubmit(
 		event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }
 	) {
@@ -109,7 +109,7 @@
 			class="flex h-10 w-full items-center justify-between rounded-lg rounded-b-none bg-emerald-500 px-2 text-white shadow"
 		>
 			<!-- show bookmark list -->		
-			<Popover.Root closeOnOutsideClick={false} disableFocusTrap={true}>
+			<Popover.Root>
 				<Popover.Trigger>
 					<Button variant="ghost" class="h-6 p-1 hover:bg-emerald-600 translate-y-0.5">
 						<BookMarked size={20} />	

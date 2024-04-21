@@ -1,24 +1,25 @@
 <script lang="ts">
 	import Chat from './Chat.svelte';
-	import { Button, Popover, Toggle, DropdownMenu } from '$ui';
+	import { Button, DropdownMenu } from '$ui';
 	import { MessageCircle, Pin, Bell, BellRing, EllipsisVertical, Trash2 } from 'lucide-svelte';
-	import { afterUpdate, onMount } from 'svelte';
+	import { afterUpdate, createEventDispatcher, onMount } from 'svelte';
 	export let value = '';
 	const week = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 	const weekShort = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
 	export let record = {
-		pin: true,
-		alarm: false,
-		item: 'task',
 		title: 'happy',
-		days: ['tue']
+		openChat: false
 	};
-	onMount(() => {
-		record.openChat = false;
-	});
 
 	let chatRef;
 	let componentY = 0;
+	const dispatch = createEventDispatcher();
+
+	function toggleOpenChat() {
+		record.openChat = !record.openChat;
+		dispatch('toggleOpenChat', record);
+	}
 
 	function updatePosition() {
 		const rect = chatRef.getBoundingClientRect();
@@ -72,11 +73,7 @@
 
 		<!-- chatting popup icon-->
 		{#if record.item == 'task' || record.item == 'event'}
-			<Button
-				variant="ghost"
-				class="absolute right-0 top-1 h-6 px-2"
-				on:click={() => (record.openChat = !record.openChat)}
-			>
+			<Button variant="ghost" class="absolute right-0 top-1 h-6 px-2" on:click={toggleOpenChat}>
 				{#if record.openChat}
 					<MessageCircle size={16} fill="#fef08a" class=" scale-125" />
 				{:else}
@@ -105,9 +102,11 @@
 	</div>
 
 	<!-- chat popup -->
-	<div class="hidden" class:chat={record.openChat} style="transform:translate(85%,-{componentY}px)">
-		<Chat bind:record />
-	</div>
+	{#if record.openChat}
+		<div class="chat" style="transform:translate(85%,-{componentY}px)">
+			<Chat bind:record />
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -116,6 +115,6 @@
 	}
 
 	.chat {
-		@apply fixed z-50 block h-[calc(100vh-120px)] w-1/3  min-w-[250px] rounded-lg  bg-zinc-50 shadow-lg shadow-yellow-950 sm:h-[calc(100vh-90px)];
+		@apply fixed z-50 h-[calc(100vh-120px)] w-1/3  min-w-[250px] rounded-lg  bg-zinc-50 shadow-lg shadow-yellow-950 sm:h-[calc(100vh-90px)];
 	}
 </style>

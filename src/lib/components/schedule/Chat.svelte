@@ -2,7 +2,7 @@
 	import { Button, Popover } from '$ui';
 	import { BookMarked, Bookmark, Bot, CircleArrowOutUpRight, Send, X } from 'lucide-svelte';
 	import ChatAsk from './ChatAsk.svelte';
-	import { onMount, tick } from 'svelte';
+	import { onDestroy, onMount, tick } from 'svelte';
 	import { currentTime, formatTimeFull, formatDay } from '$store';
 
 	let askMsg = {
@@ -14,11 +14,8 @@
 	};
 
 	export let record = {
-		pin: true,
-		alarm: false,
-		item: 'task',
 		title: 'happy',
-		days: ['tue']
+		openChat : false
 	};
 
 	let messages = [
@@ -94,16 +91,32 @@
 		}
 	];
 	let messageContainer: HTMLDivElement;
+	let chatContainer: HTMLDivElement;
 
 	let newMsg = {
 		content: '',
 		ask: false,
 		save: false
 	};
-
+	
 	onMount(() => {
 		scrollToBottom();
+		document.addEventListener('keydown', handleKeyDown); // keydown 이벤트 리스너 추가		
 	});
+
+
+	// 컴포넌트가 파괴될 때 이벤트 리스너 제거
+	onDestroy(() => {
+		document.removeEventListener('keydown', handleKeyDown); // keydown 이벤트 리스너 제거
+	});
+
+	// 키보드 이벤트 리스너를 처리하는 함수
+	function handleKeyDown(event) {
+		if (event.key === 'Escape' || event.key === 'Esc') {
+			// Esc 버튼이 눌렸을 때, openChat을 false로 변경
+			record.openChat = false;
+		}
+	}
 
 	async function handleSubmit(
 		event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }
@@ -130,53 +143,52 @@
 	$: askMsg;
 </script>
 
-<div class="h-full w-full">
+<div class="h-full w-full" bind:this={chatContainer}>
 	<!-- top: record info -->
 	<div
 		class="flex h-10 w-full items-center justify-between rounded-lg rounded-b-none border-b-2 border-yellow-300 bg-yellow-200 px-2 text-yellow-950 shadow"
 	>
 		<!-- show bookmark list -->
-			<Popover.Root closeOnOutsideClick={false} disableFocusTrap={true}>
-				<Popover.Trigger>
-					<Button variant="ghost" class="h-6 p-1 hover:bg-yellow-400 translate-y-1">
-						<BookMarked size={20} />	
-					</Button>											
-				</Popover.Trigger>
-				<Popover.Content   class="pt-0 px-3 w-1/4 -translate-x-5 max-h-[calc(100%-1rem)] overflow-y-auto" side="left">					
-					<div class="flex-col items-center justify-between pt-1">
-						<div class="sticky top-0 bg-white flex items-center justify-between mb-2 h-8 border-b-2">
-							<h4 class="font-bold">Bookmarked</h4>
-							<Popover.Close>
-								<Button
-								variant="ghost"
-								class="h-6 p-1 hover:bg-zinc-200 translate-y-0.5 "
-								><X color="#a1a1aa"/>
+		<Popover.Root>
+			<Popover.Trigger>
+				<Button variant="ghost" class="h-6 translate-y-1 p-1 hover:bg-yellow-400">
+					<BookMarked size={20} />
+				</Button>
+			</Popover.Trigger>
+			<Popover.Content
+				class="max-h-[calc(100%-1rem)] w-1/4 -translate-x-5 overflow-y-auto px-3 pt-0"
+				side="left"
+			>
+				<div class="flex-col items-center justify-between pt-1">
+					<div class="sticky top-0 mb-2 flex h-8 items-center justify-between border-b-2 bg-white">
+						<h4 class="font-bold">Bookmarked</h4>
+						<Popover.Close>
+							<Button variant="ghost" class="h-6 translate-y-0.5 p-1 hover:bg-zinc-200 "
+								><X color="#a1a1aa" />
 							</Button>
-							</Popover.Close>							
-						</div>
-						<div class="flex-col space-y-2">
-							{#each messages as msg}
-								{#if msg.save}
-									<div class="flex items-start justify-start space-x-1 border-b border-dashed">
-										<Button
-											variant="ghost"
-											class="h-6 p-1 "
-											on:click={() => (msg.save = !msg.save)}
-										>											
-											{#if msg.ask}
-												<Bookmark size={20} color="#52525b" fill="#10b981" />
-											{:else}
-												<Bookmark size={20} color="#52525b"  fill="#facc15" />
-											{/if}
-										</Button>
-										<div class="text-[0.8rem] font-bold text-start text-ellipsis  line-clamp-3">{msg.content}</div>
-									</div>
-								{/if}
-							{/each}
-						</div>
+						</Popover.Close>
 					</div>
-				</Popover.Content>
-			</Popover.Root>
+					<div class="flex-col space-y-2">
+						{#each messages as msg}
+							{#if msg.save}
+								<div class="flex items-start justify-start space-x-1 border-b border-dashed">
+									<Button variant="ghost" class="h-6 p-1 " on:click={() => (msg.save = !msg.save)}>
+										{#if msg.ask}
+											<Bookmark size={20} color="#52525b" fill="#10b981" />
+										{:else}
+											<Bookmark size={20} color="#52525b" fill="#facc15" />
+										{/if}
+									</Button>
+									<div class="line-clamp-3 text-ellipsis text-start text-[0.8rem] font-bold">
+										{msg.content}
+									</div>
+								</div>
+							{/if}
+						{/each}
+					</div>
+				</div>
+			</Popover.Content>
+		</Popover.Root>
 
 		<!-- record info -->
 		<div class="p-1 text-[1.05rem]">{record.title}</div>
@@ -326,14 +338,16 @@
 		</form>
 	</div>
 
-	<div class="hidden" class:chat={askMsg.open} style="transform:translate(105%,-100%)">
-		<ChatAsk bind:askMsg />
-	</div>
+	{#if askMsg.open}
+		<div class="chat" style="transform:translate(105%,-100%)">
+			<ChatAsk bind:askMsg />
+		</div>
+	{/if}         
 </div>
 
 <style>
 	.chat {
-		@apply fixed z-50 block h-[calc(100vh-120px)] w-full  min-w-[250px] rounded-lg  bg-zinc-50 shadow-lg shadow-emerald-950 sm:h-[calc(100vh-90px)];
+		@apply fixed z-50 h-[calc(100vh-120px)] w-full  min-w-[250px] rounded-lg  bg-zinc-50 shadow-lg shadow-emerald-950 sm:h-[calc(100vh-90px)];
 	}
 
 	.time {

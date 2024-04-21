@@ -4,24 +4,107 @@
 	import ScheduleCard from './ScheduleCard.svelte';
 
 	let records = [
-		{ pin: true, alarm: true, item: 'task', title: 'urgent task', days: ['mon', 'wed'] },
-		{ pin: false, alarm: true, item: 'habit', title: 'exercise', days: ['tue'] },
-		{ pin: true, alarm: false, item: 'task', title: 'important review', days: ['fri', 'sat'] },
-		{ pin: false, alarm: false, item: 'habit', title: 'meditation', days: ['sun'] },
-		{ pin: true, alarm: true, item: 'task', title: 'project deadline', days: ['thu', 'fri'] },
-		{ pin: false, alarm: false, item: 'task', title: 'casual meeting', days: ['mon'] },
-		{ pin: true, alarm: true, item: 'task', title: 'team sync', days: ['wed', 'fri'] },
-		{ pin: false, alarm: true, item: 'habit', title: 'reading', days: ['wed', 'fri'] },
-		{ pin: false, alarm: true, item: 'event', title: 'conference', days: ['tue', 'thu'] },
-		{ pin: true, alarm: false, item: 'habit', title: 'journaling', days: ['mon', 'tue'] },
-		{ pin: false, alarm: false, item: 'event', title: 'routine checkup', days: ['sat', 'sun'] }
+		{
+			pin: true,
+			alarm: true,
+			item: 'task',
+			title: 'urgent task',
+			days: ['mon', 'wed'],
+			openChat: false
+		},
+		{ pin: false, alarm: true, item: 'habit', title: 'exercise', days: ['tue'], openChat: false },
+		{
+			pin: true,
+			alarm: false,
+			item: 'task',
+			title: 'important review',
+			days: ['fri', 'sat'],
+			openChat: false
+		},
+		{
+			pin: false,
+			alarm: false,
+			item: 'habit',
+			title: 'meditation',
+			days: ['sun'],
+			openChat: false
+		},
+		{
+			pin: true,
+			alarm: true,
+			item: 'task',
+			title: 'project deadline',
+			days: ['thu', 'fri'],
+			openChat: false
+		},
+		{
+			pin: false,
+			alarm: false,
+			item: 'task',
+			title: 'casual meeting',
+			days: ['mon'],
+			openChat: false
+		},
+		{
+			pin: true,
+			alarm: true,
+			item: 'task',
+			title: 'team sync',
+			days: ['wed', 'fri'],
+			openChat: false
+		},
+		{
+			pin: false,
+			alarm: true,
+			item: 'habit',
+			title: 'reading',
+			days: ['wed', 'fri'],
+			openChat: false
+		},
+		{
+			pin: false,
+			alarm: true,
+			item: 'event',
+			title: 'conference',
+			days: ['tue', 'thu'],
+			openChat: false
+		},
+		{
+			pin: true,
+			alarm: false,
+			item: 'habit',
+			title: 'journaling',
+			days: ['mon', 'tue'],
+			openChat: false
+		},
+		{
+			pin: false,
+			alarm: false,
+			item: 'event',
+			title: 'routine checkup',
+			days: ['sat', 'sun'],
+			openChat: false
+		}
 	];
-    
+
 	$: sortedRecords = records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
 	$: taskRecords = sortedRecords.filter((record) => record.item === 'task');
 	$: eventRecords = sortedRecords.filter((record) => record.item === 'event');
 	$: habitRecords = sortedRecords.filter((record) => record.item === 'habit');
 	$: alarmRecords = sortedRecords.filter((record) => record.alarm);
+
+	// 딱 하나의 record에 대한 채팅만을 open하기 위함.
+	function handleToggleOpenChat(event) {
+		let openChatRecord = event.detail;
+		if (openChatRecord) {
+			taskRecords = taskRecords.map((record) => {
+				if (record !== openChatRecord) {
+					record.openChat = false;
+				}
+				return record;
+			});
+		}
+	}
 </script>
 
 <div class="relative h-full w-full space-x-2">
@@ -61,14 +144,14 @@
 		<Tabs.Content value="event">
 			<div class="card-list space-y-2">
 				{#each eventRecords as record}
-					<ScheduleCard {value} bind:record/>
+					<ScheduleCard {value} bind:record />
 				{/each}
 			</div>
 		</Tabs.Content>
 		<Tabs.Content value="task">
 			<div class="card-list space-y-2">
 				{#each taskRecords as record}
-					<ScheduleCard {value} bind:record/>
+					<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat} />
 				{/each}
 			</div>
 		</Tabs.Content>
@@ -86,5 +169,4 @@
 	.card-list {
 		@apply h-[calc(100vh-212px)] overflow-auto border-b-4 border-double border-zinc-900 pb-1.5;
 	}
-
 </style>
