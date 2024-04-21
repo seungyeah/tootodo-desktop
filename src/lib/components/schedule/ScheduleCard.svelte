@@ -40,7 +40,7 @@
 </script>
 
 <!-- card -->
-<div class="w-full rounded-lg border-b-2 border-t-2" bind:this={chatRef}>
+<div class="w-full rounded-lg border-b-[3px] border-t-2 shadow-sm" bind:this={chatRef}>
 	<!-- item info -->
 	<div class="relative flex h-8 items-center space-x-0">
 		<!-- setting item -->
@@ -81,7 +81,7 @@
 				{#if record.openChat}
 					<MessageCircle size={16} fill="#fef08a" class=" scale-125" />
 				{:else}
-					<MessageCircle size={16} fill="#f4f4f5" color="#a1a1aa" />
+					<MessageCircle size={16} fill="#f4f4f5" color="#71717a" />
 				{/if}
 			</Button>
 		{/if}
