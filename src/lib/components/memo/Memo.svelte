@@ -202,9 +202,7 @@
 		<Tabs.Content value="all">
 			<div class="card-list space-y-2">
 				{#each memos as memo}
-					{#if memo.title}
 						<MemoEditor bind:memo />
-					{/if}
 				{/each}
 			</div>
 		</Tabs.Content>
@@ -213,7 +211,7 @@
 			<Tabs.Content value={color.name}>
 				<div class="card-list space-y-4">
 					{#each memos as memo}
-						{#if memo.color === color.name && memo.title}
+						{#if memo.color === color.name}
 							<MemoEditor bind:memo />
 						{/if}
 					{/each}
