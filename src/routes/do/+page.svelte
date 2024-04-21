@@ -5,7 +5,7 @@
 	import Schedule from '$components/schedule/Schedule.svelte';
 	import { fly,slide} from 'svelte/transition';
 	import Memo from '$components/memo/Memo.svelte';
-	let showSchedule = false;
+	let showSchedule = true;
 </script>
 
 <div class="m-2 h-full">
@@ -15,7 +15,7 @@
 		<!-- schedule or memo -->
 		<div class="h-full w-2/5 max-w-[400px] min-w-[210px] text-lg font-bold relative">
 			<Switch bind:checked={showSchedule}
-				class="absolute -right-1 m-1 scale-90 data-[state=checked]:bg-amber-500 data-[state=unchecked]:bg-zinc-100 shadow-sm shadow-amber-200"/>			
+				class="absolute -right-1 m-1 scale-90 data-[state=checked]:bg-zinc-100 data-[state=unchecked]:bg-zinc-200 shadow-sm shadow-zinc-200"/>			
 
 			{#if showSchedule}
 				<div transition:fly={{delay: 100, duration: 600, x:-100}}>
