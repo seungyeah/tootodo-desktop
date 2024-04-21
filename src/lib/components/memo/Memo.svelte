@@ -58,11 +58,25 @@
 		content: ''
 	};
 
+	function resetNewMemo() {
+		newMemo = {
+			pin: true,
+			title: '',
+			date: '',
+			color: 'default',
+			content: ''
+		};	
+	}
 	async function handleSubmit(
 		event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }
 	) {
 		event.preventDefault();
-		if (newMemo.title.trim() === '') return;
+		if (newMemo.title.length <= 1) {
+			resetNewMemo();
+			alert("Please enter a title with more than 1 character")
+			return;
+		}
+		
 		memos = [
 			{
 				pin: newMemo.pin,
@@ -74,13 +88,7 @@
 			...memos
 		];
 		await tick();
-		newMemo = {
-			pin: true,
-			title: '',
-			date: '',
-			color: newMemo.color,
-			content: ''
-		};
+		resetNewMemo();
 	}
 
 	onMount(() => {
