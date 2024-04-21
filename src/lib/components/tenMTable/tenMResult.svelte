@@ -57,7 +57,7 @@
 </script>
 
 <table class="w-full h-full border-collapse">
-    <thead  class="sticky top-0 bg-pink-50">
+    <thead  class="sticky top-0 bg-zinc-100">
             <th></th>
             {#each columns as column}
                 <th colspan="10" class="!w-[27px] px-1 text-sm ">{column + 10}</th>

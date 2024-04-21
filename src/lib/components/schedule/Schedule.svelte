@@ -10,7 +10,8 @@
 			item: 'task',
 			title: 'urgent task',
 			days: ['mon', 'wed'],
-			openChat: false
+			openChat: false,
+			project: { title: 'Project K', color: '#f472b6' }
 		},
 		{ pin: false, alarm: true, item: 'habit', title: 'exercise', days: ['tue'], openChat: false },
 		{
@@ -19,7 +20,8 @@
 			item: 'task',
 			title: 'important review',
 			days: ['fri', 'sat'],
-			openChat: false
+			openChat: false,
+			project: { title: 'Project V', color: '#818cf8' }
 		},
 		{
 			pin: false,
@@ -35,7 +37,8 @@
 			item: 'task',
 			title: 'project deadline',
 			days: ['thu', 'fri'],
-			openChat: false
+			openChat: false,
+			project: { title: 'Project A', color: '#38bdf8' }
 		},
 		{
 			pin: false,
@@ -43,7 +46,8 @@
 			item: 'task',
 			title: 'casual meeting',
 			days: ['mon'],
-			openChat: false
+			openChat: false,
+			project: { title: 'Project B', color: '#a3e635' }
 		},
 		{
 			pin: true,
@@ -51,7 +55,8 @@
 			item: 'task',
 			title: 'team sync',
 			days: ['wed', 'fri'],
-			openChat: false
+			openChat: false,
+			project: { title: 'Project C', color: '#2dd4bf' }
 		},
 		{
 			pin: false,
@@ -172,6 +177,6 @@
 
 <style>
 	.card-list {
-		@apply h-[calc(100vh-212px)] overflow-auto border-b-4 border-double border-zinc-900 pb-1.5;
+		@apply h-[calc(100vh-212px)] overflow-auto  pb-1.5;
 	}
 </style>

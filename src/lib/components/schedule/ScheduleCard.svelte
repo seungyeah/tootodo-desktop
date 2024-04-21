@@ -9,7 +9,11 @@
 
 	export let record = {
 		title: 'happy',
-		openChat: false
+		openChat: false,
+		project:{
+			title: 'project',
+			color: 'red'
+		}
 	};
 
 	let chatRef;
@@ -77,13 +81,13 @@
 				{#if record.openChat}
 					<MessageCircle size={16} fill="#fef08a" class=" scale-125" />
 				{:else}
-					<MessageCircle size={16} fill="#e4e4e7" />
+					<MessageCircle size={16} fill="#f4f4f5" color="#a1a1aa" />
 				{/if}
 			</Button>
 		{/if}
 	</div>
 
-	<hr class="border-dashed" />
+	<hr class="border-dashed border-zinc-300"  />
 
 	<!-- schedule weekly -->
 	<div class="flex">
@@ -95,8 +99,9 @@
 					record.days.includes(day)
 						? (record.days = record.days.filter((d) => d !== day))
 						: (record.days = [...record.days, day])}
-				class="font-digital h-6 w-full rounded-md rounded-b border-l border-dashed text-xs hover:bg-pink-50"
-				>{short}</button
+				class="relative  h-6 w-full rounded-md rounded-b border-l border-dashed  hover:bg-zinc-100 "
+				style="color: {record?.project?.color};"
+				><span class="absolute left-0 top-0 px-1 py-0.5 text-[0.55rem] leading-3 font-serif font-light">{short}</span></button
 			>
 		{/each}
 	</div>
@@ -109,9 +114,9 @@
 	{/if}
 </div>
 
-<style>
+<style>	
 	.selectedDay {
-		@apply bg-pink-50;
+		@apply bg-zinc-100;
 	}
 
 	.chat {

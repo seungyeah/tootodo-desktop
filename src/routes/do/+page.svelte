@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { Separator, ScrollArea } from '$ui';
+	import { Separator, Switch, Label} from '$ui';
 	import TipTapEditor from '$components/TipTapEditor.svelte';
 	import TenMResult from '$components/tenMTable/tenMResult.svelte';
 	import Schedule from '$components/schedule/Schedule.svelte';
-	import { fly} from 'svelte/transition';
-	let condition = true;
+	import { fly,fade,slide} from 'svelte/transition';
+	import Memo from '$components/Memo.svelte';
+	let showSchedule = false;
 </script>
 
 <div class="m-2 h-full">
@@ -12,23 +13,22 @@
 	<div class="flex h-[calc(100%-1.6rem)] items-center space-x-4 text-sm">
 
 		<!-- schedule or memo -->
-		<div class="h-full w-2/5 max-w-[400px] min-w-[210px] text-lg font-bold">
-			<label class="absolute">
-				<input type="checkbox" bind:checked={condition} />				
-			</label>
+		<div class="h-full w-2/5 max-w-[400px] min-w-[210px] text-lg font-bold relative">
+			<Switch bind:checked={showSchedule}
+				class="absolute -right-1 m-1 scale-90 data-[state=checked]:bg-amber-500 data-[state=unchecked]:bg-zinc-100 shadow-sm shadow-amber-200"/>			
 
-			{#if condition}
-				<div transition:fly={{delay: 100, duration: 400, x:-200}}>
+			{#if showSchedule}
+				<div transition:fly={{delay: 100, duration: 600, x:-100}}>
 					<div class="title">Schedule</div>
-					<div class="h-full overflow-clip py-1">
+					<div class="side-container">
 						<Schedule />
 					</div>
 				</div>
 			{:else}
-				<div >
+			<div transition:slide={{delay: 100, duration: 600}}>
 					<div class="title">Memo</div>
-					<div class="h-full overflow-clip py-1">
-						메모가 등장할껑미!         
+					<div class="side-container">
+						<Memo/>      
 					</div>
 				</div>
 			{/if}
@@ -58,6 +58,10 @@
 <style>
 	.title {
 		@apply h-[30px] text-center text-lg font-bold;
+	}
+
+	.side-container{
+		@apply h-full py-1 border-b-4 border-double border-zinc-900;
 	}
 	
 </style>
