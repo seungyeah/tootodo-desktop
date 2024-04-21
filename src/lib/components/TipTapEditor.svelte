@@ -119,9 +119,10 @@
 			{/each}
 		</div>
 
-		<main>
+		<main
+			class="prose dark:prose-invert prose-headings:my-2.5 prose-p:my-1.5 prose-h1:text-[1.6rem] prose-h2:text-[1.4rem] prose-h3:text-[1.2rem] prose-p:text-[1.1rem] leading-[1.1rem]"
+		>
 			<EditorContent editor={$editor} />
-			<!-- <pre class="h-[300px]">{content}</pre> -->
 		</main>
 	{/if}
 </div>

@@ -74,7 +74,7 @@
 			>
 		{/if}
 		<div class="p-1 text-[1rem]">{record.title}</div>
-
+		
 		<!-- chatting popup icon-->
 		{#if record.item == 'task' || record.item == 'event'}
 			<Button variant="ghost" class="absolute right-0 top-1 h-6 px-2" on:click={toggleOpenChat}>

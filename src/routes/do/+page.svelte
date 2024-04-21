@@ -3,8 +3,8 @@
 	import TipTapEditor from '$components/TipTapEditor.svelte';
 	import TenMResult from '$components/tenMTable/tenMResult.svelte';
 	import Schedule from '$components/schedule/Schedule.svelte';
-	import { fly,fade,slide} from 'svelte/transition';
-	import Memo from '$components/Memo.svelte';
+	import { fly,slide} from 'svelte/transition';
+	import Memo from '$components/memo/Memo.svelte';
 	let showSchedule = false;
 </script>
 
