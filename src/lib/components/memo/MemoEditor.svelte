@@ -8,7 +8,7 @@
 	import { Eclipse, Pin } from 'lucide-svelte';
 
 	let editor: Readable<Editor>;
-	let selectedColor = 'gray';
+	let selectedColor = '#d1d5db';
 	let content;
 
 	export let memo = {
@@ -20,7 +20,8 @@
 	};
 
 	onMount(() => {
-		selectedColor = colors.find((c) => c.name === memo.color)?.normal || 'gray';
+		selectedColor = colors.find((c) => c.name === memo.color)?.light || colors.find((c) => c.name === 'default')?.light || '#d1d5db' ;
+
 		editor = createEditor({
 			extensions: [StarterKit],
 			content: memo.content,
@@ -33,16 +34,6 @@
 		$editor.on('update', ({ editor }) => {
 			content = JSON.stringify(editor.getJSON(), null, 2);
 		});
-	});
-
-	onDestroy(() => {
-		memo = {
-			date: '',
-			color: '',
-			title: '',
-			content: '',
-			pin: false
-		};
 	});
 
 	const toggleHeading = (level: 1 | 2) => {
@@ -109,7 +100,7 @@
 		{ name: 'fuchsia', normal: '#d946ef', light: '#f0abfc', dark: '#a21caf' }
 	];
 
-	$: selectedColor = colors.find((c) => c.name === memo.color)?.light || 'gray';
+	$: selectedColor = colors.find((c) => c.name === memo.color)?.light || colors.find((c) => c.name === 'default')?.light || '#d1d5db' ;
 </script>
 
 {#if editor}
@@ -185,7 +176,7 @@
 			<input
 				type="text"
 				bind:value={memo.title}
-				class="z-10 h-8 w-[calc(100%-30px)] -translate-y-1 bg-transparent p-1 text-[1rem] font-semibold shadow focus-visible:outline-none focus-visible:border-2 focus-visible:rounded "
+				class="z-10 h-7 w-[calc(100%-30px)] -translate-y-1 bg-transparent p-1 text-[0.95rem] font-semibold shadow focus-visible:outline-none focus-visible:border-2 focus-visible:rounded "
 			/>
 		</div>
 

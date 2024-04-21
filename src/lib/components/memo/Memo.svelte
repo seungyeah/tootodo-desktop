@@ -63,7 +63,7 @@
 			pin: true,
 			title: '',
 			date: '',
-			color: 'default',
+			color: newMemo.color,
 			content: ''
 		};	
 	}
@@ -109,6 +109,8 @@
 	];
 
 	$: memos = memos.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
+
+	$:console.log(memos);
 </script>
 
 <div class="relative h-full w-full space-x-2">
