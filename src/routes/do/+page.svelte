@@ -12,8 +12,7 @@
 <div class="m-2 h-full">
 	<Separator class="my-2.5" />
 	<div class="flex h-[calc(100%-1.6rem)] items-center space-x-4 text-sm">
-
-		<!-- schedule or memo -->
+		<!-- side: schedule or memo -->
 		<div class="h-full w-2/5 max-w-[360px] min-w-[240px] text-lg font-bold relative">
 			<Switch bind:checked={showSchedule}
 				class="absolute -right-1 m-1 scale-90 data-[state=checked]:bg-zinc-100 data-[state=unchecked]:bg-zinc-200 shadow-sm shadow-zinc-200"/>			
@@ -35,6 +34,8 @@
 			{/if}
 		</div>
 		<!-- <Separator orientation="vertical" /> -->
+
+		<!-- main: diary & timer record result -->
 		<div
 			class="flex h-[calc(100%-7px)] w-full space-x-2 rounded-lg border-4 border-double border-zinc-100 p-2 shadow-lg shadow-zinc-500"
 		>
@@ -68,7 +69,7 @@
 	}
 
 	.side-container{
-		@apply h-full w-full py-1 border-b-4 border-double border-zinc-900;
+		@apply h-[calc(100%-20px)] w-full pt-1 border-b-4 border-double border-zinc-900;
 	}
 	
 </style>

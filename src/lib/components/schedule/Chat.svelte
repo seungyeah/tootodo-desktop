@@ -156,7 +156,7 @@
 				</Button>
 			</Popover.Trigger>
 			<Popover.Content
-				class="max-h-[calc(100%-1rem)] w-1/4 -translate-x-5 overflow-y-auto px-3 pt-0 "
+				class="max-h-[calc(100%-60px)] w-1/4 -translate-x-5 translate-y-8 overflow-y-auto px-3 pt-0 "
 				side="left"
 			>
 				<div class="flex-col items-center justify-between pt-1">

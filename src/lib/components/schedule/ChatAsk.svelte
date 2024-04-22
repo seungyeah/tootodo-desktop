@@ -115,7 +115,7 @@
 						<BookMarked size={20}  />	
 					</Button>											
 				</Popover.Trigger>
-				<Popover.Content  class=" pt-0 px-3 w-1/4 -translate-x-5 max-h-[calc(100%-1rem)] overflow-y-auto relative" side="left">					
+				<Popover.Content  class=" pt-0 px-3 w-1/4 -translate-x-5 translate-y-8 max-h-[calc(100%-60px)] overflow-y-auto relative" side="left">					
 					<div class="flex-col items-center justify-between  pt-1">
 						<div class="sticky top-0  bg-white flex items-center justify-between mb-2 h-8 border-b-2">
 							<h4 class="font-bold">Bookmarked</h4>
