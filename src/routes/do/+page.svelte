@@ -27,7 +27,7 @@
 			{:else}
 			<div transition:slide={{delay: 100, duration: 600}}>
 					<div class="title">Memo</div>
-					<div class="side-container">
+					<div class="side-container pb-2">
 						<Memo/>      
 					</div>
 				</div>
@@ -37,7 +37,7 @@
 
 		<!-- main: diary & timer record result -->
 		<div
-			class="flex h-[calc(100%-7px)] w-full space-x-2 rounded-lg border-4 border-double border-zinc-100 p-2 shadow-lg shadow-zinc-500"
+			class="flex h-[calc(100%-8px)] w-full space-x-2 rounded-lg border-4 border-double border-zinc-100 p-2 shadow-lg shadow-zinc-500"
 		>
 			<div class="h-full w-full relative">			
 				<MoonStar fill="black" class="absolute -left-2 z-10"/>	
@@ -69,7 +69,7 @@
 	}
 
 	.side-container{
-		@apply h-[calc(100%-20px)] w-full pt-1 border-b-4 border-double border-zinc-900;
+		@apply h-full w-full pt-1 border-b-4 border-double border-zinc-900;
 	}
 	
 </style>

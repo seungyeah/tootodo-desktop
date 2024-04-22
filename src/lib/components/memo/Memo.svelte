@@ -211,7 +211,7 @@
 		<!-- color filter -->
 		{#each colors as color}
 			<Tabs.Content value={color.name}>
-				<div class="card-list space-y-4">
+				<div class="card-list space-y-2">
 					{#each memos as memo}
 						{#if memo.color === color.name}
 							<MemoEditor bind:memo />
