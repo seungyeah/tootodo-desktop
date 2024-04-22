@@ -2,6 +2,7 @@
 	import { Tabs, Button, Input } from '$ui';
 	import { Bell, BellRing } from 'lucide-svelte';
 	import ScheduleCard from './ScheduleCard.svelte';
+	import { onMount } from 'svelte';
 
 	let records = [
 		{
@@ -92,18 +93,15 @@
 		}
 	];
 
-	$: sortedRecords = records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
-	$: taskRecords = sortedRecords.filter((record) => record.item === 'task');
-	$: eventRecords = sortedRecords.filter((record) => record.item === 'event');
-	$: habitRecords = sortedRecords.filter((record) => record.item === 'habit');
-	$: alarmRecords = sortedRecords.filter((record) => record.alarm);
+	$: records = records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
+	$: alarmRecords = records.filter((record) => record.alarm);
 
-	$:{
+	onMount(() => {
 		console.log('taskRecords', taskRecords);
 		console.log('eventRecords', eventRecords);
 		console.log('habitRecords', habitRecords);
 		console.log('alarmRecords', alarmRecords);
-	}
+	});
 
 	// 딱 하나의 record에 대한 채팅만을 open하기 위함.
 	function handleToggleOpenChat(event) {
@@ -156,7 +154,16 @@
 
 		<Input type="text" placeholder="search and add " class="my-2 h-9 w-full scale-95 p-2" />
 
-		{#each ['alarm','event','task','habit'] as tab}
+		<Tabs.Content
+			value="alarm"
+			class="h-[calc(100%-94px)]  max-h-[calc(100%)] space-y-2 overflow-y-auto pb-2"
+		>
+			{#each alarmRecords as record}
+				<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat} />
+			{/each}
+		</Tabs.Content>
+
+		{#each ['event','task','habit'] as tab}
 			<Tabs.Content
 				value={tab}
 				class="h-[calc(100%-94px)]  max-h-[calc(100%-94px)] space-y-2 overflow-y-auto pb-2"
