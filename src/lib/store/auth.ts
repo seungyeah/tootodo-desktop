@@ -113,7 +113,7 @@ const setAuth = () => {
 			set({ ...user, verified: true });
 			// alert('사용자 정보를 불러왔습니다. ' + user.email + ' ' + user.provider);
 		} catch (e) {
-			alert(e.message);
+			// alert(e.message);
 			await refreshWithFn(getUserInfo);
 		}
 	};
@@ -163,7 +163,7 @@ const setAuth = () => {
 				path: '/auth/refresh'
 			};
 			const resp = await getApi(options);
-			alert('refresh token 완료');
+			// alert('refresh token 완료');
 			toExecute();
 		} catch (e) {
 			alert('refresh token 으로 acces token을 받을 수 없습니다. 다시 로그인하세요. ' + e);

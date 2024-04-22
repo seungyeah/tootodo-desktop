@@ -27,6 +27,7 @@ export {Toggle} from "./toggle";
 export * as ToggleGroup from "./toggle-group";
 export * as Tooltip from "./tooltip";
 export {ScrollArea} from "./scroll-area";
+export * as Resizable from "./resizable";
 
 export * as Card from "./card";
 export * as Table from "./table";

@@ -104,7 +104,7 @@
 </script>
 
 {#if editor}
-	<div class="flex-col">
+	<div class="flex-col w-full max-w-full overflow-x-clip">
 		<BubbleMenu editor={$editor}>
 			<div data-test-id="bubble-menu" class="flex">
 				<button
@@ -134,7 +134,7 @@
 			style="border-color: {selectedColor}; border-bottom: 0;"
 		>
 			<DropdownMenu.Root>
-				<DropdownMenu.Trigger class="absolute -right-[0.61rem] -top-1  h-9 -translate-y-1.5 rounded p-0">
+				<DropdownMenu.Trigger class="z-10 absolute -right-[0.6rem] -top-1  h-9 -translate-y-1.5 rounded p-0">
 					<Button variant="ghost" size="sm" class="h-full rounded-full  py-0 px-1 hover:bg-zinc-50 ">
 						<Eclipse
 							size={24}

@@ -78,6 +78,19 @@
 
 }
 
+@layer utilities {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+}
+
 @font-face {
   font-family: 'Quantico';
   src: url('/fonts/Quantico-Bold.ttf'),url('/fonts/Quantico-BoldItalic.ttf'),url('/fonts/Quantico-Regular.ttf'),url('/fonts/Quantico-Italic.ttf');

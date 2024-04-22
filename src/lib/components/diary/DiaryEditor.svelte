@@ -15,7 +15,7 @@
 			editorProps: {
 				attributes: {
 					class:
-						'w-full h-[calc(100vh-200px)] sm:h-[calc(100vh-182px)] border-2 border-black rounded-b-md p-3 outline-none overflow-y-auto'
+						'w-full h-[calc(100vh-422px)] sm:h-[calc(100vh-384px)] border-2 border-zinc-700 rounded-b-md p-3 outline-none overflow-y-auto'
 				}
 			}
 		});
@@ -103,14 +103,15 @@
 			</div>
 		</BubbleMenu>
 
+		<!-- editor tooltip -->
 		<div
-			class="flex h-9 w-full items-center space-x-1 rounded-t-md border-2 border-b-0 border-black p-2"
+			class="flex h-9 w-full items-center space-x-1 rounded-t-md border-2 border-b-0 border-zinc-700 p-2"
 		>
 			{#each menuItems as item (item.name)}
 				<button
 					type="button"
-					class={cx('h-6 w-6 rounded font-bold hover:bg-black hover:text-white', {
-						'bg-black text-white': item.active()
+					class={cx('h-6 w-6 rounded font-bold hover:bg-zinc-950 hover:text-white', {
+						'bg-zinc-700 text-white': item.active()
 					})}
 					on:click={item.command}
 				>
@@ -119,10 +120,14 @@
 			{/each}
 		</div>
 
-		<main
-			class="prose dark:prose-invert prose-headings:my-2.5 prose-p:my-1.5 prose-h1:text-[1.6rem] prose-h2:text-[1.4rem] prose-h3:text-[1.2rem] prose-p:text-[1.1rem] leading-[1.1rem]"
+		<!-- editor -->
+		<div
+			class="w-full h-full dark:prose-invert 
+			prose-headings:my-2.5 prose-p:my-1.5 
+			prose-h1:text-[1.6rem] prose-h2:text-[1.4rem] prose-h3:text-[1.2rem] 
+			prose-p:text-[1.1rem] leading-[1.1rem]"
 		>
 			<EditorContent editor={$editor} />
-		</main>
+		</div>
 	{/if}
 </div>
