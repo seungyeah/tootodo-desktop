@@ -96,12 +96,6 @@
 	$: records = records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
 	$: alarmRecords = records.filter((record) => record.alarm);
 
-	onMount(() => {
-		console.log('taskRecords', taskRecords);
-		console.log('eventRecords', eventRecords);
-		console.log('habitRecords', habitRecords);
-		console.log('alarmRecords', alarmRecords);
-	});
 
 	// 딱 하나의 record에 대한 채팅만을 open하기 위함.
 	function handleToggleOpenChat(event) {
@@ -124,7 +118,7 @@
 
 <div class="relative h-full w-full space-x-2">
 	<Tabs.Root
-		value="event"
+		value="task"
 		class="h-full w-full"
 		let:value
 		onValueChange={() => madeOtherRecordFalse(records, {})}

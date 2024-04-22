@@ -3,7 +3,7 @@
 	import DiaryEditor from '$components/diary/DiaryEditor.svelte';
 	import { Bed, BookOpenText, Dumbbell, Globe, Pill, Star, Sun, Utensils } from 'lucide-svelte';
 	import ItemList from './ItemList.svelte';
-	const habits = [
+	let habits = [
 		{ id: 0, icon: Sun, title: 'wake up' },
 		{ id: 1, icon: Bed, title: 'go to bed' },
 		{ id: 2, icon: Utensils, title: 'breakfast' },
@@ -12,6 +12,7 @@
 		{ id: 5, icon: BookOpenText, title: 'read book' },
 		{ id: 6, icon: Dumbbell, title: 'workout' }
 	];
+	let habitDone = {};
 
 	let records = [
 		{
@@ -173,15 +174,27 @@
 	$: habitRecords = sortedRecords.filter(
 		(record) => record.item === 'habit' && record.days.includes(day)
 	);
+	$: habits = habits.filter((habit) => habitRecords.some((record) => record.title === habit.title));
+
+	let Stars = new Array(5).fill(0);
 </script>
 
 <div class="relative h-full w-full flex-col">
 	<div
 		class="flex h-[32px] translate-y-1.5 border-l-2 border-zinc-700 text-center text-lg font-bold"
 	>
-		<div class="relative w-full -translate-y-1 translate-x-4">
-			{#each Array(5) as _, i}
-				<Star size={20} class="absolute" style="transform:translateX({i * 24}px)" />
+		<div class="relative w-full -translate-y-3 translate-x-4">
+			{#each Stars as star, i}
+				<Button
+					variant="ghost"
+					class="absolute left-0 top-0 p-0 hover:bg-none"
+					style="transform:translateX({i * 24}px)"
+					on:click={() => {
+						Stars = Stars.map((_, j) => j <= i);
+					}}
+				>
+					<Star size={20} fill={star ? '#fde047' : 'white'} />
+				</Button>
 			{/each}
 			<!-- today, date -->
 			<!-- <div class="hidden lg:block ">
@@ -198,15 +211,15 @@
 	>
 		<Resizable.PaneGroup
 			direction="horizontal"
-			class="m-2 -translate-y-5 rounded-xl border-2 border-double border-zinc-400"
+			class="m-2 -translate-y-5 text-nowrap rounded-xl border-2 border-double  border-zinc-400"
 		>
-			<Resizable.Pane
-				>task
+			<Resizable.Pane minSize={14}>
+				<div class="h-7 border-b-2 border-dashed p-0.5">Task</div>
 				<ItemList records={taskRecords} />
 			</Resizable.Pane>
-			<Resizable.Handle class="bg-zinc-500 p-[1px]" />
-			<Resizable.Pane
-				>event
+			<Resizable.Handle withHandle class="bg-zinc-400 p-[1px]" />
+			<Resizable.Pane minSize={14} defaultSize={45}>
+				<div class="h-7 border-b-2 border-dashed p-0.5">Event</div>
 				<ItemList records={eventRecords} />
 			</Resizable.Pane>
 		</Resizable.PaneGroup>
@@ -215,11 +228,17 @@
 		<div class="h-full w-1/4 -translate-y-10">
 			<div class="mb-2 w-full border-b-4 border-double border-zinc-200">Habit</div>
 			<div
-				class="no-scrollbar grid h-[calc(100%-14px)] max-h-[calc(100%-14px)] grid-cols-2 place-items-center items-center gap-1 overflow-y-scroll rounded-lg px-1.5 shadow"
+				class="no-scrollbar grid h-[calc(100%-14px)] max-h-[calc(100%-14px)] grid-cols-2 grid-rows-3 place-items-center items-center gap-1 overflow-y-scroll rounded-lg px-1.5 shadow"
 			>
 				{#each habits as habit}
-					<Button variant="ghost" class="aspect-square rounded-full"
-						><svelte:component this={habit.icon} /></Button
+					<Button
+						variant="ghost"
+						on:click={() => {
+							habit.done = !habit.done;
+						}}
+						class={habit.done
+							? 'aspect-square rounded-full bg-zinc-200 p-1'
+							: 'aspect-square rounded-full p-1'}><svelte:component this={habit.icon} /></Button
 					>
 				{/each}
 			</div>
