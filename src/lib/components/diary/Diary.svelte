@@ -47,7 +47,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="h-[56%] w-full">
+	<div class="h-[calc(62%-32px)] w-full">
 		<DiaryEditor />
 	</div>
 </div>
