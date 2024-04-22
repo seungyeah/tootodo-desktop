@@ -201,30 +201,20 @@
 
 		<!-- memo list -->
 		<!-- all -->
-		<Tabs.Content value="all">
-			<div class="card-list space-y-2">
+		<Tabs.Content value="all" class="h-[calc(100%-94px)]  max-h-[calc(100%)] space-y-2 overflow-y-auto pb-2">
 				{#each memos as memo}
 						<MemoEditor bind:memo />
 				{/each}
-			</div>
 		</Tabs.Content>
 		<!-- color filter -->
 		{#each colors as color}
-			<Tabs.Content value={color.name}>
-				<div class="card-list space-y-2">
+			<Tabs.Content value={color.name} class="h-[calc(100%-94px)]  max-h-[calc(100%)] space-y-2 overflow-y-auto pb-2">
 					{#each memos as memo}
 						{#if memo.color === color.name}
 							<MemoEditor bind:memo />
 						{/if}
 					{/each}
-				</div>
 			</Tabs.Content>
 		{/each}
 	</Tabs.Root>
 </div>
-
-<style>
-	.card-list {
-		@apply h-[calc(100vh-212px)] overflow-auto pb-1.5;
-	}
-</style>

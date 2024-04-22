@@ -102,38 +102,43 @@
 	function handleToggleOpenChat(event) {
 		let openChatRecord = event.detail;
 		if (openChatRecord) {
-			madeOtherRecordFalse(taskRecords,openChatRecord);
-			madeOtherRecordFalse(eventRecords,openChatRecord);
+			madeOtherRecordFalse(taskRecords, openChatRecord);
+			madeOtherRecordFalse(eventRecords, openChatRecord);
 		}
 	}
 
-	function madeOtherRecordFalse(records,record){
+	function madeOtherRecordFalse(records, record) {
 		return records.map((r) => {
 			if (r !== record) {
 				r.openChat = false;
 			}
 			return r;
-		});	
+		});
 	}
 </script>
 
 <div class="relative h-full w-full space-x-2">
-	<Tabs.Root value="task" class="h-full w-full" let:value onValueChange={()=>madeOtherRecordFalse(records,{})}>
+	<Tabs.Root
+		value="task"
+		class="h-full w-full"
+		let:value
+		onValueChange={() => madeOtherRecordFalse(records, {})}
+	>
 		<Tabs.List class="flex w-full ">
 			<Tabs.Trigger value="alarm" class="w-[40px] -translate-x-1.5 scale-75">
 				{#if value == 'alarm'}
 					<Button
 						variant="ghost"
-						class="absolute left-0 my-2 bg-zinc-700 !p-3 hover:bg-zinc-900 rounded-full  "
+						class="absolute left-0 my-2 rounded-full bg-zinc-700 !p-3 hover:bg-zinc-900  "
 					>
 						<BellRing color="#fde68a" fill="#fde68a" />
 					</Button>
 				{:else}
 					<Button
 						variant="ghost"
-						class="absolute left-0 my-2  bg-zinc-300 !p-3 hover:bg-zinc-400    rounded-full"
+						class="absolute left-0 my-2  rounded-full bg-zinc-300 !p-3    hover:bg-zinc-400"
 					>
-						<Bell color="#09090b"   />
+						<Bell color="#09090b" />
 					</Button>
 				{/if}
 			</Tabs.Trigger>
@@ -144,39 +149,40 @@
 
 		<Input type="text" placeholder="search and add " class="my-2 h-9 w-full scale-95 p-2" />
 
-		<Tabs.Content value="alarm">
-			<div class="card-list space-y-2">
-				{#each alarmRecords as record}
-					<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat}/>
-				{/each}
-			</div>
+		<Tabs.Content
+			value="alarm"
+			class="h-[calc(100%-94px)]  max-h-[calc(100%)] space-y-2 overflow-y-auto pb-2"
+		>
+			{#each alarmRecords as record}
+				<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat} />
+			{/each}
 		</Tabs.Content>
-		<Tabs.Content value="event">
-			<div class="card-list space-y-2">
-				{#each eventRecords as record}
-					<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat}/>
-				{/each}
-			</div>
+		<Tabs.Content
+			value="event"
+			class="h-[calc(100%-94px)]  max-h-[calc(100%)] space-y-2 overflow-y-auto pb-2"
+		>
+			{#each eventRecords as record}
+				<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat} />
+			{/each}
 		</Tabs.Content>
-		<Tabs.Content value="task">
-			<div class="card-list space-y-2">
-				{#each taskRecords as record}
-					<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat} />
-				{/each}
-			</div>
+		<Tabs.Content
+			value="task"
+			class="h-[calc(100%-94px)]  max-h-[calc(100%)] space-y-2 overflow-y-auto pb-2"
+		>
+			{#each taskRecords as record}
+				<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat} />
+			{/each}
 		</Tabs.Content>
-		<Tabs.Content value="habit">
-			<div class="card-list space-y-2">
-				{#each habitRecords as record}
-					<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat}/>
-				{/each}
-			</div>
+		<Tabs.Content
+			value="habit"
+			class="h-[calc(100%-94px)]  max-h-[calc(100%)] space-y-2 overflow-y-auto pb-2"
+		>
+			{#each habitRecords as record}
+				<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat} />
+			{/each}
 		</Tabs.Content>
 	</Tabs.Root>
 </div>
 
 <style>
-	.card-list {
-		@apply h-[calc(100vh-212px)] overflow-auto  pb-1.5;
-	}
 </style>

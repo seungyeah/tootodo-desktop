@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Button, Resizable } from '$ui';
+	import { Badge, Button, Resizable } from '$ui';
 	import DiaryEditor from '$components/diary/DiaryEditor.svelte';
-	import { Bed, BookOpenText, Dumbbell, Globe, Pill, Star, Sun, Utensils } from 'lucide-svelte';
+	import {Bed, BookOpenText, Dumbbell, Globe, Pill, Star, Sun, Utensils } from 'lucide-svelte';
 	const habits = [
 		{ id: 2, icon: Sun },
 		{ id: 2, icon: Bed },		
@@ -17,10 +17,15 @@
 	<div
 		class="flex h-[32px] translate-y-1.5 border-l-2 border-zinc-700 text-center text-lg font-bold"
 	>
-		<div class="relative -translate-y-1 translate-x-4">
+		<div class="w-full relative -translate-y-1 translate-x-4">
 			{#each Array(5) as _, i}
 				<Star size={20} class="absolute" style="transform:translateX({i * 24}px)" />
 			{/each}
+            <div class="w-full text-center font-mono -translate-y-1 flex justify-center items-center space-x-4">
+                <Badge/>
+                <div>2024-04-22</div>
+                <Badge/>
+            </div>
 		</div>
 	</div>
 	<div

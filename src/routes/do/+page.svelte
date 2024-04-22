@@ -18,16 +18,16 @@
 				class="absolute -right-1 m-1 scale-90 data-[state=checked]:bg-zinc-100 data-[state=unchecked]:bg-zinc-200 shadow-sm shadow-zinc-200"/>			
 
 			{#if showSchedule}
-				<div transition:fly={{delay: 100, duration: 600, x:-100}}>
+				<div transition:fly={{delay: 100, duration: 600, x:-100}} class="h-full w-full">
 					<div class="title">Schedule</div>
 					<div class="side-container">
 						<Schedule />
 					</div>
 				</div>
 			{:else}
-			<div transition:slide={{delay: 100, duration: 600}}>
+			<div transition:slide={{delay: 100, duration: 600}}  class="h-full w-full">
 					<div class="title">Memo</div>
-					<div class="side-container pb-2">
+					<div class="side-container">
 						<Memo/>      
 					</div>
 				</div>
@@ -69,7 +69,7 @@
 	}
 
 	.side-container{
-		@apply h-full w-full pt-1 border-b-4 border-double border-zinc-900;
+		@apply h-[calc(100%-30px)] w-full py-1.5 border-b-4 border-double border-zinc-900;
 	}
 	
 </style>

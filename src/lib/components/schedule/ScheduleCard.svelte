@@ -108,7 +108,7 @@
 
 	<!-- chat popup -->
 	{#if record.openChat}
-		<div class="chat" style="transform:translate(85%,-{componentY}px)">
+		<div class="chat" style="transform:translate(87%,-{componentY}px)">
 			<Chat bind:record />
 		</div>
 	{/if}
