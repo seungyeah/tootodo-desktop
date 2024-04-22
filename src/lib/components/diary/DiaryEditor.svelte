@@ -15,7 +15,7 @@
 			editorProps: {
 				attributes: {
 					class:
-						'w-full h-[calc(100vh-422px)] sm:h-[calc(100vh-384px)] border-2 border-zinc-700 rounded-b-md p-3 outline-none overflow-y-auto'
+						'w-full h-full p-3 outline-none'
 				}
 			}
 		});
@@ -105,7 +105,7 @@
 
 		<!-- editor tooltip -->
 		<div
-			class="flex h-9 w-full items-center space-x-1 rounded-t-md border-2 border-b-0 border-zinc-700 p-2"
+			class=" border-t-4 flex h-9 w-full items-center space-x-1 rounded-t-md border-2 border-b-0 border-zinc-700 p-2"
 		>
 			{#each menuItems as item (item.name)}
 				<button
@@ -122,10 +122,12 @@
 
 		<!-- editor -->
 		<div
-			class="w-full h-full dark:prose-invert 
+			class="w-full h-[calc(100%-36px)] 
+			border-2 border-zinc-700 rounded-b-md max-y-full overflow-y-auto
+			dark:prose-invert 
 			prose-headings:my-2.5 prose-p:my-1.5 
 			prose-h1:text-[1.6rem] prose-h2:text-[1.4rem] prose-h3:text-[1.2rem] 
-			prose-p:text-[1.1rem] leading-[1.1rem]"
+			prose-p:text-[1.1rem] leading-[1.2rem]"
 		>
 			<EditorContent editor={$editor} />
 		</div>

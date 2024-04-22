@@ -45,10 +45,11 @@
 				</div>
 			</div>
 			<div class="h-full flex flex-col items-end  w-1/3 text-lg font-bold max-w-[300px] min-w-[190px]">
-				<div class="title">
+				<div class="title flex">
+					<div class="font-digital text-zinc-800">05H 30M</div>
 					<Button variant="ghost" class="z-10 px-2 py-0 -translate-y-1.5 translate-x-1 hover:bg-transparent 
 					hover:shadow-lg hover:shadow-zinc-400 hover:-translate-y-2.5 rounded-full">
-						<Share strokeWidth={2.1} class="" />
+						<Share strokeWidth={3} size={20} />
 					</Button>
 				</div>
 				<div class="h-[calc(100%-30px)] overflow-y-auto no-scrollbar rounded-lg border-2 border-zinc-700">

@@ -27,7 +27,7 @@
 			content: memo.content,
 			editorProps: {
 				attributes: {
-					class: 'w-full  h-[122px] py-1 px-3.5 overflow-y-auto focus:outline-none focus:shadow-xl '
+					class: 'w-full  h-[130px] py-1 px-3.5 overflow-y-auto focus:outline-none focus:shadow-xl '
 				}
 			}
 		});
@@ -181,7 +181,7 @@
 		</div>
 
 		<main
-			class="font-chat prose relative mb-3 rounded-b-lg
+			class="font-chat relative mb-3 rounded-b-lg
         rounded-r-none border-2 leading-[1.55rem]
         dark:prose-invert prose-headings:my-1 prose-headings:font-bold
         prose-h1:my-2 prose-h1:text-[1.45rem]

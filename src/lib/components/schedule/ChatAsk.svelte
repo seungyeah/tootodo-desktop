@@ -112,7 +112,7 @@
 			<Popover.Root>
 				<Popover.Trigger>
 					<Button variant="ghost" class="h-6 p-1 hover:bg-emerald-600 translate-y-0.5">
-						<BookMarked size={20} />	
+						<BookMarked size={20}  />	
 					</Button>											
 				</Popover.Trigger>
 				<Popover.Content  class=" pt-0 px-3 w-1/4 -translate-x-5 max-h-[calc(100%-1rem)] overflow-y-auto relative" side="left">					
@@ -142,7 +142,7 @@
 												<Bookmark size={20} color="#52525b"  fill="#facc15" />
 											{/if}
 										</Button>
-										<div class="text-[0.8rem] font-bold text-start text-ellipsis  line-clamp-3">{msg.content}</div>
+										<div class="text-[0.8rem] font-semibold text-start text-ellipsis  line-clamp-3">{msg.content}</div>
 									</div>
 								{/if}
 							{/each}
@@ -201,7 +201,7 @@
 								{/if}
 							</Button>
 							<div
-								class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[1.05rem] font-normal leading-6 text-zinc-800 shadow-sm shadow-emerald-300"
+								class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[1rem] font-normal leading-6 text-zinc-800 shadow-sm shadow-emerald-300"
 							>
 								{msg.content}
 							</div>
@@ -225,7 +225,7 @@
 								{/if}
 							</Button>
 							<div
-								class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[1.05rem] font-normal leading-6 text-zinc-800 shadow-sm shadow-yellow-300"
+								class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[1rem] font-normal leading-6 text-zinc-800 shadow-sm shadow-yellow-300"
 							>
 								{msg.content}
 							</div>

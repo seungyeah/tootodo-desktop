@@ -124,16 +124,16 @@
 				{#if value == 'alarm'}
 					<Button
 						variant="ghost"
-						class="absolute left-0 my-2 bg-zinc-700 !p-3 hover:bg-zinc-800 rounded-full  "
+						class="absolute left-0 my-2 bg-zinc-700 !p-3 hover:bg-zinc-900 rounded-full  "
 					>
 						<BellRing color="#fde68a" fill="#fde68a" />
 					</Button>
 				{:else}
 					<Button
 						variant="ghost"
-						class="absolute left-0 my-2  bg-zinc-300 !p-3 hover:bg-zinc-600 rounded-full"
+						class="absolute left-0 my-2  bg-zinc-300 !p-3 hover:bg-zinc-400    rounded-full"
 					>
-						<Bell color="#09090b"  />
+						<Bell color="#09090b"   />
 					</Button>
 				{/if}
 			</Tabs.Trigger>

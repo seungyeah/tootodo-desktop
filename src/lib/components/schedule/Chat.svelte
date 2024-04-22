@@ -156,7 +156,7 @@
 				</Button>
 			</Popover.Trigger>
 			<Popover.Content
-				class="max-h-[calc(100%-1rem)] w-1/4 -translate-x-5 overflow-y-auto px-3 pt-0"
+				class="max-h-[calc(100%-1rem)] w-1/4 -translate-x-5 overflow-y-auto px-3 pt-0 "
 				side="left"
 			>
 				<div class="flex-col items-center justify-between pt-1">
@@ -168,7 +168,7 @@
 							</Button>
 						</Popover.Close>
 					</div>
-					<div class="flex-col space-y-2">
+					<div class="flex-col space-y-2 ">
 						{#each messages as msg}
 							{#if msg.save}
 								<div class="flex items-start justify-start space-x-1 border-b border-dashed">
@@ -179,7 +179,7 @@
 											<Bookmark size={20} color="#52525b" fill="#facc15" />
 										{/if}
 									</Button>
-									<div class="line-clamp-3 text-ellipsis text-start text-[0.8rem] font-bold">
+									<div class="line-clamp-3 text-ellipsis text-start text-[0.8rem] font-semibold">
 										{msg.content}
 									</div>
 								</div>
@@ -233,7 +233,7 @@
 							{/if}
 						</Button>
 						<div
-							class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[1.05rem] font-normal leading-6 text-zinc-800 shadow-sm shadow-emerald-300"
+							class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[1rem] font-normal leading-6 text-zinc-800 shadow-sm shadow-emerald-300"
 						>
 							{msg.content}
 						</div>
@@ -282,7 +282,7 @@
 							{/if}
 						</Button>
 						<div
-							class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[1.05rem] font-normal leading-6 text-zinc-800 shadow-sm shadow-yellow-300"
+							class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[1rem] font-normal leading-6 text-zinc-800 shadow-sm shadow-yellow-300"
 						>
 							{msg.content}
 						</div>
