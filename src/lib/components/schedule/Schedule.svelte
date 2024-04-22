@@ -93,13 +93,15 @@
 		}
 	];
 
-	$: records = records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
-	$: alarmRecords = records.filter((record) => record.alarm);
-
+	$: sortedRecords = records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
+	$: taskRecords = sortedRecords.filter((record) => record.item === 'task');
+	$: eventRecords = sortedRecords.filter((record) => record.item === 'event');
+	$: habitRecords = sortedRecords.filter((record) => record.item === 'habit');
+	$: alarmRecords = sortedRecords.filter((record) => record.alarm);
 
 	// 딱 하나의 record에 대한 채팅만을 open하기 위함.
 	function handleToggleOpenChat(event) {
-		let openChatRecord = event.detail;
+		let openChatRecord = event.detail;		
 		if (openChatRecord) {
 			madeOtherRecordFalse(taskRecords, openChatRecord);
 			madeOtherRecordFalse(eventRecords, openChatRecord);
@@ -162,10 +164,10 @@
 				value={tab}
 				class="h-[calc(100%-94px)]  max-h-[calc(100%-94px)] space-y-2 overflow-y-auto pb-2"
 			>
-				{#each records as record}
-					{#if record.item === tab}
+				{#each tab==='event' ? eventRecords : tab==='task' ? taskRecords : habitRecords as record}
+					
 						<ScheduleCard bind:record on:toggleOpenChat={handleToggleOpenChat} />
-					{/if}
+
 				{/each}
 			</Tabs.Content>
 		{/each}
