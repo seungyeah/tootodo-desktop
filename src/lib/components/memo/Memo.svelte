@@ -101,9 +101,9 @@
 	let colors = [
 		{ name: 'default', normal: '#a1a1aa', light: '#e4e4e7', dark: '#4b5563' },
 		{ name: 'rose', normal: '#fb7185', light: '#fecdd3', dark: '#e11d48' },
-		// { name: 'orange', normal: '#fb923c', light: '#fed7aa', dark: '#ea580c' },
+		// { name: 'orange', normal: '#fb923c', light: '#fed7aa', dark: '#ea590c' },
 		{ name: 'violet', normal: '#a78bfa', light: '#ddd6fe', dark: '#7c3aed' },
-		{ name: 'green', normal: '#4ade80', light: '#bbf7d0', dark: '#16a34a' },
+		{ name: 'green', normal: '#4ade90', light: '#bbf7d0', dark: '#16a34a' },
 		{ name: 'blue', normal: '#60a5fa', light: '#bfdbfe', dark: '#2563eb' },
 		{ name: 'fuchsia', normal: '#e879f9', light: '#f5d0fe', dark: '#c026d3' }
 	];
@@ -125,7 +125,7 @@
 				}}
 			>
 				{#if value == 'all'}
-					<Button variant="ghost" class="absolute left-0 my-2 bg-zinc-700 !p-3 hover:bg-zinc-800  ">
+					<Button variant="ghost" class="absolute left-0 my-2 bg-zinc-700 !p-3 hover:bg-zinc-900  ">
 						<Grip color="#fffbeb" fill="white" />
 					</Button>
 				{:else}
@@ -201,14 +201,14 @@
 
 		<!-- memo list -->
 		<!-- all -->
-		<Tabs.Content value="all" class="h-[calc(100%-94px)]  max-h-[calc(100%)] space-y-2 overflow-y-auto pb-2">
+		<Tabs.Content value="all" class="h-[calc(100%-90px)]  max-h-[calc(100%-90px)] space-y-3 overflow-y-auto">
 				{#each memos as memo}
 						<MemoEditor bind:memo />
 				{/each}
 		</Tabs.Content>
 		<!-- color filter -->
 		{#each colors as color}
-			<Tabs.Content value={color.name} class="h-[calc(100%-94px)]  max-h-[calc(100%)] space-y-2 overflow-y-auto pb-2">
+			<Tabs.Content value={color.name} class="h-[calc(100%-90px)]  max-h-[calc(100%-90px)] space-y-3 overflow-y-auto">
 					{#each memos as memo}
 						{#if memo.color === color.name}
 							<MemoEditor bind:memo />

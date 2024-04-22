@@ -181,7 +181,7 @@
 		</div>
 
 		<main
-			class="font-chat relative mb-3 rounded-b-lg
+			class="font-chat relative rounded-b-lg
         rounded-r-none border-2 leading-[1.55rem]
         dark:prose-invert prose-headings:my-1 prose-headings:font-bold
         prose-h1:my-2 prose-h1:text-[1.45rem]

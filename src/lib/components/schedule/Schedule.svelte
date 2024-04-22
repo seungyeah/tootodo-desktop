@@ -159,7 +159,7 @@
 		</Tabs.Content>
 		<Tabs.Content
 			value="event"
-			class="h-[calc(100%-94px)]  max-h-[calc(100%)] space-y-2 overflow-y-auto pb-2"
+			class="h-[calc(100%-94px)]  max-h-[calc(100%-94px)] space-y-2 overflow-y-auto pb-2"
 		>
 			{#each eventRecords as record}
 				<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat} />
@@ -167,7 +167,7 @@
 		</Tabs.Content>
 		<Tabs.Content
 			value="task"
-			class="h-[calc(100%-94px)]  max-h-[calc(100%)] space-y-2 overflow-y-auto pb-2"
+			class="h-[calc(100%-94px)]  max-h-[calc(100%-94px)] space-y-2 overflow-y-auto pb-2"
 		>
 			{#each taskRecords as record}
 				<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat} />
@@ -175,7 +175,7 @@
 		</Tabs.Content>
 		<Tabs.Content
 			value="habit"
-			class="h-[calc(100%-94px)]  max-h-[calc(100%)] space-y-2 overflow-y-auto pb-2"
+			class="h-[calc(100%-94px)]  max-h-[calc(100%-94px)] space-y-2 overflow-y-auto pb-2"
 		>
 			{#each habitRecords as record}
 				<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat} />
