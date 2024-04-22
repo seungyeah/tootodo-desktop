@@ -76,7 +76,7 @@
 		<div class="p-1 text-[1rem]">{record.title}</div>
 		
 		<!-- chatting popup icon-->
-		{#if record.item == 'task' || record.item == 'event'}
+		{#if record.item = 'task' || record.item == 'event'}
 			<Button variant="ghost" class="absolute right-0 top-1 h-6 px-2" on:click={toggleOpenChat}>
 				{#if record.openChat}
 					<MessageCircle size={16} fill="#fef08a" class=" scale-125" />
@@ -90,7 +90,7 @@
 	<hr class="border-dashed border-zinc-300"  />
 
 	<!-- schedule weekly -->
-	<div class="flex">
+	<div class="flex h-[30px] border-r border-dashed">
 		{#each week as day, i}
 			{@const short = weekShort[i]}
 			<button
@@ -99,7 +99,7 @@
 					record.days.includes(day)
 						? (record.days = record.days.filter((d) => d !== day))
 						: (record.days = [...record.days, day])}
-				class="relative  h-6 w-full rounded-md rounded-b border-l border-dashed  hover:bg-zinc-100 "
+				class="relative rounded-none h-full w-full  rounded-b border-l border-dashed  hover:bg-zinc-100 "
 				style="color: {record?.project?.color};"
 				><span class="absolute left-0 top-0 px-1 py-0.5 text-[0.55rem] leading-3 font-serif font-light">{short}</span></button
 			>

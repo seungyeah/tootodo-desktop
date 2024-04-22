@@ -98,6 +98,13 @@
 	$: habitRecords = sortedRecords.filter((record) => record.item === 'habit');
 	$: alarmRecords = sortedRecords.filter((record) => record.alarm);
 
+	$:{
+		console.log('taskRecords', taskRecords);
+		console.log('eventRecords', eventRecords);
+		console.log('habitRecords', habitRecords);
+		console.log('alarmRecords', alarmRecords);
+	}
+
 	// 딱 하나의 record에 대한 채팅만을 open하기 위함.
 	function handleToggleOpenChat(event) {
 		let openChatRecord = event.detail;
@@ -119,7 +126,7 @@
 
 <div class="relative h-full w-full space-x-2">
 	<Tabs.Root
-		value="task"
+		value="event"
 		class="h-full w-full"
 		let:value
 		onValueChange={() => madeOtherRecordFalse(records, {})}
@@ -149,38 +156,18 @@
 
 		<Input type="text" placeholder="search and add " class="my-2 h-9 w-full scale-95 p-2" />
 
-		<Tabs.Content
-			value="alarm"
-			class="h-[calc(100%-94px)]  max-h-[calc(100%)] space-y-2 overflow-y-auto pb-2"
-		>
-			{#each alarmRecords as record}
-				<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat} />
-			{/each}
-		</Tabs.Content>
-		<Tabs.Content
-			value="event"
-			class="h-[calc(100%-94px)]  max-h-[calc(100%-94px)] space-y-2 overflow-y-auto pb-2"
-		>
-			{#each eventRecords as record}
-				<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat} />
-			{/each}
-		</Tabs.Content>
-		<Tabs.Content
-			value="task"
-			class="h-[calc(100%-94px)]  max-h-[calc(100%-94px)] space-y-2 overflow-y-auto pb-2"
-		>
-			{#each taskRecords as record}
-				<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat} />
-			{/each}
-		</Tabs.Content>
-		<Tabs.Content
-			value="habit"
-			class="h-[calc(100%-94px)]  max-h-[calc(100%-94px)] space-y-2 overflow-y-auto pb-2"
-		>
-			{#each habitRecords as record}
-				<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat} />
-			{/each}
-		</Tabs.Content>
+		{#each ['alarm','event','task','habit'] as tab}
+			<Tabs.Content
+				value={tab}
+				class="h-[calc(100%-94px)]  max-h-[calc(100%-94px)] space-y-2 overflow-y-auto pb-2"
+			>
+				{#each records as record}
+					{#if record.item === tab}
+						<ScheduleCard bind:record on:toggleOpenChat={handleToggleOpenChat} />
+					{/if}
+				{/each}
+			</Tabs.Content>
+		{/each}
 	</Tabs.Root>
 </div>
 

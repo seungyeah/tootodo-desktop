@@ -1,31 +1,196 @@
 <script lang="ts">
 	import { Badge, Button, Resizable } from '$ui';
 	import DiaryEditor from '$components/diary/DiaryEditor.svelte';
-	import {Bed, BookOpenText, Dumbbell, Globe, Pill, Star, Sun, Utensils } from 'lucide-svelte';
+	import { Bed, BookOpenText, Dumbbell, Globe, Pill, Star, Sun, Utensils } from 'lucide-svelte';
+	import ItemList from './ItemList.svelte';
 	const habits = [
-		{ id: 2, icon: Sun },
-		{ id: 2, icon: Bed },		
-        { id: 1, icon: Utensils },
-		{ id: 3, icon: Pill },		
-        {id:5, icon:Globe},
-        {id:6, icon:BookOpenText},
-        { id: 4, icon: Dumbbell },
+		{ id: 0, icon: Sun, title: 'wake up' },
+		{ id: 1, icon: Bed, title: 'go to bed' },
+		{ id: 2, icon: Utensils, title: 'breakfast' },
+		{ id: 3, icon: Pill, title: 'take pills' },
+		{ id: 4, icon: Globe, title: 'learn foreign language' },
+		{ id: 5, icon: BookOpenText, title: 'read book' },
+		{ id: 6, icon: Dumbbell, title: 'workout' }
 	];
+
+	let records = [
+		{
+			pin: true,
+			alarm: true,
+			item: 'task',
+			title: 'urgent task',
+			days: ['mon', 'wed'],
+			openChat: false,
+			project: { title: 'Project K', color: '#f472b6' },
+			chatID: 'def456'
+		},
+		{
+			pin: false,
+			alarm: true,
+			item: 'habit',
+			title: 'exercise',
+			days: ['tue']
+		},
+		{
+			pin: true,
+			alarm: false,
+			item: 'task',
+			title: 'important review',
+			days: ['fri', 'sat'],
+			openChat: false,
+			project: { title: 'Project V', color: '#818cf8' },
+			chatID: 'def456'
+		},
+		{
+			pin: false,
+			alarm: false,
+			item: 'habit',
+			title: 'meditation',
+			days: ['sun']
+		},
+		{
+			pin: true,
+			alarm: true,
+			item: 'task',
+			title: 'project deadline',
+			days: ['thu', 'fri'],
+			openChat: false,
+			project: { title: 'Project A', color: '#38bdf8' },
+			chatID: 'def456'
+		},
+		{
+			pin: false,
+			alarm: false,
+			item: 'task',
+			title: 'casual meeting',
+			days: ['mon'],
+			openChat: false,
+			project: { title: 'Project B', color: '#a3e635' },
+			chatID: 'def456'
+		},
+		{
+			pin: true,
+			alarm: true,
+			item: 'task',
+			title: 'team sync',
+			days: ['wed', 'fri'],
+			openChat: false,
+			project: { title: 'Project C', color: '#2dd4bf' },
+			chatID: 'def456'
+		},
+		{
+			pin: false,
+			alarm: true,
+			item: 'habit',
+			title: 'reading',
+			days: ['wed', 'fri']
+		},
+		{
+			pin: false,
+			alarm: true,
+			item: 'event',
+			title: 'conference',
+			days: ['tue', 'thu', 'fri'],
+			openChat: false,
+			chatID: 'abc123'
+		},
+		{
+			pin: true,
+			alarm: false,
+			item: 'habit',
+			title: 'journaling',
+			days: ['mon', 'tue']
+		},
+		{
+			pin: false,
+			alarm: false,
+			item: 'event',
+			title: 'routine checkup',
+			days: ['sat', 'sun'],
+			openChat: false,
+			chatID: 'def456'
+		},
+		{
+			pin: false,
+			alarm: false,
+			item: 'habit',
+			title: 'wake up',
+			days: ['mon', 'wed', 'fri']
+		},
+		{
+			pin: false,
+			alarm: false,
+			item: 'habit',
+			title: 'go to bed',
+			days: ['sun', 'mon', 'tue']
+		},
+		{
+			pin: false,
+			alarm: false,
+			item: 'habit',
+			title: 'breakfast',
+			days: ['tue', 'thu', 'sat']
+		},
+		{
+			pin: false,
+			alarm: false,
+			item: 'habit',
+			title: 'take pills',
+			days: ['wed', 'fri', 'sun']
+		},
+		{
+			pin: false,
+			alarm: false,
+			item: 'habit',
+			title: 'learn foreign language',
+			days: ['mon', 'wed', 'fri']
+		},
+		{
+			pin: false,
+			alarm: false,
+			item: 'habit',
+			title: 'read book',
+			days: ['tue', 'thu', 'sat']
+		},
+		{
+			pin: false,
+			alarm: false,
+			item: 'habit',
+			title: 'workout',
+			days: ['mon', 'wed', 'fri']
+		}
+	];
+
+	// export let day = new Date().getDay();
+	let day = 'fri';
+	$: sortedRecords = records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
+	$: taskRecords = sortedRecords.filter(
+		(record) => record.item === 'task' && record.days.includes(day)
+	);
+	$: eventRecords = sortedRecords.filter(
+		(record) => record.item === 'event' && record.days.includes(day)
+	);
+	$: habitRecords = sortedRecords.filter(
+		(record) => record.item === 'habit' && record.days.includes(day)
+	);
 </script>
 
 <div class="relative h-full w-full flex-col">
 	<div
 		class="flex h-[32px] translate-y-1.5 border-l-2 border-zinc-700 text-center text-lg font-bold"
 	>
-		<div class="w-full relative -translate-y-1 translate-x-4">
+		<div class="relative w-full -translate-y-1 translate-x-4">
 			{#each Array(5) as _, i}
 				<Star size={20} class="absolute" style="transform:translateX({i * 24}px)" />
 			{/each}
-            <div class="w-full text-center font-mono -translate-y-1 flex justify-center items-center space-x-4">
-                <Badge/>
-                <div>2024-04-22</div>
-                <Badge/>
-            </div>
+			<!-- today, date -->
+			<!-- <div class="hidden lg:block ">
+                <div class="w-full t  ext-center font-mono -translate-y-1 flex justify-center items-center space-x-4">
+                    <Badge/>
+                    <div>2024-04-22</div>
+                    <Badge/>
+                </div>
+            </div> -->
 		</div>
 	</div>
 	<div
@@ -35,23 +200,32 @@
 			direction="horizontal"
 			class="m-2 -translate-y-5 rounded-xl border-2 border-double border-zinc-400"
 		>
-			<Resizable.Pane>task</Resizable.Pane>
+			<Resizable.Pane
+				>task
+				<ItemList records={taskRecords} />
+			</Resizable.Pane>
 			<Resizable.Handle class="bg-zinc-500 p-[1px]" />
-			<Resizable.Pane>event</Resizable.Pane>
+			<Resizable.Pane
+				>event
+				<ItemList records={eventRecords} />
+			</Resizable.Pane>
 		</Resizable.PaneGroup>
-        
-        <!-- habbit -->
-		<div class="w-1/4 h-full -translate-y-10">
-            <div class="w-full border-b-4 mb-2 border-double border-zinc-200"> Habit </div>
+
+		<!-- habbit -->
+		<div class="h-full w-1/4 -translate-y-10">
+			<div class="mb-2 w-full border-b-4 border-double border-zinc-200">Habit</div>
 			<div
-				class="grid grid-cols-2 gap-1  rounded-lg shadow h-[calc(100%-14px)] max-h-[calc(100%-14px)] overflow-y-scroll no-scrollbar px-1.5 "
+				class="no-scrollbar grid h-[calc(100%-14px)] max-h-[calc(100%-14px)] grid-cols-2 place-items-center items-center gap-1 overflow-y-scroll rounded-lg px-1.5 shadow"
 			>
 				{#each habits as habit}
-					<Button variant="ghost" class="p-2 rounded-full"><svelte:component this={habit.icon} /></Button>
+					<Button variant="ghost" class="aspect-square rounded-full"
+						><svelte:component this={habit.icon} /></Button
+					>
 				{/each}
 			</div>
 		</div>
 	</div>
+
 	<div class="h-[calc(62%-32px)] w-full">
 		<DiaryEditor />
 	</div>
