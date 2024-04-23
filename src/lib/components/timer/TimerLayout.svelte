@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { VisSingleContainer, VisDonut } from '@unovis/svelte';
 	import Clock from './Clock.svelte';
+	import PomoIcon from '$components/PomoIcon.svelte';
 	export let dataIn: number[] = [40,20]
 	export let dataOut: number[] = [80,20]
 
@@ -9,7 +10,20 @@
   const colorOut = (d: number, i: number) => ['#022c22','#D92B3A'][i]
 </script>
 
-<div class="w-full h-full relative">
+<div class="w-full h-full relative -translate-y-0.5">
+	<div class="z-10 absolute translate-x-[100px] -bottom-1 w-full text-xl flex text-[#D92B3A] scale-150">
+		{#each new Array(5) as _}
+		<div class="opacity-100"> 
+			<PomoIcon /> 
+		</div>
+		{/each}
+		{#each new Array(3) as _}
+		<div class="opacity-40"> 
+			<PomoIcon /> 
+		</div>
+		{/each}
+	</div>
+
 	<div class="absolute w-full h-full scale-90 translate-y-2.5">
 		<Clock />
 	</div>

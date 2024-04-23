@@ -25,7 +25,7 @@
 	let timerWork = false;
 </script>
 
-<div class="relative h-full w-full flex items-center justify-center bg-zinc-800 text-white">
+<div class="relative h-full w-full flex items-center justify-center bg-zinc-900 text-white">
 	<div class="w-full h-full">
 		<TimerLayout />
 	</div>
@@ -50,16 +50,13 @@
 			timerWork = !timerWork;
 		}}
 		variant="ghost"
-		class="w-1/2 h-[80px]  flex-col absolute left-1/2 top-1/2 -translate-x-[108px] -translate-y-[44px] 
-		border-4 border-double border-zinc-400  bg-[#faf3f3] shadow rounded-xl "
+		class="w-1/3 h-[80px]  flex-col absolute left-1/2 top-1/2 -translate-x-[78px] -translate-y-[44px] 
+		border-4 border-double border-zinc-400  bg-zinc-950 shadow rounded-xl hover:invert "
 	>
-		<div class="text-[1.7rem] leading-8 font-bold font-digital text-emerald-950">00:{cycleValue}:00</div>
-		<hr class="border-2 w-full border-zinc-500" />
-		<div class="text-2xl font-bold relative w-full text-[rgb(5,150,105)]">
-			<div class="absolute top-1 -left-1 w-full text-xl flex text-[#D92B3A]">
-				<PomoIcon />{currentCycle}
-			</div>
-			<div class="font-digital uppercase translate-x-4">{timerState}</div>
+		<div class="text-[1.7rem] leading-8 font-bold font-digital text-emerald-50">00:{cycleValue}:00</div>
+		<div class="text-lg font-bold text-[rgb(5,150,105)]">			
+			<div class="font-digital uppercase ">{timerState}</div>
 		</div>
 	</Button>
+
 </div>

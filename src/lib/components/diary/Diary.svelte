@@ -12,7 +12,6 @@
 		{ id: 5, icon: BookOpenText, title: 'read book' },
 		{ id: 6, icon: Dumbbell, title: 'workout' }
 	];
-	let habitDone = {};
 
 	let records = [
 		{
@@ -217,7 +216,7 @@
 				<div class="h-7 border-b-2 border-dashed p-0.5">Task</div>
 				<ItemList records={taskRecords} />
 			</Resizable.Pane>
-			<Resizable.Handle withHandle class="bg-zinc-400 p-[1px]" />
+			<Resizable.Handle withHandle class="bg-zinc-300 p-[1px]" />
 			<Resizable.Pane minSize={14} defaultSize={45}>
 				<div class="h-7 border-b-2 border-dashed p-0.5">Event</div>
 				<ItemList records={eventRecords} />
@@ -228,7 +227,9 @@
 		<div class="h-full w-1/4 -translate-y-10">
 			<div class="mb-2 w-full border-b-4 border-double border-zinc-200">Habit</div>
 			<div
-				class="no-scrollbar grid h-[calc(100%-14px)] max-h-[calc(100%-14px)] grid-cols-2 grid-rows-3 place-items-center items-center gap-1 overflow-y-scroll rounded-lg px-1.5 shadow"
+				class="h-[calc(100%-14px)] max-h-[calc(100%-14px)] overflow-y-scroll no-scrollbar 
+				grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 grid-rows-3   place-items-center items-center gap-1  
+				rounded-lg px-1.5 shadow"
 			>
 				{#each habits as habit}
 					<Button
