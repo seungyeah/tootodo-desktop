@@ -38,22 +38,22 @@
 </script>
 
 <div class="relative flex h-full w-full items-center justify-between text-white">
-	<div class="aspect-ratio absolute h-full w-2/3 bg-zinc-50 rounded-full">
-		<div class="h-full w-full ">
+	<div class="absolute h-full w-2/3 bg-zinc-50 rounded-full shadow-xl">
+		<div class="h-full w-ful  ">
 			<TimerLayout />
 		</div>
 
 		<!-- play/stop -->
 		<Button variant="secondary" class="absolute left-1/3 top-1/3 z-50 border-4 border-emerald-950
-		 rounded-full w-14 h-14 p-0 translate-x-1/3 translate-y-1/4 bg-zinc-50 opacity-90"
+		 rounded-full w-14 h-14 p-0 translate-x-1/3 translate-y-1/4 bg-transparent shadow-xl "
 			on:click={() => {
 				timerWork = !timerWork;
 			}}
 		>
 			{#if timerWork}
-				<Pause fill="#022c22" color="#064e3b" size={32}/>
+				<Pause fill="#022c22" color="#022c22" size={32}/>
 			{:else}
-				<Play fill="#022c22" color="#064e3b" size={32}/>
+				<Play fill="#022c22" color="#022c22" size={32}/>
 			{/if}
 		</Button>
 
@@ -97,7 +97,7 @@
 						<td class="px-2 pb-1">
 							{#if i != 0 && records[i - 1].done === true && record.done === false}
 								<span class="absolute -translate-y-3.5 -translate-x-3 z-10 scale-110 px-1.5 py-0.5
-								text-pomodoro-500 text-[1rem] shadow-xl  border-emerald-950 rounded-lg bg-white border-r-2 border-t-2  ">
+								text-pomodoro-500 text-[1rem] shadow-xl  border-emerald-950 rounded-lg bg-zinc-50 border-r-2 border-t-2  ">
 								{formatTime($currentTime)}</span>
 							{:else}
 								{record.end}
