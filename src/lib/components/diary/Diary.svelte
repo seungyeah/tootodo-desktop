@@ -185,7 +185,6 @@
 		<div class="relative w-full -translate-y-3 translate-x-4">
 			{#each Stars as star, i}
 				<button
-					variant="ghost"
 					class="absolute left-0 top-0 py-1 pt-2 hover:bg-none"
 					style="transform:translateX({i * 24}px)"
 					on:click={() => {

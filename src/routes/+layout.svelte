@@ -42,10 +42,10 @@
 </script>
 
 {#if $isAuthed}
-	<div class="relative flex h-12 w-screen justify-between  ">
+	<div class="relative flex h-12 w-screen justify-between">
 		<!-- left menu (navigate page) -->
 		<div
-			class="z-20 absolute left-0 flex h-full w-[200px] items-center space-x-3 rounded-b-2xl rounded-r-2xl bg-zinc-800 px-4"
+			class="absolute left-0 z-20 flex h-full w-[200px] items-center space-x-3 rounded-b-2xl rounded-r-2xl bg-zinc-800 px-4"
 		>
 			<!-- backward/forward page -->
 			<HeaderNav />
@@ -70,13 +70,13 @@
 		{#if searchMode}
 			<Input
 				type="text"
-				class="z-10 h-10 w-[calc(100%-450px)] absolute right-0 -translate-x-[210px] translate-y-2.5 border-2 shadow shadow-zinc-300 "
+				class="absolute right-0 z-10 h-10 w-[calc(100%-450px)] -translate-x-[210px] translate-y-2.5 border-2 shadow-lg shadow-zinc-500 "
 			/>
 		{/if}
 
 		<!-- right menu (profile, search, timer) -->
 		<div
-			class="z-10 absolute right-0 flex h-12 w-[200px] items-center justify-evenly space-x-2 rounded-b-2xl rounded-l-2xl bg-zinc-800 px-4"
+			class="absolute right-0 z-10 flex h-12 w-[200px] items-center justify-evenly space-x-2 rounded-b-2xl rounded-l-2xl bg-zinc-800 px-4"
 		>
 			<!-- search -->
 			<Button
@@ -84,28 +84,48 @@
 				class="h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200"
 				on:click={() => (searchMode = !searchMode)}
 			>
-				<Search size={26} strokeWidth={2} color = white fill="#09090b" class={searchMode ? 'bg-zinc-900 shadow-xl shadow-zinc-50 scale-125 scale-1 rounded-full' : ''} />
+				<Search
+					size={26}
+					strokeWidth={2}
+					color="white"
+					fill="#09090b"
+					class={searchMode
+						? 'scale-1 scale-125 rounded-full bg-zinc-900 shadow-xl shadow-zinc-50'
+						: ''}
+				/>
 			</Button>
+
 			<!-- timer, tenMplanner -->
-			<Popover.Root onOutsideClick={()=>timerMode = false} closeFocus={()=>timerMode = false} openFocus={()=>timerMode = true}>
+			<Popover.Root
+				onOutsideClick={() => (timerMode = false)}
+				closeFocus={() => (timerMode = false)}
+				openFocus={() => (timerMode = true)}
+			>
 				<Popover.Trigger asChild let:builder>
-					<Button builders={[builder]} variant="ghost" 
-					class="h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200"
-						><Clock size={26} color = white fill="#09090b"  strokeWidth={2} class={timerMode ? 'bg-zinc-900 shadow-xl shadow-zinc-50 scale-125 rounded-full' : ''} /></Button
+					<Button
+						builders={[builder]}
+						variant="ghost"
+						class={timerMode
+							? 'translate-y-1 -translate-x-1 scale-105 rounded-full bg-zinc-900  shadow-xl shadow-zinc-500 border border-dotted !p-2 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200'
+							: 'h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200'}
+						><Clock size={26} color="white" fill="#09090b" strokeWidth={2} /></Button
 					>
 				</Popover.Trigger>
-				<Popover.Content class="w-[470px] my-3 ">
-						<div 
-							class={timerOpen?"m-auto w-full h-[264px] relative":"m-auto w-full h-[460px] relative"}
-						>						
-							<ShowRecord {timerOpen}/>
-							<div class="absolute top-0 w-full h-full">
-								<!-- plan record and start timer directly -->
-								<PlanRecord bind:timerOpen/>
-							</div>
+				<Popover.Content class="w-[470px] translate-y-1 p-0 runded-xl" >
+					<div
+						class={timerOpen
+							? 'relative h-[290px]  m-auto '
+							: 'relative m-3 h-[460px] w-[calc(100%-24px)]'}
+					>
+						<ShowRecord {timerOpen} />
+						<div class="absolute top-0 h-full w-full">
+							<!-- plan record and start timer directly -->
+							<PlanRecord bind:timerOpen />
 						</div>
+					</div>
 				</Popover.Content>
 			</Popover.Root>
+
 			<!-- profile -->
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger asChild let:builder>
@@ -130,7 +150,7 @@
 	</div>
 {/if}
 
-<div class="w-full h-full max-h-[calc(100vh-50px)]">
+<div class="h-full max-h-[calc(100vh-50px)] w-full">
 	<slot />
 </div>
 

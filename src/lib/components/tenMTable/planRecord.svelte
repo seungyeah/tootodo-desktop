@@ -179,7 +179,7 @@
 													<Button
 														builders={[builder]}
 														variant="ghost"
-														class="h-full w-full !p-0 hover:bg-violet-800"
+														class="h-full w-full !p-0 hover:bg-zinc-700"
 													></Button>
 												</Popover.Trigger>
 												{#if settingVisible && record}
