@@ -45,7 +45,7 @@
 
 		<!-- play/stop -->
 		<Button variant="secondary" class="absolute left-1/3 top-1/3 z-50 border-4 border-emerald-950
-		 rounded-full w-14 h-14 p-0 translate-x-1/3 translate-y-1/4 bg-transparent shadow-xl "
+		 rounded-full w-14 h-14 p-0 translate-x-1/3 translate-y-1/4 bg-black/10 shadow-xl "
 			on:click={() => {
 				timerWork = !timerWork;
 			}}
