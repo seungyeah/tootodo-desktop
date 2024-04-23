@@ -52,17 +52,17 @@
 	}
 </script>
 
-<div class="z-20 w-[220px] flex-col items-center justify-center space-y-1 bg-zinc-800 p-2 text-white shadow-lg">
+<div class="z-20 w-[220px] flex-col items-center justify-center space-y-1 bg-zinc-900 p-2 text-white shadow-lg">
 	<div class="font-digital text-center w-full">{tooltip}</div>
 	<div class="flex-col space-y-2 border-2 border-dotted border-white px-1 py-2">
 		<!-- working time control  -->
 		<div class="flex justify-center space-x-2">
-			<span class="leading-8 text-rose-200">working</span>			
+			<span class="leading-8 text-pomodoro-300">WorKing</span>			
 			<div
-				class="flex h-[32px] w-[100px] items-center justify-between rounded-lg bg-white px-2 py-1"
+				class="flex h-[32px] w-[100px] items-center justify-between rounded-lg bg-zinc-600 px-2 py-1"
 			>
 				<button
-					class="text-center text-2xl text-zinc-500 hover:text-zinc-700"
+					class="text-center text-2xl text-zinc-100 hover:text-zinc-300"
 					on:click={() => {
 						if (working > 10) {
 							working -= 5;
@@ -74,14 +74,14 @@
 				</button>
 				<input
 					type="number"
-					class="w-12 text-center text-xl font-semibold text-zinc-900"
+					class="w-12 text-center text-xl font-semibold text-zinc-100 bg-zinc-900"
 					disabled
 					bind:value={working}
 					min={10}
 					max={duration}
 				/>
 				<button
-					class="text-center text-2xl text-zinc-500 hover:text-zinc-700"
+					class="text-center text-2xl text-zinc-100 hover:text-zinc-300"
 					on:click={() => {
 						if (working < duration && working >= 10) {
 							working += 5;
@@ -97,12 +97,12 @@
 
 		<!-- breaking time control -->
 		<div class="flex w-full justify-center space-x-2">
-			<span class="leading-8 text-violet-200">breaking</span>
+			<span class="leading-8 text-emerald-300">BreaKing</span>
 			<div
-				class="flex h-[32px] w-[100px] items-center justify-between rounded-lg bg-white px-2 py-1"
+				class="flex h-[32px] w-[100px] items-center justify-between rounded-lg bg-zinc-700 px-2 py-1"
 			>
 				<button
-					class="text-center text-2xl text-zinc-500 hover:text-zinc-700"
+					class="text-center text-2xl text-zinc-100 hover:text-zinc-300"
 					on:click={() => {
 						if (breaking > 0) {
 							breaking -= 1;
@@ -117,13 +117,13 @@
 				<input
 					type="number"
 					disabled
-					class="w-12 text-center text-xl font-semibold text-zinc-900"
+					class="w-12 text-center text-xl font-semibold text-zinc-100 bg-zinc-900"
 					bind:value={breaking}
 					min={0}
 					max={20}
 				/>
 				<button
-					class="text-center text-2xl text-zinc-500 hover:text-zinc-700"
+					class="text-center text-2xl text-zinc-100 hover:text-zinc-300"
 					on:click={() => {
 						if (breaking <= 0) {
 							breaking = 0;
@@ -149,7 +149,7 @@
 			<Milestone class="absolute"/>
 			<div class="text-end w-full">{durationString}</div>			
 			<div class="w-full text-center text-lg">
-				(<span class="text-rose-200">{working}</span>+<span class="text-violet-200">{breaking}</span
+				(<span class="text-pomodoro-300">{working}</span>+<span class="text-emerald-400">{breaking}</span
 				>)*{cycle}+<span class="text-blue-200">{remain}</span>
 			</div>
 		</div>
