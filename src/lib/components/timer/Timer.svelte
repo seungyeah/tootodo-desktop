@@ -97,7 +97,7 @@
 						<td class="px-2 pb-1">
 							{#if i != 0 && records[i - 1].done === true && record.done === false}
 								<span class="absolute -translate-y-3.5 -translate-x-3 z-10 scale-110 px-1.5 py-0.5
-								text-pomodoro-500 text-[1rem] shadow-xl border-t-[3px] border-r-[3px] border-zinc-800 border-dashed rounded-lg bg-pomodoro-50   ">
+								text-pomodoro-500 text-[1rem] shadow-xl  border-emerald-950 rounded-lg bg-white border-r-2 border-t-2  ">
 								{formatTime($currentTime)}</span>
 							{:else}
 								{record.end}
