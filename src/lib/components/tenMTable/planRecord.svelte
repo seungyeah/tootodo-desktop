@@ -183,7 +183,7 @@
 													></Button>
 												</Popover.Trigger>
 												{#if settingVisible && record}
-													<Popover.Content class="translate-y-[0.2rem] w-auto" >
+													<Popover.Content class="translate-y-[0.2rem] w-auto p-0 " >
 														<TimerSetting {record} bind:timerOpen />
 													</Popover.Content>
 												{/if}

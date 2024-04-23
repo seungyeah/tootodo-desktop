@@ -52,7 +52,9 @@
 	}
 </script>
 
-<div class="z-20 w-[220px] flex-col items-center justify-center space-y-1 bg-zinc-900 p-2 text-white shadow-lg">
+<div class="z-20 w-[220px] flex-col items-center justify-center space-y-1 bg-zinc-900 p-2 text-white 
+border-8 border-double border-zinc-50 box-content rounded-2xl shadow-xl
+">
 	<div class="font-digital text-center w-full">{tooltip}</div>
 	<div class="flex-col space-y-2 border-2 border-dotted border-white px-1 py-2">
 		<!-- working time control  -->
@@ -155,7 +157,7 @@
 		</div>
 		<Button
 			variant="outline"
-			class="absolute -top-1.5  right-0 m-2 px-2 h-12 w-18 text-2xl font-bold font-digital text-black shadow-inner shadow-zinc-400 "
+			class="absolute -top-1.5  right-0 m-2 px-4 h-12 w-18 text-2xl font-bold font-digital text-black shadow-inner shadow-zinc-400 "
 			on:click={() => (timerOpen = !timerOpen)}>D<PomoIcon />!</Button
 		>
 	</div>
