@@ -184,16 +184,16 @@
 	>
 		<div class="relative w-full -translate-y-3 translate-x-4">
 			{#each Stars as star, i}
-				<Button
+				<button
 					variant="ghost"
-					class="absolute left-0 top-0 p-0 hover:bg-none"
+					class="absolute left-0 top-0 py-1 pt-2 hover:bg-none"
 					style="transform:translateX({i * 24}px)"
 					on:click={() => {
 						Stars = Stars.map((_, j) => j <= i);
 					}}
 				>
 					<Star size={20} fill={star ? '#fde047' : 'white'} />
-				</Button>
+				</button>
 			{/each}
 			<!-- today, date -->
 			<!-- <div class="hidden lg:block ">

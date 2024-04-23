@@ -50,7 +50,20 @@ const config = {
 				card: {
 					DEFAULT: "hsl(var(--card) / <alpha-value>)",
 					foreground: "hsl(var(--card-foreground) / <alpha-value>)"
-				}
+				},
+				pomodoro: {
+					50: '#F8ECEC',
+					100: '#f7d5d8',
+					200: '#f6cace',
+					300: '#f0aab0',
+					400: '#e46b75',
+					500: '#D92B3A',
+					600: '#c32734',
+					700: '#a3202c',
+					800: '#821a23',
+					900: '#6a151c',
+					950:'#501016'
+				  },
 			},
 			borderRadius: {
 				lg: "var(--radius)",

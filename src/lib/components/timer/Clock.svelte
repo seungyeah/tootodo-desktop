@@ -82,7 +82,7 @@
 
 <div >
     <svg viewBox="0 0 {vw} {vh}">
-        <circle {cx} {cy} {r} stroke="white" fill=""  />
+        <circle {cx} {cy} {r} stroke="#18181b" fill="white"  />
 
         {#each lines as line}
             <line
@@ -90,14 +90,14 @@
                     y1={getLineCoordinates(line).y1}
                     x2={getLineCoordinates(line).x2}
                     y2={getLineCoordinates(line).y2}
-                    stroke="white"
+                    stroke="#18181b"
                     stroke-width="{line.stroke_width === 'thick' ? 1.5 : 0.5}"
             />
             <text
                     x={getTextCoordinates(line).x}
                     y={getTextCoordinates(line).y}
                     font-size="8"
-                    fill="white"
+                    fill="#18181b"
             >{line.text}</text>
         {/each}
 

@@ -2,49 +2,23 @@
 	import { VisSingleContainer, VisDonut } from '@unovis/svelte';
 	import Clock from './Clock.svelte';
 	import PomoIcon from '$components/PomoIcon.svelte';
-	export let dataIn: number[] = [40,20]
-	export let dataOut: number[] = [80,20]
+	export let dataIn: number[] = [40,0,20]
 
   const value = (d: number) => d;
-  const colorIn = (d: number, i: number) => ['#D92B3A','#022c22'][i]
-  const colorOut = (d: number, i: number) => ['#022c22','#D92B3A'][i]
+  const colorIn = (d: number, i: number) => ['#D92B3A','#022c22','#F8ECEC'][i]
 </script>
 
-<div class="w-full h-full relative -translate-y-0.5">
-	<div class="z-10 absolute translate-x-[100px] -bottom-1 w-full text-xl flex text-[#D92B3A] scale-150">
-		{#each new Array(5) as _}
-		<div class="opacity-100"> 
-			<PomoIcon /> 
-		</div>
-		{/each}
-		{#each new Array(3) as _}
-		<div class="opacity-40"> 
-			<PomoIcon /> 
-		</div>
-		{/each}
-	</div>
-
-	<div class="absolute w-full h-full scale-90 translate-y-2.5">
-		<Clock />
-	</div>
-	<div class="absolute h-full w-full">
-		<div class="chart opacity-40">
-			<VisSingleContainer data = {dataOut} class="w-full h-full">
-				<VisDonut {value}  color={colorOut} radius={210} arcWidth={20} />
-			</VisSingleContainer>
-		</div>
-		<div class="chart opacity-70">
+<div class="w-full h-full relative -translate-y-6 ">
+	
+		<div class=" absolute z-10 -translate-x-[5px] translate-y-[5px]">
 			<VisSingleContainer data = {dataIn} class="w-full h-full">
-				<VisDonut {value} color={colorIn} radius={135} arcWidth={0}/>
+				<VisDonut {value} color={colorIn} radius={92} arcWidth={0} showEmptySegments={true} emptySegmentAngle={Math.PI / 50}/>
 			</VisSingleContainer>
 		</div>
-	</div>
+
+		<div class="translate-y-2.5 scale-95">
+			<Clock />
+		</div>
 
 	
 </div>
-
-<style>
-	.chart{
-		@apply absolute w-full h-full 
-	}
-</style>
