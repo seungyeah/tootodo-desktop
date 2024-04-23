@@ -53,7 +53,7 @@
 	<div
 		class="relative m-1 flex aspect-square h-full scale-90 rounded-full bg-zinc-100 p-0 shadow-xl"
 	>
-		<div class="h-full w-full rounded-full shadow-inner shadow-zinc-950">
+		<div class="h-full w-full rounded-full shadow-xl shadow-zinc-950">
 			<TimerLayout {workSession}/>
 		</div>
 
@@ -111,7 +111,11 @@
 			>
 				{#each records as record, i}
 					<tr class="w-full">
-						<td class="border-b border-r-2 px-2 pb-1">{record.start}</td>
+						<td class="border-b border-r-2 px-2 pb-1">
+							<span class={record.done? "text-pomodoro-200":"text-zinc-100"}>
+								{record.start}
+							</span>
+						</td>
 						<td class="border-b px-2 pb-1">
 							{#if i != 0 && records[i - 1].done === true && record.done === false}
 								<span
@@ -122,7 +126,9 @@
 									{formatTime($currentTime)}</span
 								>
 							{:else}
+							<span class={record.done? "text-pomodoro-300":"text-zinc-100"}>
 								{record.end}
+							</span>
 							{/if}
 						</td>
 					</tr>
