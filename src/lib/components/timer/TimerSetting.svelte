@@ -155,7 +155,7 @@
 		</div>
 		<Button
 			variant="outline"
-			class="absolute -top-1.5  right-0 m-2 px-2 h-12 w-18 text-2xl font-bold font-digital text-black "
+			class="absolute -top-1.5  right-0 m-2 px-2 h-12 w-18 text-2xl font-bold font-digital text-black shadow-inner shadow-zinc-400 "
 			on:click={() => (timerOpen = !timerOpen)}>D<PomoIcon />!</Button
 		>
 	</div>
