@@ -32,7 +32,7 @@
 	let leftSessionTime = working;
 	// timer operate
 	let timerPlay = false;
-	let workSession = false;
+	let workSession = true;
 
 	let records = [
 		{ start: '10:30', end: '10:55', done: true, leftTime: 0, studyResult: 20 },
@@ -61,7 +61,7 @@
 		<Button
 			variant="secondary"
 			class="absolute -left-[2.9rem] -top-7 z-50 h-[220px]  w-[220px] translate-x-1/3 translate-y-1/4
-		 rounded-full  border-4 border-emerald-950 bg-black/20 p-0 shadow-xl hover:bg-black/60"
+		 rounded-full  border-4  border-amber-950 bg-black/20 p-0 shadow-xl hover:bg-black/60"
 			on:click={() => {
 				timerPlay = !timerPlay;
 			}}
@@ -112,7 +112,7 @@
 				{#each records as record, i}
 					<tr class="w-full">
 						<td class="border-b border-r-2 px-2 pb-1">
-							<span class={record.done? "text-pomodoro-200":"text-zinc-100"}>
+							<span class={record.done? "text-zinc-500":"text-zinc-100"}>
 								{record.start}
 							</span>
 						</td>
@@ -126,7 +126,7 @@
 									{formatTime($currentTime)}</span
 								>
 							{:else}
-							<span class={record.done? "text-pomodoro-300":"text-zinc-100"}>
+							<span class={record.done? "text-zinc-500":"text-zinc-100"}>
 								{record.end}
 							</span>
 							{/if}

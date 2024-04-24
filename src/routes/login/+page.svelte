@@ -92,7 +92,7 @@
 			</form>
 		{:else}
 			<!-- sign in -->
-			<h1 class="text-center">Sign in</h1>
+			<h1 class="text-center text-2xl font-bold">Login</h1>
 			<form method="POST" on:submit={handleLogin} class="flex w-full flex-col space-y-2">
 				<Input type="email" placeholder="email" class="w-full" bind:value={loginForm.email} />
 				<Input
@@ -102,19 +102,19 @@
 					bind:value={loginForm.password}
 				/>
 				<div class="my-2 flex w-full space-x-2">
-					<Button type="submit" class="w-2/3">Submit</Button>
-					<Button on:click={() => (signUp = true)} class="w-1/3">Sign Up</Button>
+					<Button variant="secondary" type="submit" class="w-full text-center">Submit</Button>
+					<!-- <Button on:click={() => (signUp = true)} class="w-1/3">Sign Up</Button> -->
 				</div>
 			</form>
 		{/if}
 
-		<a href={googleLoginUrl} rel="external">
+		<!-- <a href={googleLoginUrl} rel="external">
 			<Button
 				class="my-2 w-full"
 				on:click={async () => (googleLoginUrl = await auth.getGoogleUrl('/'))}
 				>Login with google</Button
 			>
-		</a>
+		</a> -->
 
 		<div class="w-30">
 			{errorMessage}
