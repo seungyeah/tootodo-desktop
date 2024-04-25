@@ -134,42 +134,9 @@
 				{/each}
 			</div>
 
-			<!-- cycle table -->
-			<!-- <table
-				class="font-digital relative flex h-full w-full flex-col-reverse items-end 
-			justify-start space-x-4 text-center text-sm gap-2"
-			>
-				{#each records as record, i}
-				{@const startTime = record.startTime.slice(0, 5)}
-				{@const endTime = record.endTime.slice(0, 5)}
-					<tr class="w-full">
-						<td class="border-b px-3 pb-1">
-							<span class={record.done? "text-zinc-500":"text-zinc-100"}>
-								{startTime}
-							</span>
-						</td>
-						<td class="border-b px-3 pb-1">
-							{#if i === 0 || records[i - 1].done === true && record.done === false}
-								<span
-									class={workSession
-										? 'absolute z-10 -translate-x-2.5 -translate-y-[1.1rem] scale-[115%] rounded-lg border-4 border-dotted bg-zinc-950 px-1.5 py-0.5 text-[1rem] text-pomodoro-500 shadow-xl'
-										: 'absolute z-10  -translate-x-2.5 -translate-y-[1.1rem] scale-[115%] rounded-lg border-4 border-dotted px-1.5 py-0.5 text-[1rem] text-emerald-500 shadow-xl bg-zinc-950'}
-								>
-									{formatTime($currentTime)}</span
-								>
-							{:else}
-							<span class={record.done? "text-zinc-500":"text-zinc-100"}>
-								{endTime}
-							</span>
-							{/if}
-						</td>
-					</tr>
-				{/each}				
-			</table> -->
-
 			<!-- start, end -->
 			<div
-				class="font-digital flex h-[22px] w-full -translate-x-1.5 translate-y-1 justify-start text-zinc-500"
+				class="font-digital flex h-[22px] w-full -translate-x-1.5  justify-start text-zinc-500"
 			>
 				<div class="w-[32px]" />
 				<div class="w-[60px] text-center font-extrabold">Start</div>
