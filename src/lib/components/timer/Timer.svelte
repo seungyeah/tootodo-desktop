@@ -11,7 +11,7 @@
 		StepBack,
 		StepForward
 	} from 'lucide-svelte';
-	import { currentTime, formatTime,timerOpen,timerSetting } from '$store';
+	import { currentTime, formatTime, timerOpen, timerSetting } from '$store';
 	import Separator from '$ui/separator/separator.svelte';
 
 	export let goalTime = {
@@ -34,87 +34,126 @@
 	let workSession = true;
 
 	let records = $timerSetting.cycles;
+	$: console.log(records);
 </script>
 
-<div
-	class=" flex h-full w-full items-center justify-between rounded-2xl border-8 border-double border-zinc-50
-	bg-zinc-800 text-white shadow-2xl"
->
-	<!-- timer layout -->
+{#if $timerOpen && records}
 	<div
-		class="relative m-1 flex aspect-square h-full scale-90 rounded-full bg-zinc-100 p-0 shadow-xl"
+		class=" flex h-full w-full items-center justify-between rounded-2xl border-8 border-double border-zinc-50
+	bg-zinc-800 text-white shadow-2xl"
 	>
-		<div class="h-full w-full rounded-full shadow-xl shadow-zinc-950">
-			<TimerLayout {workSession}/>
+		<!-- timer layout -->
+		<div
+			class="relative m-1 flex aspect-square h-full scale-90 rounded-full bg-zinc-100 p-0 shadow-xl"
+		>
+			<div class="h-full w-full rounded-full shadow-xl shadow-zinc-950">
+				<TimerLayout {workSession} />
+			</div>
+
+			<!-- play/stop -->
+			<Button
+				variant="secondary"
+				class="absolute -left-[2.9rem] -top-7 z-50 h-[220px]  w-[220px] translate-x-1/3 translate-y-1/4
+		 rounded-full  border-4  border-amber-950 bg-black/20 p-0 shadow-xl hover:bg-black/60"
+				on:click={() => {
+					timerPlay = !timerPlay;
+				}}
+			>
+				{#if timerPlay}
+					<Pause fill="#e4e4e7" color="#e4e4e7" size={44} />
+				{:else}
+					<Play fill="#e4e4e7" color="#e4e4e7" size={44} />
+				{/if}
+			</Button>
+
+			<!-- finish -->
+			<Button
+				variant="ghost"
+				class="absolute -left-2 top-0 z-10  px-1 hover:bg-zinc-200 hover:shadow hover:shadow-zinc-50"
+				on:click={() => {
+					$timerOpen = false;
+				}}><StepBack color="#52525b" fill="#52525b" size={32} /></Button
+			>
+
+			<!-- next session -->
+			<Button
+				variant="ghost"
+				class="absolute -right-2 bottom-0 z-10  px-1  hover:bg-zinc-200 hover:shadow hover:shadow-zinc-50"
+				on:click={() => {
+					$timerOpen = false;
+				}}><StepForward color="#52525b" fill="#52525b" size={32} /></Button
+			>
 		</div>
 
-		<!-- play/stop -->
-		<Button
-			variant="secondary"
-			class="absolute -left-[2.9rem] -top-7 z-50 h-[220px]  w-[220px] translate-x-1/3 translate-y-1/4
-		 rounded-full  border-4  border-amber-950 bg-black/20 p-0 shadow-xl hover:bg-black/60"
-			on:click={() => {
-				timerPlay = !timerPlay;
-			}}
-		>
-			{#if timerPlay}
-				<Pause fill="#e4e4e7" color="#e4e4e7" size={44} />
-			{:else}
-				<Play fill="#e4e4e7" color="#e4e4e7" size={44} />
-			{/if}
-		</Button>
+		<!-- progress -->
+		<div class="relative flex h-full w-[calc(100%-290px)] flex-col py-3 text-xl">
+			<!-- indicator -->
+			<ArrowUp class="absolute right-[3.5rem] top-2 " color="#f7d5d8" />
+			<Separator orientation="vertical" class="absolute right-[4.2rem] top-4 h-[230px] border border-zinc-400" />
+			<ArrowUp class="absolute bottom-4 right-[3.5rem]" color="#f7d5d8" />
 
-		<!-- finish -->
-		<Button
-			variant="ghost"
-			class="absolute -left-2 top-0 z-10  px-1 hover:bg-zinc-200 hover:shadow hover:shadow-zinc-50"
-			on:click={() => {
-				$timerOpen = false;
-			}}><StepBack color="#52525b" fill="#52525b" size={32} /></Button
-		>
+			<!-- status -->
+			<div
+				class="no-scrollbar flex h-full max-h-[calc(100%-20px)] py-1 flex-col-reverse justify-start gap-2.5 overflow-x-clip overflow-y-scroll"
+			>
+				{#each records as record, i}
+					{@const startTime = record.startTime.slice(0, 5)}
+					{@const endTime = record.endTime.slice(0, 5)}
 
-		<!-- next session -->
-		<Button
-			variant="ghost"
-			class="absolute -right-2 bottom-0 z-10  px-1  hover:bg-zinc-200 hover:shadow hover:shadow-zinc-50"
-			on:click={() => {
-				$timerOpen = false;
-			}}><StepForward color="#52525b" fill="#52525b" size={32} /></Button
-		>
-	</div>
+					<div class="flex space-x-4 font-digital text-center text-sm p-0 m-0 border-b border-zinc-500 rounded-full">
+						<!-- pomo icon -->
+						<div
+							class={record.done
+								? 'relative scale-125 opacity-90'
+								: 'relative scale-125 opacity-30'}
+						>
+							<PomoIcon />
+							<div class="absolute right-1 top-1 text-xs">{i + 1}</div>
+						</div>
 
-	<!-- progress -->
-	<div class="flex h-full w-[calc(100%-290px)] flex-col py-3 text-xl">
-		<div class="flex h-full space-x-1">
-			<!-- pomo icon -->
-			<div class="flex h-full flex-col-reverse justify-start gap-1.5">
-				{#each records as record}
-					<div class={record.done ? 'scale-125 opacity-90' : 'scale-125 opacity-30'}>
-						<PomoIcon />
-					</div>
+							<!-- start time -->
+							<div class={record.done ? ' text-zinc-500' : ' text-zinc-100'}>
+								{startTime}
+							</div>
+
+							<!-- end time or current time  -->
+							{#if i === 0 || (records[i - 1].done === true && record.done === false)}
+								<div
+									class={workSession
+										? 'z-10 -translate-x-0.5 -translate-y-[0.3rem] scale-[115%] rounded-lg border-4 border-dotted bg-zinc-950 px-1.5 py-0.5 text-[1rem] text-pomodoro-500 shadow-xl'
+										: 'z-10  -translate-x-0.5 -translate-y-[0.3rem] scale-[115%] rounded-lg border-4 border-dotted bg-zinc-950 px-1.5 py-0.5 text-[1rem] text-emerald-500 shadow-xl'}
+								>
+									{formatTime($currentTime)}
+								</div>
+							{:else}
+								<div class={record.done ? 'px-3 pb-1 text-zinc-500' : 'px-3 pb-1 text-zinc-100'}>
+									{endTime}
+								</div>
+							{/if}
+						</div>
 				{/each}
 			</div>
-			<!-- cycle table -->
 
-			<table
-				class="font-digital relative flex h-full w-full flex-col-reverse items-end
-			justify-start space-x-4 text-center text-sm gap-1.5"
+			<!-- cycle table -->
+			<!-- <table
+				class="font-digital relative flex h-full w-full flex-col-reverse items-end 
+			justify-start space-x-4 text-center text-sm gap-2"
 			>
 				{#each records as record, i}
 				{@const startTime = record.startTime.slice(0, 5)}
 				{@const endTime = record.endTime.slice(0, 5)}
 					<tr class="w-full">
-						<td class="border-b border-r px-3 pb-1">
+						<td class="border-b px-3 pb-1">
 							<span class={record.done? "text-zinc-500":"text-zinc-100"}>
 								{startTime}
 							</span>
 						</td>
 						<td class="border-b px-3 pb-1">
-							{#if i == 0 || records[i - 1].done === true && record.done === false}
+							{#if i === 0 || records[i - 1].done === true && record.done === false}
 								<span
 									class={workSession
-										? 'absolute z-10 -translate-x-2.5 -translate-y-4 scale-[115%] rounded-lg border-4 border-dotted bg-zinc-950 px-1.5 py-0.5 text-[1rem] text-pomodoro-500 shadow-xl'
-										: 'absolute z-10  -translate-y-4 scale-125 rounded-lg border-4 border-dotted px-1.5 py-0.5 text-[1rem] text-emerald-500 shadow-xl bg-zinc-950'}
+										? 'absolute z-10 -translate-x-2.5 -translate-y-[1.1rem] scale-[115%] rounded-lg border-4 border-dotted bg-zinc-950 px-1.5 py-0.5 text-[1rem] text-pomodoro-500 shadow-xl'
+										: 'absolute z-10  -translate-x-2.5 -translate-y-[1.1rem] scale-[115%] rounded-lg border-4 border-dotted px-1.5 py-0.5 text-[1rem] text-emerald-500 shadow-xl bg-zinc-950'}
 								>
 									{formatTime($currentTime)}</span
 								>
@@ -125,23 +164,22 @@
 							{/if}
 						</td>
 					</tr>
-				{/each}
-				<ArrowUp class="absolute -top-2.5 right-[4.3rem]" color="#e4e4e7"/>
-				<Separator orientation="vertical" class="absolute -top-0 right-[5rem] border"/>
-				<ArrowUp class="absolute bottom-2.5 right-[4.3rem]" color="#e4e4e7"/>
-			</table>
+				{/each}				
+			</table> -->
+
+			<!-- start, end -->
+			<div
+				class="font-digital flex h-[22px] w-full -translate-x-1.5 translate-y-1 justify-start text-zinc-500"
+			>
+				<div class="w-[32px]" />
+				<div class="w-[60px] text-center font-extrabold">Start</div>
+				<div class="w-[20px] text-center font-extrabold"></div>
+				<div class=" w-[60px] text-center font-extrabold">End</div>
+			</div>
 		</div>
 
-		<div class="font-digital flex h-[22px] w-full -translate-x-1.5 translate-y-1 justify-start text-pomodoro-700">
-			<div class="w-[32px]" />
-			<div class="w-[60px] text-center font-extrabold">Start</div>
-			<div class="w-[20px] text-center font-extrabold">-</div>
-			<div class=" w-[60px] text-center font-extrabold">End</div>
-		</div>
-	</div>
-
-	<!-- timer status -->
-	<!-- <Button
+		<!-- timer status -->
+		<!-- <Button
 		on:click={() => {
 			timerPlay = !timerPlay;
 		}}
@@ -154,4 +192,14 @@
 			<div class="font-digital uppercase ">{timerState}</div>
 		</div>
 	</Button> -->
-</div>
+	</div>
+{:else}
+	<div class="flex h-full w-full items-center justify-center">
+		<Button
+			on:click={() => ($timerOpen = false)}
+			class="font-digital text-2xl font-bold text-zinc-900"
+		>
+			No Record, Back to the Setting
+		</Button>
+	</div>
+{/if}

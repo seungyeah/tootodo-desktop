@@ -4,7 +4,6 @@
 	import Timer from '$components/timer/Timer.svelte';
 	import TimerSetting from '$components/timer/TimerSetting.svelte';
 	import { currentTime, formatTime, timerOpen } from '$store';
-	import { record } from 'zod';
 	let settingVisible = false;
 
 	const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -55,7 +54,6 @@
 				}
 			}
 		}
-
 		return cellColors;
 	}
 

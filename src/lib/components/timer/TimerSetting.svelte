@@ -32,7 +32,6 @@
 		const startTime = new Time($currentTime.getHours(),$currentTime.getMinutes(),$currentTime.getSeconds());
 		const endTime = startTime.add({minutes:duration});
 		const cycles = calculateCycleArray(startTime);
-		console.log(cycles);
 		timerSetting.set({working, breaking, cycles, remain,duration, startTime, endTime});	
 	}
 
@@ -70,7 +69,7 @@
 	function updateCycleAndRemain() {
 		if (duration > 0 && working + breaking > 0) {
 			if (working + breaking <= duration) {
-				cycle = Math.floor(duration / (working + breaking));
+				cycle = Math.floor(duration / (working + breaking));				
 				remain = duration % (working + breaking);
 			} else {
 				working = 0;
@@ -189,9 +188,9 @@ border-8 border-double border-zinc-50 box-content rounded-2xl shadow-xl
 		<Button
 			variant="outline"
 			class="absolute -top-1.5  right-0 m-2 px-4 h-12 w-18 text-2xl font-bold font-digital text-black shadow-inner shadow-zinc-400 "
-			on:click={() => {
-				$timerOpen = true;
+			on:click={() => {				
 				storeTimerSetting();
+				$timerOpen = true;
 			}}>D<PomoIcon />!</Button
 		>
 	</div>
