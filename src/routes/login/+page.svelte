@@ -3,7 +3,7 @@
 
 	import { Button, Input } from '$ui';
 
-	import { auth, isAuthed } from '$lib/store';
+	import { auth, isAuthed, timerOpen } from '$lib/store';
 
 	let signUp = false;
 	let googleLoginUrl;

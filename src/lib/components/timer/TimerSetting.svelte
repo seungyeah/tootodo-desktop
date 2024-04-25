@@ -1,10 +1,15 @@
-<script>
+<script lang="ts">
 	import { Button } from '$ui';
 	import { Milestone } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 	import PomoIcon from '$components/PomoIcon.svelte';
+	import { timerSetting,currentTime } from '$store';
+	import {timerOpen}from '$store';
+	import { Time } from '@internationalized/date';
 
-	export let timerOpen = false;
+	// planRecord에서 record(start, end)를 받아오고, 이를 기반으로 duration계산
+	// duration 및 사용자가 입력한 working과 braking을 기반으로, cycle과 remain을 계산
+	// 각 cycle에 대한 시작시간, 종료시간, 완료여부(false), 남은시간(=working), 공부시간(=0)을 로컬 저장소에 저장 
 	export let record = { start: '', end: '' };
 
 	let tooltip = ''; // Tooltip text
@@ -19,8 +24,34 @@
 		if (record) {
 			tooltip = `---  ${record.start} ~ ${record.end} ---`;
 			calculateDuration();
+			updateCycleAndRemain();
 		}
 	});
+
+	function storeTimerSetting(){
+		const startTime = new Time($currentTime.getHours(),$currentTime.getMinutes(),$currentTime.getSeconds());
+		const endTime = startTime.add({minutes:duration});
+		const cycles = calculateCycleArray(startTime);
+		console.log(cycles);
+		timerSetting.set({working, breaking, cycles, remain,duration, startTime, endTime});	
+	}
+
+	function calculateCycleArray(startTime:Time){
+		let cycleArray = [];
+		let endTime = startTime.add({minutes:working});
+		for (let i = 0; i < cycle; i++) {
+			cycleArray.push({
+				startTime:startTime.toString(),
+				endTime:endTime.toString(),
+				done: false,
+				leftTime: working,
+				studyResult: 0
+			});
+			startTime = endTime.add({minutes:breaking});
+			endTime = startTime.add({minutes:working});
+		}
+		return cycleArray;
+	}
 
 	function calculateDuration() {
 		let [startHour, startMin] = record.start.split(':').map(Number);
@@ -34,7 +65,6 @@
 		duration = hours * 60 + minutes;
 		if (hours == 0) durationString = `${minutes}M`;
 		else durationString = `${hours}H ${minutes}M`;
-		updateCycleAndRemain();
 	}
 
 	function updateCycleAndRemain() {
@@ -155,10 +185,14 @@ border-8 border-double border-zinc-50 box-content rounded-2xl shadow-xl
 				>)*{cycle}+<span class="text-blue-200">{remain}</span>
 			</div>
 		</div>
+		<!-- start timer -->
 		<Button
 			variant="outline"
 			class="absolute -top-1.5  right-0 m-2 px-4 h-12 w-18 text-2xl font-bold font-digital text-black shadow-inner shadow-zinc-400 "
-			on:click={() => (timerOpen = !timerOpen)}>D<PomoIcon />!</Button
+			on:click={() => {
+				$timerOpen = true;
+				storeTimerSetting();
+			}}>D<PomoIcon />!</Button
 		>
 	</div>
 </div>

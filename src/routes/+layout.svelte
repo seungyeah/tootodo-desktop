@@ -3,7 +3,7 @@
 	import { Button, Breadcrumb, Popover, Input, Avatar, DropdownMenu } from '$ui';
 	import HeaderNav from '$components/HeaderNav.svelte';
 	import TWindicator from '$components/TWindicator.svelte';
-	import { auth, isAuthed } from '$store';
+	import { auth, isAuthed,timerOpen } from '$store';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { Search, LogOut, Clock } from 'lucide-svelte';
@@ -14,7 +14,6 @@
 	let errorMessage = '';
 	let searchMode = false;
 	let timerMode = false;
-	let timerOpen = false;
 
 	onMount(async () => {
 		const loggedIn = getCookie('logged_in');
@@ -113,14 +112,14 @@
 				</Popover.Trigger>
 				<Popover.Content class="w-[470px] translate-y-1 p-0 runded-xl" >
 					<div
-						class={timerOpen
+						class={$timerOpen
 							? 'relative h-[290px]  m-auto '
 							: 'relative m-3 h-[460px] w-[calc(100%-24px)]'}
 					>
-						<ShowRecord {timerOpen} />
+						<ShowRecord  />
 						<div class="absolute top-0 h-full w-full">
 							<!-- plan record and start timer directly -->
-							<PlanRecord bind:timerOpen />
+							<PlanRecord />
 						</div>
 					</div>
 				</Popover.Content>

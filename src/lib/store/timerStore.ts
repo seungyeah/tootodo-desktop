@@ -57,7 +57,6 @@ export default function timerStore<T = any>(options: TimerOptions<T> = {}) {
   }
 
 
-
   return {
     ...state,
     start,

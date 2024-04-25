@@ -11,10 +11,9 @@
 		StepBack,
 		StepForward
 	} from 'lucide-svelte';
-	import { currentTime, formatTime } from '$store';
-	import { record } from 'zod';
+	import { currentTime, formatTime,timerOpen,timerSetting } from '$store';
+	import Separator from '$ui/separator/separator.svelte';
 
-	export let timerOpen = false;
 	export let goalTime = {
 		total: 80,
 		cycle: 45
@@ -34,15 +33,7 @@
 	let timerPlay = false;
 	let workSession = true;
 
-	let records = [
-		{ start: '10:30', end: '10:55', done: true, leftTime: 0, studyResult: 20 },
-		{ start: '11:00', end: '11:25', done: true, leftTime: 0, studyResult: 10 },
-		{ start: '11:30', end: '11:55', done: true, leftTime: 0, studyResult: 20 },
-		{ start: '12:00', end: '12:25', done: false, leftTime: 20, studyResult: 0 },
-		{ start: '12:30', end: '12:55', done: false, leftTime: 20, studyResult: 0 },
-		{ start: '13:00', end: '13:25', done: false, leftTime: 20, studyResult: 0 },
-		{ start: '13:30', end: '13:55', done: false, leftTime: 20, studyResult: 0 }
-	];
+	let records = $timerSetting.cycles;
 </script>
 
 <div
@@ -78,7 +69,7 @@
 			variant="ghost"
 			class="absolute -left-2 top-0 z-10  px-1 hover:bg-zinc-200 hover:shadow hover:shadow-zinc-50"
 			on:click={() => {
-				timerOpen = false;
+				$timerOpen = false;
 			}}><StepBack color="#52525b" fill="#52525b" size={32} /></Button
 		>
 
@@ -87,7 +78,7 @@
 			variant="ghost"
 			class="absolute -right-2 bottom-0 z-10  px-1  hover:bg-zinc-200 hover:shadow hover:shadow-zinc-50"
 			on:click={() => {
-				timerOpen = false;
+				$timerOpen = false;
 			}}><StepForward color="#52525b" fill="#52525b" size={32} /></Button
 		>
 	</div>
@@ -96,7 +87,7 @@
 	<div class="flex h-full w-[calc(100%-290px)] flex-col py-3 text-xl">
 		<div class="flex h-full space-x-1">
 			<!-- pomo icon -->
-			<div class="flex h-full flex-col-reverse justify-between">
+			<div class="flex h-full flex-col-reverse justify-start gap-1.5">
 				{#each records as record}
 					<div class={record.done ? 'scale-125 opacity-90' : 'scale-125 opacity-30'}>
 						<PomoIcon />
@@ -107,38 +98,41 @@
 
 			<table
 				class="font-digital relative flex h-full w-full flex-col-reverse items-end
-			justify-between space-x-4 text-center text-sm"
+			justify-start space-x-4 text-center text-sm gap-1.5"
 			>
 				{#each records as record, i}
+				{@const startTime = record.startTime.slice(0, 5)}
+				{@const endTime = record.endTime.slice(0, 5)}
 					<tr class="w-full">
-						<td class="border-b border-r-2 px-2 pb-1">
+						<td class="border-b border-r px-3 pb-1">
 							<span class={record.done? "text-zinc-500":"text-zinc-100"}>
-								{record.start}
+								{startTime}
 							</span>
 						</td>
-						<td class="border-b px-2 pb-1">
-							{#if i != 0 && records[i - 1].done === true && record.done === false}
+						<td class="border-b px-3 pb-1">
+							{#if i == 0 || records[i - 1].done === true && record.done === false}
 								<span
 									class={workSession
-										? 'absolute z-10 -translate-x-1.5 -translate-y-4 scale-125 rounded-lg border-4 border-dotted bg-zinc-950 px-1.5 py-0.5 text-[1rem] text-pomodoro-500 shadow-xl'
-										: 'absolute z-10 -translate-x-1.5 -translate-y-4 scale-125 rounded-lg border-4 border-dotted px-1.5 py-0.5 text-[1rem] text-emerald-500 shadow-xl bg-zinc-950'}
+										? 'absolute z-10 -translate-x-2.5 -translate-y-4 scale-[115%] rounded-lg border-4 border-dotted bg-zinc-950 px-1.5 py-0.5 text-[1rem] text-pomodoro-500 shadow-xl'
+										: 'absolute z-10  -translate-y-4 scale-125 rounded-lg border-4 border-dotted px-1.5 py-0.5 text-[1rem] text-emerald-500 shadow-xl bg-zinc-950'}
 								>
 									{formatTime($currentTime)}</span
 								>
 							{:else}
 							<span class={record.done? "text-zinc-500":"text-zinc-100"}>
-								{record.end}
+								{endTime}
 							</span>
 							{/if}
 						</td>
 					</tr>
 				{/each}
-				<ArrowUp class="absolute -top-2.5 right-16" />
-				<ArrowUp class="absolute bottom-2.5 right-16" />
+				<ArrowUp class="absolute -top-2.5 right-[4.3rem]" color="#e4e4e7"/>
+				<Separator orientation="vertical" class="absolute -top-0 right-[5rem] border"/>
+				<ArrowUp class="absolute bottom-2.5 right-[4.3rem]" color="#e4e4e7"/>
 			</table>
 		</div>
 
-		<div class="font-digital flex h-[22px] w-full -translate-x-2 justify-start text-pomodoro-600">
+		<div class="font-digital flex h-[22px] w-full -translate-x-1.5 translate-y-1 justify-start text-pomodoro-700">
 			<div class="w-[32px]" />
 			<div class="w-[60px] text-center font-extrabold">Start</div>
 			<div class="w-[20px] text-center font-extrabold">-</div>

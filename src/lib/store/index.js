@@ -3,6 +3,7 @@
 // export const isLogin = setIsLogin();
 export * from './auth';
 export * from './timerStore';
+export * from './useLocStorage';
 // function setIsLogin() {
 // 	const checkLogin = derived(auth, $auth => $auth.Authorization ? true : false)
 //   return checkLogin

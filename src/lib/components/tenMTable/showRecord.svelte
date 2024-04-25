@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-
-	export let timerOpen = false;
+	import {timerOpen}from '$store';
 
 	let records = [
 		//24시 단위.
@@ -59,7 +58,7 @@
 	}
 </script>
 
-{#if !timerOpen}
+{#if !$timerOpen}
 	<div class="relative h-full w-full flex-col border-4 border-zinc-900">
 		<div class="m-2 flex justify-around">
 			{#each ['AM', 'PM'] as period, periodIndex}

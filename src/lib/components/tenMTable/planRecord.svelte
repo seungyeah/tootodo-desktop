@@ -3,21 +3,23 @@
 	import { Button, Tooltip, Popover } from '$ui';
 	import Timer from '$components/timer/Timer.svelte';
 	import TimerSetting from '$components/timer/TimerSetting.svelte';
-	import { currentTime, formatTime } from '$store';
+	import { currentTime, formatTime, timerOpen } from '$store';
 	import { record } from 'zod';
 	let settingVisible = false;
-	export let timerOpen = false;
 
 	const hours = Array.from({ length: 24 }, (_, i) => i);
 	const columns = [0, 10, 20, 30, 40, 50];
 	$: currentTimeDisplay = formatTime($currentTime);
 	$: isAM = new Date().getHours() < 12;
+
 	onMount(() => {
 		cellColors = getCellColor();
 	});
+
 	let cellColors = Array.from({ length: 24 }, () => [
 		Array.from({ length: 6 }, () => ({ colorFill: false, record: null }))
 	]);
+
 	let records = [
 		{ start: '9:20', end: '9:50', dragged: true },
 		{ start: '10:20', end: '11:40', dragged: true },
@@ -63,6 +65,7 @@
 	let dragStartColumn = null;
 	let dragEndHour = null;
 	let dragEndColumn = null;
+
 	// Handle the mouse down event
 	function handleMouseDown(hour, column, event, record) {
 		if (record) return;
@@ -134,8 +137,8 @@
 	}
 </script>
 
-{#if timerOpen}
-	<Timer bind:timerOpen />
+{#if $timerOpen}
+	<Timer />
 {:else}
 	<div class="relative h-full w-full flex-col border-4 border-zinc-900">
 		<div class="m-2 flex justify-around">
@@ -184,7 +187,7 @@
 												</Popover.Trigger>
 												{#if settingVisible && record}
 													<Popover.Content class="translate-y-[0.2rem] w-auto p-0 " >
-														<TimerSetting {record} bind:timerOpen />
+														<TimerSetting {record}  />
 													</Popover.Content>
 												{/if}
 											</Popover.Root>
