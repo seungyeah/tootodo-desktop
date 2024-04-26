@@ -71,21 +71,34 @@
 	}
 
 	async function switchSession() {
-		sessionSwitched = true;
 		let alarmSound = new Audio('https://freesound.org/data/previews/80/80921_1022651-lq.mp3');
 		alarmSound.play();
+		
+		sessionSwitched = true;
 
+		if($timerSetting.breaking === 0){
+			if ($timerStatus.cycle >= records.length) $timerOpen = false;
+			stopSeconds = 0;
+			await stopTimer();				
+			setNewRecordAt($timerStatus.cycle);		
+			updateRecordsFrom($timerStatus.cycle);
+			updateTimerStatus();		
+			await playTimer();		
+			sessionSwitched = false;				
+			return;
+		}
+		
 		if ($timerStatus.workSession) {
-			setNewRecordAt($timerStatus.cycle);
+			setNewRecordAt($timerStatus.cycle);			
 			$timerStatus.workSession = false;
 			$timerStatus.leftTime = $timerSetting.breaking * 60;
 			if ($timerStatus.cycle >= records.length) $timerOpen = false;
-		} else if (!$timerStatus.workSession) {
+		} else {
 			updateRecordsFrom($timerStatus.cycle);
 			updateTimerStatus();
 		}
-		stopSeconds = 0;
 
+		stopSeconds = 0;
 		await stopTimer();	
 		await playTimer();
 		sessionSwitched = false;
@@ -218,17 +231,18 @@
 					await switchSession();
 				}}><StepForward color="#52525b" fill="#52525b" size={32} /></Button
 			>
-		</div>
-
-		<!-- progress -->
-		<div class="text-x relative flex h-full w-[calc(100%-290px)] flex-col py-3">
-			<!-- indicator -->
-			<div class="absolute bottom-2.5 flex -translate-x-3 scale-90 items-end text-xs text-zinc-100">
+			<div class="absolute bottom-0 flex   items-end text-xs text-zinc-100">
 				<PomoIcon />
 				<div class="-translate-x-5">
 					{$timerSetting.working} min
 				</div>
 			</div>
+		</div>
+
+		<!-- progress -->
+		<div class="text-x relative flex h-full w-[calc(100%-290px)] flex-col py-3">
+			<!-- indicator -->
+			
 			<ArrowUp class="absolute right-[3.5rem] top-2 " color="#f7d5d8" />
 			<Separator
 				orientation="vertical"
@@ -286,7 +300,7 @@
 			</div>
 
 			<!-- start, end -->
-			<div class="font-digital flex h-[22px] w-full -translate-x-1.5 justify-start text-zinc-500">
+			<div class="font-digital flex h-[22px] w-full -translate-x-1.5 justify-start text-pomodoro-300">
 				<div class="w-[32px]" />
 				<div class="w-[60px] text-center font-extrabold">Start</div>
 				<div class="w-[20px] text-center font-extrabold"></div>
