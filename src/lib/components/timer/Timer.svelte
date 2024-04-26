@@ -127,7 +127,6 @@
 
 		let timeDiffSeconds = timeDiff.hour * 3600 + timeDiff.minute * 60 + timeDiff.second;
 		let duration = Math.floor((timeDiffSeconds - stopSeconds)/60);
-		console.log(duration);
 
 		// 현 cycle의 정보 저장
 		records[currentCycle - 1] = {
