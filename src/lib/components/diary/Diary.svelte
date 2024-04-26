@@ -3,6 +3,7 @@
 	import DiaryEditor from '$components/diary/DiaryEditor.svelte';
 	import { Bed, BookOpenText, Dumbbell, Globe, Pill, Star, Sun, Utensils } from 'lucide-svelte';
 	import ItemList from './ItemList.svelte';
+	import { currentTime } from '$store';
 	let habits = [
 		{ id: 0, icon: Sun, title: 'wake up' },
 		{ id: 1, icon: Bed, title: 'go to bed' },
@@ -173,8 +174,9 @@
 	$: habitRecords = sortedRecords.filter(
 		(record) => record.item === 'habit' && record.days.includes(day)
 	);
-	$: habits = habits.filter((habit) => habitRecords.some((record) => record.title === habit.title));
+	$: todayHabits = habits.filter((habit) => habitRecords.some((record) => record.title === habit.title));
 
+	$:console.log(todayHabits);
 	let Stars = new Array(5).fill(0);
 </script>
 
@@ -227,14 +229,16 @@
 			<div class="mb-2 w-full border-b-4 border-double border-zinc-200">Habit</div>
 			<div
 				class="h-[calc(100%-14px)] max-h-[calc(100%-14px)] overflow-y-scroll no-scrollbar 
-				grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 grid-rows-3   place-items-center items-center gap-1  
+				grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 grid-rows-3   place-items-center items-center gap-1  
 				rounded-lg px-1.5 shadow"
 			>
-				{#each habits as habit}
+				{#each todayHabits as habit}
 					<Button
 						variant="ghost"
 						on:click={() => {
 							habit.done = !habit.done;
+							if(habit.done) habit.doneTime = $currentTime;
+							else habit.doneTime = '';
 						}}
 						class={habit.done
 							? 'aspect-square rounded-full bg-zinc-200 p-1'
