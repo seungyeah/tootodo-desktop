@@ -10,7 +10,7 @@
 			alarm: true,
 			item: 'task',
 			title: 'urgent task',
-			days:  [{day:'mon',time:''}, {day:'wed',time:''}],
+			days:  [{day:'mon',time:'10:30'}, {day:'wed',time:'12:30'}],
 			openChat: false,
 			project: { title: 'Project K', color: '#f472b6' }
 		},
@@ -20,7 +20,7 @@
 			alarm: false,
 			item: 'task',
 			title: 'important review',
-			days: ['fri', 'sat'],
+			days: [{day:'fri',time:''}, {day:'sat',time:''}],
 			openChat: false,
 			project: { title: 'Project V', color: '#818cf8' }
 		},

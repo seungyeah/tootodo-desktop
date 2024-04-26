@@ -123,7 +123,7 @@
 							>{short}</span
 						>
 						<span
-							class="absolute bottom-0.5 left-0 px-0.5 py-0.5 font-serif text-[0.7rem] font-light leading-3 text-zinc-500"
+							class="absolute bottom-0.5 left-0 px-1.5 py-0.5 font-serif text-[0.7rem] font-light leading-3 text-zinc-500"
 							>{record.days.find((item) => item.day === day)?.time || ''}</span
 						>
 					</button>
