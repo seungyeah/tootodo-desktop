@@ -1,13 +1,19 @@
 
 //참고 repo: https://github.com/jnsprnw/webworker-sveltekit/tree/main
-self.onmessage = function (e) {
+let timer = null;
+let leftTime = 25;
+
+let stopTimerInterval = null;
+let stopTime = 0;
+
+self.onmessage = (e) => {
     // console.log(e.data);
     switch (e.data.action) {
-        case 'play':            
+        case 'play':
             playTimer(e.data.leftTime);
             break;
         case 'stop':
-            stopTimer();
+            stopTimer(e.data.stopTime, e.data.sessionSwitched);
             break;
         case 'reset':
             resetTimer();
@@ -15,29 +21,38 @@ self.onmessage = function (e) {
     }
 };
 
-let timer = null;
-let leftTime = 0;
-
-function playTimer(leftTime) {    
-    timer = setInterval(function () {
+async function playTimer(leftTime) {
+    await clearInterval(stopTimerInterval);
+    stopTimerInterval = null;
+    timer = setInterval(async () => {
         leftTime--;
         if (leftTime >= 0) {
             postMessage({ leftTime });
-        } else{
-            stopTimer()
+        } else {
+            await stopTimer()
         }
     }, 1000);
 }
 
-function stopTimer() {
-    clearInterval(timer);
+async function stopTimer(stopTime, sessionSwitched) {
+    await clearInterval(timer);
+    if(!sessionSwitched){
+        stopTimerInterval = setInterval(() => {
+            stopTime++;
+            postMessage({ stopTime });
+        }, 1000);
+    }   
 }
 
-function resetTimer() {
-    stopTimer();
-    leftTime = 0;
+async function resetTimer() {
+    await stopTimer();
+    clearInterval(stopTimerInterval);
+    clearInterval(timer);
+    leftTime = 25;
     timer = null;
-    postMessage({leftTime});
+    stopTimerInterval = null;
+    stopTime = 0;
+    postMessage({ leftTime });
 }
 
 

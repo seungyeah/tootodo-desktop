@@ -10,15 +10,16 @@
 
 	let worker: Worker;
 
-	let leftSeconds = 25;
-
+	let leftSecondsDefault = 25;
+	let stopSeconds = 0;
+	let sessionSwitched = false;
 	let records = [{ startTime: '', endTime: '', done: false, leftTime: 25, studyTime: 0 }];
 
 	
 	onMount(async () => {
 		await initWebWorker();
 		records = $timerSetting.cycles;		
-		leftSeconds = $timerSetting.working * 60;
+		leftSecondsDefault = $timerSetting.working * 60;
 
 		$timerStatus = {
 			play: true,
@@ -26,17 +27,16 @@
 			cycle: 1,
 			startTime: records[0].startTime,
 			endTime: records[0].endTime,
-			leftTime: leftSeconds,
+			leftTime: leftSecondsDefault,
 			studyTime: 0,
-			stopTime: 0
 		};
 
-		playTimer();
+		await playTimer();
 
 	});
 
-	onDestroy(() => {
-		resetTimer();
+	onDestroy(async () => {
+		await resetTimer();
 		worker.terminate();
 	});
 
@@ -47,7 +47,8 @@
 
 			// Web Worker에서 전달한 타이머 상태 정보를 메인 스레드에서 받아 Svelte 컴포넌트의 상태를 업데이트
 			worker.onmessage = async (e) => {
-				$timerStatus.leftTime = e.data.leftTime;
+				$timerStatus.leftTime = e.data.leftTime || $timerStatus.leftTime;
+				stopSeconds = e.data.stopTime || stopSeconds;
 				if(e.data.leftTime === 0) {
 					await switchSession()
 				}
@@ -56,11 +57,13 @@
 	}
 
 	async function playTimer() {
+		$timerStatus.play = true;
 		worker.postMessage({ action: 'play', leftTime: $timerStatus.leftTime });
 	}
 
 	async function stopTimer() {
-		worker.postMessage({ action: 'stop'});
+		$timerStatus.play = false;
+		worker.postMessage({ action: 'stop' ,stopTime: stopSeconds, sessionSwitched });
 	}
 
 	async function resetTimer() {
@@ -68,6 +71,10 @@
 	}
 
 	async function switchSession() {
+		sessionSwitched = true;
+		let alarmSound = new Audio('https://freesound.org/data/previews/80/80921_1022651-lq.mp3');
+		alarmSound.play();
+
 		if ($timerStatus.workSession) {
 			setNewRecordAt($timerStatus.cycle);
 			$timerStatus.workSession = false;
@@ -77,8 +84,11 @@
 			updateRecordsFrom($timerStatus.cycle);
 			updateTimerStatus();
 		}
-		await stopTimer();
+		stopSeconds = 0;
+
+		await stopTimer();	
 		await playTimer();
+		sessionSwitched = false;
 	}
 
 	// breaking -> working
@@ -96,9 +106,8 @@
 			cycle: ($timerStatus.cycle += 1),
 			startTime: startTime.toString(),
 			endTime: endTime.toString(),
-			leftTime: leftSeconds,
+			leftTime: leftSecondsDefault,
 			studyTime: 0,
-			stopTime: 0
 		};
 	}
 
@@ -109,14 +118,24 @@
 			$currentTime.getMinutes(),
 			$currentTime.getSeconds()
 		);
+		
+		let timeDiff = endTime.subtract({
+			hours: +startTime.slice(0,2),
+			minutes: +startTime.slice(3,5),
+			seconds: +startTime.slice(6,8)
+		});
 
-		// 현 cycle의 정보 갱신
+		let timeDiffSeconds = timeDiff.hour * 3600 + timeDiff.minute * 60 + timeDiff.second;
+		let duration = Math.floor((timeDiffSeconds - stopSeconds)/60);
+		console.log(duration);
+
+		// 현 cycle의 정보 저장
 		records[currentCycle - 1] = {
 			done: true,
 			startTime,
 			endTime: endTime.toString(),
 			leftTime: 0,
-			studyTime: $timerStatus.studyTime
+			studyTime: duration  
 		};
 	}
 
@@ -134,7 +153,7 @@
 				startTime: startTime.toString(),
 				endTime: endTime.toString(),
 				done: false,
-				leftTime: leftSeconds,
+				leftTime: leftSecondsDefault,
 				studyTime: 0
 			};
 			startTime = endTime.add({ minutes: $timerSetting.breaking });
@@ -164,27 +183,31 @@
 				class="absolute -left-[2.9rem] -top-7 z-50 h-[220px]  w-[220px] translate-x-1/3 translate-y-1/4
 		 rounded-full  border-4  border-amber-950 bg-black/20 p-0 shadow-xl hover:bg-black/60"
 				on:click={async () => {
-					$timerStatus.play = !$timerStatus.play;
-					$timerStatus.play ? await playTimer() : await stopTimer();
+					$timerStatus.play ? await stopTimer() : await playTimer();
 				}}
 			>
 				{#if $timerStatus.play}
 					<Pause fill="#e4e4e7" color="#e4e4e7" size={44} />
+					<div class="font-digital absolute left-1/2 top-1/2 translate-x-5 font-bold text-zinc-50">
+						{Math.floor($timerStatus.leftTime/60).toString().padStart(2, '0')}:{($timerStatus.leftTime%60).toString().padStart(2, '0')}
+					</div>
 				{:else}
 					<Play fill="#e4e4e7" color="#e4e4e7" size={44} />
+					<div class="font-digital absolute left-1/2 top-1/2 translate-x-5 font-bold text-zinc-400">
+						{Math.floor(stopSeconds/60).toString().padStart(2, '0')}:{(stopSeconds%60).toString().padStart(2, '0')}
+					</div>
 				{/if}
-				<div class="font-digital absolute left-1/2 top-1/2 translate-x-5 font-bold text-zinc-50">
-					{Math.floor($timerStatus.leftTime/60).toString().padStart(2, '0')}:{($timerStatus.leftTime%60).toString().padStart(2, '0')}
-				</div>
+				
+				
 			</Button>
 
 			<!-- finish -->
 			<Button
 				variant="ghost"
 				class="absolute -left-2 top-0 z-10  px-1 hover:bg-zinc-200 hover:shadow hover:shadow-zinc-50"
-				on:click={async () => {
-					$timerOpen = false;
+				on:click={async () => {					
 					await resetTimer();
+					$timerOpen = false;
 				}}><StepBack color="#52525b" fill="#52525b" size={32} /></Button
 			>
 
