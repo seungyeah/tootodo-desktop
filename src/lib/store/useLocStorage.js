@@ -39,54 +39,13 @@ export const timerSetting = createLocStorage('timerSetting', {
 );
 
 
-const remainingCycles = derived(
-    timerSetting,
-    ($timerSetting) => {
-      const { working, breaking, cycles } = $timerSetting;
-      const updatedCycles = [...cycles];
-  
-      for (let i = 0; i < updatedCycles.length; i++) {
-        const cycle = updatedCycles[i];
-  
-        if (!cycle.endTime) {
-          break;
-        }
-  
-        if (i === updatedCycles.length - 1) {
-          continue;
-        }
-  
-        const nextCycle = updatedCycles[i + 1];
-        nextCycle.startTime = new Date(cycle.endTime).getTime() + breaking * 60 * 1000;
-        nextCycle.endTime = new Date(nextCycle.startTime).getTime() + working * 60 * 1000;
-        nextCycle.leftTime = working;
-      }
-  
-      return updatedCycles;
-    }
-  );
-
-
-const remainCycles = derived(timerSetting, ($timerSetting) => {
-    const { cycles, working, breaking } = $timerSetting;
-   
-    // 기존 cycles 배열을 복사하여 새로운 배열 생성
-    const updatedCycles = [...cycles];
-   
-    // cycles 배열을 순회하며 endTime이 변경된 경우 다음 cycle의 startTime, endTime 업데이트
-    for (let i = 0; i < updatedCycles.length - 1; i++) {
-      const currentCycle = updatedCycles[i];
-      const nextCycle = updatedCycles[i + 1];
-   
-      if (currentCycle.endTime !== cycles[i].endTime) {
-        const newStartTime = new Date(currentCycle.endTime).getTime() + breaking * 60 * 1000;
-        const newEndTime = newStartTime + working * 60 * 1000;
-   
-        nextCycle.startTime = new Date(newStartTime);
-        nextCycle.endTime = new Date(newEndTime);
-        nextCycle.leftTime = working;
-      }
-    }
-   
-    return updatedCycles;
-   });
+export const timerStatus = createLocStorage('timerStatus', {
+    play: true,
+    workSession: true,
+    cycle: 1,
+    startTime:"",
+    endTime:"",
+    leftTime: 25,
+    studyTime: 0,
+    stopTime:0,
+});

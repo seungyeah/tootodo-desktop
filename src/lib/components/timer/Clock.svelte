@@ -27,7 +27,7 @@
             if(i==0)
                 line.text = i.toString();
             else
-                line.text = (60-i).toString();
+                line.text = i.toString();
         }
         lines.push(line);
     }
