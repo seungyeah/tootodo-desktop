@@ -1,19 +1,24 @@
 <script lang="ts">
 	import Chat from './Chat.svelte';
-	import { Button, DropdownMenu } from '$ui';
+	import { Button, ContextMenu, DropdownMenu } from '$ui';
 	import { MessageCircle, Pin, Bell, BellRing, EllipsisVertical, Trash2 } from 'lucide-svelte';
 	import { afterUpdate, createEventDispatcher, onMount } from 'svelte';
 	export let value = '';
 	const week = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 	const weekShort = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
+	let planTime = '';
 	export let record = {
-		title: 'happy',
+		pin: true,
+		alarm: true,
+		item: 'task',
+		title: 'urgent task',
+		days: [
+			{ day: 'mon', time: '' },
+			{ day: 'wed', time: '' }
+		],
 		openChat: false,
-		project:{
-			title: 'project',
-			color: 'red'
-		}
+		project: { title: 'Project K', color: '#f472b6' }
 	};
 
 	let chatRef;
@@ -74,7 +79,7 @@
 			>
 		{/if}
 		<div class="p-1 text-[1rem]">{record.title}</div>
-		
+
 		<!-- chatting popup icon-->
 		{#if record.item == 'task' || record.item == 'event'}
 			<Button variant="ghost" class="absolute right-0 top-1 h-6 px-2" on:click={toggleOpenChat}>
@@ -87,22 +92,58 @@
 		{/if}
 	</div>
 
-	<hr class="border-dashed border-zinc-300"  />
+	<hr class="border-dashed border-zinc-300" />
 
 	<!-- schedule weekly -->
 	<div class="flex h-[30px] border-r border-dashed">
 		{#each week as day, i}
 			{@const short = weekShort[i]}
-			<button
-				class:selectedDay={record.days.includes(day)}
-				on:click={() =>
-					record.days.includes(day)
-						? (record.days = record.days.filter((d) => d !== day))
-						: (record.days = [...record.days, day])}
-				class="relative rounded-none h-full w-full  rounded-b border-l border-dashed  hover:bg-zinc-100 "
-				style="color: {record?.project?.color};"
-				><span class="absolute left-0 top-0 px-1 py-0.5 text-[0.55rem] leading-3 font-serif font-light">{short}</span></button
+			<ContextMenu.Root
+				closeOnItemClick={false}
+				onOpenChange={() => {
+					if (record.days.some((item) => item.day === day))
+						record.days.find((item) => item.day === day).time = planTime;
+					planTime = '';
+				}}
 			>
+				<ContextMenu.Trigger class="h-full w-full -translate-y-1 "
+					><button
+						class:selectedDay={record.days.some((item) => item.day === day)}
+						on:click={() => {
+							// record.days에 day가 있다면 제거하고, 없다면 추가.
+							record.days.some((item) => item.day === day)
+								? (record.days = record.days.filter((item) => item.day !== day))
+								: (record.days = [...record.days, { day, time: '' }]);
+						}}
+						class="relative h-full w-full rounded-none rounded-b border-l border-dashed hover:bg-zinc-100"
+						style="color: {record?.project?.color};"
+					>
+						<span
+							class="absolute left-0 top-0 px-1 py-0.5 font-serif text-[0.5rem] font-light leading-3"
+							>{short}</span
+						>
+						<span
+							class="absolute bottom-0.5 left-0 px-0.5 py-0.5 font-serif text-[0.7rem] font-light leading-3 text-zinc-500"
+							>{record.days.find((item) => item.day === day)?.time || ''}</span
+						>
+					</button>
+				</ContextMenu.Trigger>
+				{#if record.days.some((item) => item.day === day)}
+					<ContextMenu.Content>
+						<ContextMenu.Item 
+							>
+							<span class="font-bold">
+								Set Time
+							</span>
+							<input
+								type="time"
+								class="h-8 w-full px-2 rounded-lg border border-zinc-300"
+								bind:value={planTime}
+							/>
+						</ContextMenu.Item>
+					</ContextMenu.Content>
+				{/if}
+			</ContextMenu.Root>
 		{/each}
 	</div>
 
@@ -114,7 +155,8 @@
 	{/if}
 </div>
 
-<style>	
+
+<style>
 	.selectedDay {
 		@apply bg-zinc-100;
 	}

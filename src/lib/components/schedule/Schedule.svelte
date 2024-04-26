@@ -10,7 +10,7 @@
 			alarm: true,
 			item: 'task',
 			title: 'urgent task',
-			days: ['mon', 'wed'],
+			days:  [{day:'mon',time:''}, {day:'wed',time:''}],
 			openChat: false,
 			project: { title: 'Project K', color: '#f472b6' }
 		},
