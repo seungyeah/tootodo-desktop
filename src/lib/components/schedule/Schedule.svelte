@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Tabs, Button, Input } from '$ui';
-	import { Bell, BellRing } from 'lucide-svelte';
+	import { Bell, BellRing, Filter } from 'lucide-svelte';
 	import ScheduleCard from './ScheduleCard.svelte';
 	import { onMount } from 'svelte';
 
@@ -148,8 +148,13 @@
 			<Tabs.Trigger value="habit" class="w-1/4">Habit</Tabs.Trigger>
 		</Tabs.List>
 
-		<Input type="text" placeholder="search and add " class="my-2 h-9 w-full scale-95 p-2" />
-
+		<div class="flex items-center">
+			<Button variant="ghost" class="py-0 pl-2 pr-1">
+				<Filter color="#71717a"/>
+			</Button>
+			<Input type="text" placeholder="search and add " class="my-2 h-9 w-full scale-95 p-2" />
+		</div>
+		
 		<Tabs.Content
 			value="alarm"
 			class="h-[calc(100%-94px)]  max-h-[calc(100%)] space-y-2 overflow-y-auto pb-2"

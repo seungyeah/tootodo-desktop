@@ -218,6 +218,7 @@
 				variant="ghost"
 				class="absolute -left-2 top-0 z-10  px-1 hover:bg-zinc-200 hover:shadow hover:shadow-zinc-50"
 				on:click={async () => {					
+					setNewRecordAt($timerStatus.cycle);	
 					await resetTimer();
 					$timerOpen = false;
 				}}><StepBack color="#52525b" fill="#52525b" size={32} /></Button
