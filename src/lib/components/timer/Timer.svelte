@@ -3,7 +3,14 @@
 	import PomoIcon from '$components/PomoIcon.svelte';
 	import TimerLayout from './TimerLayout.svelte';
 	import { ArrowUp, Pause, Play, StepBack, StepForward } from 'lucide-svelte';
-	import { currentTime, formatTime, timerOpen, timerSetting, timerStatus } from '$store';
+	import {
+		currentTime,
+		formatTime,
+		timerOpen,
+		timerSetting,
+		timerStatus,
+		timerStopTime
+	} from '$store';
 	import Separator from '$ui/separator/separator.svelte';
 	import { onDestroy, onMount } from 'svelte';
 	import { Time } from '@internationalized/date';
@@ -15,33 +22,51 @@
 	let sessionSwitched = false;
 	let records = [{ startTime: '', endTime: '', done: false, leftTime: 25, studyTime: 0 }];
 
-	
 	onMount(async () => {
 		await initWebWorker();
-		records = $timerSetting.cycles;		
-		leftSecondsDefault = $timerSetting.working * 60;
 
-		$timerStatus = {
-			play: true,
-			workSession: true,
-			cycle: 1,
-			startTime: records[0].startTime,
-			endTime: records[0].endTime,
-			leftTime: leftSecondsDefault,
-			studyTime: 0,
-		};
+		if ($timerStatus.cycle === 0) {
+			// 타이머 초기화
+			records = $timerSetting.cycles;
+			leftSecondsDefault = $timerSetting.working * 60;
+			$timerStatus = {
+				play: true,
+				workSession: true,
+				cycle: 1,
+				startTime: records[0].startTime,
+				endTime: records[0].endTime,
+				leftTime: leftSecondsDefault,
+				studyTime: 0
+			};
+		} else {
+			// 이전에 저장된 시간과 현재 시간의 차이 계산
+			const storedStopTime = $timerStopTime;
+			if (storedStopTime) {
+				const elapsedTime = Date.now() - parseInt(storedStopTime, 10);
+				const elapsedSeconds = Math.floor(elapsedTime / 1000);
+
+				// leftTime 업데이트
+				$timerStatus.leftTime -= elapsedSeconds;
+				if ($timerStatus.leftTime < 0) {
+					$timerStatus.leftTime = 0;
+				}
+			}
+		}
 
 		await playTimer();
-
 	});
 
 	onDestroy(async () => {
+		// console.log('Timer is destroyed');
 		await resetTimer();
 		worker.terminate();
+
+		// 타이머가 사라질 때의 시간 저장. 다음에 타이머를 다시 열었을 때, 이 시간을 기준으로 타이머를 재개
+		$timerStopTime = Date.now();
 	});
 
 	async function initWebWorker() {
-		if ((typeof window !== 'undefined') && window.Worker) {
+		if (typeof window !== 'undefined' && window.Worker) {
 			const MyWorker = await import('$lib/worker/timer.worker?worker');
 			worker = await new MyWorker.default();
 
@@ -49,8 +74,8 @@
 			worker.onmessage = async (e) => {
 				$timerStatus.leftTime = e.data.leftTime || $timerStatus.leftTime;
 				stopSeconds = e.data.stopTime || stopSeconds;
-				if(e.data.leftTime === 0) {
-					await switchSession()
+				if (e.data.leftTime === 0) {
+					await switchSession();
 				}
 			};
 		}
@@ -63,7 +88,7 @@
 
 	async function stopTimer() {
 		$timerStatus.play = false;
-		worker.postMessage({ action: 'stop' ,stopTime: stopSeconds, sessionSwitched });
+		worker.postMessage({ action: 'stop', stopTime: stopSeconds, sessionSwitched });
 	}
 
 	async function resetTimer() {
@@ -73,33 +98,39 @@
 	async function switchSession() {
 		let alarmSound = new Audio('https://freesound.org/data/previews/80/80921_1022651-lq.mp3');
 		alarmSound.play();
-		
+
 		sessionSwitched = true;
 
-		if($timerSetting.breaking === 0){
-			if ($timerStatus.cycle >= records.length) $timerOpen = false;
+		if ($timerSetting.breaking === 0) {
+			if ($timerStatus.cycle >= records.length) {
+				resetTimerStatus();
+				$timerOpen = false;
+			}
 			stopSeconds = 0;
-			await stopTimer();				
-			setNewRecordAt($timerStatus.cycle);		
+			await stopTimer();
+			setNewRecordAt($timerStatus.cycle);
 			updateRecordsFrom($timerStatus.cycle);
-			updateTimerStatus();		
-			await playTimer();		
-			sessionSwitched = false;				
+			updateTimerStatus();
+			await playTimer();
+			sessionSwitched = false;
 			return;
 		}
-		
+
 		if ($timerStatus.workSession) {
-			setNewRecordAt($timerStatus.cycle);			
+			setNewRecordAt($timerStatus.cycle);
 			$timerStatus.workSession = false;
 			$timerStatus.leftTime = $timerSetting.breaking * 60;
-			if ($timerStatus.cycle >= records.length) $timerOpen = false;
+			if ($timerStatus.cycle >= records.length) {
+				resetTimerStatus();
+				$timerOpen = false;
+			}
 		} else {
 			updateRecordsFrom($timerStatus.cycle);
 			updateTimerStatus();
 		}
 
 		stopSeconds = 0;
-		await stopTimer();	
+		await stopTimer();
 		await playTimer();
 		sessionSwitched = false;
 	}
@@ -120,7 +151,19 @@
 			startTime: startTime.toString(),
 			endTime: endTime.toString(),
 			leftTime: leftSecondsDefault,
-			studyTime: 0,
+			studyTime: 0
+		};
+	}
+
+	function resetTimerStatus() {
+		$timerStatus = {
+			play: true,
+			workSession: true,
+			cycle: 0,
+			startTime: '',
+			endTime: '',
+			leftTime: $timerSetting.working * 60,
+			studyTime: 0
 		};
 	}
 
@@ -131,15 +174,17 @@
 			$currentTime.getMinutes(),
 			$currentTime.getSeconds()
 		);
-		
+
+		let startTimeParts = startTime.split(':');
+
 		let timeDiff = endTime.subtract({
-			hours: +startTime.slice(0,2),
-			minutes: +startTime.slice(3,5),
-			seconds: +startTime.slice(6,8)
+			hours: +startTimeParts[0],
+			minutes: +startTimeParts[1],
+			seconds: +startTimeParts[2]
 		});
 
 		let timeDiffSeconds = timeDiff.hour * 3600 + timeDiff.minute * 60 + timeDiff.second;
-		let duration = Math.floor((timeDiffSeconds - stopSeconds)/60);
+		let duration = Math.floor((timeDiffSeconds - stopSeconds) / 60);
 
 		// 현 cycle의 정보 저장
 		records[currentCycle - 1] = {
@@ -147,7 +192,7 @@
 			startTime,
 			endTime: endTime.toString(),
 			leftTime: 0,
-			studyTime: duration  
+			studyTime: duration
 		};
 	}
 
@@ -201,25 +246,28 @@
 				{#if $timerStatus.play}
 					<Pause fill="#e4e4e7" color="#e4e4e7" size={44} />
 					<div class="font-digital absolute left-1/2 top-1/2 translate-x-5 font-bold text-zinc-50">
-						{Math.floor($timerStatus.leftTime/60).toString().padStart(2, '0')}:{($timerStatus.leftTime%60).toString().padStart(2, '0')}
+						{Math.floor($timerStatus.leftTime / 60)
+							.toString()
+							.padStart(2, '0')}:{($timerStatus.leftTime % 60).toString().padStart(2, '0')}
 					</div>
 				{:else}
 					<Play fill="#e4e4e7" color="#e4e4e7" size={44} />
 					<div class="font-digital absolute left-1/2 top-1/2 translate-x-5 font-bold text-zinc-400">
-						{Math.floor(stopSeconds/60).toString().padStart(2, '0')}:{(stopSeconds%60).toString().padStart(2, '0')}
+						{Math.floor(stopSeconds / 60)
+							.toString()
+							.padStart(2, '0')}:{(stopSeconds % 60).toString().padStart(2, '0')}
 					</div>
 				{/if}
-				
-				
 			</Button>
 
 			<!-- finish -->
 			<Button
 				variant="ghost"
 				class="absolute -left-2 top-0 z-10  px-1 hover:bg-zinc-200 hover:shadow hover:shadow-zinc-50"
-				on:click={async () => {					
-					setNewRecordAt($timerStatus.cycle);	
+				on:click={async () => {
+					setNewRecordAt($timerStatus.cycle);
 					await resetTimer();
+					resetTimerStatus();
 					$timerOpen = false;
 				}}><StepBack color="#52525b" fill="#52525b" size={32} /></Button
 			>
@@ -228,11 +276,11 @@
 			<Button
 				variant="ghost"
 				class="absolute -right-2 bottom-0 z-10  px-1  hover:bg-zinc-200 hover:shadow hover:shadow-zinc-50"
-				on:click={async () => {					
+				on:click={async () => {
 					await switchSession();
 				}}><StepForward color="#52525b" fill="#52525b" size={32} /></Button
 			>
-			<div class="absolute bottom-0 flex   items-end text-xs text-zinc-100">
+			<div class="absolute bottom-0 flex items-end text-xs text-zinc-100">
 				<PomoIcon />
 				<div class="-translate-x-5">
 					{$timerSetting.working} min
@@ -243,7 +291,7 @@
 		<!-- progress -->
 		<div class="text-x relative flex h-full w-[calc(100%-290px)] flex-col py-3">
 			<!-- indicator -->
-			
+
 			<ArrowUp class="absolute right-[3.5rem] top-2 " color="#f7d5d8" />
 			<Separator
 				orientation="vertical"
@@ -301,7 +349,9 @@
 			</div>
 
 			<!-- start, end -->
-			<div class="font-digital flex h-[22px] w-full -translate-x-1.5 justify-start text-pomodoro-300">
+			<div
+				class="font-digital flex h-[22px] w-full -translate-x-1.5 justify-start text-pomodoro-300"
+			>
 				<div class="w-[32px]" />
 				<div class="w-[60px] text-center font-extrabold">Start</div>
 				<div class="w-[20px] text-center font-extrabold"></div>
@@ -312,7 +362,10 @@
 {:else}
 	<div class="flex h-full w-full items-center justify-center">
 		<Button
-			on:click={() => ($timerOpen = false)}
+			on:click={() => {
+				resetTimerStatus();
+				$timerOpen = false;
+			}}
 			class="font-digital text-2xl font-bold text-zinc-900"
 		>
 			No Record, Back to the Setting

@@ -20,7 +20,7 @@ export function createLocStorage(key, initialValue) {
 }
 
 export const timerOpen = createLocStorage('timerOpen', false);
-
+export const timerStopTime = createLocStorage('timerStopTime', 0);
 export const timerSetting = createLocStorage('timerSetting', {
         working: 25,
         breaking: 5,
@@ -42,10 +42,10 @@ export const timerSetting = createLocStorage('timerSetting', {
 export const timerStatus = createLocStorage('timerStatus', {
     play: true,
     workSession: true,
-    cycle: 1,
+    cycle: 0,
     startTime:"",
     endTime:"",
-    leftTime: 25,
+    leftTime: 0,
     studyTime: 0,
     stopTime:0,
 });

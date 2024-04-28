@@ -22,7 +22,7 @@ self.onmessage = (e) => {
 };
 
 async function playTimer(leftTime) {
-    await clearInterval(stopTimerInterval);
+    await clearInterval(stopTimerInterval);   
     stopTimerInterval = null;
     timer = setInterval(async () => {
         leftTime--;
@@ -47,7 +47,6 @@ async function stopTimer(stopTime, sessionSwitched) {
 async function resetTimer() {
     await stopTimer();
     clearInterval(stopTimerInterval);
-    clearInterval(timer);
     leftTime = 25;
     timer = null;
     stopTimerInterval = null;
