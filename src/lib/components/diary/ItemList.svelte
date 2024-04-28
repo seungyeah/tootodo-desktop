@@ -38,7 +38,7 @@
 
 			{#if record.chatID}
 				<div class="flex h-7 w-full justify-between">
-					<Label for={record.title} class="w-full text-start text-[1rem] ">
+					<Label for={record.title} class="w-full text-start text-[1.0rem] xl:text-[1.2rem] ">
 						<div class={record.done ? 'w-full line-through opacity-60' : ''}>
 							{record.title}
 						</div>

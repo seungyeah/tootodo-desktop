@@ -218,7 +218,7 @@
 				<ItemList records={taskRecords} />
 			</Resizable.Pane>
 			<Resizable.Handle withHandle class="bg-zinc-300 p-[1px]" />
-			<Resizable.Pane minSize={14} defaultSize={45}>
+			<Resizable.Pane minSize={17} defaultSize={45}>
 				<div class="h-7 border-b-2 border-dashed p-0.5">Event</div>
 				<ItemList records={eventRecords} />
 			</Resizable.Pane>

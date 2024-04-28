@@ -19,13 +19,40 @@
 		Array.from({ length: 6 }, () => ({ colorFill: false, record: null }))
 	]);
 
-	let records = [
-		{ start: '9:20', end: '9:50', dragged: true },
-		{ start: '10:20', end: '11:40', dragged: true },
-		{ start: '12:10', end: '13:30', dragged: true }
+	let projects = [
+		{ color: '#fb7185', id: 'p1', title: '프로젝트 1' },
+		{ color: '#f472b6', id: 'p2', title: '프로젝트 2' },
+		{ color: '#e879f9', id: 'p3', title: '프로젝트 3' },
+		{ color: '#c084fc', id: 'p4', title: '프로젝트 4' },
+		{ color: '#a78bfa', id: 'p5', title: '프로젝트 5' },
+		{ color: '#818cf8', id: 'p6', title: '프로젝트 6' },
+		{ color: '#60a5fa', id: 'p7', title: '프로젝트 7' },
+		{ color: '#38bdf8', id: 'p8', title: '프로젝트 8' },
 	];
 
+	let records = [
+		{ start: '12:10', end: '13:30', dragged: true },
+		{ start: '0:30', end: '2:00', projectId: 'p1' },
+		{ start: '4:00', end: '5:30', projectId: 'p2' },		
+		{ start: '9:30', end: '10:15', projectId: 'p3' },
+		{ start: '10:20', end: '11:40', dragged: true },
+		{ start: '22:30', end: '23:45', projectId: 'p8' }
+	];
+
+	function getProjectColorPosition(hour,min){
+		let record = records.find(record => {
+			const startTime = record.start.split(':').map(Number);
+			return startTime[0] === hour && startTime[1] === min;			
+		});
+		return record;
+	}
+
 	function getCellColor() {
+		// map records color
+		records.map((record)=>{
+			const project = projects.find(project => project.id === record.projectId);
+			record.color = project?.color || "#3f3f46";
+		})
 		for (let record of records) {
 			let [startHour, startMin] = record.start.split(':').map(Number);
 			let [endHour, endMin] = record.end.split(':').map(Number);
@@ -34,22 +61,22 @@
 			// console.log(startHour, startMin, endHour, endMin);
 			if (startHour === endHour) {
 				for (let j = startMin; j <= endMin - 1; j++) {
-					cellColors[startHour][0][j] = { colorFill: true, record };
+					cellColors[startHour][0][j] = { colorFill: record.color, record };
 				}
 				continue;
 			}
 			for (let i = startHour; i <= endHour; i++) {
 				if (i === startHour) {
 					for (let j = startMin; j < 6; j++) {
-						cellColors[i][0][j] = { colorFill: true, record };
+						cellColors[i][0][j] = { colorFill: record.color, record };
 					}
 				} else if (i === endHour) {
 					for (let j = 0; j <= endMin - 1; j++) {
-						cellColors[i][0][j] = { colorFill: true, record };
+						cellColors[i][0][j] = { colorFill: record.color, record };
 					}
 				} else {
 					for (let j = 0; j < 6; j++) {
-						cellColors[i][0][j] = { colorFill: true, record };
+						cellColors[i][0][j] = { colorFill: record.color, record };
 					}
 				}
 			}
@@ -180,7 +207,7 @@
 													<Button
 														builders={[builder]}
 														variant="ghost"
-														class="h-full w-full !p-0 hover:bg-zinc-700"
+														class="h-full w-full !p-0 hover:bg-zinc-950"
 													></Button>
 												</Popover.Trigger>
 												{#if settingVisible && record}
@@ -194,8 +221,13 @@
 								{/each}
 							</tr>
 							<tr>
-								{#each columns as _}
-									<td class="!border-0 py-[0.18rem]"></td>
+								{#each columns as column,columnIndex}
+								{@const record = cellColors[hour][0][columnIndex].record}
+									<td class="!border-0 py-[0.18rem] relative">
+										{#if getProjectColorPosition(hour,column)}
+											<button class="absolute -top-[1.56rem] -left-[0.5rem]  w-4 h-6 rounded-full  border-r-2 border-zinc-100  " style="background-color:{record?.color}"/>
+										{/if}
+									</td>
 								{/each}
 							</tr>
 						{/each}
@@ -219,7 +251,7 @@
 		background: #ccc;
 	}
 	.colored {
-		background: #ddd6fe;
+		background: #52525b;
 	}
 	.active {
 		@apply bg-zinc-200;
