@@ -225,7 +225,7 @@
 								{@const record = cellColors[hour][0][columnIndex].record}
 									<td class="!border-0 py-[0.18rem] relative">
 										{#if getProjectColorPosition(hour,column)}
-											<button class="absolute -top-[1.56rem] -left-[0.5rem]  w-4 h-6 rounded-full  border-r-2 border-zinc-100  " style="background-color:{record?.color}"/>
+											<button class="absolute -top-[1.56rem] left-0 w-2 h-6 rounded-r-full  border-r-2 border-zinc-50  " style="background-color:{record?.color}"/>
 										{/if}
 									</td>
 								{/each}
