@@ -149,7 +149,7 @@
 
 	<!-- chat popup -->
 	{#if record.openChat}
-		<div class="chat" style="transform:translate(87%,-{componentY}px)">
+		<div class="chat" style="transform:translate(87%,-{componentY+8}px)">
 			<Chat bind:record />
 		</div>
 	{/if}
@@ -162,6 +162,6 @@
 	}
 
 	.chat {
-		@apply fixed z-50 h-[calc(100vh-120px)] w-1/3  min-w-[250px] rounded-lg  bg-zinc-50 shadow-lg shadow-yellow-950 sm:h-[calc(100vh-90px)];
+		@apply fixed z-50 h-[calc(100vh-110px)] w-1/3 max-w-[430px]   min-w-[250px] rounded-lg  bg-zinc-50 shadow-lg shadow-yellow-950 sm:h-[calc(100vh-80px)];
 	}
 </style>

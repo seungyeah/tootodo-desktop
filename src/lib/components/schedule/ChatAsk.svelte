@@ -115,7 +115,9 @@
 						<BookMarked size={20}  />	
 					</Button>											
 				</Popover.Trigger>
-				<Popover.Content  class=" pt-0 px-3 w-1/4 -translate-x-5 translate-y-8 max-h-[calc(100%-60px)] overflow-y-auto relative" side="left">					
+				<Popover.Content  
+				class="max-h-[calc(100%-60px)] w-1/4 max-w-[300px] -translate-x-5 translate-y-8 overflow-y-auto px-3 pt-0 "
+				side="left" avoidCollisions={false}>					
 					<div class="flex-col items-center justify-between  pt-1">
 						<div class="sticky top-0  bg-white flex items-center justify-between mb-2 h-8 border-b-2">
 							<h4 class="font-bold">Bookmarked</h4>
@@ -164,7 +166,7 @@
 		<!-- body -->
 		<div
 			bind:this={messageContainer}
-			class="h-full max-h-[calc(100%-120px)] w-full flex-col space-y-2 overflow-y-auto pb-3"
+			class="h-full max-h-[calc(100%-120px)] w-full flex-col space-y-2 overflow-y-auto pr-1 pb-3"
 		>
 			<div
 				class="sticky top-0 z-10 p-1 max-h-[18%] w-full overflow-y-auto border-b-4 border-emerald-600 bg-emerald-50 px-2 py-1 font-mono text-[0.85rem] font-semibold text-emerald-900"
@@ -174,7 +176,7 @@
 			</div>
 			{#each messages as msg, i}
 				{#if i === 0 || msg.day !== messages[i - 1].day}
-					<hr class="bg-zinc-100 p-0.5" />
+				<div class="bg-zinc-100 p-0.5 !mt-6 " />
 					<div
 						class="mx-20 mt-4 w-auto rounded-full bg-zinc-100 text-center font-mono text-xs font-normal text-zinc-500 shadow"
 					>

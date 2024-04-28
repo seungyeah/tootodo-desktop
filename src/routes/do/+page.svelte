@@ -65,7 +65,7 @@
 						<Share strokeWidth={3} size={20} />
 					</Button>
 				</div>
-				<div class="h-[calc(100%-30px)] w-full overflow-y-auto no-scrollbar rounded-lg border-2 border-zinc-700">
+				<div class="h-[calc(100%-30px)] w-full overflow-y-auto overflow-x-clip no-scrollbar rounded-lg border-2 border-zinc-700">
 					<TenMResult />
 				</div>
 			</div>

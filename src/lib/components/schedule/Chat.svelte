@@ -149,15 +149,15 @@
 		class="flex h-10 w-full items-center justify-between rounded-lg rounded-b-none border-b-2 border-yellow-300 bg-yellow-200 px-2 text-yellow-950 shadow"
 	>
 		<!-- show bookmark list -->
-		<Popover.Root>
+		<Popover.Root >
 			<Popover.Trigger>
 				<Button variant="ghost" class="h-6 translate-y-1 p-1 hover:bg-yellow-400">
 					<BookMarked size={20} />
 				</Button>
 			</Popover.Trigger>
 			<Popover.Content
-				class="max-h-[calc(100%-60px)] w-1/4 -translate-x-5 translate-y-8 overflow-y-auto px-3 pt-0 "
-				side="left"
+				class="max-h-[calc(100%-60px)] w-1/4 max-w-[300px] -translate-x-5 translate-y-8 overflow-y-auto px-3 pt-0 "
+				side="left" avoidCollisions={false}
 			>
 				<div class="flex-col items-center justify-between pt-1">
 					<div class="sticky top-0 mb-2 flex h-8 items-center justify-between border-b-2 bg-white">
@@ -206,13 +206,13 @@
 	<!-- body -->
 	<div
 		bind:this={messageContainer}
-		class="h-full max-h-[calc(100%-120px)] w-full flex-col space-y-2 overflow-y-auto px-1 py-3"
+		class="h-full max-h-[calc(100%-120px)] w-full flex-col space-y-2 overflow-y-auto px-1 pb-3"
 	>
 		{#each messages as msg, i}
 			{#if i === 0 || msg.day !== messages[i - 1].day}
-				<hr class="bg-zinc-100 p-0.5" />
+				<div class="bg-zinc-100 p-0.5 !mt-6" />
 				<div
-					class="mx-20 mt-4 w-auto rounded-full bg-zinc-100 text-center font-mono text-xs font-normal text-zinc-500 shadow"
+					class="mx-20 w-auto rounded-full bg-zinc-100 text-center font-mono text-xs font-normal text-zinc-500 shadow"
 				>
 					{msg.day}
 				</div>
@@ -347,7 +347,7 @@
 
 <style>
 	.chat {
-		@apply fixed z-50 h-[calc(100vh-120px)] w-full  min-w-[250px] rounded-lg  bg-zinc-50 shadow-lg shadow-emerald-950 sm:h-[calc(100vh-90px)];
+		@apply fixed z-50 h-[calc(100vh-120px)] w-full  min-w-[250px] rounded-lg  bg-zinc-50 shadow-lg shadow-emerald-950 sm:h-[calc(100vh-80px)];
 	}
 
 	.time {
