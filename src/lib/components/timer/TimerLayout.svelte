@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { VisSingleContainer, VisDonut } from '@unovis/svelte';
 	import Clock from './Clock.svelte';
-	import { timerSetting, timerStatus } from '$store';
-	
+	import { timerSetting, timerStatus,timerOpen } from '$store';
+	import Dougnut from './Dougnut.svelte';
 	$:leftMinutes = ($timerStatus.leftTime/60)%60 || $timerSetting.working%60;
 	$: data= [leftMinutes, 0, 60-leftMinutes];
 	// $:console.log(leftMinutes);
@@ -12,23 +11,19 @@
 	const colorBreaking = (d: number, i: number) => ['#059669', '#09090b', '#022c22'][i]; //indigo 600, 950
 </script>
 
-<div class="relative h-full w-full -translate-y-6">
-	{#key $timerStatus.workSession}
-		<div class=" absolute z-10 -translate-x-[13px] translate-y-[11px]">
-			<VisSingleContainer {data} class="h-full w-full">
-				<VisDonut
-					{value}
-					color={$timerStatus.workSession ? colorWorking : colorBreaking}
-					radius={94}
-					arcWidth={0}
-					showEmptySegments={true}
-					emptySegmentAngle={Math.PI / 50}
-				/>
-			</VisSingleContainer>
+
+<div class="relative h-full w-full -translate-y-6 hidden" class:openTimer = {$timerOpen}>
+		<div class=" absolute z-10 translate-x-[42px] translate-y-[66px]">
+			<Dougnut bind:data color={$timerStatus.workSession ? colorWorking : colorBreaking}/>
 		</div>
-	{/key}
 
 	<div class="translate-y-6 ">
 		<Clock />
 	</div>
 </div>
+
+<style>
+	.openTimer{
+		display: block;
+	}
+	</style>

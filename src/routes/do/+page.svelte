@@ -48,7 +48,7 @@
 			shadow-lg shadow-zinc-500"
 		>
 			<div class="w-full relative">			
-				<button on:click={()=>openSide = !openSide} class="rounded-full absolute -left-2 z-10 
+				<button on:click={()=>openSide = !openSide} class="rounded-full absolute -left-2 z-[1]
 					hover:-rotate-90 hover:-translate-y-1.5 hover:shadow-lg hover:shadow-violet-200">
 					<MoonStar fill="black"  />	
 				</button>
@@ -60,7 +60,7 @@
 			<div class="h-full flex flex-col items-end  w-1/3 text-lg font-bold max-w-[220px] xl:max-w-[300px] min-w-[190px]">
 				<div class="title flex">
 					<div class="font-digital text-zinc-800">05H 30M</div>
-					<Button variant="ghost" class="z-10 px-2 py-0 -translate-y-1.5 translate-x-1 hover:bg-transparent 
+					<Button variant="ghost" class="z-[1] px-2 py-0 -translate-y-1.5 translate-x-1 hover:bg-transparent 
 					hover:shadow-lg hover:shadow-zinc-400 hover:-translate-y-2.5 rounded-full">
 						<Share strokeWidth={3} size={20} />
 					</Button>

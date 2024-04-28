@@ -138,7 +138,7 @@
 {#if $timerOpen}
 	<Timer />
 {:else}
-	<div class="relative h-full w-full flex-col border-4 border-zinc-900">
+	<div class="relative h-full w-full flex-col border-2 border-zinc-900">
 		<div class="m-2 flex justify-around">
 			{#each ['AM', 'PM'] as period, periodIndex}
 				<div class="flex-col">

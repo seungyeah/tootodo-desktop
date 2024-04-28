@@ -24,11 +24,11 @@
 
 	onMount(async () => {
 		await initWebWorker();
-
+		records = $timerSetting.cycles;
+		leftSecondsDefault = $timerSetting.working * 60;
 		if ($timerStatus.cycle === 0) {
 			// 타이머 초기화
-			records = $timerSetting.cycles;
-			leftSecondsDefault = $timerSetting.working * 60;
+			
 			$timerStatus = {
 				play: true,
 				workSession: true,
@@ -57,7 +57,7 @@
 	});
 
 	onDestroy(async () => {
-		// console.log('Timer is destroyed');
+		console.log('Timer is destroyed');
 		await resetTimer();
 		worker.terminate();
 
@@ -230,6 +230,7 @@
 		<div
 			class="relative m-1 flex aspect-square h-full scale-90 rounded-full bg-zinc-100 p-0 shadow-xl"
 		>
+		
 			<div class="h-full w-full rounded-full shadow-xl shadow-zinc-950">
 				<TimerLayout />
 			</div>

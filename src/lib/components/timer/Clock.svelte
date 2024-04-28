@@ -59,17 +59,17 @@
         let y = 0;
 
         if(line.angle<90){
-            x = cx + Math.sin(radians) * (r + 0.03*r);
-            y = cy - Math.cos(radians) * (r + 0.05*r);
+            x = cx + Math.sin(radians) * (r + 0.07*r);
+            y = cy - Math.cos(radians) * (r + 0.1*r);
         }else if (line.angle<180){
-            x = cx + Math.sin(radians) * (r + 0.04*r);
+            x = cx + Math.sin(radians) * (r + 0.1*r);
             y = cy - Math.cos(radians) * (r + 0.2*r);
         }else if (line.angle<270){
-            x = cx + Math.sin(radians) * (r + 0.27*r);
-            y = cy - Math.cos(radians) * (r + 0.2*r);
+            x = cx + Math.sin(radians) * (r + 0.3*r);
+            y = cy - Math.cos(radians) * (r + 0.25*r);
         }else{
             x = cx + Math.sin(radians) * (r + 0.25*r);
-            y = cy - Math.cos(radians) * (r + 0.05*r);
+            y = cy - Math.cos(radians) * (r + 0.1*r);
         }
 
         if(line.angle===0) x = cx - 2;

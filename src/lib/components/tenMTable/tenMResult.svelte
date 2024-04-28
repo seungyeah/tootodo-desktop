@@ -73,7 +73,7 @@
 	}
 </script>
 
-<table class="h-full w-full border-collapse">
+<table class="h-full w-full border-collapse ">
 	<thead class="sticky top-0 bg-zinc-100">
 		<th></th>
 		{#each columns as column}
@@ -88,13 +88,13 @@
 					{#if min % 10 === 0}
 						<td class=" !m-0 !border-0 !border-l !p-0 relative" class:colored={cellColors[hour][0][min]}>
 							{#if getHabitIcon(hour, min)}
-								<svelte:component this={getHabitIcon(hour, min)} size="34" class="absolute left-0 -top-0.5  p-0.5 z-10  bg-zinc-200 rounded-full shadow-md border-white border-2 " />
+								<svelte:component this={getHabitIcon(hour, min)} size="34" class="absolute left-0 -top-0.5  p-0.5 z-[1]  bg-zinc-200 rounded-full shadow-md border-white border-2 " />
 							{/if}
 						</td>
 					{:else}
 						<td class="!m-0 !border-0 !p-0 relative" class:colored={cellColors[hour][0][min]}>
 							{#if getHabitIcon(hour, min)}
-								<svelte:component this={getHabitIcon(hour, min)} size="34" class="absolute left-0 -top-0.5 p-0.5 z-10 bg-zinc-200 rounded-full shadow-md border-white border-2 " />
+								<svelte:component this={getHabitIcon(hour, min)} size="34" class="absolute left-0 -top-0.5 p-0.5 z-[1] bg-zinc-200 rounded-full shadow-md border-white border-2 " />
 							{/if}
 						</td>
 					{/if}

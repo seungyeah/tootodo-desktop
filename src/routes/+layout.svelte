@@ -3,7 +3,7 @@
 	import { Button, Breadcrumb, Popover, Input, Avatar, DropdownMenu } from '$ui';
 	import HeaderNav from '$components/HeaderNav.svelte';
 	import TWindicator from '$components/TWindicator.svelte';
-	import { auth, isAuthed,timerOpen } from '$store';
+	import { auth, isAuthed, timerOpen } from '$store';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { Search, LogOut, Clock } from 'lucide-svelte';
@@ -13,7 +13,7 @@
 
 	let errorMessage = '';
 	let searchMode = false;
-	let timerMode = false;
+	let openTenM = false;
 
 	onMount(async () => {
 		const loggedIn = getCookie('logged_in');
@@ -95,35 +95,27 @@
 			</Button>
 
 			<!-- timer, tenMplanner -->
-			<Popover.Root
-				onOutsideClick={() => (timerMode = false)}
-				closeFocus={() => (timerMode = false)}
-				openFocus={() => (timerMode = true)}
+			<Button
+				variant="ghost"
+				on:click={() => (openTenM = !openTenM)}
+				class={openTenM
+					? '-translate-x-1 translate-y-1 scale-105 rounded-full border  border-dotted bg-zinc-900 !p-2 shadow-xl shadow-zinc-500 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200'
+					: 'h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200'}
+				><Clock size={26} color="white" fill="#09090b" strokeWidth={2} /></Button
 			>
-				<Popover.Trigger asChild let:builder>
-					<Button
-						builders={[builder]}
-						variant="ghost"
-						class={timerMode
-							? 'translate-y-1 -translate-x-1 scale-105 rounded-full bg-zinc-900  shadow-xl shadow-zinc-500 border border-dotted !p-2 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200'
-							: 'h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200'}
-						><Clock size={26} color="white" fill="#09090b" strokeWidth={2} /></Button
-					>
-				</Popover.Trigger>
-				<Popover.Content class="w-[470px] translate-y-1 p-0 runded-xl" >
+				<div class="fixed z-50 hidden right-0 top-12  w-[470px] translate-y-1 p-0" class:openTimer={openTenM}>
 					<div
 						class={$timerOpen
-							? 'relative h-[290px]  m-auto '
-							: 'relative m-3 h-[460px] w-[calc(100%-24px)]'}
+							? ' relative m-auto  h-[290px] '
+							: 'relative m-3 h-[470px] w-[calc(100%-24px)] bg-white border-[6px] border-double border-zinc-900 rounded-lg shadow-lg shadow-zinc-500'}
 					>
-						<ShowRecord  />
+						<ShowRecord />
 						<div class="absolute top-0 h-full w-full">
 							<!-- plan record and start timer directly -->
 							<PlanRecord />
 						</div>
 					</div>
-				</Popover.Content>
-			</Popover.Root>
+				</div>
 
 			<!-- profile -->
 			<DropdownMenu.Root>
@@ -166,5 +158,9 @@
 
 	.currentPage {
 		@apply underline underline-offset-[3px];
+	}
+
+	.openTimer {
+		@apply block;
 	}
 </style>
