@@ -27,8 +27,8 @@
 		records = $timerSetting.cycles;
 		leftSecondsDefault = $timerSetting.working * 60;
 		if ($timerStatus.cycle === 0) {
-			// 타이머 초기화
-			
+			records = $timerSetting.cycles;
+			// 타이머 초기화			
 			$timerStatus = {
 				play: true,
 				workSession: true,
@@ -57,14 +57,13 @@
 	});
 
 	onDestroy(async () => {
-		console.log('Timer is destroyed');
 		await resetTimer();
 		worker.terminate();
-
 		// 타이머가 사라질 때의 시간 저장. 다음에 타이머를 다시 열었을 때, 이 시간을 기준으로 타이머를 재개
 		$timerStopTime = Date.now();
 	});
 
+	/////////////////////////////// web worker ///////////////////////////////
 	async function initWebWorker() {
 		if (typeof window !== 'undefined' && window.Worker) {
 			const MyWorker = await import('$lib/worker/timer.worker?worker');
@@ -93,8 +92,11 @@
 
 	async function resetTimer() {
 		worker.postMessage({ action: 'reset' });
+		resetTimerStatus();
+		worker.terminate();
 	}
 
+	/////////////////////////////// functions ///////////////////////////////
 	async function switchSession() {
 		let alarmSound = new Audio('https://freesound.org/data/previews/80/80921_1022651-lq.mp3');
 		alarmSound.play();
@@ -267,8 +269,7 @@
 				class="absolute -left-2 top-0 z-10  px-1 hover:bg-zinc-200 hover:shadow hover:shadow-zinc-50"
 				on:click={async () => {
 					setNewRecordAt($timerStatus.cycle);
-					await resetTimer();
-					resetTimerStatus();
+					await resetTimer();					
 					$timerOpen = false;
 				}}><StepBack color="#52525b" fill="#52525b" size={32} /></Button
 			>
