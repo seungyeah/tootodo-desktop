@@ -237,7 +237,9 @@
 															variant="ghost"
 															class="h-full w-full !p-0 translate-y-[0.235rem]  relative bg-neutral-100 hover:bg-neutral-600"
 														>
+														<div class="absolute top-0.5 left-1 w-1 h-2 opacity-20 transform rotate-45" style="background-color:{record?.color}"/>
 														<div class="absolute top-0 w-1 h-6 opacity-20 transform rotate-45" style="background-color:{record?.color}"/>
+														<div class="absolute top-3.5 right-1 w-1 h-2 opacity-20 transform rotate-45" style="background-color:{record?.color}"/>
 													</Button>
 													</Popover.Trigger>
 													<Popover.Content class="w-auto translate-y-[0.2rem] p-0 ">
@@ -253,6 +255,7 @@
 								{/each}
 							</tr>
 							<tr>
+								<!-- record의 시작시간, 끝 시간 표시 -->
 								{#each tenMinute as min, minIndex}
 									{@const record = cellColors[hour][0][minIndex].record}
 									<td class="relative !border-0 py-[0.18rem]">

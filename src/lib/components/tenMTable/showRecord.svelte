@@ -98,11 +98,7 @@
 								<th rowspan="2" class="px-1.5">{hour}</th>
 								{#each minutes as min}
 								{@const color = cellColors[hour][0][min]}
-									{#if min % 10 === 0}
-										<td class=" !border-0 !border-l !m-0 !h-[25px] !p-0" ></td>
-									{:else}
-										<td class="!border-0 !m-0 !h-[25px]  !p-0"></td>
-									{/if}
+										<td class={min % 10 === 0?" !border-0 !border-l !m-0 !h-[25px] !p-0":"!border-0 !m-0 !h-[25px]  !p-0"} ></td>
 								{/each}
 							</tr>
 							<tr>

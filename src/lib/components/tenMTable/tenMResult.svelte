@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Bed, BookOpenText, Dumbbell, Globe, Pill, Star, Sun, Utensils } from 'lucide-svelte';
+	import { currentTime } from '$store';
+
+	onMount(() => {
+		cellColors = getCellColor();
+	});
 
 	// 200
 	let projects = [
@@ -11,7 +16,7 @@
 		{ color: '#ddd6fe', id: 'p5', title: '프로젝트 5' },
 		{ color: '#c7d2fe', id: 'p6', title: '프로젝트 6' },
 		{ color: '#bfdbfe', id: 'p7', title: '프로젝트 7' },
-		{ color: '#bae6fd', id: 'p8', title: '프로젝트 8' },
+		{ color: '#bae6fd', id: 'p8', title: '프로젝트 8' }
 	];
 
 	let records = [
@@ -35,28 +40,15 @@
 		},
 		{ id: 3, icon: Pill, title: 'take pills', done: false, doneTime: '' },
 		{ id: 4, icon: Globe, title: 'learn foreign language', done: false, doneTime: '' },
-		{ id: 6, icon: Dumbbell, title: 'workout', done: true, doneTime: new Date() }
+		{
+			id: 6,
+			icon: Dumbbell,
+			title: 'workout',
+			done: true,
+			doneTime: new Date('Fri Apr 26 2024 1:50:30 GMT+0900 (한국 표준시)')
+		}
 	];
 
-	function getHabitIcon(hour, min) {
-		const habit = todayHabits.find((habit) => {
-			const doneTime = new Date(habit.doneTime);
-			return doneTime.getHours() === hour && doneTime.getMinutes() === min;
-		});
-		return habit ? habit.icon : null;
-	}
-
-	type Record = {
-		start: string;
-		end: string;
-		study: string;
-		dragged?: boolean;
-	};
-	type ColorRange = {
-		colorStart: number;
-		colorEnd: number;
-	};
-	let recordColorRanges: ColorRange[] = [];
 
 	const hours = Array.from({ length: 24 }, (_, i) => i);
 	const columns = [0, 10, 20, 30, 40, 50];
@@ -64,10 +56,6 @@
 
 	// Initialize cell colors
 	let cellColors = Array.from({ length: 24 }, () => [Array.from({ length: 60 }, () => 0)]);
-
-	onMount(() => {
-		cellColors = getCellColor();
-	});
 
 	function getCellColor() {
 		records.forEach((record) => {
@@ -95,10 +83,24 @@
 
 		return cellColors;
 	}
+
+	function getHabitIcon(hour, min) {
+		const habit = todayHabits.find((habit) => {
+			const doneTime = new Date(habit.doneTime);
+			return doneTime.getHours() === hour && doneTime.getMinutes() === min;
+		});
+		return habit ? habit.icon : null;
+	}
+
+	function getCurrentTimePosition(hour, min) {
+		return $currentTime? $currentTime.getHours() === hour && $currentTime.getMinutes() === min:false;
+	}
+
+
 </script>
 
 <table class="h-full w-full border-collapse">
-	<thead class="sticky top-0 bg-zinc-100">
+	<thead class="sticky z-[2] top-0 bg-zinc-100">
 		<th></th>
 		{#each columns as column}
 			<th colspan="10" class="!w-[27px] px-1 text-sm">{column + 10}</th>
@@ -109,32 +111,29 @@
 			<tr>
 				<th rowspan="1" class="px-1 py-0 text-[0.9rem]">{hour}</th>
 				{#each minutes as min}
-				{@const color = cellColors[hour][0][min]}
-					{#if min % 10 === 0}
-						<td
-							class=" relative !m-0 !border-0 !border-l !p-0"
-							class:colored = {color}
-							style="background-color: {color}"
-						>
-							{#if getHabitIcon(hour, min)}
-								<svelte:component
-									this={getHabitIcon(hour, min)}
-									size="34"
-									class="absolute -top-0.5 left-0  z-[1] rounded-full  border-2 border-white bg-zinc-100 p-0.5 shadow-md "
-								/>
-							{/if}
-						</td>
-					{:else}
-						<td class="relative !m-0 !border-0 !p-0" style="background-color: {color}">
-							{#if getHabitIcon(hour, min)}
-								<svelte:component
-									this={getHabitIcon(hour, min)}
-									size="34"
-									class="absolute -top-0.5 left-0 z-[1] rounded-full border-2 border-white bg-zinc-100 p-0.5 shadow-md "
-								/>
-							{/if}
-						</td>
-					{/if}
+					{@const color = cellColors[hour][0][min]}
+					<td
+						class={min % 10 === 0
+							? ' relative !m-0 !border-0 !border-l !p-0'
+							: 'relative !m-0 !border-0 !p-0'}
+						class:colored={color}
+						style="background-color: {color}"
+					>
+						{#if getHabitIcon(hour, min)}
+							<svelte:component
+								this={getHabitIcon(hour, min)}
+								size="34"
+								class="absolute -top-0.5 left-0  z-[1] rounded-full  border-2 border-white bg-zinc-100 p-0.5 shadow-md "
+							/>
+						{/if}
+						{#key $currentTime}
+						{#if getCurrentTimePosition(hour, min)}
+							<div
+								class="absolute -left-0.5 -top-0.5 z-[1] h-8 w-1 transform bg-pomodoro-500"
+							/>
+						{/if}
+						{/key}
+					</td>
 				{/each}
 			</tr>
 		{/each}
@@ -149,7 +148,6 @@
 	}
 
 	.colored {
-		@apply border-white border-r border-dashed;
+		@apply border-r border-dashed border-white;
 	}
-
 </style>
