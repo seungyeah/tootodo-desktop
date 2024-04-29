@@ -6,7 +6,10 @@
 	import { timerSetting,currentTime } from '$store';
 	import {timerOpen}from '$store';
 	import { Time } from '@internationalized/date';
+	import {createEventDispatcher} from 'svelte';
+	import ProjectSelect from '$components/tenMTable/ProjectSelect.svelte';
 
+	const dispatch = createEventDispatcher();
 	// planRecord에서 record(start, end)를 받아오고, 이를 기반으로 duration계산
 	// duration 및 사용자가 입력한 working과 braking을 기반으로, cycle과 remain을 계산
 	// 각 cycle에 대한 시작시간, 종료시간, 완료여부(false), 남은시간(=working), 공부시간(=0)을 로컬 저장소에 저장 
@@ -19,6 +22,7 @@
 	let remain = 0;
 	let duration = 0;
 	let durationString = '';
+	$:selectedProject = record.project;
 
 	onMount(() => {
 		if (record) {
@@ -27,6 +31,18 @@
 			updateCycleAndRemain();
 		}
 	});
+
+	function removeRecord(){
+		dispatch('remove',{
+			record
+		})
+	}
+
+	function changeProjectRecord(){
+		dispatch('changeProject',{
+			record
+		})
+	}
 
 	function storeTimerSetting(){
 		const startTime = new Time($currentTime.getHours(),$currentTime.getMinutes(),$currentTime.getSeconds());
@@ -86,7 +102,13 @@ border-8 border-double border-zinc-50 box-content rounded-2xl shadow-xl
 ">
 	<div class="font-digital text-center w-full">{tooltip}
 		<Button 
-		class="absolute right-4 top-3 bg-zinc-950 border-2 border-pomodoro-400 hover:bg-pomodoro-500 hover:text-white rounded-xl border-double p-1 aspect-square h-7 text-pomodoro-200"><Trash2 size={16} /></Button>
+			class="absolute right-4 top-3 p-1 aspect-square h-7 bg-zinc-950 text-pomodoro-200
+			border-2 border-pomodoro-400 rounded-xl border-double
+			hover:bg-pomodoro-500 hover:text-white   "
+			on:click={removeRecord}
+		>
+		<Trash2 size={16} />
+	</Button>
 	</div>
 	<div class="flex-col space-y-2 border-2 border-dotted border-white px-1 py-2">
 		<!-- working time control  -->
@@ -181,10 +203,9 @@ border-8 border-double border-zinc-50 box-content rounded-2xl shadow-xl
 	<div class="m-1 flex space-x-2 relative">
 		<div class="font-digital  flex-col">
 			<div class="flex">
-				<Milestone class=""/>
-				<Button class="p-0 ml-1 mr-2 mt-0.5 rounded-full w-5 h-5 border-2 border-white"
-				style="background-color:{record?.color}"
-				/>
+				<Milestone/>				
+
+				<button on:click={changeProjectRecord}><ProjectSelect bind:record  /></button>
 				<div class="text-end">{durationString}</div>		
 			</div>				
 			<div class="w-full text-end text-lg">

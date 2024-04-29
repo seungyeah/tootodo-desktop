@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Button, DropdownMenu, Popover } from '$ui';
+	import { Button, Popover } from '$ui';
 	import Timer from '$components/timer/Timer.svelte';
 	import TimerSetting from '$components/timer/TimerSetting.svelte';
-	import { currentTime, formatTime, timerOpen } from '$store';
-	import { Droplet } from 'lucide-svelte';
-	let settingVisible = false;
+	import ProjectSelect from './ProjectSelectWithCurrentTime.svelte';
+	import { timerOpen } from '$store';
+
 
 	const hours = Array.from({ length: 24 }, (_, i) => i);
 	const tenMinute = [0, 10, 20, 30, 40, 50];
-	$: currentTimeDisplay = formatTime($currentTime);
+	
 	$: isAM = new Date().getHours() < 12;
 
 	onMount(() => {
@@ -34,14 +34,14 @@
 	];
 	
 	$:selectedProject = { color: '#3f3f46', id: 'p0', title: '프로젝트 0' };
-	$:console.log(selectedProject.color);
+
 	let records = [
-		{ start: '12:10', end: '13:30', dragged: true },
-		{ start: '0:30', end: '2:00', projectId: 'p1', dragged: true },
-		{ start: '4:00', end: '5:30', projectId: 'p2', dragged: true },
-		{ start: '9:30', end: '10:20', projectId: 'p3', dragged: true },
-		{ start: '10:20', end: '11:40', dragged: true },
-		{ start: '22:30', end: '23:40', projectId: 'p8', dragged: true }
+		{ id:0, start: '12:10', end: '13:30', dragged: true },
+		{ id:1, start: '0:30', end: '2:00', projectId: 'p1', dragged: true },
+		{ id:2, start: '4:00', end: '5:30', projectId: 'p2', dragged: true },
+		{ id:3, start: '9:30', end: '10:20', projectId: 'p3', dragged: true },
+		{ id:4, start: '10:20', end: '11:40', dragged: true },
+		{ id:5, start: '22:30', end: '23:40', projectId: 'p8', dragged: true }
 	];
 
 	function getStartRecordPosition(hour, min) {
@@ -179,7 +179,17 @@
 		dragEndMin = null;
 	}
 
-	
+	// event handler
+	function handleRemoveRecord(e: CustomEvent<any>): void {
+		console.log(e.detail);
+		console.log("remove record");
+	}
+
+	function hadnleChangeProject(e: CustomEvent<any>): void {
+		let record = records.find((record) => record.id === e.detail.record.id);
+		record = e.detail.record;
+		getCellColor();
+	}
 </script>
 
 {#if $timerOpen}
@@ -231,7 +241,7 @@
 													</Button>
 													</Popover.Trigger>
 													<Popover.Content class="w-auto translate-y-[0.2rem] p-0 ">
-														<TimerSetting {record} />
+														<TimerSetting {record} on:remove= {handleRemoveRecord} on:changeProject={hadnleChangeProject}/>
 													</Popover.Content>
 												</Popover.Root>
 											{:else}
@@ -270,32 +280,7 @@
 		</div>
 
 		<div class="absolute left-[42%] -top-0">
-			  <DropdownMenu.Root>
-				<DropdownMenu.Trigger>
-					<Button variant="ghost" size="sm" 	
-					class="font-digital  w-[80px] text-[1.4rem] font-bold text-violet-950 border-b-4 border-l-4 border-r-4 rounded-xl  border-zinc-900 "
-					style={`color: ${selectedProject.color}; border-color: ${selectedProject.color}`}
-					>
-						{currentTimeDisplay}
-					</Button>
-				</DropdownMenu.Trigger>
-				<DropdownMenu.Content class="-translate-y-2">
-					<DropdownMenu.Group>
-						<DropdownMenu.Label class="text-center">Select Project</DropdownMenu.Label>
-						<DropdownMenu.Item class="grid grid-cols-3 data-[highlighted]:bg-zinc-50">
-							{#each projects as project}
-								<Button
-									class="m-2 h-5 w-5 p-2"
-									style={`background-color: ${project.color};`}
-									on:click={() => {
-										selectedProject = project;
-									}}
-								/>
-							{/each}
-						</DropdownMenu.Item>
-					</DropdownMenu.Group>
-				</DropdownMenu.Content>
-			</DropdownMenu.Root>
+			  <ProjectSelect {projects} bind:selectedProject />
 		</div>
 		
 		
