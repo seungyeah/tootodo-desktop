@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from '$ui';
-	import { Milestone } from 'lucide-svelte';
+	import { Milestone, Trash2 } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 	import PomoIcon from '$components/PomoIcon.svelte';
 	import { timerSetting,currentTime } from '$store';
@@ -84,7 +84,10 @@
 <div class="z-20 w-[220px] flex-col items-center justify-center space-y-1 bg-zinc-900 p-2 text-white 
 border-8 border-double border-zinc-50 box-content rounded-2xl shadow-xl
 ">
-	<div class="font-digital text-center w-full">{tooltip}</div>
+	<div class="font-digital text-center w-full">{tooltip}
+		<Button 
+		class="absolute right-4 top-3 bg-zinc-950 border-2 border-pomodoro-400 hover:bg-pomodoro-500 hover:text-white rounded-xl border-double p-1 aspect-square h-7 text-pomodoro-200"><Trash2 size={16} /></Button>
+	</div>
 	<div class="flex-col space-y-2 border-2 border-dotted border-white px-1 py-2">
 		<!-- working time control  -->
 		<div class="flex justify-center space-x-2">
@@ -177,9 +180,14 @@ border-8 border-double border-zinc-50 box-content rounded-2xl shadow-xl
 	<!-- check duration, -> start timer button -->
 	<div class="m-1 flex space-x-2 relative">
 		<div class="font-digital  flex-col">
-			<Milestone class="absolute"/>
-			<div class="text-end w-full">{durationString}</div>			
-			<div class="w-full text-center text-lg">
+			<div class="flex">
+				<Milestone class=""/>
+				<Button class="p-0 ml-1 mr-2 mt-0.5 rounded-full w-5 h-5 border-2 border-white"
+				style="background-color:{record?.color}"
+				/>
+				<div class="text-end">{durationString}</div>		
+			</div>				
+			<div class="w-full text-end text-lg">
 				(<span class="text-pomodoro-300">{working}</span>+<span class="text-emerald-400">{breaking}</span
 				>)*{cycle}+<span class="text-blue-200">{remain}</span>
 			</div>

@@ -103,7 +103,7 @@
 					: 'h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200'}
 				><Clock size={26} color="white" fill="#09090b" strokeWidth={2} /></Button
 			>
-				<div class="fixed z-50 hidden right-0 top-10  w-[470px] translate-y-1 p-0" class:openTimer={openTenM}>
+				<div class="fixed z-50 hidden right-0 top-10  w-[470px] translate-y-1 p-0 " class:openTimer={openTenM}>
 					<div
 						class={$timerOpen
 							? ' relative m-auto  h-[290px] '
