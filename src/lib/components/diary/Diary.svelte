@@ -229,7 +229,7 @@
 			<div class="mb-2 w-full border-b-4 border-double border-zinc-200">Habit</div>
 			<div
 				class="h-[calc(100%-14px)] max-h-[calc(100%-14px)] overflow-y-scroll no-scrollbar 
-				grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 grid-rows-3   place-items-center items-center gap-1  
+				grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 place-items-center items-center gap-1  
 				rounded-lg px-1.5 shadow"
 			>
 				{#each todayHabits as habit}
