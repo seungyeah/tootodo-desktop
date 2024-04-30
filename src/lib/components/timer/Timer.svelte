@@ -26,6 +26,7 @@
 		await initWebWorker();
 		records = $timerSetting.cycles;
 		leftSecondsDefault = $timerSetting.working * 60;
+
 		if ($timerStatus.cycle === 0) {
 			records = $timerSetting.cycles;
 			// 타이머 초기화			
@@ -60,7 +61,7 @@
 		await resetTimer();
 		worker.terminate();
 		// 타이머가 사라질 때의 시간 저장. 다음에 타이머를 다시 열었을 때, 이 시간을 기준으로 타이머를 재개
-		$timerStopTime = Date.now();
+		if($timerStatus.cycle <= records.length) $timerStopTime = Date.now();
 	});
 
 	/////////////////////////////// web worker ///////////////////////////////
@@ -124,6 +125,7 @@
 			$timerStatus.leftTime = $timerSetting.breaking * 60;
 			if ($timerStatus.cycle >= records.length) {
 				resetTimerStatus();
+				$timerStopTime = 0;
 				$timerOpen = false;
 			}
 		} else {
@@ -282,10 +284,15 @@
 					await switchSession();
 				}}><StepForward color="#52525b" fill="#52525b" size={32} /></Button
 			>
-			<div class="absolute bottom-0 flex items-end text-xs text-zinc-100">
-				<PomoIcon />
-				<div class="-translate-x-5">
-					{$timerSetting.working} min
+
+			<!-- goal working time  and project-->
+			<div class="absolute top-2 right-1 flex items-end text-xs text-zinc-100">
+				<div class="p-0 rounded-full w-8 h-8 border-2 border-zinc-100 border-dashed opacity-80"
+					style="background-color:{$timerSetting.projectColor}"
+				/>
+				<div class="absolute w-8 h-7 text-center font-bold text-lg ">
+					{$timerSetting.working}
+					<span class="absolute text-sm bottom-0 translate-x-1">min</span>
 				</div>
 			</div>
 		</div>

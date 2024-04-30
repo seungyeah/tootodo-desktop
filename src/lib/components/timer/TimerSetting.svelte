@@ -22,7 +22,6 @@
 	let remain = 0;
 	let duration = 0;
 	let durationString = '';
-	$:selectedProject = record.project;
 
 	onMount(() => {
 		if (record) {
@@ -48,7 +47,9 @@
 		const startTime = new Time($currentTime.getHours(),$currentTime.getMinutes(),$currentTime.getSeconds());
 		const endTime = startTime.add({minutes:duration});
 		const cycles = calculateCycleArray(startTime);
-		timerSetting.set({working, breaking, cycles, remain,duration, startTime, endTime});	
+		const projectColor = record?.color;
+		$timerSetting = {projectColor, working, breaking, cycles, remain,duration, startTime, endTime,};
+		// console.log($timerSetting.project);	
 	}
 
 	function calculateCycleArray(startTime:Time){

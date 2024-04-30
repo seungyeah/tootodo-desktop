@@ -101,13 +101,13 @@
 	
 	onMount(() => {
 		scrollToBottom();
-		document.addEventListener('keydown', handleKeyDown); // keydown 이벤트 리스너 추가		
+		if (typeof window !== 'undefined') document.addEventListener('keydown', handleKeyDown); // keydown 이벤트 리스너 추가		
 	});
 
 
 	// 컴포넌트가 파괴될 때 이벤트 리스너 제거
 	onDestroy(() => {
-		document.removeEventListener('keydown', handleKeyDown); // keydown 이벤트 리스너 제거
+		if (typeof window !== 'undefined') document.removeEventListener('keydown', handleKeyDown); // keydown 이벤트 리스너 제거
 	});
 
 	// 키보드 이벤트 리스너를 처리하는 함수

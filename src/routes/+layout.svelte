@@ -5,7 +5,7 @@
 	import TWindicator from '$components/TWindicator.svelte';
 	import { auth, isAuthed, timerOpen } from '$store';
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { Search, LogOut, Clock } from 'lucide-svelte';
 	import { page } from '$app/stores';
 	import ShowRecord from '$components/tenMTable/showRecord.svelte';
@@ -22,6 +22,13 @@
 		} else {
 			goto('/login');
 		}
+
+		if (typeof window !== 'undefined')  document.addEventListener('keydown', handleKeyDown); // keydown 이벤트 리스너 추가	
+
+	});
+
+	onDestroy(() => {
+		if (typeof window !== 'undefined')  document.removeEventListener('keydown', handleKeyDown); // keydown 이벤트 리스너 제거
 	});
 
 	function getCookie(name) {
@@ -36,6 +43,13 @@
 			await auth.logout();
 		} catch (error) {
 			errorMessage = error.message;
+		}
+	}
+
+	function handleKeyDown(event) {
+		if (event.key === 'Escape' || event.key === 'Esc') {
+			// Esc 버튼이 눌렸을 때, openChat을 false로 변경
+			openTenM = false;
 		}
 	}
 </script>

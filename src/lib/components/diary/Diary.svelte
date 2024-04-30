@@ -176,7 +176,7 @@
 	);
 	$: todayHabits = habits.filter((habit) => habitRecords.some((record) => record.title === habit.title));
 
-	$:console.log(todayHabits);
+	// $:console.log(todayHabits);
 	let Stars = new Array(5).fill(0);
 </script>
 

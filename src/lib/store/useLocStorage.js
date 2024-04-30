@@ -21,6 +21,7 @@ export function createLocStorage(key, initialValue) {
 
 export const timerOpen = createLocStorage('timerOpen', false);
 export const timerStopTime = createLocStorage('timerStopTime', 0);
+
 export const timerSetting = createLocStorage('timerSetting', {
         working: 25,
         breaking: 5,
@@ -33,6 +34,7 @@ export const timerSetting = createLocStorage('timerSetting', {
         duration: 90,
         startTime:"",
         endTime:"",
+        projectColor:'#3f3f46',
         // alarmSessionChanged: true,
         // alarmTimerDone: true,
     }

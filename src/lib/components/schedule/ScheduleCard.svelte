@@ -115,7 +115,7 @@
 								? (record.days = record.days.filter((item) => item.day !== day))
 								: (record.days = [...record.days, { day, time: '' }]);
 						}}
-						class="relative h-full w-full rounded-none rounded-b border-l border-dashed hover:bg-zinc-100"
+						class="relative h-[calc(100%-0.1rem)] w-full rounded-none rounded-b border-l border-dashed hover:bg-zinc-100 "
 						style="color: {record?.project?.color};"
 					>
 						<span
