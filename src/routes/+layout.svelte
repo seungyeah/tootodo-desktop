@@ -6,13 +6,13 @@
 	import { auth, isAuthed, timerOpen } from '$store';
 	import { goto } from '$app/navigation';
 	import { onDestroy, onMount } from 'svelte';
-	import { Search, LogOut, Clock } from 'lucide-svelte';
+	import { Search, LogOut, Clock, AlarmCheck, Bell } from 'lucide-svelte';
 	import { page } from '$app/stores';
 	import ShowRecord from '$components/tenMTable/showRecord.svelte';
 	import PlanRecord from '$components/tenMTable/planRecord.svelte';
 
 	let errorMessage = '';
-	let searchMode = false;
+	let showAlarm = false;
 	let openTenM = false;
 
 	onMount(async () => {
@@ -80,32 +80,26 @@
 			</Breadcrumb.Root>
 		</div>
 
-		{#if searchMode}
-			<Input
-				type="text"
-				class="absolute right-0 z-10 h-10 w-[calc(100%-450px)] -translate-x-[210px] translate-y-2.5 border-2 shadow-lg shadow-zinc-500 "
-			/>
-		{/if}
-
 		<!-- right menu (profile, search, timer) -->
 		<div
 			class="absolute right-0 z-10 flex h-12 w-[200px] items-center justify-evenly space-x-2 rounded-b-2xl rounded-l-2xl bg-zinc-800 px-4"
 		>
-			<!-- search -->
+			<!-- alerm -->
 			<Button
 				variant="ghost"
 				class="h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200"
-				on:click={() => (searchMode = !searchMode)}
+				on:click={() => (showAlarm = !showAlarm)}
 			>
-				<Search
+				<Bell
 					size={26}
 					strokeWidth={2}
 					color="white"
 					fill="#09090b"
-					class={searchMode
+					class={showAlarm
 						? 'scale-1 scale-125 rounded-full bg-zinc-900 shadow-xl shadow-zinc-50'
 						: ''}
 				/>
+				<!-- todo! show alarm -->
 			</Button>
 
 			<!-- timer, tenMplanner -->

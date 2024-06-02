@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Tabs, Button, Input, DropdownMenu } from '$ui';
-	import { CirclePlus, Droplet, Grip} from 'lucide-svelte';
+	import { CirclePlus, Droplet, Grip } from 'lucide-svelte';
 	import MemoEditor from './MemoEditor.svelte';
 	import { currentTime, formatDay } from '$store';
 	import { onMount, tick } from 'svelte';
@@ -65,20 +65,21 @@
 			date: '',
 			color: newMemo.color,
 			content: ''
-		};	
+		};
 	}
+
 	async function handleSubmit(
 		event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }
 	) {
 		event.preventDefault();
-		if(newMemo.title.trim() === '') {
+		if (newMemo.title.trim() === '') {
 			return;
 		}
 		if (newMemo.title.length <= 1) {
 			resetNewMemo();
 			return;
 		}
-		
+
 		memos = [
 			{
 				pin: newMemo.pin,
@@ -110,12 +111,13 @@
 
 	$: memos = memos.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
 
-	$:console.log(memos);
+	$: console.log(memos);
 </script>
 
 <div class="relative h-full w-full space-x-2">
-	<!-- select color -->
 	<Tabs.Root value="all" class="h-full w-full" let:value>
+		<!-- select color -->
+
 		<Tabs.List class="flex w-full ">
 			<Tabs.Trigger
 				value="all"
@@ -201,19 +203,25 @@
 
 		<!-- memo list -->
 		<!-- all -->
-		<Tabs.Content value="all" class="h-[calc(100%-90px)]  max-h-[calc(100%-90px)] space-y-3 overflow-y-auto">
-				{#each memos as memo}
-						<MemoEditor bind:memo />
-				{/each}
+		<Tabs.Content
+			value="all"
+			class="h-[calc(100%-90px)]  max-h-[calc(100%-90px)] space-y-3 overflow-y-auto"
+		>
+			{#each memos as memo}
+				<MemoEditor bind:memo />
+			{/each}
 		</Tabs.Content>
 		<!-- color filter -->
 		{#each colors as color}
-			<Tabs.Content value={color.name} class="h-[calc(100%-90px)]  max-h-[calc(100%-90px)] space-y-3 overflow-y-auto">
-					{#each memos as memo}
-						{#if memo.color === color.name}
-							<MemoEditor bind:memo />
-						{/if}
-					{/each}
+			<Tabs.Content
+				value={color.name}
+				class="h-[calc(100%-90px)]  max-h-[calc(100%-90px)] space-y-3 overflow-y-auto"
+			>
+				{#each memos as memo}
+					{#if memo.color === color.name}
+						<MemoEditor bind:memo />
+					{/if}
+				{/each}
 			</Tabs.Content>
 		{/each}
 	</Tabs.Root>

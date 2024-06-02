@@ -43,15 +43,16 @@
 							{record.title}
 						</div>
 					</Label>
-					<button on:click={() => (record.openChatInDiary = !record.openChatInDiary)}
-						class='absolute right-2 top-0 h-full bg-white'
-						>
+					<!-- <button
+						on:click={() => (record.openChatInDiary = !record.openChatInDiary)}
+						class="absolute right-2 top-0 h-full bg-white"
+					>
 						{#if record.openChatInDiary}
 							<MessageCircle size={16} fill="#fef08a" class=" scale-125" />
 						{:else}
 							<MessageCircle size={16} fill="#fafafa" color="#d4d4d8" />
 						{/if}
-					</button>
+					</button> -->
 				</div>
 			{/if}
 		</div>

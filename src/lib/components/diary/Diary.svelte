@@ -174,7 +174,9 @@
 	$: habitRecords = sortedRecords.filter(
 		(record) => record.item === 'habit' && record.days.includes(day)
 	);
-	$: todayHabits = habits.filter((habit) => habitRecords.some((record) => record.title === habit.title));
+	$: todayHabits = habits.filter((habit) =>
+		habitRecords.some((record) => record.title === habit.title)
+	);
 
 	// $:console.log(todayHabits);
 	let Stars = new Array(5).fill(0);
@@ -228,16 +230,16 @@
 		<div class="h-full w-1/4 -translate-y-10">
 			<div class="mb-2 w-full border-b-4 border-double border-zinc-200">Habit</div>
 			<div
-				class="h-[calc(100%-14px)] max-h-[calc(100%-14px)] overflow-y-scroll no-scrollbar 
-				grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 place-items-center items-center gap-1  
-				rounded-lg px-1.5 shadow"
+				class="no-scrollbar grid h-[calc(100%-14px)] max-h-[calc(100%-14px)]
+				grid-cols-1 place-items-center items-center gap-1 overflow-y-scroll rounded-lg px-1.5 shadow
+				lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
 			>
 				{#each todayHabits as habit}
 					<Button
 						variant="ghost"
 						on:click={() => {
 							habit.done = !habit.done;
-							if(habit.done) habit.doneTime = $currentTime;
+							if (habit.done) habit.doneTime = $currentTime;
 							else habit.doneTime = '';
 						}}
 						class={habit.done
@@ -249,7 +251,7 @@
 		</div>
 	</div>
 
-	<div class="h-[calc(62%-32px)] w-full">
+	<div class="font-chat h-[calc(62%-32px)] w-full">
 		<DiaryEditor />
 	</div>
 </div>
