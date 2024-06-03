@@ -1,23 +1,35 @@
 <script lang="ts">
-	import { getLocalTimeZone, today } from '@internationalized/date';
-	import { Button, DropdownMenu, Input, Popover, RangeCalendar } from '$ui';
+	import { getLocalTimeZone, today, } from '@internationalized/date';
+	import { Button, DropdownMenu, Input, Popover, RangeCalendar, } from '$ui';
 	import {
 		CirclePlus,
 		Calendar,
-		Trash,
-		Trash2,
-		ChefHatIcon,
-		DiamondPlus,
-		ArrowBigRightDash,
-		MessageCircle,
 		GripVertical
 	} from 'lucide-svelte';
-	import { currentTime, formatDay } from '$store';
 	import { tick } from 'svelte';
 	import { getContext } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
+
+	let tableContainer;
+
+	function handleScroll(event) {
+		dispatch('scroll', {
+			scrollTop: tableContainer.scrollTop,
+			scrollLeft: tableContainer.scrollLeft
+		});
+	}
+
+	export function updateScrollPosition(scrollPosition) {
+		if (tableContainer) {
+			tableContainer.scrollTop = scrollPosition.scrollTop;
+			tableContainer.scrollLeft = scrollPosition.scrollLeft;
+		}
+	}
+
 	const selectedDate = getContext('selectedDateRange');
 	const start = today(getLocalTimeZone());
-
 	$: cellDuration = {
 		start: start,
 		end: start.add({ days: 0 })
@@ -48,10 +60,11 @@
 		event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }
 	) {
 		event.preventDefault();
+
 		if (newEvent.title.trim() === '') {
 			return;
 		}
-		if (newEvent.title.length <= 1) {
+		if (newEvent.title.length <= 2) {
 			resetNewEvent();
 			return;
 		}
@@ -105,11 +118,11 @@
 	<!-- add event -->
 	<form
 		on:submit|preventDefault={handleSubmit}
-		class="relative flex h-9 w-full translate-y-2 items-center border-b-4 pb-4"
+		class="relative flex h-9 w-full translate-y-1.5 items-center border-b-4 pb-4"
 	>
 		<DropdownMenu.Root closeOnItemClick={false}>
 			<DropdownMenu.Trigger class=" h-9 -translate-y-0.5 rounded p-0">
-				<Button variant="ghost" size="sm" class="s h-full rounded px-1 shadow  "
+				<Button variant="ghost" size="sm" class="s h-full rounded bg-zinc-100 px-1  shadow"
 					><Calendar size={20} /></Button
 				>
 			</DropdownMenu.Trigger>
@@ -161,103 +174,86 @@
 	</form>
 
 	<!-- event list -->
-	<table class="w-full translate-y-0.5 border">
-		<thead>
-			<tr class="h-[20px] text-center">
-				<th scope="col" class="min-w-5 flex items-center justify-center translate-y-1"><GripVertical size={14} /></th>
-				<th scope="col" class="w-3/5 border">Title</th>
-				<th scope="col" class="w-2/5 border">Duration</th>
-			</tr>
-		</thead>
-		<tbody>
-			{#each events as event, i}
-				<tr class=" relative h-[30px] border text-center" class:dragging={draggedIndex === i}>
-					<!-- index -->
-					<td
-						class="draggable translate-x-1.5 -translate-y-0.5"
-						draggable="true"
-						on:dragstart={(e) => handleDragStart(e, i)}
-						on:dragover={handleDragOver}
-						on:drop={(e) => handleDrop(e, i)}
-						on:dragend={handleDragEnd}
+	<div
+		class="h-full max-h-[calc(100%-50px)] w-full overflow-y-scroll no-scrollbar max-w-full overflow-x-clip border-2 border-zinc-600"
+		bind:this={tableContainer}
+		on:scroll={handleScroll}
+	>
+		<table class="translate-y-0.5">
+			<thead class="sticky top-0 z-10 h-[20px] bg-white text-center">
+				<tr class="">
+					<th scope="col" class="flex min-w-5 translate-y-1 items-center justify-center border-r"
+						><GripVertical size={14} /></th
 					>
-						{#if draggedIndex === i}
-							<GripVertical size={18} />
-						{/if}
-						{i + 1}
-					</td>
-					<!-- title -->
-					<td class="  border"
-						><input value={event.title} class="line-clamp-2 h-full w-full bg-transparent p-1" /></td
-					>
-					<!-- duration -->
-					<Popover.Root
-						onOpenChange={() => {
-							event.start = cellDuration.start;
-							event.end = cellDuration.end;
-						}}
-					>
-						<Popover.Trigger
-							><td class="translate-y-1.5 text-center">
-								<div class="l flex items-center justify-between">
-									{#if event.start && event.end}
-										<div>
-											{event.start.month.toString().padStart(2, '0') +
-												'/' +
-												event.start.day.toString().padStart(2, '0')}
-										</div>
-
-										<div class="font-extrabold text-zinc-400">~</div>
-										<div>
-											{event.end.month.toString().padStart(2, '0') +
-												'/' +
-												event.end.day.toString().padStart(2, '0')}
-										</div>
-									{:else}
-										00-00 <span class="font-extrabold text-zinc-400">~</span> 00-00
-									{/if}
-								</div>
-							</td></Popover.Trigger
-						>
-						<Popover.Content class="w-[300px]">
-							<RangeCalendar
-								bind:value={cellDuration}
-								weekStartsOn={1}
-								class=" w-full rounded-lg border bg-white shadow "
-							/>
-						</Popover.Content>
-					</Popover.Root>
-					<!-- setting -->
-					<DropdownMenu.Root>
-						<DropdownMenu.Trigger>
-							<td class="absolute -right-1.5 top-0 h-[30px] translate-x-2/3">
-								<Button variant="ghost" size="sm" class="h-full w-full rounded-full px-1">
-									<ArrowBigRightDash color="#3f3f46" strokeWidth={2} size={22} />
-								</Button>
-							</td>
-						</DropdownMenu.Trigger>
-						<DropdownMenu.Content
-							class="-translate-y-1.5 border-2 border-double border-zinc-800"
-							side="right"
-							sideOffset="3"
-						>
-							<DropdownMenu.Group class=" flex items-center justify-center">
-								<DropdownMenu.Item class="">
-									<button><DiamondPlus size={20} /></button>
-								</DropdownMenu.Item>
-								<DropdownMenu.Item class="">
-									<button><MessageCircle size={20} /></button>
-								</DropdownMenu.Item>
-								<DropdownMenu.Item class="">
-									<button><Trash2 size={20} /></button>
-								</DropdownMenu.Item>
-							</DropdownMenu.Group>
-						</DropdownMenu.Content>
-					</DropdownMenu.Root>
+					<th scope="col" class="w-3/5 border-r">Title</th>
+					<th scope="col" class="w-2/5">Duration</th>
 				</tr>
-			{/each}
-		</tbody>
-	</table>
+				<div class="absolute min-w-full border-b-2 border-zinc-500"></div>
+			</thead>
+			<tbody class="text-center">
+				{#each events as event, i}
+					<tr class=" relative h-[30px] border text-start" class:dragging={draggedIndex === i}>
+						<!-- index -->
+						<td
+							class="draggable -translate-y-0.5"
+							draggable="true"
+							on:dragstart={(e) => handleDragStart(e, i)}
+							on:dragover={handleDragOver}
+							on:drop={(e) => handleDrop(e, i)}
+							on:dragend={handleDragEnd}
+						>
+							{#if draggedIndex === i}
+								<GripVertical size={18} />
+							{/if}
+							<div class="w-full text-center">{i + 1}</div>
+						</td>
+						<!-- title -->
+						<td class="  relative border"
+							><input value={event.title} class="h-full w-full bg-transparent p-1" />							
+						</td>
+						<!-- duration -->
+						<Popover.Root
+							onOpenChange={() => {
+								event.start = cellDuration.start;
+								event.end = cellDuration.end;
+							}}
+						>
+							<Popover.Trigger
+								><td class="translate-x-1 translate-y-1.5">
+									<div class=" flex space-x-1">
+										{#if event.start && event.end}
+											<div>
+												{event.start.month.toString().padStart(2, '0') +
+													'/' +
+													event.start.day.toString().padStart(2, '0')}
+											</div>
+
+											<div class="font-extrabold text-zinc-400">~</div>
+											<div>
+												{event.end.month.toString().padStart(2, '0') +
+													'/' +
+													event.end.day.toString().padStart(2, '0')}
+											</div>
+										{:else}
+											00-00 <span class="font-extrabold text-zinc-400">~</span> 00-00
+										{/if}
+									</div>
+								</td></Popover.Trigger
+							>
+							<Popover.Content class="w-[300px]">
+								<!-- select range -->
+								<RangeCalendar
+									bind:value={cellDuration}
+									weekStartsOn={1}
+									class=" w-full rounded-lg border bg-white shadow "
+								/>
+							</Popover.Content>
+						</Popover.Root>
+						
+				{/each}
+			</tbody>
+		</table>
+	</div>
 </div>
 
 <style>

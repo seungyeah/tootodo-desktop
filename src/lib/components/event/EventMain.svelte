@@ -63,23 +63,54 @@
 
 		return dates;
 	}
+
+	// scroll
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
+	let tableContainer;
+
+	function handleScroll(event) {
+		dispatch('scroll', {
+			scrollTop: tableContainer.scrollTop,
+			scrollLeft: tableContainer.scrollLeft
+		});
+	}
+
+	export let scrollPosition = { scrollTop: 0, scrollLeft: 0 };
+
+	export function updateScrollPosition(scrollPosition) {
+		if (tableContainer) {
+			tableContainer.scrollTop = scrollPosition.scrollTop;
+			tableContainer.scrollLeft = scrollPosition.scrollLeft;
+		}
+	}
+
+	$: {
+		if (tableContainer) {
+			tableContainer.scrollTop = scrollPosition.scrollTop;
+			tableContainer.scrollLeft = scrollPosition.scrollLeft;
+		}
+	}
 </script>
 
-<div class="h-full w-full translate-y-2.5">
-	<table class="w-full table-fixed border-2 border-zinc-800">
-		<thead class="text-center">
-			<tr class="text-center">
+<div
+	class="h-full max-h-full w-full translate-y-1 overflow-y-scroll border-2 border-zinc-800"
+	bind:this={tableContainer}
+	on:scroll={handleScroll}
+>
+	<table class="relative w-full table-fixed border-separate border-spacing-0 ">
+		<thead class="sticky top-0 z-10 bg-white text-center shadow-lg">
+			<tr class="text-center text-[1rem] h-7">
 				{#each monthCounts as monthCount}
-					<td class="border-b-2 border-r-2 border-zinc-700" colspan={monthCount.count}
-						>{monthCount.month}</td
-					>
+					<td class="border-r-2 border-b-2 border-zinc-600" colspan={monthCount.count}>{monthCount.month}</td>
 				{/each}
 			</tr>
 
-			<tr>
+			<tr class="text-center">
 				{#each months.dates as date}
 					{@const day = date.toDate().getDay()}
-					<td class="border border-b-2 border-zinc-600 py-0 text-xs text-zinc-600">
+					<td class="border-r border-b-4 border-zinc-600 py-0 text-xs text-zinc-600">
 						<div
 							class={day === 0
 								? ' border-r border-zinc-900  bg-red-100'
@@ -94,8 +125,11 @@
 					</td>
 				{/each}
 			</tr>
+			<div class="min-w-full h-1"></div>
+
 		</thead>
-		<tbody class="text-center">
+
+		<tbody class="relative border text-center">
 			{#key events}
 				{#each events as event, i}
 					{@const event_start = getDuration($selectedDate.start, event.start)}
@@ -110,28 +144,30 @@
 								<td
 									colspan={event_duration + event_start + 1}
 									class="event"
-									data-percent={event_duration + event_start + 1}>#{i + 1}</td
+									data-percent={event_duration + event_start + 1}>
+									<span class="text-zinc-700"><span class="opacity-80 text-xs">#</span>{i + 1}
+									</td
 								>
 							{:else if event_start <= 0}
 								<td
 									colspan={event_duration + event_start + 1}
 									class="event"
-									data-percent={event_duration + event_start + 1}>#{i + 1}</td
+									data-percent={event_duration + event_start + 1}><span class="opacity-80 text-xs">#</span>{i + 1}</td
 								>
-								<td colspan={event_end}></td>
+								<td colspan={event_end} class="border-b"></td>
 							{:else if event_end <= 0}
-								<td colspan={event_start}></td>
+								<td colspan={event_start} class="border-b"></td>
 								<td
 									colspan={event_duration + event_end + 1}
 									class="event"
-									data-percent={event_duration + event_end + 1}>#{i + 1}</td
+									data-percent={event_duration + event_end + 1}><span class="opacity-80 text-xs">#</span>{i + 1}</td
 								>
 							{:else}
-								<td colspan={event_start}></td>
+								<td colspan={event_start} class="border-b"></td>
 								<td colspan={event_duration + 1} class="event" data-percent={event_duration + 1}
-									>#{i + 1}</td
+									><span class="opacity-80 text-xs">#</span>{i + 1}</td
 								>
-								<td colspan={event_end}></td>
+								<td colspan={event_end} class="border-b"></td>
 							{/if}
 						</tr>
 					{/if}
@@ -149,13 +185,15 @@
 		height: 20px;
 		margin: 2px 0;
 		text-wrap: nowrap;
+		border-bottom: #c1c1c1 1px solid;
 	}
 	.event::after {
 		content: attr(data-percent) ' %';
-		font-size:10px;
+		font-size: 10px;
 		position: absolute;
 		right: 2px;
 		top: -3px;
 		color: white;
+		opacity:70%;
 	}
 </style>
