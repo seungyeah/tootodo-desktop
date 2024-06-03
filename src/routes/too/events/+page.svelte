@@ -14,7 +14,7 @@
 		{
 			title: 'Take a break',
 			start: start,
-			end: start.add({ days: 4 })
+			end: start.add({ days: 2 })
 		},
 		{
 			title: 'Take a nap',

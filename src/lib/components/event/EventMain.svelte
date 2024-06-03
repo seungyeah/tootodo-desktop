@@ -65,10 +65,9 @@
 	}
 </script>
 
-<div class="h-full w-full">
-	<table class="w-full border-2 border-zinc-800  table-fixed">
-		<thead><tr></tr> </thead>
-		<tbody class="text-center">
+<div class="h-full w-full translate-y-2.5">
+	<table class="w-full table-fixed border-2 border-zinc-800">
+		<thead class="text-center">
 			<tr class="text-center">
 				{#each monthCounts as monthCount}
 					<td class="border-b-2 border-r-2 border-zinc-700" colspan={monthCount.count}
@@ -76,60 +75,64 @@
 					>
 				{/each}
 			</tr>
+
 			<tr>
 				{#each months.dates as date}
 					{@const day = date.toDate().getDay()}
-					<td
-						class={day === 0
-							? 'border-r-2 border-zinc-800 bg-red-100'
-							: day === 6
-								? 'bg-blue-100'
-								: ''}>{days[day]}</td
-					>
-				{/each}
-			</tr>
-			<tr>
-				{#each months.dates as date}
-					<td class="border border-b-2 border-zinc-600 text-zinc-600">
-						<div>
-							{date.toString().split('-')[2]}
+					<td class="border border-b-2 border-zinc-600 py-0 text-xs text-zinc-600">
+						<div
+							class={day === 0
+								? ' border-r border-zinc-900  bg-red-100'
+								: day === 6
+									? 'bg-blue-100'
+									: ''}
+						>
+							<div class="py-0 text-xs">{days[day]}</div>
+							<div class="-translate-y-0.5 border-[0.5px] border-dotted border-zinc-700"></div>
+							<div>{date.toString().split('-')[2]}</div>
 						</div>
 					</td>
 				{/each}
 			</tr>
-
+		</thead>
+		<tbody class="text-center">
 			{#key events}
-				{#each events as event}
+				{#each events as event, i}
 					{@const event_start = getDuration($selectedDate.start, event.start)}
 					{@const event_duration = getDuration(event.start, event.end)}
 					{@const event_end = getDuration(event.end, $selectedDate.end)}
-					{#if getDuration($selectedDate.end, event.start)>0 || getDuration(event.end, $selectedDate.start)>0}
-					{:else if event_start <= 0}
-						<tr class="h-[28px] border-b">
-							<td
-								colspan={event_duration + event_start + 1}
-								class="event"
-								data-percent={event_duration + event_start + 1}
-							>
-							</td>
-							<td colspan={event_end}></td>
-						</tr>
-					{:else if event_end <= 0}
-						<tr class="h-[28px] border-b">
-							<td colspan={event_start}></td>
-							<td
-								colspan={event_duration + event_end + 1}
-								class="event"
-								data-percent={event_duration + event_end + 1}
-							>
-							</td>
-						</tr>
-					{:else}
-						<tr class="h-[28px] border-b ">
-							<td colspan={event_start}></td>
-							<td colspan={event_duration + 1} class="event  " data-percent={event_duration + 1}>
-							</td>
-							<td colspan={event_end}></td>
+					{@const start_to_event_start = getDuration($selectedDate.end, event.start)}
+					{@const end_to_event_start = getDuration(event.end, $selectedDate.start)}
+
+					{#if start_to_event_start > 0 || end_to_event_start > 0}<div></div>{:else}
+						<tr class="h-[30px] border-b">
+							{#if event_start == 0 && event_end == 0}
+								<td
+									colspan={event_duration + event_start + 1}
+									class="event"
+									data-percent={event_duration + event_start + 1}>#{i + 1}</td
+								>
+							{:else if event_start <= 0}
+								<td
+									colspan={event_duration + event_start + 1}
+									class="event"
+									data-percent={event_duration + event_start + 1}>#{i + 1}</td
+								>
+								<td colspan={event_end}></td>
+							{:else if event_end <= 0}
+								<td colspan={event_start}></td>
+								<td
+									colspan={event_duration + event_end + 1}
+									class="event"
+									data-percent={event_duration + event_end + 1}>#{i + 1}</td
+								>
+							{:else}
+								<td colspan={event_start}></td>
+								<td colspan={event_duration + 1} class="event" data-percent={event_duration + 1}
+									>#{i + 1}</td
+								>
+								<td colspan={event_end}></td>
+							{/if}
 						</tr>
 					{/if}
 				{/each}
@@ -141,17 +144,18 @@
 <style>
 	.event {
 		position: relative;
-		background-color: #3b83f6;
-		color: black;
+		background-color: #3f3f46;
+		color: white;
 		height: 20px;
 		margin: 2px 0;
 		text-wrap: nowrap;
 	}
 	.event::after {
-		content: attr(data-percent) 'days';
+		content: attr(data-percent) ' %';
+		font-size:10px;
 		position: absolute;
-		right: -0px;
-		top: 0;
+		right: 2px;
+		top: -3px;
 		color: white;
 	}
 </style>

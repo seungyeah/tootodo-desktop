@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {CalendarIcon} from 'lucide-svelte';
+	import { CalendarIcon } from 'lucide-svelte';
 	import {
 		type DateValue,
 		DateFormatter,
@@ -8,7 +8,7 @@
 		CalendarDate
 	} from '@internationalized/date';
 	import { cn } from '$lib/utils.js';
-	import {Button, Calendar, Popover} from '$ui';
+	import { Button, Calendar, Popover } from '$ui';
 	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
 
 	const df = new DateFormatter('en-US', {
@@ -19,9 +19,10 @@
 	let selectedDate: CalendarDate = today(getLocalTimeZone());
 </script>
 
-<div class="h-full w-full flex-col flex justify-center sm:absolute sm:top-0">
+<div class="flex h-full w-full flex-col justify-center sm:absolute sm:top-0">
 	<!-- header: select date -->
-	<div class="flex h-10 w-full items-center justify-center space-x-2 translate-y-1">
+	<div class="flex h-10 w-full translate-y-1 items-center justify-center space-x-2">
+		<!-- day-- -->
 		<Button
 			class="h-8 w-8 !p-1"
 			variant="ghost"
@@ -29,12 +30,14 @@
 		>
 			<ChevronLeft size={20} />
 		</Button>
+
+		<!-- date picker -->
 		<Popover.Root openFocus>
 			<Popover.Trigger asChild let:builder>
 				<Button
 					variant="outline"
 					class={cn(
-						'w-[280px]  text-center font-semibold text-md',
+						'text-md  w-[280px] text-center font-semibold',
 						!value && 'text-muted-foreground'
 					)}
 					builders={[builder]}
@@ -45,11 +48,12 @@
 						: df.format(selectedDate.toDate(getLocalTimeZone()))}
 				</Button>
 			</Popover.Trigger>
-			<Popover.Content class="w-auto p-0 my-2 shadow shadow-pink">
+			<Popover.Content class="shadow-pink my-2 w-auto p-0 shadow">
 				<Calendar bind:value initialFocus />
 			</Popover.Content>
 		</Popover.Root>
 
+		<!-- day++ -->
 		<Button
 			class="h-8 w-8 !p-1"
 			variant="ghost"

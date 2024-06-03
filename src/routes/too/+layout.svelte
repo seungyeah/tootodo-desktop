@@ -9,7 +9,7 @@
 	import { Breadcrumb, ToggleGroup, Button, RangeCalendar, Popover } from '$ui';
 	import { goto } from '$app/navigation';
 
-	import { CalendarIcon } from 'lucide-svelte';
+	import { CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-svelte';
 	import { cn } from '$lib/utils.js';
 	import { page } from '$app/stores';
 	import { writable } from 'svelte/store';
@@ -19,11 +19,11 @@
 		dateStyle: 'medium'
 	});
 
-	let startValue: DateValue | undefined = today(getLocalTimeZone());
+	let todayValue: DateValue | undefined = today(getLocalTimeZone());
 
 	const selectedDateRange = writable({
-		start: new CalendarDate(startValue.year, startValue.month, startValue.day),
-		end: new CalendarDate(startValue.year, startValue.month, startValue.day).add({ days: 7 })
+		start: new CalendarDate(todayValue.year, todayValue.month, todayValue.day),
+		end: new CalendarDate(todayValue.year, todayValue.month, todayValue.day).add({ days: 14 })
 	});
 	setContext('selectedDateRange', selectedDateRange);
 
@@ -66,7 +66,23 @@
 					</Breadcrumb.List>
 				</Breadcrumb.Root>
 			{:else if $page.url.pathname.includes('events')}
-				<div class="grid -translate-y-2 translate-x-8 gap-2">
+				<div class="flex -translate-y-2 translate-x-4 items-center gap-2">
+					<!-- 7days-- -->
+					<Button
+						class="h-8 w-8 !p-1"
+						variant="ghost"
+						on:click={() => {
+							{
+								$selectedDateRange.start = $selectedDateRange.start.subtract({ days: 7 });
+							}
+							{
+								$selectedDateRange.end = $selectedDateRange.end.subtract({ days: 7 });
+							}
+						}}
+					>
+						<ChevronLeft size={20} />
+					</Button>
+					<!-- date range picker -->
 					<Popover.Root openFocus>
 						<Popover.Trigger asChild let:builder>
 							<Button
@@ -83,8 +99,8 @@
 									{:else}
 										{df.format($selectedDateRange.start.toDate(getLocalTimeZone()))}
 									{/if}
-								{:else if startValue}
-									{df.format(startValue.toDate(getLocalTimeZone()))}
+								{:else if todayValue}
+									{df.format(todayValue.toDate(getLocalTimeZone()))}
 								{:else}
 									Pick a date
 								{/if}
@@ -93,7 +109,7 @@
 						<Popover.Content class="w-auto p-0" align="start">
 							<RangeCalendar
 								bind:value={$selectedDateRange}
-								bind:startValue
+								bind:startValue={todayValue}
 								initialFocus
 								weekStartsOn={1}
 								numberOfMonths={2}
@@ -101,6 +117,21 @@
 							/>
 						</Popover.Content>
 					</Popover.Root>
+					<!-- 7days++ -->
+					<Button
+						class="h-8 w-8 !p-1"
+						variant="ghost"
+						on:click={() => {
+							{
+								$selectedDateRange.start = $selectedDateRange.start.add({ days: 7 });
+							}
+							{
+								$selectedDateRange.end = $selectedDateRange.end.add({ days: 7 });
+							}
+						}}
+					>
+						<ChevronRight size={20} />
+					</Button>
 				</div>
 			{/if}
 		</div>
