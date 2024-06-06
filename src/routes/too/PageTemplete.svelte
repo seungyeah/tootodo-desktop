@@ -17,7 +17,7 @@
 		<div
 			class="flex h-full w-full space-x-2 
 			rounded-lg border-4 border-double border-zinc-100 p-2
-			shadow-lg shadow-zinc-500"
+			shadow-md shadow-zinc-400"
 		>
 			<slot name="main" />
 		</div>

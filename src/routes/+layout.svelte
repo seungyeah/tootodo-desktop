@@ -130,7 +130,7 @@
 				<DropdownMenu.Trigger asChild let:builder>
 					<Button builders={[builder]} variant="ghost" class="h-8 w-8 hover:bg-zinc-950 "
 						><Avatar.Root class=" h-8 w-8 border-2 text-zinc-500 shadow-lg ">
-							<Avatar.Image src={$auth.photo} alt={$auth.email} />
+							<Avatar.Image src="/{$auth.photo}" alt={$auth.email} />
 							<Avatar.Fallback class="bg-black font-bold">Hi</Avatar.Fallback>
 						</Avatar.Root></Button
 					>

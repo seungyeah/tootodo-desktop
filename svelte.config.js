@@ -7,7 +7,6 @@ const config = {
 	// for more information about preprocessors
 	preprocess: sequence([vitePreprocess({}), preprocessMeltUI()]),
 	vitePlugin: {
-		experimental: {
 			inspector: {
 				// change shortcut
 				toggleKeyCombo: 'meta-shift',
@@ -18,7 +17,6 @@ const config = {
 				// inspector position
 				toggleButtonPos: 'top-right'
 			}
-		}
 	},
 	kit: {
 		// adapter-auto only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.

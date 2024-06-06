@@ -1,17 +1,11 @@
 <script lang="ts">
-	import { CalendarDate, getLocalTimeZone, today } from '@internationalized/date';
+	import { CalendarDate, getLocalTimeZone, today,parseDate } from '@internationalized/date';
 	import { getContext } from 'svelte';
 
-	export let events = [
-		{
-			title: 'Take a break',
-			start: start,
-			end: start.add({ days: 4 })
-		}
-	];
+	const events = getContext('events');
+
 	const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 	const selectedDate = getContext('selectedDateRange');
-	const start = today(getLocalTimeZone());
 
 	$: months = {
 		value: today(getLocalTimeZone()),
@@ -103,7 +97,7 @@
 		<thead class="sticky top-0 z-10 bg-white text-center shadow-lg">
 			<tr class="text-center text-[1rem] h-7">
 				{#each monthCounts as monthCount}
-					<td class="border-r-2 border-b-2 border-zinc-600" colspan={monthCount.count}>{monthCount.month}</td>
+					<td class="border-r  border-b-2 border-zinc-600" colspan={monthCount.count}>{monthCount.month}</td>
 				{/each}
 			</tr>
 
@@ -130,16 +124,16 @@
 		</thead>
 
 		<tbody class="relative border text-center">
-			{#key events}
-				{#each events as event, i}
-					{@const event_start = getDuration($selectedDate.start, event.start)}
-					{@const event_duration = getDuration(event.start, event.end)}
-					{@const event_end = getDuration(event.end, $selectedDate.end)}
-					{@const start_to_event_start = getDuration($selectedDate.end, event.start)}
-					{@const end_to_event_start = getDuration(event.end, $selectedDate.start)}
+			{#key $events}
+				{#each $events as event, i}
+					{@const event_start = getDuration($selectedDate.start, parseDate(event.start_date))}
+					{@const event_duration = getDuration(parseDate(event.start_date), parseDate(event.end_date))}
+					{@const event_end = getDuration( parseDate(event.end_date), $selectedDate.end)}
+					{@const start_to_event_start = getDuration($selectedDate.end,parseDate(event.start_date))}
+					{@const end_to_event_start = getDuration( parseDate(event.end_date), $selectedDate.start)}
 
 					{#if start_to_event_start > 0 || end_to_event_start > 0}<div></div>{:else}
-						<tr class="h-[30px] border-b">
+						<tr class="h-[30px] border-b ">
 							{#if event_start == 0 && event_end == 0}
 								<td
 									colspan={event_duration + event_start + 1}
@@ -151,7 +145,7 @@
 							{:else if event_start <= 0}
 								<td
 									colspan={event_duration + event_start + 1}
-									class="event"
+									class="event "
 									data-percent={event_duration + event_start + 1}><span class="opacity-80 text-xs">#</span>{i + 1}</td
 								>
 								<td colspan={event_end} class="border-b"></td>
@@ -178,6 +172,9 @@
 </div>
 
 <style>
+	td {
+		width: 30px;
+	}
 	.event {
 		position: relative;
 		background-color: #3f3f46;

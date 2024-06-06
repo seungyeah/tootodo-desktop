@@ -1,32 +1,85 @@
 <script lang="ts">
-	import { CalendarDate, getLocalTimeZone, today } from '@internationalized/date';
+	import { getLocalTimeZone, today } from '@internationalized/date';
 	import PageTemplete from '../PageTemplete.svelte';
-	import { currentTime, formatDay } from '$store';
-	import { onMount, tick } from 'svelte';
-	import { getContext } from 'svelte';
+	import {onMount, setContext, tick } from 'svelte';
 	import EventMain from '$components/event/EventMain.svelte';
 	import EventSide from '$components/event/EventSide.svelte';
 	import EventSetting from '$components/event/EventSetting.svelte';
-	import { Button, DropdownMenu } from '$ui';
-	import { ArrowBigRightDash, DiamondPlus, MessageCircle, Trash2 } from 'lucide-svelte';
+	import DurationPicker from '$components/event/DurationPicker.svelte';
+	import { goto } from '$app/navigation';
+	import { writable, type Writable } from 'svelte/store';
+	import { getMonday } from '$lib/utils';
+	import { postApi, delApi } from '$lib/api';
+	import {eventSchema} from '$lib/schema';
+	import { z } from 'zod';
 
-	const selectedDate = getContext('selectedDateRange');
-	const start = today(getLocalTimeZone());
+	// data
+	export let data;
+	type Event = z.infer<typeof eventSchema>;
+	let events: Writable<Event[]> = writable(data?.events||[]);
+	
+	// duration select
+	let todayValue = today(getLocalTimeZone());
+	let selectedMonday = getMonday(todayValue.toDate());
+	const selectedDateRange = writable({
+		start: today(getLocalTimeZone()),
+		end: today(getLocalTimeZone())
+	});
+	setContext('selectedDateRange', selectedDateRange);
+	setContext('events', events);
 
-	let events = [
-		{
-			title: 'Take a break',
-			start: start,
-			end: start.add({ days: 2 })
-		},
-		{
-			title: 'Take a nap',
-			start: start.add({ days: 4 }),
-			end: start.add({ days: 8 })
+	onMount(async () => {
+		todayValue = today(getLocalTimeZone());
+		selectedMonday = getMonday(todayValue.toDate());
+		$selectedDateRange = {
+			start: selectedMonday,
+			end: selectedMonday.add({ days: 13 })
+		};
+		await setQuery($selectedDateRange);
+	});
+
+	async function setQuery(duration) {
+		const start_date = duration.start;
+		const end_date = duration.end;
+		const searchParams = new URLSearchParams({ start_date, end_date });
+		$events = await data?.events;
+		tick();
+		await goto(`?${searchParams.toString()}`);
+	}
+
+	async function handleDateUpdate(event) {
+		const { selectedDateRange } = event.detail;
+		await setQuery(selectedDateRange);
+		$selectedDateRange = selectedDateRange;
+	}
+
+	async function handleCreateEvent(e) {
+		const { title, start_date, end_date } = e.detail.event;
+		const formattedEvent = {
+			title: title,
+			start_date: start_date ? new Date(start_date).toISOString().split('T')[0] : null,
+			end_date: end_date ? new Date(end_date).toISOString().split('T')[0] : null
+		};
+		try {
+			const response = await postApi({ path: '/events/', data: formattedEvent });
+			const newEvent = response.data.event;
+			$events = [newEvent,...$events] 
+			tick();
+		} catch (error) {
+			console.error('Request failed:', error);
 		}
-	];
+	}
 
-	let sideComponentWidth = 0;
+	async function handleDeleteEvent(e) {
+		const { id } = e.detail.event;
+		try {
+			await delApi({ path: `/events/${id}` });
+		} catch (error) {
+			console.error('Request failed:', error);
+		}
+		$events = $events.filter((event) => event.id !== id);
+		tick();
+	}
 
 	// scroll
 	let scrollPosition = { scrollTop: 0, scrollLeft: 0 };
@@ -34,7 +87,7 @@
 	let mainComponent;
 	let settingComponent;
 
-	function handleSideScroll(event) {
+	function handleScroll(event) {
 		scrollPosition = {
 			scrollTop: event.detail.scrollTop,
 			scrollLeft: event.detail.scrollLeft
@@ -44,26 +97,8 @@
 		settingComponent.updateScrollPosition(scrollPosition);
 	}
 
-	function handleMainScroll(event) {
-		scrollPosition = {
-			scrollTop: event.detail.scrollTop,
-			scrollLeft: event.detail.scrollLeft
-		};
-		sideComponent.updateScrollPosition(scrollPosition);
-		mainComponent.updateScrollPosition(scrollPosition);
-		settingComponent.updateScrollPosition(scrollPosition);
-	}
-
-	function handleSettingScroll(event) {
-		scrollPosition = {
-			scrollTop: event.detail.scrollTop,
-			scrollLeft: event.detail.scrollLeft
-		};
-		sideComponent.updateScrollPosition(scrollPosition);
-		mainComponent.updateScrollPosition(scrollPosition);
-		settingComponent.updateScrollPosition(scrollPosition);
-	}
-
+	// get setting component's x position
+	let sideComponentWidth = 0;
 	onMount(() => {
 		if (sideComponent) {
 			sideComponentWidth = sideComponent.clientWidth;
@@ -75,27 +110,35 @@
 </script>
 
 <div class="relative h-full w-full">
+	<div class="fixed top-5 z-10 w-[calc(100%-190px)] translate-x-1/2">
+		<DurationPicker on:update={handleDateUpdate} />
+	</div>
+
 	<PageTemplete>
 		<div
 			slot="side"
 			class="flex h-full w-full flex-col px-2 py-2"
 			bind:clientWidth={sideComponentWidth}
 		>
-			<EventSide bind:this={sideComponent} bind:events on:scroll={handleSideScroll} />
+			<EventSide bind:this={sideComponent} on:scroll={handleScroll} on:create={handleCreateEvent} />
 		</div>
 
 		<!-- setting -->
 		<div
 			slot="options"
-			class="absolute flex h-full max-h-[calc(100%-130px)]  w-6 flex-col"
-			style="transform: translate({sideComponentWidth - 20}px, 35px);"
+			class="absolute flex h-full max-h-[calc(100%-130px)] w-6 flex-col"
+			style="transform: translate({sideComponentWidth - 22}px, 35px);"
 		>
-			<EventSetting bind:this={settingComponent}  {events}  on:scroll={handleSettingScroll} />
+			<EventSetting
+				bind:this={settingComponent}
+				on:scroll={handleScroll}
+				on:delete={handleDeleteEvent}
+			/>
 		</div>
 
 		<!-- main: gantt chart -->
 		<div slot="main" class="h-full w-full">
-			<EventMain bind:this={mainComponent}  {events}  bind:scrollPosition on:scroll={handleMainScroll} />
+			<EventMain bind:this={mainComponent} bind:scrollPosition on:scroll={handleScroll} />
 		</div>
 	</PageTemplete>
 </div>

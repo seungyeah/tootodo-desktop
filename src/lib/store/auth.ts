@@ -1,24 +1,8 @@
-import { writable, get, derived } from 'svelte/store';
-import { getApi, putApi, delApi, postApi } from '../api.js';
-import { z } from 'zod';
+import { writable, derived } from 'svelte/store';
+import { getApi, delApi, postApi } from '../api.js';
 import { goto } from '$app/navigation';
+import { loginSchema,registerSchema } from '$lib/schema.js';
 
-const loginSchema = z.object({
-	email: z.string().email(),
-	password: z.string().min(8)
-});
-
-const registerSchema = z
-	.object({
-		name: z.string().min(3),
-		email: z.string().email(),
-		password: z.string().min(8),
-		passwordConfirm: z.string().min(8)
-	})
-	.refine((data) => data.password === data.passwordConfirm, {
-		message: "Passwords don't match",
-		path: ['confirmPassword'] // refine 함수에서 오류 위치를 지정
-	});
 
 const setAuth = () => {
 	let initValues = {

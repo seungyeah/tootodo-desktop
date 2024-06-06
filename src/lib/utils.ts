@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
+import { CalendarDate } from "@internationalized/date";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -60,3 +61,14 @@ export const flyAndScale = (
         easing: cubicOut
     };
 };
+
+// date
+export function getMonday(date: Date): CalendarDate {
+    const dayOfWeek = date.getDay();
+    // 일요일인 경우를 처리 (일요일을 주의 시작으로 간주하지 않기 위해 7을 더함)
+    const day = dayOfWeek === 0 ? 7 : dayOfWeek;
+
+    const monday = new Date(date);
+    monday.setDate(date.getDate() - day + 1);
+    return new CalendarDate(monday.getFullYear(), monday.getMonth() + 1, monday.getDate());
+}

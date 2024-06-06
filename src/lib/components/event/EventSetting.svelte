@@ -2,24 +2,17 @@
 	import { getLocalTimeZone, today } from '@internationalized/date';
 	import { Button, DropdownMenu } from '$ui';
 	import { ArrowBigRightDash, DiamondPlus, MessageCircle, Trash2 } from 'lucide-svelte';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, getContext } from 'svelte';
 
 	const start = today(getLocalTimeZone());
 
-	export let events = [
-		{
-			title: 'Take a break',
-			start: start,
-			end: start.add({ days: 2 })
-		},
-		{
-			title: 'Take a nap',
-			start: start.add({ days: 4 }),
-			end: start.add({ days: 8 })
-		}
-	];
+	const events = getContext('events');
+
 
 	const dispatch = createEventDispatcher();
+	function handleDelete(event){
+		dispatch('delete', { event });	
+	}
 	let tableContainer;
 
 	function handleScroll(event) {
@@ -44,7 +37,8 @@
 >
 	<table class="w-full">
 		<tbody>
-			{#each events as event, i}
+			{#key events}
+			{#each $events as event, i}
 				<tr class="z-10 flex h-[30px] items-center">
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger>
@@ -61,13 +55,14 @@
 									<button><MessageCircle size={20} /></button>
 								</DropdownMenu.Item>
 								<DropdownMenu.Item class="">
-									<button><Trash2 size={20} /></button>
+									<button on:click={handleDelete(event)}><Trash2 size={20} /></button>
 								</DropdownMenu.Item>
 							</DropdownMenu.Group>
 						</DropdownMenu.Content>
 					</DropdownMenu.Root>
 				</tr>
 			{/each}
+			{/key}
 		</tbody>
 	</table>
 </div>

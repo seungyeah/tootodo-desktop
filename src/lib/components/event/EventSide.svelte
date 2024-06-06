@@ -1,59 +1,48 @@
 <script lang="ts">
-	import { getLocalTimeZone, today, } from '@internationalized/date';
-	import { Button, DropdownMenu, Input, Popover, RangeCalendar, } from '$ui';
-	import {
-		CirclePlus,
-		Calendar,
-		GripVertical
-	} from 'lucide-svelte';
-	import { tick } from 'svelte';
+	import { getLocalTimeZone, today, parseDate } from '@internationalized/date';
+	import { Button, DropdownMenu, Input, Popover, RangeCalendar } from '$ui';
+	import { CirclePlus, Calendar, GripVertical } from 'lucide-svelte';
+	import { onMount, tick } from 'svelte';
 	import { getContext } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 
-	const dispatch = createEventDispatcher();
-
 	let tableContainer;
 
-	function handleScroll(event) {
-		dispatch('scroll', {
-			scrollTop: tableContainer.scrollTop,
-			scrollLeft: tableContainer.scrollLeft
-		});
-	}
-
-	export function updateScrollPosition(scrollPosition) {
-		if (tableContainer) {
-			tableContainer.scrollTop = scrollPosition.scrollTop;
-			tableContainer.scrollLeft = scrollPosition.scrollLeft;
-		}
-	}
-
 	const selectedDate = getContext('selectedDateRange');
-	const start = today(getLocalTimeZone());
-	$: cellDuration = {
-		start: start,
-		end: start.add({ days: 0 })
+	const todayValue = today(getLocalTimeZone());
+	let cellDuration = {
+		start: today(getLocalTimeZone()),
+		end: todayValue.add({ days: 0 })
 	};
 
-	$: newDuration = {
-		start: start,
-		end: start.add({ days: 0 })
+	let newDuration = {
+		start: $selectedDate.start,
+		end: $selectedDate.start.add({ days: 6 })
 	};
 
-	export let events = [];
+	onMount(async () => {
+		await tick();
+		newDuration = {
+			start: $selectedDate.start,
+			end: $selectedDate.start.add({ days: 6 })
+		};
+	});
+
+	// items
+	const events = getContext('events');
 
 	function resetNewEvent() {
 		newEvent = {
 			title: ' ',
-			start: start,
-			end: start.add({ days: 0 })
+			start_date: todayValue,
+			end_date: todayValue.add({ days: 0 })
 		};
 	}
 
 	let newEvent = {
 		title: ' ',
-		start: start,
-		end: start.add({ days: 0 })
+		start_date: todayValue,
+		end_date: todayValue.add({ days: 0 })
 	};
 
 	async function handleSubmit(
@@ -69,16 +58,35 @@
 			return;
 		}
 
-		events = [
-			{
-				title: newEvent.title,
-				start: newDuration.start,
-				end: newDuration.end
-			},
-			...events
-		];
 		await tick();
+
+		createEvent({
+			title: newEvent.title,
+			start_date: newDuration.start,
+			end_date: newDuration.end
+		});
 		resetNewEvent();
+	}
+
+	// dispatch
+	const dispatch = createEventDispatcher();
+
+	function createEvent(event) {
+		dispatch('create', { event });
+	}
+
+	function handleScroll(event) {
+		dispatch('scroll', {
+			scrollTop: tableContainer.scrollTop,
+			scrollLeft: tableContainer.scrollLeft
+		});
+	}
+
+	export function updateScrollPosition(scrollPosition) {
+		if (tableContainer) {
+			tableContainer.scrollTop = scrollPosition.scrollTop;
+			tableContainer.scrollLeft = scrollPosition.scrollLeft;
+		}
 	}
 
 	// dnd
@@ -100,10 +108,10 @@
 		const draggedOverIndex = index;
 
 		if (draggedIndex !== draggedOverIndex) {
-			const reorderedEvents = [...events];
+			const reorderedEvents = [...$events];
 			const [movedItem] = reorderedEvents.splice(draggedIndex, 1);
 			reorderedEvents.splice(draggedOverIndex, 0, movedItem);
-			events = reorderedEvents;
+			$events = reorderedEvents;
 		}
 
 		draggedIndex = null;
@@ -132,9 +140,9 @@
 						{#if newDuration}
 							<div>
 								<span class="font-extrabold text-zinc-400">Date Range:</span>
-								{newDuration.start || '0000-00-00'}
+								{newDuration.start || $selectedDate.start || '0000-00-00'}
 								<span class="font-extrabold text-zinc-400">~</span>
-								{newDuration.end || '0000-00-00'}
+								{newDuration.end || $selectedDate.end || '0000-00-00'}
 							</div>
 						{/if}
 					</DropdownMenu.Label>
@@ -167,93 +175,96 @@
 			class="botom-0 absolute right-1 z-10 rounded-full p-0 hover:bg-zinc-100"
 			><CirclePlus color="#a1a1aa" /></Button
 		>
-		<div class="font-digital absolute bottom-0 left-1.5 translate-y-2.5 text-xs text-zinc-600">
-			<span class="text-zinc-950">Assigned Date:</span>
+		<div
+			class="font-digital absolute bottom-0 left-0 w-full translate-y-3 text-center text-xs text-zinc-600"
+		>
+			<span class="text-zinc-950">Assigned In:</span>
 			{newDuration.start + ' ~ ' + newDuration.end}
 		</div>
 	</form>
 
 	<!-- event list -->
-	<div
-		class="h-full max-h-[calc(100%-50px)] w-full overflow-y-scroll no-scrollbar max-w-full overflow-x-clip border-2 border-zinc-600"
-		bind:this={tableContainer}
-		on:scroll={handleScroll}
-	>
-		<table class="translate-y-0.5">
-			<thead class="sticky top-0 z-10 h-[20px] bg-white text-center">
-				<tr class="">
-					<th scope="col" class="flex min-w-5 translate-y-1 items-center justify-center border-r"
-						><GripVertical size={14} /></th
-					>
-					<th scope="col" class="w-3/5 border-r">Title</th>
-					<th scope="col" class="w-2/5">Duration</th>
-				</tr>
-				<div class="absolute min-w-full border-b-2 border-zinc-500"></div>
-			</thead>
-			<tbody class="text-center">
-				{#each events as event, i}
-					<tr class=" relative h-[30px] border text-start" class:dragging={draggedIndex === i}>
-						<!-- index -->
-						<td
-							class="draggable -translate-y-0.5"
-							draggable="true"
-							on:dragstart={(e) => handleDragStart(e, i)}
-							on:dragover={handleDragOver}
-							on:drop={(e) => handleDrop(e, i)}
-							on:dragend={handleDragEnd}
+	{#key $events}
+		<div
+			class="no-scrollbar h-full max-h-[calc(100%-50px)] w-full max-w-full overflow-x-clip overflow-y-scroll border-2 border-zinc-600"
+			bind:this={tableContainer}
+			on:scroll={handleScroll}
+		>
+			<table class="translate-y-0.5">
+				<thead class="sticky top-0 z-10 h-[20px] bg-white text-center">
+					<tr class="">
+						<th scope="col" class="flex min-w-5 translate-y-1 items-center justify-center border-r"
+							><GripVertical size={14} /></th
 						>
-							{#if draggedIndex === i}
-								<GripVertical size={18} />
-							{/if}
-							<div class="w-full text-center">{i + 1}</div>
-						</td>
-						<!-- title -->
-						<td class="  relative border"
-							><input value={event.title} class="h-full w-full bg-transparent p-1" />							
-						</td>
-						<!-- duration -->
-						<Popover.Root
-							onOpenChange={() => {
-								event.start = cellDuration.start;
-								event.end = cellDuration.end;
-							}}
-						>
-							<Popover.Trigger
-								><td class="translate-x-1 translate-y-1.5">
-									<div class=" flex space-x-1">
-										{#if event.start && event.end}
-											<div>
-												{event.start.month.toString().padStart(2, '0') +
-													'/' +
-													event.start.day.toString().padStart(2, '0')}
+						<th scope="col" class="w-3/5 border-r">Title</th>
+						<th scope="col" class="w-2/5">Duration</th>
+					</tr>
+					<div class="absolute min-w-full border-b-2 border-zinc-500"></div>
+				</thead>
+				<tbody class="text-center">
+					{#if $events.length === 0}
+						<td class="h-[300px] w-full" colspan="3">No events</td>
+					{:else}
+						{#each $events as event, i}
+							<tr class=" relative h-[30px] max-h-[30px] border text-start" class:dragging={draggedIndex === i}>
+								<!-- index -->
+								<td
+									class="draggable -translate-y-0.5"
+									draggable="true"
+									on:dragstart={(e) => handleDragStart(e, i)}
+									on:dragover={handleDragOver}
+									on:drop={(e) => handleDrop(e, i)}
+									on:dragend={handleDragEnd}
+								>
+									{#if draggedIndex === i}
+										<GripVertical size={18} />
+									{/if}
+									<div class="w-full text-center">{i + 1}</div>
+								</td>
+								<!-- title -->
+								<td class="  relative border"
+									><input value={event.title} class="h-full w-full bg-transparent p-1" />
+								</td>
+								<!-- duration -->
+								<Popover.Root
+									onOpenChange={(open) => {
+										if (!open) {
+											event.start_date = cellDuration.start.toString();
+											event.end_date = cellDuration.end.toString();
+										}
+									}}
+								>
+									<Popover.Trigger
+										><td class="translate-y-1.5">
+											<div class=" flex space-x-1">
+												{#if event.start_date && event.end_date}
+													<div>
+														{event.start_date.slice(5, 10)}
+													</div>
+													<div class="font-extrabold text-zinc-400">~</div>
+													<div>
+														{event.end_date.slice(5, 10)}
+													</div>
+												{:else}
+													00-00 <span class="font-extrabold text-zinc-400">~</span> 00-00
+												{/if}
 											</div>
-
-											<div class="font-extrabold text-zinc-400">~</div>
-											<div>
-												{event.end.month.toString().padStart(2, '0') +
-													'/' +
-													event.end.day.toString().padStart(2, '0')}
-											</div>
-										{:else}
-											00-00 <span class="font-extrabold text-zinc-400">~</span> 00-00
-										{/if}
-									</div>
-								</td></Popover.Trigger
-							>
-							<Popover.Content class="w-[300px]">
-								<!-- select range -->
-								<RangeCalendar
-									bind:value={cellDuration}
-									weekStartsOn={1}
-									class=" w-full rounded-lg border bg-white shadow "
-								/>
-							</Popover.Content>
-						</Popover.Root>
-						
-				{/each}
-			</tbody>
-		</table>
-	</div>
+										</td></Popover.Trigger
+									>
+									<Popover.Content class="w-[300px]">
+										<!-- select range -->
+										<RangeCalendar
+											bind:value={cellDuration}
+											weekStartsOn={1}
+											class=" w-full rounded-lg border bg-white shadow "
+										/>
+									</Popover.Content>
+								</Popover.Root>
+							</tr>{/each}{/if}
+				</tbody>
+			</table>
+		</div>
+	{/key}
 </div>
 
 <style>
