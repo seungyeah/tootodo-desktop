@@ -93,7 +93,7 @@
 	bind:this={tableContainer}
 	on:scroll={handleScroll}
 >
-	<table class="relative w-full table-fixed border-separate border-spacing-0 ">
+	<table class="relative w-full border-separate border-spacing-0 ">
 		<thead class="sticky top-0 z-10 bg-white text-center shadow-lg">
 			<tr class="text-center text-[1rem] h-7">
 				{#each monthCounts as monthCount}

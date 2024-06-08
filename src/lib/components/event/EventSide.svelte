@@ -16,15 +16,15 @@
 	};
 
 	let newDuration = {
-		start: $selectedDate.start,
-		end: $selectedDate.start.add({ days: 6 })
+		start: $selectedDate.start.add({ days: 6 }),
+		end: $selectedDate.start.add({ days: 13 })
 	};
 
 	onMount(async () => {
 		await tick();
 		newDuration = {
-			start: $selectedDate.start,
-			end: $selectedDate.start.add({ days: 6 })
+			start: $selectedDate.start.add({ days: 6 }),
+			end: $selectedDate.start.add({ days: 13 })
 		};
 	});
 

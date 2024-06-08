@@ -9,7 +9,7 @@
 	import { goto } from '$app/navigation';
 	import { writable, type Writable } from 'svelte/store';
 	import { getMonday } from '$lib/utils';
-	import { postApi, delApi } from '$lib/api';
+	import { postApi, delApi, putApi } from '$lib/api';
 	import {eventSchema} from '$lib/schema';
 	import { z } from 'zod';
 
@@ -32,7 +32,7 @@
 		todayValue = today(getLocalTimeZone());
 		selectedMonday = getMonday(todayValue.toDate());
 		$selectedDateRange = {
-			start: selectedMonday,
+			start: selectedMonday.subtract({days: 7}),
 			end: selectedMonday.add({ days: 13 })
 		};
 		await setQuery($selectedDateRange);
@@ -74,6 +74,17 @@
 		const { id } = e.detail.event;
 		try {
 			await delApi({ path: `/events/${id}` });
+		} catch (error) {
+			console.error('Request failed:', error);
+		}
+		$events = $events.filter((event) => event.id !== id);
+		tick();
+	}
+
+	async function handleUpdateEvent(e){
+		const { event } = e.detail.event;
+		try {
+			await putApi({ path: `/events/${event.id}`,data:event });
 		} catch (error) {
 			console.error('Request failed:', error);
 		}

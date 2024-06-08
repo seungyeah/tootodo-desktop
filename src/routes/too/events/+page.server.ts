@@ -6,8 +6,8 @@ export const load: Load = async ({ fetch, url }) => {
 	let end_date: String | CalendarDate | null  = url.searchParams.get('end_date');
 
 	if (!start_date || !end_date) {
-		start_date = getMonday(new Date());
-		end_date = start_date.add({ days: 13 });
+		start_date = getMonday(new Date()).subtract({days: 7});
+		end_date = start_date.add({ days: 20 });
 	}
 	const path = import.meta.env.VITE_SERVER_ENDPOINT + '/api' +`/events?start_date=${start_date}&end_date=${end_date}`;
 

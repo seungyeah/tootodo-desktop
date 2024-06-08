@@ -20,8 +20,9 @@
 	 let todayValue: DateValue | undefined = today(getLocalTimeZone());
     let selectedMonday = getMonday(todayValue?.toDate());;
 
+	// 3 weeks duration
 	let selectedDateRange = {
-		start: selectedMonday,
+		start: selectedMonday.subtract({days: 7}),
 		end: selectedMonday.add({ days: 13 })
 	};
 
@@ -32,7 +33,7 @@
     function resetDates() {        
         selectedMonday = getMonday(todayValue?.toDate());
         selectedDateRange = {
-            start: selectedMonday,
+			start: selectedMonday.subtract({days: 7}),
             end: selectedMonday.add({ days: 13 })
         };
         updateDates();
