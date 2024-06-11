@@ -199,31 +199,30 @@
 						<th scope="col" class="w-3/5 border-r">Title</th>
 						<th scope="col" class="w-2/5">Duration</th>
 					</tr>
-					<div class="absolute min-w-full border-b-2 border-zinc-500"></div>
+					<tr class="absolute min-w-full border-b-2 border-zinc-500"></tr	>
 				</thead>
 				<tbody class="text-center">
 					{#if $events.length === 0}
 						<td class="h-[300px] w-full" colspan="3">No events</td>
 					{:else}
 						{#each $events as event, i}
-							<tr class=" relative h-[30px] max-h-[30px] border text-start" class:dragging={draggedIndex === i}>
+							<tr class="text-start " class:dragging={draggedIndex === i}>
 								<!-- index -->
 								<td
-									class="draggable -translate-y-0.5"
+									class="h-[30px] draggable inline-block border-b"
 									draggable="true"
 									on:dragstart={(e) => handleDragStart(e, i)}
 									on:dragover={handleDragOver}
 									on:drop={(e) => handleDrop(e, i)}
 									on:dragend={handleDragEnd}
 								>
-									{#if draggedIndex === i}
+									<div class="w-full h-full text-center translate-y-1">{#if draggedIndex === i}
 										<GripVertical size={18} />
-									{/if}
-									<div class="w-full text-center">{i + 1}</div>
+									{/if}{i + 1}</div>
 								</td>
 								<!-- title -->
-								<td class="  relative border"
-									><input value={event.title} class="h-full w-full bg-transparent p-1" />
+								<td class="h-[30px] border border-t-0 w-full "
+									><input value={event.title} class="h-full px-1.5 w-full bg-transparent" />
 								</td>
 								<!-- duration -->
 								<Popover.Root
@@ -235,10 +234,10 @@
 									}}
 								>
 									<Popover.Trigger
-										><td class="translate-y-1.5">
-											<div class=" flex space-x-1">
+										><td class="inline-block h-[30px] w-[110px] border-b">
+											<div class="inline-flex space-x-1 h-[30px] translate-y-1.5">
 												{#if event.start_date && event.end_date}
-													<div>
+													<div class="">
 														{event.start_date.slice(5, 10)}
 													</div>
 													<div class="font-extrabold text-zinc-400">~</div>
