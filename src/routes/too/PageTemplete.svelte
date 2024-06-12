@@ -2,22 +2,21 @@
 	import { Separator } from '$ui';
 </script>
 
-<div class="m-2 h-full">
+<div class="h-full m-2">
 	<Separator class="my-2.5" />
-	<div class="flex h-[calc(100%-1.6rem)] items-center space-x-4 text-sm">
+	<div class="flex h-[calc(100%-1.6rem)] max-w-full overflow-x-clip items-center space-x-4 text-sm">
 		<!-- side -->
 		<div
-			class=" flex h-full w-2/5 min-w-[240px] max-w-[360px] flex-col items-center justify-start bg-zinc-50"
+			class=" flex h-full w-2/5 min-w-[260px] max-w-[360px] flex-col items-center justify-start bg-zinc-50"
 		>
 			<slot name="side" />
 		</div>
 
 		<slot name="options" class="h-full" />
-		<!-- main: tasklist -> task -->
+
+		<!-- main: itemlist -->
 		<div
-			class="flex h-full w-full space-x-2 
-			rounded-lg border-4 border-double border-zinc-100 p-2
-			shadow-md shadow-zinc-400"
+			class="flex w-full h-full max-w-[calc(100%-260px)] p-2 space-x-2 overflow-x-auto border-4 border-double rounded-lg shadow-md border-zinc-100 shadow-zinc-400"
 		>
 			<slot name="main" />
 		</div>

@@ -45,9 +45,9 @@
 				</RangeCalendar.GridHead>
 				<RangeCalendar.GridBody>
 					{#each month.weeks as weekDates}
-						<RangeCalendar.GridRow class="mt-2 w-full">
+						<RangeCalendar.GridRow class="w-full mt-2">
 							{#each weekDates as date}
-								<RangeCalendar.Cell {date} class="relative text-center text-sm focus-within:z-20">
+								<RangeCalendar.Cell {date} class="relative text-sm text-center focus-within:z-20">
 									<RangeCalendar.Day
 										{date}
 										month={month.value}

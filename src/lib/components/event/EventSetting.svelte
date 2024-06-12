@@ -1,21 +1,29 @@
 <script lang="ts">
-	import { getLocalTimeZone, today } from '@internationalized/date';
 	import { Button, DropdownMenu } from '$ui';
 	import { ArrowBigRightDash, DiamondPlus, MessageCircle, Trash2 } from 'lucide-svelte';
 	import { createEventDispatcher, getContext } from 'svelte';
-
-	const start = today(getLocalTimeZone());
+	import {type Event } from "$lib/schema";
 
 	const events = getContext('events');
 
+	let openChat = false;
 
 	const dispatch = createEventDispatcher();
-	function handleDelete(event){
+	
+	function handleDelete(event:Event){
 		dispatch('delete', { event });	
 	}
-	let tableContainer;
 
-	function handleScroll(event) {
+	function handleUpdate(event:Event,key:string,value:any){
+		const updateData = {
+			[key]:value
+		}
+		dispatch('update', {event,updateData });	
+	}
+
+	let tableContainer: HTMLElement;
+
+	function handleScroll() {
 		dispatch('scroll', {
 			scrollTop: tableContainer.scrollTop,
 			scrollLeft: tableContainer.scrollLeft
@@ -31,7 +39,7 @@
 </script>
 
 <div
-	class=" no-scrollbar flex max-h-full  w-6 flex-col overflow-y-scroll"
+	class="flex flex-col w-6 max-h-full overflow-y-scroll no-scrollbar"
 	bind:this={tableContainer}
 	on:scroll={handleScroll}
 >
@@ -47,12 +55,12 @@
 							</td>
 						</DropdownMenu.Trigger>
 						<DropdownMenu.Content class="border-2 border-double border-zinc-800 " side="right">
-							<DropdownMenu.Group class=" flex items-center justify-center">
+							<DropdownMenu.Group class="flex items-center justify-center ">
 								<DropdownMenu.Item class="">
-									<button><DiamondPlus size={20} /></button>
+									<button on:click={handleUpdate(event,'milestone',!event.milestone)}><DiamondPlus size={20} /></button>
 								</DropdownMenu.Item>
 								<DropdownMenu.Item class="">
-									<button><MessageCircle size={20} /></button>
+									<button on:click={()=>openChat = !openChat}><MessageCircle size={20} /></button>
 								</DropdownMenu.Item>
 								<DropdownMenu.Item class="">
 									<button on:click={handleDelete(event)}><Trash2 size={20} /></button>

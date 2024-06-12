@@ -17,8 +17,8 @@
 
 	const dispatch = createEventDispatcher();
 
-	 let todayValue: DateValue | undefined = today(getLocalTimeZone());
-    let selectedMonday = getMonday(todayValue?.toDate());;
+	let todayValue: DateValue | undefined = today(getLocalTimeZone());
+   let selectedMonday = getMonday(todayValue?.toDate());;
 
 	// 3 weeks duration
 	let selectedDateRange = {
@@ -30,18 +30,18 @@
 		dispatch('update', { selectedDateRange });
 	}
 
-    function resetDates() {        
-        selectedMonday = getMonday(todayValue?.toDate());
-        selectedDateRange = {
-			start: selectedMonday.subtract({days: 7}),
-            end: selectedMonday.add({ days: 13 })
-        };
-        updateDates();
-    }
+   function resetDates() {        
+		selectedMonday = getMonday(todayValue?.toDate());
+		selectedDateRange = {
+		start: selectedMonday.subtract({days: 7}),
+			end: selectedMonday.add({ days: 13 })
+		};
+		updateDates();
+	}
 
 </script>
 
-<div class="relative w-full h-full flex -translate-y-2 translate-x-4 items-center gap-2">
+<div class="relative flex items-center w-full h-full gap-2 translate-x-4 -translate-y-2">
 	<!-- 7days-- -->
 	<Button
 		class="h-8 w-8 !p-1"
@@ -68,7 +68,7 @@
 				class={cn('w-[300px] justify-start text-left font-normal')}
 				builders={[builder]}
 			>
-				<CalendarIcon class="mr-2 h-4 w-4" />
+				<CalendarIcon class="w-4 h-4 mr-2" />
 				{#if selectedDateRange && selectedDateRange.start}
 					{#if selectedDateRange.end}
 						{df.format(selectedDateRange.start.toDate(getLocalTimeZone()))} - {df.format(

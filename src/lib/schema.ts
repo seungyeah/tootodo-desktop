@@ -19,7 +19,7 @@ export const registerSchema = z
 	});
 
 // event
-export const eventSchema = z.object({
+const eventSchema = z.object({
 	chat_msgs: z.nullable(z.string()),
 	chat_type: z.nullable(z.string()), 
 	createdAt: z.string().datetime(), 
@@ -33,3 +33,4 @@ export const eventSchema = z.object({
 	updatedAt: z.string().datetime(), 
 	user: z.string() 
 });
+export type Event = z.infer<typeof eventSchema>;

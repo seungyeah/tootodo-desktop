@@ -13,18 +13,18 @@ export const load: Load = async ({ fetch, url }) => {
 
 	try {
 		const response = await fetch(path,{
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                "Accept": "application/json",
-            },
-            credentials: 'include',
-        });
-        if (!response.ok) {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					"Accept": "application/json",
+				},
+				credentials: 'include',
+		});
+		if (!response.ok) {
 			const errorData = await response.json();
 			throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorData.message}`);
 		}
-        return await response.json();
+		return await response.json();
 	} catch (e) {
 		console.error('이벤트를 불러오는 데 실패했습니다:', e);
 	}

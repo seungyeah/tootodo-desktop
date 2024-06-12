@@ -48,9 +48,14 @@ const delApi = ({ path = '', data = {} } = {}) => {
 	return send({ method: 'DELETE', path, data });
 };
 
+const patchApi=({ path = '', data = {} } = {}) => {
+	return send({ method: 'PATCH', path, data });
+};
+
 export {
 	getApi,
 	putApi,
 	postApi,
 	delApi,
+	patchApi,
 };
