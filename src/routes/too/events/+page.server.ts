@@ -6,21 +6,17 @@ export const load: Load = async ({ fetch, url }) => {
 	let start_date: String | CalendarDate | null;
 	let end_date: String | CalendarDate | null;
 
-	if (typeof window === 'undefined') {
-		// 서버 측 렌더링 시 (프리렌더링 포함)
-		start_date = getMonday(new Date()).subtract({ days: 7 });
-		end_date = start_date.add({ days: 20 });
-	} else {
+	if (typeof window !== 'undefined')  {
 		// 클라이언트 측 렌더링 시
 		start_date = url.searchParams.get('start_date');
 		end_date = url.searchParams.get('end_date');
-
-		if (!start_date || !end_date) {
-			start_date = getMonday(new Date()).subtract({ days: 7 });
-			end_date = start_date.add({ days: 20 });
-		}
 	}
-	
+
+	if (!start_date || !end_date) {
+		start_date = getMonday(new Date()).subtract({ days: 7 });
+		end_date = start_date.add({ days: 20 });
+	}
+
 	const path = import.meta.env.VITE_SERVER_ENDPOINT + '/api' +`/events?start_date=${start_date}&end_date=${end_date}`;
 
 	try {

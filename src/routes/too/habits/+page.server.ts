@@ -5,8 +5,14 @@ import { v4 as uuidv4 } from 'uuid';
 import type { Habit } from '$lib/schema';
 
 export const load: Load = async ({ fetch, url }) => {
-	let start_month: String | CalendarDate | null = url.searchParams.get('start_month');
-	let end_month: String | CalendarDate | null  = url.searchParams.get('end_month');
+	let start_month: String | CalendarDate | null = null;
+	let end_month: String | CalendarDate | null  = null;
+
+	if (typeof window !== 'undefined')  {
+		// 클라이언트 측 렌더링 시
+		start_month = url.searchParams.get('start_month');
+		end_month = url.searchParams.get('end_month');
+	}
 
 	if (!start_month || !end_month) {
 		start_month =  today(getLocalTimeZone());
