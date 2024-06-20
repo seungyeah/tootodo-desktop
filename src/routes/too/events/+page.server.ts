@@ -28,4 +28,5 @@ export const load: Load = async ({ fetch, url }) => {
 	} catch (e) {
 		console.error('이벤트를 불러오는 데 실패했습니다:', e);
 	}
+	return [];
 };

@@ -34,3 +34,26 @@ const eventSchema = z.object({
 	user: z.string() 
 });
 export type Event = z.infer<typeof eventSchema>;
+
+// Habit
+const habitRecordSchema = z.object({
+	start_at: z.string().datetime(), 
+	end_at: z.string().datetime(), 
+	msg: z.string(),
+	photo: z.string(),
+});
+
+const statusTypeSchema = z.enum(['InProgress', 'Archived']);
+
+const habitSchema = z.object({
+	id: z.string(),
+	user: z.string().uuid(),
+	name: z.string(),
+	icon: z.string(),
+	color: z.string(),
+	records: z.array(habitRecordSchema).optional(),
+	status: statusTypeSchema,
+	createdAt: z.string().datetime(), 
+	updatedAt: z.string().datetime(), 
+});
+export type Habit = z.infer<typeof habitSchema>;

@@ -6,8 +6,6 @@
 	import { getContext } from "svelte";
 	import { createEventDispatcher } from "svelte";
 
-	let tableContainer: HTMLElement;
-
 	const selectedDate = getContext("selectedDateRange");
 	const todayValue = today(getLocalTimeZone());
 	let cellDuration = {
@@ -15,14 +13,14 @@
 		end: todayValue.add({ days: 0 }),
 	};
 
-	let newDuration = {
+	let newEventDuration = {
 		start: $selectedDate.start.add({ days: 6 }),
 		end: $selectedDate.start.add({ days: 13 }),
 	};
 
 	onMount(async () => {
 		await tick();
-		newDuration = {
+		newEventDuration = {
 			start: $selectedDate.start.add({ days: 6 }),
 			end: $selectedDate.start.add({ days: 13 }),
 		};
@@ -33,14 +31,14 @@
 
 	function resetNewEvent() {
 		newEvent = {
-			title: " ",
+			title: "",
 			start_date: todayValue,
 			end_date: todayValue.add({ days: 0 }),
 		};
 	}
 
 	let newEvent = {
-		title: " ",
+		title: "",
 		start_date: todayValue,
 		end_date: todayValue.add({ days: 0 }),
 	};
@@ -53,24 +51,21 @@
 		if (newEvent.title.trim() === "") {
 			return;
 		}
-		if (newEvent.title.length <= 2) {
-			resetNewEvent();
-			return;
-		}
 
 		await tick();
 
 		handleCreate({
 			title: newEvent.title,
-			start_date: newDuration.start,
-			end_date: newDuration.end,
+			start_date: newEventDuration.start,
+			end_date: newEventDuration.end,
 		});
 		resetNewEvent();
 	}
 
-	// dispatch
+	////// dispatch
 	const dispatch = createEventDispatcher();
 
+	// crud
 	function handleCreate(event) {
 		dispatch("create", { event });
 	}
@@ -90,6 +85,9 @@
 		dispatch("update", { event,updateData });
 	}
 
+	// scroll
+	let tableContainer: HTMLElement;
+
 	function handleScroll() {
 		dispatch("scroll", {
 			scrollTop: tableContainer.scrollTop,
@@ -107,19 +105,19 @@
 	// dnd
 	let draggedIndex = null;
 
-	function handleDragStart(event, index) {
+	function handleDragStart(e, index) {
 		draggedIndex = index;
-		event.dataTransfer.effectAllowed = "move";
-		event.dataTransfer.setData("text/plain", index);
+		e.dataTransfer.effectAllowed = "move";
+		e.dataTransfer.setData("text/plain", index);
 	}
 
-	function handleDragOver(event) {
-		event.preventDefault();
-		event.dataTransfer.dropEffect = "move";
+	function handleDragOver(e) {
+		e.preventDefault();
+		e.dataTransfer.dropEffect = "move";
 	}
 
-	function handleDrop(event, index) {
-		event.preventDefault();
+	function handleDrop(e, index) {
+		e.preventDefault();
 		const draggedOverIndex = index;
 
 		if (draggedIndex !== draggedOverIndex) {
@@ -157,23 +155,23 @@
 			>
 				<DropdownMenu.Group>
 					<DropdownMenu.Label class="w-full text-center ">
-						{#if newDuration}
+						{#if newEventDuration}
 							<div>
 								<span class="font-extrabold text-zinc-400"
 									>Date Range:</span
 								>
-								{newDuration.start ||
+								{newEventDuration.start ||
 									$selectedDate.start ||
 									"0000-00-00"}
 								<span class="font-extrabold text-zinc-400">~</span>
-								{newDuration.end || $selectedDate.end || "0000-00-00"}
+								{newEventDuration.end || $selectedDate.end || "0000-00-00"}
 							</div>
 						{/if}
 					</DropdownMenu.Label>
 
 					<DropdownMenu.Item class="-translate-y-1">
 						<RangeCalendar
-							bind:value={newDuration}
+							bind:value={newEventDuration}
 							weekStartsOn={1}
 							class="w-[290px] rounded-lg border bg-white shadow "
 						/>
@@ -203,7 +201,7 @@
 			class="absolute bottom-0 left-0 w-full text-xs text-center translate-y-3 font-digital text-zinc-600"
 		>
 			<span class="text-zinc-950">Assigned In:</span>
-			{newDuration.start + " ~ " + newDuration.end}
+			{newEventDuration.start + " ~ " + newEventDuration.end}
 		</div>
 	</form>
 

@@ -55,10 +55,10 @@
 </script>
 
 {#if $isAuthed}
-	<div class="relative flex h-12 w-screen justify-between">
+	<div class="relative flex justify-between w-screen h-12">
 		<!-- left menu (navigate page) -->
 		<div
-			class="absolute left-0 z-20 flex h-full w-[200px] items-center space-x-3 rounded-b-2xl rounded-r-2xl bg-zinc-800 px-4"
+			class="absolute left-0 z-50 flex h-full w-[200px] items-center space-x-3 rounded-b-2xl rounded-r-2xl bg-zinc-800 px-4"
 		>
 			<!-- backward/forward page -->
 			<HeaderNav />
@@ -82,7 +82,7 @@
 
 		<!-- right menu (profile, search, timer) -->
 		<div
-			class="absolute right-0 z-10 flex h-12 w-[200px] items-center justify-evenly space-x-2 rounded-b-2xl rounded-l-2xl bg-zinc-800 px-4"
+			class="absolute right-0 z-50 flex h-12 w-[200px] items-center justify-evenly space-x-2 rounded-b-2xl rounded-l-2xl bg-zinc-800 px-4"
 		>
 			<!-- alerm -->
 			<Button
@@ -118,7 +118,7 @@
 							: 'relative m-3 h-[470px] w-[calc(100%-24px)] bg-white border-[6px] border-double border-zinc-900 rounded-lg shadow-lg shadow-zinc-500'}
 					>
 						<ShowRecord />
-						<div class="absolute top-0 h-full w-full">
+						<div class="absolute top-0 w-full h-full">
 							<!-- plan record and start timer directly -->
 							<PlanRecord />
 						</div>
@@ -128,10 +128,10 @@
 			<!-- profile -->
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger asChild let:builder>
-					<Button builders={[builder]} variant="ghost" class="h-8 w-8 hover:bg-zinc-950 "
-						><Avatar.Root class=" h-8 w-8 border-2 text-zinc-500 shadow-lg ">
+					<Button builders={[builder]} variant="ghost" class="w-8 h-8 hover:bg-zinc-950 "
+						><Avatar.Root class="w-8 h-8 border-2 shadow-lg text-zinc-500">
 							<Avatar.Image src="/{$auth.photo}" alt={$auth.email} />
-							<Avatar.Fallback class="bg-black font-bold">Hi</Avatar.Fallback>
+							<Avatar.Fallback class="font-bold bg-black">Hi</Avatar.Fallback>
 						</Avatar.Root></Button
 					>
 				</DropdownMenu.Trigger>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, DropdownMenu } from '$ui';
+	import { DropdownMenu } from '$ui';
 	import { ArrowBigRightDash, DiamondPlus, MessageCircle, Trash2 } from 'lucide-svelte';
 	import { createEventDispatcher, getContext } from 'svelte';
 	import {type Event } from "$lib/schema";

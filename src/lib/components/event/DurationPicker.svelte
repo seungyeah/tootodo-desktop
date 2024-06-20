@@ -4,7 +4,6 @@
 		DateFormatter,
 		getLocalTimeZone,
 		today,
-		CalendarDate
 	} from '@internationalized/date';
 	import { Button, RangeCalendar, Popover } from '$ui';
 	import { createEventDispatcher } from 'svelte';

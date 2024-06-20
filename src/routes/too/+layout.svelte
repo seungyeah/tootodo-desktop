@@ -8,7 +8,7 @@
 	$: selectedPage = $page.url.pathname.split('/')[2];
 </script>
 
-<div class="flex h-full w-full flex-col items-center justify-center sm:absolute sm:top-0">
+<div class="flex flex-col items-center justify-center w-full h-full sm:absolute sm:top-0">
 	<div class="relative z-10 flex h-10 w-[calc(100%-450px)] justify-center space-x-2">
 		<!-- header: select item -->
 		<ToggleGroup.Root
@@ -27,7 +27,7 @@
 		</ToggleGroup.Root>
 		
 		<!-- header for each page -->
-		<div class="absolute right-0 top-2.5 w-[calc(100%-220px)]">
+		<!-- <div class="absolute right-0 top-2.5 w-[calc(100%-220px)]">
 			{#if $page.url.pathname.includes('tasks')}
 				<Breadcrumb.Root>
 					<Breadcrumb.List>
@@ -43,10 +43,9 @@
 							<Breadcrumb.Page>Subtask</Breadcrumb.Page>
 						</Breadcrumb.Item>
 					</Breadcrumb.List>
-				</Breadcrumb.Root>
-			<!-- {:else if $page.url.pathname.includes('events')} -->				
+				</Breadcrumb.Root>			
 			{/if}
-		</div>
+		</div> -->
 	</div>
 
 	<div class="h-[calc(100%-60px)] w-full">

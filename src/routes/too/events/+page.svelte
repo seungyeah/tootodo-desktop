@@ -6,7 +6,7 @@
 	import EventSide from "$components/event/EventSide.svelte";
 	import EventSetting from "$components/event/EventSetting.svelte";
 	import DurationPicker from "$components/event/DurationPicker.svelte";
-	import { goto, invalidateAll } from "$app/navigation";
+	import { goto} from "$app/navigation";
 	import { writable, type Writable } from "svelte/store";
 	import { getMonday } from "$lib/utils";
 	import { postApi, delApi, patchApi } from "$lib/api";
