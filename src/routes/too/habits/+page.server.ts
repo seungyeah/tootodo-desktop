@@ -1,22 +1,17 @@
 import type { Load } from '@sveltejs/kit';
-import { getLocalTimeZone, today } from "@internationalized/date";
-import { CalendarDate } from '@internationalized/date';
+import { type DateValue } from "@internationalized/date";
 import { v4 as uuidv4 } from 'uuid';
 import type { Habit } from '$lib/schema';
 
-export const load: Load = async ({ fetch, url }) => {
-	let start_month: String | CalendarDate | null = null;
-	let end_month: String | CalendarDate | null  = null;
+export const prerender = false;
 
-	if (typeof window !== 'undefined')  {
-		// 클라이언트 측 렌더링 시
-		start_month = url.searchParams.get('start_month');
-		end_month = url.searchParams.get('end_month');
-	}
+export const load: Load = async ({ fetch, url }) => {
+	let start_month: String | DateValue | null = url.searchParams.get('start_month');
+	let end_month: String | DateValue | null  = url.searchParams.get('end_month');
 
 	if (!start_month || !end_month) {
-		start_month =  today(getLocalTimeZone());
-		end_month =  today(getLocalTimeZone());
+		start_month =  "";
+		end_month =  "";
 	}
 	const path = import.meta.env.VITE_SERVER_ENDPOINT + '/api' +`/habits?start_month=${start_month}&end_month=${end_month}`;
 

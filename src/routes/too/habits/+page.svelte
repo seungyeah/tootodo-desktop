@@ -1,35 +1,32 @@
 <script lang="ts">
-	import { getLocalTimeZone, today } from "@internationalized/date";
+	import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 	import PageTemplete from "../PageTemplete.svelte";
 	import { SvelteComponent, onMount, setContext, tick } from "svelte";
 	import HabitMain from "$components/habit/HabitMain.svelte";
 	import HabitSide from "$components/habit/HabitSide.svelte";
 	import HabitSetting from "$components/habit/HabitSetting.svelte";
 	import DurationPicker from "$components/habit/DurationPicker.svelte";
-	import { goto} from "$app/navigation";
+	import { goto } from "$app/navigation";
 	import { writable, type Writable } from "svelte/store";
 	import { postApi, delApi, patchApi } from "$lib/api";
-	import {type Habit } from "$lib/schema";
+	import { type Habit} from "$lib/schema";
+	import { type DateRange ,getThisMonthRange} from "$lib/utils";
 
 	// data
 	export let data;
 	let habits: Writable<Habit[]> = writable(data?.habits || []);
-	
-	// duration select
-	let todayValue = today(getLocalTimeZone());
-	const selectedMonthRange = writable({
-		start: today(getLocalTimeZone()),
-		end: today(getLocalTimeZone()),
-	});
-	setContext("selectedMonthRange", selectedMonthRange);
 	setContext("habits", habits);
 
+	let statusOption: Writable<String>  = writable("InProgress");
+	setContext("statusOption", statusOption);
+	
+	// duration select
+	const selectedMonthRange:Writable<DateRange> = writable(getThisMonthRange());
+	setContext("selectedMonthRange", selectedMonthRange);
+	
+
 	onMount(async () => {
-		todayValue = today(getLocalTimeZone());
-		$selectedMonthRange = {
-			start: todayValue,
-			end: undefined,
-		};
+		$selectedMonthRange = getThisMonthRange();
 		await setQuery($selectedMonthRange);
 	});
 
@@ -49,11 +46,11 @@
 	}
 
 	async function handleCreateHabit(e) {
-		const { name,icon,color } = e.detail.habit;
+		const { name, icon, color } = e.detail.habit;
 		try {
 			const res = await postApi({
 				path: "/habits/",
-				data: { name,icon,color },
+				data: { name, icon, color },
 			});
 			const newHabit = res.data.habit;
 			$habits = [newHabit, ...$habits];
@@ -71,25 +68,28 @@
 			await tick();
 		} catch (error) {
 			console.error("Request failed:", error);
-		}		
+		}
 	}
 
-	async function handleUpdateHabit(e) {
-		const {id} = e.detail.habit;
-		
+	async function handleUpdateHabit({ habit, updateData }) {
+		const { id } = habit;
+
 		try {
-			const res = await patchApi({ path: `/habits/${id}`, data:e.detail.updateData });
+			const res = await patchApi({
+				path: `/habits/${id}`,
+				data: updateData,
+			});
 			const updatedHabit = res.data.habit;
-			
-			$habits = $habits.map(habit => 
-				habit.id === updatedHabit.id ? updatedHabit : habit
+
+			$habits = $habits.map((habit) =>
+				habit.id === updatedHabit.id ? updatedHabit : habit,
 			);
 			await tick();
 		} catch (error) {
 			console.error("Request failed:", error);
 		}
 	}
-
+	setContext("handleUpdateHabit", handleUpdateHabit);
 	// scroll
 	let scrollPosition = { scrollTop: 0, scrollLeft: 0 };
 	let sideComponent: SvelteComponent;
@@ -142,7 +142,7 @@
 		<div
 			slot="options"
 			class="absolute flex h-full max-h-[calc(100%-130px)] w-6 flex-col"
-			style="transform: translate({sideComponentWidth - 22}px, 35px);"
+			style="transform: translate({sideComponentWidth - 22}px, 36px);"
 		>
 			<HabitSetting
 				bind:this={settingComponent}

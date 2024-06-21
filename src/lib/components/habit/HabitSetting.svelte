@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { DropdownMenu } from '$ui';
-	import { ArrowBigRightDash, DiamondPlus, MessageCircle, Trash2 } from 'lucide-svelte';
+	import { ArrowBigRightDash, DiamondPlus, MessageCircle, Package, PackageOpen, Trash2 } from 'lucide-svelte';
 	import { createEventDispatcher, getContext } from 'svelte';
 	import {type Habit } from "$lib/schema";
+
+   const statusOption: string = getContext("statusOption");
 
 	const habits = getContext('habits');
 
@@ -14,11 +16,13 @@
 		dispatch('delete', { habit });	
 	}
 
-	function handleUpdate(habit:Habit,key:string,value:any){
+	const handleUpdateHabit = getContext('handleUpdateHabit');
+
+	function handleUpdateStatus(habit:Habit,key:string){
 		const updateData = {
-			[key]:value
+			[key]:habit.status === "InProgress" ? "Archived" : "InProgress"
 		}
-		dispatch('update', {habit,updateData });	
+		handleUpdateHabit({ habit, updateData });
 	}
 
 	let tableContainer: HTMLElement;
@@ -47,6 +51,7 @@
 		<tbody>
 			{#key habits}
 			{#each $habits as habit, i}
+			{#if habit.status === $statusOption}
 				<tr class="z-10 flex h-[30px] items-center">
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger>
@@ -57,7 +62,13 @@
 						<DropdownMenu.Content class="border-2 border-double border-zinc-800 " side="right">
 							<DropdownMenu.Group class="flex items-center justify-center ">
 								<DropdownMenu.Item class="">
-									<button on:click={handleUpdate(habit,'milestone',!habit.milestone)}><DiamondPlus size={20} /></button>
+									<button on:click={handleUpdateStatus(habit,'status')}>
+										{#if habit.status === "InProgress"}
+										<Package  size={20}  />
+										{:else}
+										<PackageOpen size={20} />
+										{/if}
+									</button>
 								</DropdownMenu.Item>
 								<DropdownMenu.Item class="">
 									<button on:click={()=>openChat = !openChat}><MessageCircle size={20} /></button>
@@ -68,7 +79,7 @@
 							</DropdownMenu.Group>
 						</DropdownMenu.Content>
 					</DropdownMenu.Root>
-				</tr>
+				</tr>{/if}
 			{/each}
 			{/key}
 		</tbody>

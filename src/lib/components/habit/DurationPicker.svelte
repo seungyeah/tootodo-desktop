@@ -1,9 +1,4 @@
 <script lang="ts">
-   import {
-      type DateValue,
-      getLocalTimeZone,
-      today,
-   } from "@internationalized/date";
    import { Button, Popover } from "$ui";
    import RangeMonthCalendar from "$lib/components/RangeMonthCalendar.svelte";
    import { createEventDispatcher } from "svelte";
@@ -14,35 +9,20 @@
       RotateCcw,
    } from "lucide-svelte";
    import { cn } from "$lib/utils.js";
+   import { type DateRange ,getThisMonthRange} from "$lib/utils";
 
    const dispatch = createEventDispatcher();
 
-   let todayValue: DateValue | undefined = today(getLocalTimeZone());
-
-   type MonthRange = {
-      start: undefined | DateValue;
-      end: undefined | DateValue;
-   };
-
-   let selectedMonthRange: MonthRange = {
-      start: todayValue,
-      end: undefined,
-   };
+   let selectedMonthRange: DateRange = getThisMonthRange();
    
-   let selectingMonthRange: MonthRange = {
-      start: todayValue,
-      end: undefined,
-   };
+   let selectingMonthRange: DateRange =  getThisMonthRange();
 
    function updateDates() {
       dispatch("update", { selectedMonthRange: selectedMonthRange });
    }
 
    function resetDates() {
-      selectedMonthRange = {
-         start: todayValue,
-         end: undefined,
-      };
+      selectedMonthRange = getThisMonthRange();
       updateDates();
    }
 </script>
@@ -93,11 +73,9 @@
             <CalendarIcon class="w-4 h-4 mr-2" />
             {#if selectedMonthRange && selectedMonthRange.start}
                {#if selectedMonthRange.end}
-                  {selectedMonthRange.start.year}, {selectedMonthRange.start
-                     .month} - {selectedMonthRange.end
-                     .year},{selectedMonthRange.end.month}
+                  {selectedMonthRange.start} ~ {selectedMonthRange.end}
                {:else}
-                  {selectedMonthRange.start.year}, {selectedMonthRange.start.month}
+                  {selectedMonthRange.start}
                {/if}
             {:else}
                Pick a month
@@ -125,8 +103,8 @@
       class="h-8 w-8 !p-1"
       variant="ghost"
       on:click={() => {
-         selectedMonthRange.start = selectedMonthRange.start.add({ months: 1 });
-         selectedMonthRange.end = selectedMonthRange.end.add({ months: 1 });
+         selectedMonthRange.start = selectedMonthRange.start?.add({ months: 1 });
+         selectedMonthRange.end = selectedMonthRange.end?.add({ months: 1 });
          updateDates();
       }}
    >

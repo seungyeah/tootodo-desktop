@@ -189,7 +189,7 @@
 					handleSubmit(e);
 				}
 			}}
-			class="my-2 ml-2 h-9 w-full scale-y-95 rounded-r-full p-2 pr-9 text-[1rem] font-normal focus:shadow"
+			class="my-2 ml-2 h-9 w-full scale-y-95 rounded-r-full p-2 pr-9 text-[0.9rem] font-normal focus:shadow"
 		/>
 		<Button
 			variant="ghost"
@@ -208,7 +208,9 @@
 	<!-- event list -->
 	{#key $events}
 		<div
-			class="no-scrollbar h-full max-h-[calc(100%-50px)] w-full max-w-full overflow-x-clip overflow-y-scroll border-2 border-zinc-600"
+			class="
+			rounded-t-xl rounded-b-lg shadow-md  bg-white border-0 border-zinc-600
+			no-scrollbar h-full max-h-[calc(100%-50px)] w-full max-w-full overflow-x-clip overflow-y-scroll  "
 			bind:this={tableContainer}
 			on:scroll={handleScroll}
 		>
@@ -217,7 +219,7 @@
 					<tr class="">
 						<th
 							scope="col"
-							class="flex items-center justify-center translate-y-1 border-r min-w-5"
+							class="flex items-center justify-center h-full translate-y-1 border-r min-w-5"
 							><GripVertical size={14} /></th
 						>
 						<th scope="col" class="w-3/5 border-r">Title</th>

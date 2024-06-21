@@ -79,7 +79,7 @@
                   value.start = new CalendarDate(year, i + 1, 1);
                   value.end = undefined;
                } else if (!value.end) {
-                  value.end = new CalendarDate(year, i + 1, 1);
+                  value.end = new CalendarDate(year, i + 1, 31);
                   if(value.start > value.end){
                      const temp = value.start;
                      value.start = value.end;

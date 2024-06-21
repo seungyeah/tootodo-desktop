@@ -1,22 +1,16 @@
 import type { Load } from '@sveltejs/kit';
-import { getMonday } from '$lib/utils.js';
 import { CalendarDate } from '@internationalized/date';
 
-export const load: Load = async ({ fetch, url }) => {
-	let start_date: String | CalendarDate | null;
-	let end_date: String | CalendarDate | null;
+export const prerender = false;
 
-	if (typeof window !== 'undefined')  {
-		// 클라이언트 측 렌더링 시
-		start_date = url.searchParams.get('start_date');
-		end_date = url.searchParams.get('end_date');
-	}
+export const load: Load = async ({ fetch, url }) => {
+	let start_date: String | CalendarDate | null = url.searchParams.get('start_date');
+	let end_date: String | CalendarDate | null  = url.searchParams.get('end_date');
 
 	if (!start_date || !end_date) {
-		start_date = getMonday(new Date()).subtract({ days: 7 });
-		end_date = start_date.add({ days: 20 });
+		start_date = "";
+		end_date = "";
 	}
-
 	const path = import.meta.env.VITE_SERVER_ENDPOINT + '/api' +`/events?start_date=${start_date}&end_date=${end_date}`;
 
 	try {

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { getLocalTimeZone, today } from "@internationalized/date";
 	import PageTemplete from "../PageTemplete.svelte";
 	import { SvelteComponent, onMount, setContext, tick } from "svelte";
 	import EventMain from "$components/event/EventMain.svelte";
@@ -8,31 +7,20 @@
 	import DurationPicker from "$components/event/DurationPicker.svelte";
 	import { goto} from "$app/navigation";
 	import { writable, type Writable } from "svelte/store";
-	import { getMonday } from "$lib/utils";
 	import { postApi, delApi, patchApi } from "$lib/api";
 	import {type Event } from "$lib/schema";
-
+	import { type DateRange ,getThis3WeeksRange} from "$lib/utils";
 	// data
 	export let data;
 	let events: Writable<Event[]> = writable(data?.events || []);
 	
 	// duration select
-	let todayValue = today(getLocalTimeZone());
-	let selectedMonday = getMonday(todayValue.toDate());
-	const selectedDateRange = writable({
-		start: today(getLocalTimeZone()),
-		end: today(getLocalTimeZone()),
-	});
+	const selectedDateRange:Writable<DateRange> = writable(getThis3WeeksRange());
 	setContext("selectedDateRange", selectedDateRange);
 	setContext("events", events);
 
 	onMount(async () => {
-		todayValue = today(getLocalTimeZone());
-		selectedMonday = getMonday(todayValue.toDate());
-		$selectedDateRange = {
-			start: selectedMonday.subtract({ days: 7 }),
-			end: selectedMonday.add({ days: 13 }),
-		};
+		$selectedDateRange =getThis3WeeksRange();
 		await setQuery($selectedDateRange);
 	});
 

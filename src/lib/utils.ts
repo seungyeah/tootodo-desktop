@@ -63,6 +63,17 @@ export const flyAndScale = (
 };
 
 // date
+import {
+    type DateValue,
+    getLocalTimeZone,
+    today,
+} from "@internationalized/date";
+
+export type DateRange = {
+    start: undefined | DateValue;
+    end: undefined | DateValue;
+};
+
 export function getMonday(date: Date): CalendarDate {
     const dayOfWeek = date.getDay();
     // 일요일인 경우를 처리 (일요일을 주의 시작으로 간주하지 않기 위해 7을 더함)
@@ -71,4 +82,21 @@ export function getMonday(date: Date): CalendarDate {
     const monday = new Date(date);
     monday.setDate(date.getDate() - day + 1);
     return new CalendarDate(monday.getFullYear(), monday.getMonth() + 1, monday.getDate());
+}
+
+export function getThis3WeeksRange(): DateRange {
+    const todayValue = today(getLocalTimeZone());
+    const monday = getMonday(todayValue.toDate());
+    return {
+        start: monday.subtract({ days: 7 }),
+        end: monday.add({ days: 13 }),
+    };
+}
+
+export function getThisMonthRange(): DateRange {
+    const todayValue = today(getLocalTimeZone());
+    return {
+        start: new CalendarDate(todayValue.year, todayValue.month, 1),
+        end: new CalendarDate(todayValue.year, todayValue.month, 31),
+    }
 }

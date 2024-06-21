@@ -63,7 +63,7 @@ const config = {
 					800: '#821a23',
 					900: '#6a151c',
 					950:'#501016'
-				  },
+				},
 			},
 			borderRadius: {
 				lg: "var(--radius)",

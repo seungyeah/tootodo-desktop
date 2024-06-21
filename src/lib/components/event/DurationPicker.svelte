@@ -9,32 +9,25 @@
 	import { createEventDispatcher } from 'svelte';
 	import { CalendarIcon, ChevronLeft, ChevronRight, RotateCcw } from 'lucide-svelte';
 	import { cn } from '$lib/utils.js';
-	import { getMonday } from '$lib/utils';
+	
+	import { getThis3WeeksRange} from "$lib/utils";
+	const todayValue = today(getLocalTimeZone());
 	const df = new DateFormatter('en-US', {
 		dateStyle: 'medium'
 	});
 
 	const dispatch = createEventDispatcher();
 
-	let todayValue: DateValue | undefined = today(getLocalTimeZone());
-   let selectedMonday = getMonday(todayValue?.toDate());;
 
 	// 3 weeks duration
-	let selectedDateRange = {
-		start: selectedMonday.subtract({days: 7}),
-		end: selectedMonday.add({ days: 13 })
-	};
+	let selectedDateRange  =getThis3WeeksRange();
 
 	function updateDates() {
 		dispatch('update', { selectedDateRange });
 	}
 
    function resetDates() {        
-		selectedMonday = getMonday(todayValue?.toDate());
-		selectedDateRange = {
-		start: selectedMonday.subtract({days: 7}),
-			end: selectedMonday.add({ days: 13 })
-		};
+		selectedDateRange  =getThis3WeeksRange();
 		updateDates();
 	}
 
