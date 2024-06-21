@@ -59,7 +59,7 @@
                <div
                   in:send={{ key: "trigger" }}
                   out:receive={{ key: "trigger" }}
-                  class="absolute bottom-0 w-8 h-1 -translate-x-1/2 rounded-full left-1/2 bg-pomodoro-400"
+                  class="absolute bottom-0 w-[80%] -translate-x-1/2 border-2 border-double rounded-full left-1/2 bg-pomodoro-100"
                />
             {/if}
          </button>

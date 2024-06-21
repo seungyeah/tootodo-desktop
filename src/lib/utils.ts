@@ -100,3 +100,48 @@ export function getThisMonthRange(): DateRange {
         end: new CalendarDate(todayValue.year, todayValue.month, 31),
     }
 }
+
+export function countMonths(
+    dates: CalendarDate[],
+): { month: number; count: number }[] {
+    if (!dates) return [];
+    let monthCounts = [{ month: 0, count: 0 }];
+
+    dates.forEach((date) => {
+    const month = date.toDate().getMonth() + 1; // 월을 1부터 시작하도록 변경
+    let monthEntry = monthCounts.find((entry) => entry.month === month);
+
+    if (monthEntry) {
+        monthEntry.count++;
+    } else {
+        monthCounts.push({ month, count: 1 });
+    }
+    });
+
+    // 기본 초기화 객체를 제거
+    return monthCounts.filter((entry) => entry.month !== 0);
+}
+
+export function getDuration(start: CalendarDate, end: CalendarDate): number {
+    if (!start || !end) return 0; // 두 날짜 간의 차이를 밀리초 단위로 계산
+    const timeDifference = end.toDate() - start.toDate();
+
+    // 밀리초를 일 단위로 변환
+    const msInADay = 86_400_000;
+    const diff = Math.floor(timeDifference / msInADay);
+    return diff;
+}
+
+// 범위 내의 모든 날짜를 배열로 반환
+export function getDatesInRange(start: CalendarDate, end: CalendarDate) {
+    if (!start || !end) return [];
+    let dates = [];
+    let currentDate = start;
+
+    while (currentDate.compare(end) <= 0) {
+    dates.push(currentDate);
+    currentDate = currentDate.add({ days: 1 });
+    }
+
+    return dates;
+}``

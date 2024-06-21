@@ -214,12 +214,12 @@
 			bind:this={tableContainer}
 			on:scroll={handleScroll}
 		>
-			<table class="translate-y-0.5">
+			<table class="translate-y-1">
 				<thead class="sticky top-0 z-10 h-[20px] bg-white text-center">
 					<tr class="">
 						<th
 							scope="col"
-							class="flex items-center justify-center h-full translate-y-1 border-r min-w-5"
+							class="flex items-center justify-center h-full translate-y-1 border-r min-w-5 "
 							><GripVertical size={14} /></th
 						>
 						<th scope="col" class="w-3/5 border-r">Title</th>

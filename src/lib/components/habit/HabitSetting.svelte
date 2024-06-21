@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { DropdownMenu } from '$ui';
-	import { ArrowBigRightDash, DiamondPlus, MessageCircle, Package, PackageOpen, Trash2 } from 'lucide-svelte';
+	import { ArrowBigRightDash,  MessageCircle, Package, PackageOpen, Trash2 } from 'lucide-svelte';
 	import { createEventDispatcher, getContext } from 'svelte';
 	import {type Habit } from "$lib/schema";
 
-   const statusOption: string = getContext("statusOption");
-
 	const habits = getContext('habits');
-
+	const statusOption: string = getContext("statusOption");
 	let openChat = false;
 
 	const dispatch = createEventDispatcher();

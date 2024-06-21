@@ -47,7 +47,7 @@
 		<tbody>
 			{#key events}
 			{#each $events as event, i}
-				<tr class="z-10 flex h-[30px] items-center">
+				<tr class="z-10 flex h-[30px] items-center ">
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger>
 							<td class="">

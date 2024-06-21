@@ -119,11 +119,11 @@
 </script>
 
 <div class="relative w-full h-full">
-	<div class="fixed top-5 z-10 w-[calc(100%-190px)] translate-x-1/2">
-		<DurationPicker on:update={handleDateUpdate} />
-	</div>
-
 	<PageTemplete>
+		<div slot="nav" class="">
+			<DurationPicker on:update={handleDateUpdate} />
+		</div>
+
 		<div
 			slot="side"
 			class="flex flex-col w-full h-full px-2 py-2"
@@ -141,7 +141,7 @@
 		<div
 			slot="options"
 			class="absolute flex h-full max-h-[calc(100%-130px)] w-6 flex-col"
-			style="transform: translate({sideComponentWidth - 22}px, 35px);"
+			style="transform: translate({sideComponentWidth - 22}px, 34px);"
 		>
 			<EventSetting
 				bind:this={settingComponent}

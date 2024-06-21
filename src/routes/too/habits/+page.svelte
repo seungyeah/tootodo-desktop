@@ -119,11 +119,11 @@
 </script>
 
 <div class="relative w-full h-full">
-	<div class="fixed top-5 z-10 w-[calc(100%-190px)] translate-x-1/2">
-		<DurationPicker on:update={handleDateUpdate} />
-	</div>
 
 	<PageTemplete>
+		<div slot="nav" class="">
+			<DurationPicker on:update={handleDateUpdate} />
+		</div>
 		<!-- haibt list, create habit -->
 		<div
 			slot="side"

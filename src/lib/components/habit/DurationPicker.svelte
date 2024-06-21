@@ -3,14 +3,20 @@
    import RangeMonthCalendar from "$lib/components/RangeMonthCalendar.svelte";
    import { createEventDispatcher } from "svelte";
    import {
+		DateFormatter,
+		getLocalTimeZone,
+		today,
+	} from '@internationalized/date';
+   import {
       CalendarIcon,
       ChevronLeft,
       ChevronRight,
       RotateCcw,
    } from "lucide-svelte";
-   import { cn } from "$lib/utils.js";
-   import { type DateRange ,getThisMonthRange} from "$lib/utils";
-
+   import { cn ,type DateRange ,getThisMonthRange} from "$lib/utils";
+   const df = new DateFormatter('en-US', {
+		dateStyle: 'medium'
+	});
    const dispatch = createEventDispatcher();
 
    let selectedMonthRange: DateRange = getThisMonthRange();
@@ -67,16 +73,18 @@
       <Popover.Trigger asChild let:builder>
          <Button
             variant="outline"
-            class={cn("w-[300px] justify-start text-left font-normal")}
+            class={cn("w-[264px] justify-start text-left font-normal")}
             builders={[builder]}
          >
             <CalendarIcon class="w-4 h-4 mr-2" />
             {#if selectedMonthRange && selectedMonthRange.start}
-               {#if selectedMonthRange.end}
-                  {selectedMonthRange.start} ~ {selectedMonthRange.end}
-               {:else}
-                  {selectedMonthRange.start}
-               {/if}
+            {#if selectedMonthRange.end}
+            {df.format(selectedMonthRange.start.toDate(getLocalTimeZone()))} - {df.format(
+               selectedMonthRange.end.toDate(getLocalTimeZone())
+            )}
+         {:else}
+            {df.format(selectedMonthRange.start.toDate(getLocalTimeZone()))}
+         {/if}
             {:else}
                Pick a month
             {/if}
@@ -90,7 +98,7 @@
    <!-- reset to today -->
    <Button
       variant="secondary"
-      class="absolute z-50  translate-x-[306px]  h-6 px-1 shadow"
+      class="absolute z-50  translate-x-[270px]  h-6 px-1 shadow"
       on:click={() => {
          resetDates();
       }}

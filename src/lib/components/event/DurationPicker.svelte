@@ -1,6 +1,5 @@
 <script lang="ts">
 	import {
-		type DateValue,
 		DateFormatter,
 		getLocalTimeZone,
 		today,
@@ -57,7 +56,7 @@
 		<Popover.Trigger asChild let:builder>
 			<Button
 				variant="outline"
-				class={cn('w-[300px] justify-start text-left font-normal')}
+				class={cn('w-[264px] justify-start text-left font-normal')}
 				builders={[builder]}
 			>
 				<CalendarIcon class="w-4 h-4 mr-2" />
@@ -90,7 +89,7 @@
 	<!-- reset to today -->
 	<Button
 		variant="secondary"
-		class="absolute z-50  translate-x-[306px]  h-6 px-1 shadow"
+		class="absolute z-50  translate-x-[270px]  h-6 px-1 shadow"
 		on:click={() => {
             resetDates();
 		}}
