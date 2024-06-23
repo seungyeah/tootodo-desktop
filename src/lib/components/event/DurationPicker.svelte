@@ -56,7 +56,7 @@
 		<Popover.Trigger asChild let:builder>
 			<Button
 				variant="outline"
-				class={cn('w-[270px] min-w-[270px] lg:w-[calc(100%-300px)] justify-start text-left font-normal')}
+				class={cn('w-[270px] min-w-[270px] lg:w-[calc(100%-300px)] justify-start font-semibold text-zinc-600')}
 				builders={[builder]}
 			>
 				<CalendarIcon class="w-4 h-4 mr-2" />

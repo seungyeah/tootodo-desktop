@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
-import { CalendarDate } from "@internationalized/date";
+import { CalendarDate, endOfMonth, startOfMonth, startOfWeek } from "@internationalized/date";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -74,19 +74,10 @@ export type DateRange = {
     end: undefined | DateValue;
 };
 
-export function getMonday(date: Date): CalendarDate {
-    const dayOfWeek = date.getDay();
-    // 일요일인 경우를 처리 (일요일을 주의 시작으로 간주하지 않기 위해 7을 더함)
-    const day = dayOfWeek === 0 ? 7 : dayOfWeek;
-
-    const monday = new Date(date);
-    monday.setDate(date.getDate() - day + 1);
-    return new CalendarDate(monday.getFullYear(), monday.getMonth() + 1, monday.getDate());
-}
 
 export function getThis3WeeksRange(): DateRange {
     const todayValue = today(getLocalTimeZone());
-    const monday = getMonday(todayValue.toDate());
+    const monday = startOfWeek(todayValue,'fr-FR');
     return {
         start: monday.subtract({ days: 7 }),
         end: monday.add({ days: 13 }),
@@ -96,8 +87,8 @@ export function getThis3WeeksRange(): DateRange {
 export function getThisMonthRange(): DateRange {
     const todayValue = today(getLocalTimeZone());
     return {
-        start: new CalendarDate(todayValue.year, todayValue.month, 1),
-        end: new CalendarDate(todayValue.year, todayValue.month, 31),
+        start: startOfMonth(todayValue),
+        end: endOfMonth(todayValue),
     }
 }
 

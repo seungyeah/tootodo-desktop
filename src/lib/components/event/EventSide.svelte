@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getLocalTimeZone, today,CalendarDate} from "@internationalized/date";
+	import { getLocalTimeZone, today,CalendarDate, parseDate} from "@internationalized/date";
 	import { Button, DropdownMenu, Input, Popover, RangeCalendar } from "$ui";
 	import { CirclePlus, Calendar, GripVertical } from "lucide-svelte";
 	import { onMount, tick } from "svelte";
@@ -264,6 +264,9 @@
 												cellDuration.start.toString();
 											event.end_date = cellDuration.end.toString();
 											handleUpdateDuration(event, cellDuration);
+										}else{
+											cellDuration.start = parseDate(event.start_date);
+											cellDuration.end = parseDate(event.end_date);
 										}
 									}}
 								>

@@ -3,25 +3,27 @@
    import RangeMonthCalendar from "$lib/components/RangeMonthCalendar.svelte";
    import { createEventDispatcher } from "svelte";
    import {
-		DateFormatter,
-		getLocalTimeZone,
-		today,
-	} from '@internationalized/date';
+      DateFormatter,
+      endOfMonth,
+      getLocalTimeZone,
+      startOfMonth,
+      today,
+   } from "@internationalized/date";
    import {
       CalendarIcon,
       ChevronLeft,
       ChevronRight,
       RotateCcw,
    } from "lucide-svelte";
-   import { cn ,type DateRange ,getThisMonthRange} from "$lib/utils";
-   const df = new DateFormatter('en-US', {
-		dateStyle: 'medium'
-	});
+   import { cn, type DateRange, getThisMonthRange } from "$lib/utils";
+   const df = new DateFormatter("en-US", {
+      dateStyle: "medium",
+   });
    const dispatch = createEventDispatcher();
 
    let selectedMonthRange: DateRange = getThisMonthRange();
-   
-   let selectingMonthRange: DateRange =  getThisMonthRange();
+
+   let selectingMonthRange: DateRange = getThisMonthRange();
 
    function updateDates() {
       dispatch("update", { selectedMonthRange: selectedMonthRange });
@@ -41,12 +43,12 @@
       class="h-8 w-8 !p-1"
       variant="ghost"
       on:click={() => {
-         selectedMonthRange.start = selectedMonthRange.start?.subtract({
-            months: 1,
-         });
-         selectedMonthRange.end = selectedMonthRange.end?.subtract({
-            months: 1,
-         });
+         selectedMonthRange.start = startOfMonth(
+            selectedMonthRange.start?.subtract({ months: 1 }),
+         );
+         selectedMonthRange.end = endOfMonth(
+            selectedMonthRange.end?.subtract({ months: 1 }),
+         );
          updateDates();
       }}
    >
@@ -58,11 +60,11 @@
       openFocus
       onOpenChange={(open) => {
          if (!open) {
-            if(selectingMonthRange.start && selectingMonthRange.end){
+            if (selectingMonthRange.start && selectingMonthRange.end) {
                selectedMonthRange = selectingMonthRange;
                updateDates();
             }
-         }else{
+         } else {
             selectingMonthRange = {
                start: undefined,
                end: undefined,
@@ -73,47 +75,58 @@
       <Popover.Trigger asChild let:builder>
          <Button
             variant="outline"
-            class={cn("w-[270px] min-w-[270px] lg:w-[calc(100%-300px)]  justify-start text-left font-normal")}
+            class={cn(
+               "w-[270px] min-w-[270px] lg:w-[calc(100%-300px)] justify-start font-semibold text-zinc-600 ",
+            )}
             builders={[builder]}
          >
             <CalendarIcon class="w-4 h-4 mr-2" />
             {#if selectedMonthRange && selectedMonthRange.start}
-            {#if selectedMonthRange.end}
-            {df.format(selectedMonthRange.start.toDate(getLocalTimeZone()))} - {df.format(
-               selectedMonthRange.end.toDate(getLocalTimeZone())
-            )}
-         {:else}
-            {df.format(selectedMonthRange.start.toDate(getLocalTimeZone()))}
-         {/if}
+               {#if selectedMonthRange.end}
+                  {df.format(
+                     selectedMonthRange.start.toDate(getLocalTimeZone()),
+                  )} - {df.format(
+                     selectedMonthRange.end.toDate(getLocalTimeZone()),
+                  )}
+               {:else}
+                  {df.format(
+                     selectedMonthRange.start.toDate(getLocalTimeZone()),
+                  )}
+               {/if}
             {:else}
                Pick a month
             {/if}
          </Button>
          <!-- reset to today -->
-   <Button
-   variant="secondary"
-   class="z-50 h-6 px-1 shadow -translate-x-11"
-   on:click={() => {
-      resetDates();
-   }}
->
-   <RotateCcw size={18} strokeWidth={2.2} />
-</Button>
+         <Button
+            variant="secondary"
+            class="z-50 h-6 px-1 shadow -translate-x-11"
+            on:click={() => {
+               resetDates();
+            }}
+         >
+            <RotateCcw size={18} strokeWidth={2.2} />
+         </Button>
       </Popover.Trigger>
       <Popover.Content class="w-[300px] p-0 translate-y-1" align="start">
-         <RangeMonthCalendar bind:value={selectingMonthRange} initValue={selectedMonthRange}/>
-      </Popover.Content> 
+         <RangeMonthCalendar
+            bind:value={selectingMonthRange}
+            initValue={selectedMonthRange}
+         />
+      </Popover.Content>
    </Popover.Root>
-
-   
 
    <!-- 1month++ -->
    <Button
       class="h-8 w-8 !p-1 -translate-x-[34px]"
       variant="ghost"
       on:click={() => {
-         selectedMonthRange.start = selectedMonthRange.start?.add({ months: 1 });
-         selectedMonthRange.end = selectedMonthRange.end?.add({ months: 1 });
+         selectedMonthRange.start = startOfMonth(
+            selectedMonthRange.start?.add({ months: 1 }),
+         );
+         selectedMonthRange.end = endOfMonth(
+            selectedMonthRange.end?.add({ months: 1 }),
+         );
          updateDates();
       }}
    >
