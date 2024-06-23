@@ -56,7 +56,7 @@
 		<Popover.Trigger asChild let:builder>
 			<Button
 				variant="outline"
-				class={cn('w-[264px] justify-start text-left font-normal')}
+				class={cn('w-[270px] min-w-[270px] lg:w-[calc(100%-300px)] justify-start text-left font-normal')}
 				builders={[builder]}
 			>
 				<CalendarIcon class="w-4 h-4 mr-2" />
@@ -74,6 +74,16 @@
 					Pick a date
 				{/if}
 			</Button>
+			<!-- reset to today -->
+			<Button
+			variant="secondary"
+			class="z-50 h-6 px-1 shadow -translate-x-11"
+			on:click={() => {
+					resetDates();
+			}}
+		>
+	<RotateCcw size={18} strokeWidth={2.2} />
+</Button>
 		</Popover.Trigger>
 		<Popover.Content class="w-auto p-0" align="start">
 			<RangeCalendar
@@ -86,20 +96,9 @@
 		</Popover.Content>
 	</Popover.Root>
 
-	<!-- reset to today -->
-	<Button
-		variant="secondary"
-		class="absolute z-50  translate-x-[270px]  h-6 px-1 shadow"
-		on:click={() => {
-            resetDates();
-		}}
-	>
-		<RotateCcw size={18} strokeWidth={2.2} />
-	</Button>
-
 	<!-- 7days++ -->
 	<Button
-		class="h-8 w-8 !p-1"
+		class="h-8 w-8 !p-1 -translate-x-[34px]"
 		variant="ghost"
 		on:click={() => {
 			selectedDateRange.start = selectedDateRange.start.add({ days: 7 });
