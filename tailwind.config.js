@@ -2,6 +2,7 @@ import { fontFamily } from "tailwindcss/defaultTheme";
 
 /** @type {import('tailwindcss').Config} */
 const config = {
+	mode: 'jit',
 	darkMode: ["class"],
 	content: ["./src/**/*.{html,js,svelte,ts}"],
 	safelist: ["dark"],
@@ -17,6 +18,10 @@ const config = {
 			}
 		},
 		extend: {
+			gridTemplateColumns: {
+				// Simple 16 column grid
+				'13': 'repeat(13, minmax(0, 1fr))',
+			},
 			colors: {
 				border: "hsl(var(--border) / <alpha-value>)",
 				input: "hsl(var(--input) / <alpha-value>)",

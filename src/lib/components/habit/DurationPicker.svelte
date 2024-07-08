@@ -7,7 +7,6 @@
       endOfMonth,
       getLocalTimeZone,
       startOfMonth,
-      today,
    } from "@internationalized/date";
    import {
       CalendarIcon,
