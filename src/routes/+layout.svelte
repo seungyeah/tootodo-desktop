@@ -1,40 +1,58 @@
 <script lang="ts">
-	import '../app.pcss';
-	import { Button, Breadcrumb, Popover, Input, Avatar, DropdownMenu } from '$ui';
-	import HeaderNav from '$components/HeaderNav.svelte';
-	import TWindicator from '$components/TWindicator.svelte';
-	import { auth, isAuthed, timerOpen } from '$store';
-	import { goto } from '$app/navigation';
-	import { onDestroy, onMount } from 'svelte';
-	import { Search, LogOut, Clock, AlarmCheck, Bell } from 'lucide-svelte';
-	import { page } from '$app/stores';
-	import ShowRecord from '$components/tenMTable/showRecord.svelte';
-	import PlanRecord from '$components/tenMTable/planRecord.svelte';
+	import "../app.pcss";
+	import {
+		Button,
+		Breadcrumb,
+		Popover,
+		Input,
+		Avatar,
+		DropdownMenu,
+	} from "$ui";
+	import HeaderNav from "$components/HeaderNav.svelte";
+	import TWindicator from "$components/TWindicator.svelte";
+	import { auth, isAuthed, timerOpen, isRefresh } from "$store";
+	import { goto } from "$app/navigation";
+	import { onDestroy, onMount } from "svelte";
+	import { Search, LogOut, Clock, AlarmCheck, Bell } from "lucide-svelte";
+	import { page } from "$app/stores";
+	import ShowRecord from "$components/tenMTable/showRecord.svelte";
+	import PlanRecord from "$components/tenMTable/planRecord.svelte";
 
-	let errorMessage = '';
+	let errorMessage = "";
 	let showAlarm = false;
 	let openTenM = false;
 
 	onMount(async () => {
-		const loggedIn = getCookie('logged_in');
+		const loggedIn = getCookie("logged_in");
 		if (loggedIn) {
 			await auth.getUserInfo();
 		} else {
-			goto('/login');
+			goto("/login");
 		}
+		const onRefresh = setInterval(
+			async () => {
+				if ($isRefresh) {
+					await auth.refreshWithFn(null);
+				} else {
+					clearInterval(onRefresh);
+				}
+			},
+			1000 * 60 * 14,
+		); 
 
-		if (typeof window !== 'undefined')  document.addEventListener('keydown', handleKeyDown); // keydown 이벤트 리스너 추가	
-
+		if (typeof window !== "undefined")
+			document.addEventListener("keydown", handleKeyDown); // keydown 이벤트 리스너 추가
 	});
 
 	onDestroy(() => {
-		if (typeof window !== 'undefined')  document.removeEventListener('keydown', handleKeyDown); // keydown 이벤트 리스너 제거
+		if (typeof window !== "undefined")
+			document.removeEventListener("keydown", handleKeyDown); // keydown 이벤트 리스너 제거
 	});
 
 	function getCookie(name) {
 		const value = `; ${document.cookie}`;
 		const parts = value.split(`; ${name}=`);
-		if (parts.length === 2) return parts.pop().split(';').shift();
+		if (parts.length === 2) return parts.pop().split(";").shift();
 	}
 
 	async function handleLogout(e) {
@@ -47,7 +65,7 @@
 	}
 
 	function handleKeyDown(event) {
-		if (event.key === 'Escape' || event.key === 'Esc') {
+		if (event.key === "Escape" || event.key === "Esc") {
 			// Esc 버튼이 눌렸을 때, openChat을 false로 변경
 			openTenM = false;
 		}
@@ -66,14 +84,25 @@
 			<Breadcrumb.Root class="absolute left-16 w-[200px]">
 				<Breadcrumb.List>
 					<Breadcrumb.Item>
-						<Breadcrumb.Link href="/too" class="text-xl font-bold text-white hover:text-zinc-100"
-							><div class:currentPage={$page.url.pathname.includes('too')}>Too</div>
+						<Breadcrumb.Link
+							href="/too"
+							class="text-xl font-bold text-white hover:text-zinc-100"
+							><div
+								class:currentPage={$page.url.pathname.includes("too")}
+							>
+								Too
+							</div>
 						</Breadcrumb.Link>
 					</Breadcrumb.Item>
 					<Breadcrumb.Separator class="text-zinc-400" />
 					<Breadcrumb.Item>
-						<Breadcrumb.Link href="/do" class="text-xl font-bold text-white hover:text-zinc-100"
-							><span class:currentPage={$page.url.pathname.includes('do')}>Do</span>
+						<Breadcrumb.Link
+							href="/do"
+							class="text-xl font-bold text-white hover:text-zinc-100"
+							><span
+								class:currentPage={$page.url.pathname.includes("do")}
+								>Do</span
+							>
 						</Breadcrumb.Link>
 					</Breadcrumb.Item>
 				</Breadcrumb.List>
@@ -96,8 +125,8 @@
 					color="white"
 					fill="#09090b"
 					class={showAlarm
-						? 'scale-1 scale-125 rounded-full bg-zinc-900 shadow-xl shadow-zinc-50'
-						: ''}
+						? "scale-1 scale-125 rounded-full bg-zinc-900 shadow-xl shadow-zinc-50"
+						: ""}
 				/>
 				<!-- todo! show alarm -->
 			</Button>
@@ -107,31 +136,46 @@
 				variant="ghost"
 				on:click={() => (openTenM = !openTenM)}
 				class={openTenM
-					? '-translate-x-1 translate-y-1 scale-105 rounded-full border  border-dotted bg-zinc-900 !p-2 shadow-xl shadow-zinc-500 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200'
-					: 'h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200'}
-				><Clock size={26} color="white" fill="#09090b" strokeWidth={2} /></Button
+					? "-translate-x-1 translate-y-1 scale-105 rounded-full border  border-dotted bg-zinc-900 !p-2 shadow-xl shadow-zinc-500 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200"
+					: "h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200"}
+				><Clock
+					size={26}
+					color="white"
+					fill="#09090b"
+					strokeWidth={2}
+				/></Button
 			>
-				<div class="fixed z-50 hidden right-0 top-10  w-[470px] translate-y-1 p-0 " class:openTimer={openTenM}>
-					<div
-						class={$timerOpen
-							? ' relative m-auto  h-[290px] '
-							: 'relative m-3 h-[470px] w-[calc(100%-24px)] bg-white border-[6px] border-double border-zinc-900 rounded-lg shadow-lg shadow-zinc-500'}
-					>
-						<ShowRecord />
-						<div class="absolute top-0 w-full h-full">
-							<!-- plan record and start timer directly -->
-							<PlanRecord />
-						</div>
+			<div
+				class="fixed z-50 hidden right-0 top-10 w-[470px] translate-y-1 p-0"
+				class:openTimer={openTenM}
+			>
+				<div
+					class={$timerOpen
+						? " relative m-auto  h-[290px] "
+						: "relative m-3 h-[470px] w-[calc(100%-24px)] bg-white border-[6px] border-double border-zinc-900 rounded-lg shadow-lg shadow-zinc-500"}
+				>
+					<ShowRecord />
+					<div class="absolute top-0 w-full h-full">
+						<!-- plan record and start timer directly -->
+						<PlanRecord />
 					</div>
 				</div>
+			</div>
 
 			<!-- profile -->
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger asChild let:builder>
-					<Button builders={[builder]} variant="ghost" class="w-8 h-8 hover:bg-zinc-950 "
-						><Avatar.Root class="w-8 h-8 border-2 shadow-lg text-zinc-500">
+					<Button
+						builders={[builder]}
+						variant="ghost"
+						class="w-8 h-8 hover:bg-zinc-950 "
+						><Avatar.Root
+							class="w-8 h-8 border-2 shadow-lg text-zinc-500"
+						>
 							<Avatar.Image src="/{$auth.photo}" alt={$auth.email} />
-							<Avatar.Fallback class="font-bold bg-black">Hi</Avatar.Fallback>
+							<Avatar.Fallback class="font-bold bg-black"
+								>Hi</Avatar.Fallback
+							>
 						</Avatar.Root></Button
 					>
 				</DropdownMenu.Trigger>
@@ -161,7 +205,7 @@
 	}
 
 	:global(body) {
-		font-family: 'Manrope Variable', sans-serif;
+		font-family: "Manrope Variable", sans-serif;
 	}
 
 	.currentPage {

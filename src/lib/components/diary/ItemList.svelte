@@ -4,8 +4,8 @@
 
 	export let records = [
 		{
-			item: 'task',
-			title: 'urgent task',
+			item: 'note',
+			title: 'urgent note',
 			days: ['mon', 'wed'],
 			chatID: '321241',
 			project: { title: 'Project K', color: '#f472b6' },

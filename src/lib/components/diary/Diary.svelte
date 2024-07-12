@@ -18,8 +18,8 @@
 		{
 			pin: true,
 			alarm: true,
-			item: 'task',
-			title: 'urgent task',
+			item: 'note',
+			title: 'urgent note',
 			days: ['mon', 'wed'],
 			openChat: false,
 			project: { title: 'Project K', color: '#f472b6' },
@@ -35,7 +35,7 @@
 		{
 			pin: true,
 			alarm: false,
-			item: 'task',
+			item: 'note',
 			title: 'important review',
 			days: ['fri', 'sat'],
 			openChat: false,
@@ -52,7 +52,7 @@
 		{
 			pin: true,
 			alarm: true,
-			item: 'task',
+			item: 'note',
 			title: 'project deadline',
 			days: ['thu', 'fri'],
 			openChat: false,
@@ -62,7 +62,7 @@
 		{
 			pin: false,
 			alarm: false,
-			item: 'task',
+			item: 'note',
 			title: 'casual meeting',
 			days: ['mon'],
 			openChat: false,
@@ -72,7 +72,7 @@
 		{
 			pin: true,
 			alarm: true,
-			item: 'task',
+			item: 'note',
 			title: 'team sync',
 			days: ['wed', 'fri'],
 			openChat: false,
@@ -166,7 +166,7 @@
 	let day = 'fri';
 	$: sortedRecords = records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
 	$: taskRecords = sortedRecords.filter(
-		(record) => record.item === 'task' && record.days.includes(day)
+		(record) => record.item === 'note' && record.days.includes(day)
 	);
 	$: eventRecords = sortedRecords.filter(
 		(record) => record.item === 'event' && record.days.includes(day)

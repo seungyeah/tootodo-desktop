@@ -18,8 +18,8 @@ export const registerSchema = z
 		path: ['confirmPassword'] // refine 함수에서 오류 위치를 지정
 	});
 
-// event
-const eventSchema = z.object({
+// task
+const taskSchema = z.object({
 	chat_msgs: z.nullable(z.string()),
 	chat_type: z.nullable(z.string()), 
 	createdAt: z.string().datetime(), 
@@ -33,7 +33,7 @@ const eventSchema = z.object({
 	updatedAt: z.string().datetime(), 
 	user: z.string() 
 });
-export type Event = z.infer<typeof eventSchema>;
+export type Task = z.infer<typeof taskSchema>;
 
 // Habit
 const habitRecordSchema = z.object({

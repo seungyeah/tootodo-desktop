@@ -54,6 +54,7 @@ const setAuth = () => {
 
 			await postApi(options);
 			getUserInfo();
+			isRefresh.set(true) ;
 			alert('로그인이 완료되었습니다.');
 			goto('/do');
 		} catch (e) {
@@ -112,6 +113,7 @@ const setAuth = () => {
 		try {
 			await delApi(options);
 			set({ ...initValues });
+			isRefresh.set(false); 
 			alert('로그아웃이 완료되었습니다.');
 			goto('/login');
 		} catch (e) {
@@ -133,6 +135,7 @@ const setAuth = () => {
 			await getApi(options);
 			console.log('구글 로그인 완료')
 			alert('구글 로그인 완료');
+			isRefresh.set(true) ;
 			goto('/do');
 			getUserInfo();			
 		} catch (e) {
@@ -146,10 +149,12 @@ const setAuth = () => {
 			const options = {
 				path: '/auth/refresh'
 			};
-			const resp = await getApi(options);
+			await getApi(options);
 			// alert('refresh token 완료');
-			toExecute();
+			isRefresh.set(true) ;
+			if (toExecute) toExecute();
 		} catch (e) {
+			isRefresh.set(false) 
 			alert('refresh token 으로 acces token을 받을 수 없습니다. 다시 로그인하세요. ' + e);
 			goto('/login');
 		}
@@ -170,3 +175,4 @@ const setAuth = () => {
 
 export const auth = setAuth();
 export const isAuthed = derived(auth, ($auth) => ($auth.verified ? true : false));
+export const isRefresh = writable(false);

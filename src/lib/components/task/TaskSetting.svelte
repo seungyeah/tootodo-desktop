@@ -2,23 +2,23 @@
 	import { DropdownMenu } from '$ui';
 	import { ArrowBigRightDash, DiamondPlus, MessageCircle, Trash2 } from 'lucide-svelte';
 	import { createEventDispatcher, getContext } from 'svelte';
-	import {type Event } from "$lib/schema";
+	import {type Task } from "$lib/schema";
 
-	const events = getContext('events');
+	const tasks = getContext('tasks');
 
 	let openChat = false;
 
 	const dispatch = createEventDispatcher();
 	
-	function handleDelete(event:Event){
-		dispatch('delete', { event });	
+	function handleDelete(task:Task){
+		dispatch('delete', { task });	
 	}
 
-	function handleUpdate(event:Event,key:string,value:any){
+	function handleUpdate(task:Task,key:string,value:any){
 		const updateData = {
 			[key]:value
 		}
-		dispatch('update', {event,updateData });	
+		dispatch('update', {task,updateData });	
 	}
 
 	let tableContainer: HTMLElement;
@@ -45,8 +45,8 @@
 >
 	<table class="w-full">
 		<tbody>
-			{#key events}
-			{#each $events as event, i}
+			{#key tasks}
+			{#each $tasks as task, i}
 				<tr class="z-10 flex h-[30px] items-center ">
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger>
@@ -57,13 +57,13 @@
 						<DropdownMenu.Content class="border-2 border-double border-zinc-800 " side="right">
 							<DropdownMenu.Group class="flex items-center justify-center ">
 								<DropdownMenu.Item class="">
-									<button on:click={handleUpdate(event,'milestone',!event.milestone)}><DiamondPlus size={20} /></button>
+									<button on:click={handleUpdate(task,'milestone',!task.milestone)}><DiamondPlus size={20} /></button>
 								</DropdownMenu.Item>
 								<DropdownMenu.Item class="">
 									<button on:click={()=>openChat = !openChat}><MessageCircle size={20} /></button>
 								</DropdownMenu.Item>
 								<DropdownMenu.Item class="">
-									<button on:click={handleDelete(event)}><Trash2 size={20} /></button>
+									<button on:click={handleDelete(task)}><Trash2 size={20} /></button>
 								</DropdownMenu.Item>
 							</DropdownMenu.Group>
 						</DropdownMenu.Content>

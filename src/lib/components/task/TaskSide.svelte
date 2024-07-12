@@ -1,247 +1,350 @@
 <script lang="ts">
-   import {
-      Check,
-      ChevronsUpDown,
-      Circle,
-      PlusCircle,
-      RotateCcw,
-   } from "lucide-svelte";
-   import { onMount, tick } from "svelte";
-   import {
-      Badge,
-      Button,
-      Command,
-      Popover,
-      DropdownMenu,
-      Switch,
-      Label,
-   } from "$ui";
-   import { cn } from "$lib/utils.js";
-   import { tailwindColors } from "$lib/tailwindColors";
-   type Category = {
-      value: string;
-      label: string;
-      properties: {
-         options: string[];
-         label: string;
-      }[];
-   };
-   const categories: Category[] = [
-      {
-         value: "tootodo",
-         label: "tootodo",
-         properties: [
-            {
-               label: "tags",
-               options: [
-                  "FE",
-                  "BE",
-                  "DB",
-                  "DevOps",
-                  "Design",
-                  "Marketing",
-                  "Sales",
-                  "HR",
-                  "Management",
-                  "Others",
-               ],
-            },
-            {
-               label: "status",
-               options: ["Todo", "Doing", "Done"],
-            },
-         ],
-      },
-      {
-         value: "english",
-         label: "English",
-         properties: [
-            {
-               label: "tags",
-               options: [
-                  "Vocabulary",
-                  "Grammar",
-                  "Listening",
-                  "Speaking",
-                  "Reading",
-                  "Writing",
-                  "Others",
-               ],
-            },
-            {
-               label: "status",
-               options: ["Todo", "Doing", "Done"],
-            },
-         ],
-      },
-   ];
-   let new_color_name = "violet";
-   let new_color_hex = "#c4b5fd";
-   let open = false;
-   let value = "tootodo";
-   $: selectedValue =
-      categories.find((f) => f.value === value)?.label ??
-      "Select a Category...";
+	import {
+		getLocalTimeZone,
+		today,
+		CalendarDate,
+		parseDate,
+	} from "@internationalized/date";
+	import { Button, DropdownMenu, Input, Popover, RangeCalendar } from "$ui";
+	import { CirclePlus, Calendar, GripVertical } from "lucide-svelte";
+	import {createEventDispatcher, onMount, tick} from "svelte";
+	import { getContext } from "svelte";
 
-   // We want to refocus the trigger button when the user selects
-   // an item from the list so users can continue navigating the
-   // rest of the form with the keyboard.
-   function closeAndFocusTrigger(triggerId: string) {
-      open = false;
-      tick().then(() => {
-         document.getElementById(triggerId)?.focus();
-      });
-   }
+	const selectedDate = getContext("selectedDateRange");
+	const todayValue = today(getLocalTimeZone());
+	let cellDuration = {
+		start: today(getLocalTimeZone()),
+		end: todayValue.add({ days: 0 }),
+	};
 
+	let newTaskDuration = {
+		start: $selectedDate.start.add({ days: 7 }),
+		end: $selectedDate.start.add({ days: 13 }),
+	};
+
+	onMount(async () => {
+		await tick();
+		newTaskDuration = {
+			start: $selectedDate.start.add({ days: 7 }),
+			end: $selectedDate.start.add({ days: 13 }),
+		};
+	});
+
+	// items
+	const tasks = getContext("tasks");
+
+	function resetNewTask() {
+		newTask = {
+			title: "",
+			start_date: todayValue,
+			end_date: todayValue.add({ days: 0 }),
+		};
+	}
+
+	let newTask = {
+		title: "",
+		start_date: todayValue,
+		end_date: todayValue.add({ days: 0 }),
+	};
+
+	async function handleSubmit(
+			event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement },
+	) {
+		event.preventDefault();
+
+		if (newTask.title.trim() === "") {
+			return;
+		}
+
+		await tick();
+
+		handleCreate({
+			title: newTask.title,
+			start_date: newTaskDuration.start,
+			end_date: newTaskDuration.end,
+		});
+		resetNewTask();
+	}
+
+	////// dispatch
+	const dispatch = createEventDispatcher();
+
+
+	// crud
+	function handleCreate(task) {
+		dispatch("create", { task });
+	}
+
+	function handleUpdateDuration(
+		task: Task,
+		duration: { start: CalendarDate; end: CalendarDate },
+	) {
+		const updateData = {
+			start_date: duration.start.toString(),
+			end_date: duration.end.toString(),
+		};
+		dispatch("update", { task, updateData });
+	}
+
+	function handleUpdateTitle(task: Task, title: String) {
+		const updateData = {
+			title: title,
+		};
+		dispatch("update", { task, updateData });
+	}
+
+	// scroll
+	let tableContainer: HTMLElement;
+
+	function handleScroll() {
+		dispatch("scroll", {
+			scrollTop: tableContainer.scrollTop,
+			scrollLeft: tableContainer.scrollLeft,
+		});
+	}
+
+	export function updateScrollPosition(scrollPosition) {
+		if (tableContainer) {
+			tableContainer.scrollTop = scrollPosition.scrollTop;
+			tableContainer.scrollLeft = scrollPosition.scrollLeft;
+		}
+	}
+
+	// dnd
+	let draggedIndex = null;
+
+	function handleDragStart(e, index) {
+		draggedIndex = index;
+		e.dataTransfer.effectAllowed = "move";
+		e.dataTransfer.setData("text/plain", index);
+	}
+
+	
+	function handleDragOver(e) {
+		e.preventDefault();
+		e.dataTransfer.dropEffect = "move";
+	}
+
+
+	function handleDrop(e, index) {
+		e.preventDefault();
+		const draggedOverIndex = index;
+
+		if (draggedIndex !== draggedOverIndex) {
+			const reorderedTasks = [...$tasks];
+			const [movedItem] = reorderedTasks.splice(draggedIndex, 1);
+			reorderedTasks.splice(draggedOverIndex, 0, movedItem);
+			$tasks = reorderedTasks;
+		}
+
+		draggedIndex = null;
+	}
+
+	function handleDragEnd() {
+		draggedIndex = null;
+	}
 </script>
 
-{#key bgClass}
-   <div
-      class="category relative flex h-full min-w-[240px] max-w-[360px] flex-col items-center justify-start text-lg font-bold"
-      style={`background-color: rgb(var(--color-${new_color_name}-50) / 0.35);`}
-   >
-      <div class="absolute top-0 w-full h-2 bg-white" />
-      <div class="flex justify-between w-full">
-         <!-- change category color -->
-         <DropdownMenu.Root>
-            <DropdownMenu.Trigger
-               asChild
-               let:builder
-               ><Button variant="ghost" builders={[builder]} class="translate-y-2" 
-                  ><Circle fill={new_color_hex} /></Button
-               ></DropdownMenu.Trigger
-            >
-            <DropdownMenu.Content class="bg-white w-[360px]">
-               <DropdownMenu.Label>Category Color</DropdownMenu.Label>
-               <DropdownMenu.Separator />
-               <DropdownMenu.Group>
-                  <DropdownMenu.Item
-                     class="grid grid-cols-13 data-[highlighted]:bg-zinc-50"
-                  >
-                     {#each tailwindColors as color}
-                        <div class="col-span-2 mr-2 text-xs font-digital">
-                           {color.name}
-                        </div>
+<div class="flex flex-col w-full h-full space-y-4">
+	<!-- add task -->
+	<form
+		on:submit|preventDefault={handleSubmit}
+		class="relative flex h-9 w-full translate-y-1.5 items-center pb-4"
+	>
+		<DropdownMenu.Root closeOnItemClick={false}>
+			<DropdownMenu.Trigger class="p-0 rounded h-9">
+				<Button
+					variant="ghost"
+					size="sm"
+					class="h-8 px-1 rounded shadow bg-zinc-100"
+					><Calendar size={16} /></Button
+				>
+			</DropdownMenu.Trigger>
+			<DropdownMenu.Content
+				class="w-[300px] translate-x-2 border-2 border-double border-zinc-800 "
+			>
+				<DropdownMenu.Group>
+					<DropdownMenu.Label class="w-full text-center ">
+						{#if newTaskDuration}
+							<div>
+								<span class="font-extrabold text-zinc-400"
+									>Date Range:</span
+								>
+								{newTaskDuration.start ||
+									$selectedDate.start ||
+									"0000-00-00"}
+								<span class="font-extrabold text-zinc-400">~</span>
+								{newTaskDuration.end ||
+									$selectedDate.end ||
+									"0000-00-00"}
+							</div>
+						{/if}
+					</DropdownMenu.Label>
 
-                        {#each color.shades as shade}
-                           <Button
-                              class="w-5 h-5 p-2 m-2"
-                              style={`background-color: ${shade.hex};`}
-                              on:click={() => {
-                                 new_color_hex = shade.hex;
-                                 new_color_name = color.name.toLowerCase();
-                              }}
-                           />
-                        {/each}
-                     {/each}
-                  </DropdownMenu.Item>
-               </DropdownMenu.Group>
-            </DropdownMenu.Content>
-         </DropdownMenu.Root>
+					<DropdownMenu.Item class="-translate-y-1">
+						<RangeCalendar
+							bind:value={newTaskDuration}
+							weekStartsOn={1}
+							class="w-[290px] rounded-lg border bg-white shadow "
+						/>
+					</DropdownMenu.Item>
+				</DropdownMenu.Group>
+			</DropdownMenu.Content>
+		</DropdownMenu.Root>
+		<Input
+			type="text"
+			placeholder={"title : put more than 1 char"}
+			bind:value={newTask.title}
+			on:keydown={(e) => {
+				if (e.key === "Enter" && !e.shiftKey) {
+					e.preventDefault();
+					handleSubmit(e);
+				}
+			}}
+			class="my-2 ml-2 h-9 w-full scale-y-95 rounded-r-full p-2 pr-9 text-[0.9rem] font-normal focus:shadow"
+		/>
+		<Button
+			variant="ghost"
+			type="submit"
+			class="absolute z-10 p-0 rounded-full botom-0 right-1 hover:bg-zinc-100"
+			><CirclePlus color="#a1a1aa" /></Button
+		>
+		<div
+			class="absolute bottom-0 left-0 w-full text-xs text-center font-digital text-zinc-600"
+		>
+			<hr class="w-full h-2 translate-y-8 bg-zinc-100" />
+			<div class="translate-y-2.5">
+				<span class="text-zinc-950">▶- Assigned In:</span>
+				{newTaskDuration.start + " ~ " + newTaskDuration.end} 
+				<span class="text-zinc-950">-◀</span>
+			</div>
+		</div>
+	</form>
 
-         <!-- select category -->
-         <Popover.Root bind:open let:ids>
-            <Popover.Trigger asChild let:builder>
-               <Button
-                  builders={[builder]}
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={open}
-                  class="z-10 w-[220px] justify-between shadow"
-               >
-                  {selectedValue}
-                  <ChevronsUpDown class="w-4 h-4 ml-2 opacity-50 shrink-0" />
-               </Button>
-            </Popover.Trigger>
-            <Popover.Content class="w-[200px] p-0">
-               <Command.Root>
-                  <Command.Input placeholder="Select Category" />
-                  <Command.Empty>No Category found.</Command.Empty>
-                  <Command.Group>
-                     {#each categories as category}
-                        <Command.Item
-                           value={category.value}
-                           onSelect={(currentValue) => {
-                              value = currentValue;
-                              closeAndFocusTrigger(ids.trigger);
-                           }}
-                        >
-                           <Check
-                              class={cn(
-                                 "mr-2 h-4 w-4",
-                                 value !== category.value && "text-transparent",
-                              )}
-                           />
-                           {category.label}
-                        </Command.Item>
-                     {/each}
-                  </Command.Group>
-               </Command.Root>
-            </Popover.Content>
-         </Popover.Root>
-         <!-- add property -->
-         <Button variant="ghost"  class="translate-y-2"><PlusCircle color="#a1a1aa" /></Button>
-      </div>
-      <!-- properties -->
-      <div class="flex flex-col space-y-2">
-         <!-- filter -->
-         <div
-            class="flex justify-around w-full pt-1.5 mt-2.5 space-x-1 border-t-4 border-double border-zinc-500"
-         >
-            <div class="flex items-center space-x-2">
-               <Switch
-                  id="web"
-                  class="scale-90 data-[state=checked]:bg-zinc-600"
-               />
-               <Label for="web" class="text-xs font-semibold ">On Web</Label>
-            </div>
-            <Button variant="destructive" class="h-6 p-1.5 "
-               ><RotateCcw size={16} /></Button
-            >
-         </div>
-         {#if selectedValue}
-            {@const category = categories.find((f) => f.value === value)}
-            {#if category}
-               {#each category.properties as prop}
-                  <div class="m-2 bg-white rounded-lg">
-                     <Button
-                        class="justify-between w-full border-b-2 rounded-none"
-                     >
-                        {prop.label}
-                     </Button>
-                     <div class="p-2">
-                        {#each prop.options as option}
-                           <Badge class="mx-0.5 w-auto" variant="outline">
-                              {option}
-                           </Badge>
-                        {/each}
-                     </div>
-                  </div>
-               {/each}
-            {/if}
-         {/if}
-      </div>
-   </div>
-{/key}
+	<!-- task list -->
+	{#key $tasks}
+		<div
+			class="
+			rounded-t-xl rounded-b-lg shadow-md bg-white border-0 border-zinc-600
+			no-scrollbar h-full max-h-[calc(100%-50px)] w-full max-w-full overflow-x-clip overflow-y-scroll"
+			bind:this={tableContainer}
+			on:scroll={handleScroll}
+		>
+			<table class="translate-y-1">
+				<thead class="sticky top-0 z-10 h-[20px] bg-white text-center">
+					<tr class="">
+						<th
+							scope="col"
+							class="flex items-center justify-center h-full translate-y-1 border-r min-w-5"
+							><GripVertical size={14} /></th
+						>
+						<th scope="col" class="w-3/5 border-r">Title</th>
+						<th scope="col" class="w-2/5">Duration</th>
+					</tr>
+					<tr class="absolute min-w-full border-b-2 border-zinc-500"></tr>
+				</thead>
+				<tbody class="text-center">
+					{#if !$tasks || tasks.length === 0}
+						<td class="h-[300px] w-full" colspan="3">No tasks</td>
+					{:else}
+						{#each $tasks as task, i}
+							<tr class="text-start" class:dragging={draggedIndex === i}>
+								<!-- index -->
+								<td
+									class="h-[30px] draggable inline-block border-b"
+									draggable="true"
+									on:dragstart={(e) => handleDragStart(e, i)}
+									on:dragover={handleDragOver}
+									on:drop={(e) => handleDrop(e, i)}
+									on:dragend={handleDragEnd}
+								>
+									<div class="w-full h-full text-center translate-y-1">
+										{#if draggedIndex === i}
+											<GripVertical size={18} />
+										{/if}{i + 1}
+									</div>
+								</td>
+								<!-- title -->
+								<td class="h-[30px] border border-t-0 w-full"
+									><input
+										value={task.title}
+										class="h-full px-1.5 w-full bg-transparent"
+										on:blur={(e) =>
+											handleUpdateTitle(task, e.target.value)}
+									/>
+								</td>
+								<!-- duration -->
+								<Popover.Root
+									onOpenChange={(open) => {
+										if (!open) {
+											task.start_date =
+												cellDuration.start.toString();
+											task.end_date = cellDuration.end.toString();
+											handleUpdateDuration(task, cellDuration);
+										} else {
+											cellDuration.start = parseDate(
+												task.start_date,
+											);
+											cellDuration.end = parseDate(task.end_date);
+										}
+									}}
+								>
+									<Popover.Trigger
+										><td
+											class="inline-block h-[30px] w-[110px] border-b"
+										>
+											<div
+												class="inline-flex space-x-1 h-[30px] translate-y-1.5"
+											>
+												{#if task.start_date && task.end_date}
+													<div class="">
+														{task.start_date.slice(5, 10)}
+													</div>
+													<div
+														class="font-extrabold text-zinc-400"
+													>
+														~
+													</div>
+													<div>
+														{task.end_date.slice(5, 10)}
+													</div>
+												{:else}
+													00-00 <span
+														class="font-extrabold text-zinc-400"
+														>~</span
+													> 00-00
+												{/if}
+											</div>
+										</td></Popover.Trigger
+									>
+									<Popover.Content class="w-[300px]">
+										<!-- select range -->
+										<RangeCalendar
+											bind:value={cellDuration}
+											weekStartsOn={1}
+											class="w-full bg-white border rounded-lg shadow "
+										/>
+									</Popover.Content>
+								</Popover.Root>
+							</tr>{/each}{/if}
+				</tbody>
+			</table>
+		</div>
+	{/key}
+</div>
 
 <style>
-   :root {
-      --color-red-50: 254 242 242;
-      --color-orange-50: 255 247 237;
-      --color-amber-50: 255 251 235;
-      --color-yellow-50: 254 252 232;
-      --color-lime-50: 247 254 231;
-      --color-green-50: 240 253 244;
-      --color-emerald-50: 236 253 245;
-      --color-teal-50: 240 253 250;
-      --color-cyan-50: 236 254 255;
-      --color-sky-50: 240 249 255;
-      --color-blue-50: 239 246 255;
-      --color-indigo-50: 238 242 255;
-      --color-violet-50: 245 243 255;
-      --color-purple-50: 250 245 255;
-      --color-fuchsia-50: 253 244 255;
-      --color-pink-50: 253 242 248;
-      --color-rose-50: 255 241 242;
-   }
+	.draggable {
+		display: flex;
+		align-items: center;
+		cursor: move;
+	}
+
+	.dragging {
+		opacity: 0.5;
+	}
+
+	tr.dragging {
+		background-color: #f0f0f0;
+	}
 </style>

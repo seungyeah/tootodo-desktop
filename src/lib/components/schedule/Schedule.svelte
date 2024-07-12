@@ -8,8 +8,8 @@
 		{
 			pin: true,
 			alarm: true,
-			item: 'task',
-			title: 'urgent task',
+			item: 'note',
+			title: 'urgent note',
 			days:  [{day:'mon',time:'10:30'}, {day:'wed',time:'12:30'}],
 			openChat: false,
 			project: { title: 'Project K', color: '#f472b6' }
@@ -18,7 +18,7 @@
 		{
 			pin: true,
 			alarm: false,
-			item: 'task',
+			item: 'note',
 			title: 'important review',
 			days: [{day:'fri',time:''}, {day:'sat',time:''}],
 			openChat: false,
@@ -35,7 +35,7 @@
 		{
 			pin: true,
 			alarm: true,
-			item: 'task',
+			item: 'note',
 			title: 'project deadline',
 			days: ['thu', 'fri'],
 			openChat: false,
@@ -44,7 +44,7 @@
 		{
 			pin: false,
 			alarm: false,
-			item: 'task',
+			item: 'note',
 			title: 'casual meeting',
 			days: ['mon'],
 			openChat: false,
@@ -53,7 +53,7 @@
 		{
 			pin: true,
 			alarm: true,
-			item: 'task',
+			item: 'note',
 			title: 'team sync',
 			days: ['wed', 'fri'],
 			openChat: false,
@@ -94,7 +94,7 @@
 	];
 
 	$: sortedRecords = records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
-	$: taskRecords = sortedRecords.filter((record) => record.item === 'task');
+	$: taskRecords = sortedRecords.filter((record) => record.item === 'note');
 	$: eventRecords = sortedRecords.filter((record) => record.item === 'event');
 	$: habitRecords = sortedRecords.filter((record) => record.item === 'habit');
 	$: alarmRecords = sortedRecords.filter((record) => record.alarm);
@@ -164,12 +164,12 @@
 			{/each}
 		</Tabs.Content>
 
-		{#each ['event','task','habit'] as tab}
+		{#each ['event','note','habit'] as tab}
 			<Tabs.Content
 				value={tab}
 				class="h-[calc(100%-94px)]  max-h-[calc(100%-94px)] space-y-2 overflow-y-auto pb-2"
 			>
-				{#each tab==='event' ? eventRecords : tab==='task' ? taskRecords : habitRecords as record}
+				{#each tab==='event' ? eventRecords : tab==='note' ? taskRecords : habitRecords as record}
 					
 						<ScheduleCard bind:record on:toggleOpenChat={handleToggleOpenChat} />
 

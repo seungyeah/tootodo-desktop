@@ -15,10 +15,10 @@
 		},
 		{
 			pin: false,
-			title: 'Prioritize tasks',
+			title: 'Prioritize notes',
 			date: '2024-04-23',
 			color: 'violet',
-			content: 'Prioritizing tasks is key to managing workload'
+			content: 'Prioritizing notes is key to managing workload'
 		},
 		{
 			pin: true,

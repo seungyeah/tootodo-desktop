@@ -124,7 +124,7 @@
 	let dragEndHour = null;
 	let dragEndMin = null;
 
-	// Handle the mouse down event
+	// Handle the mouse down task
 	function handleMouseDown(hour, min, event, record) {
 		event.preventDefault();
 		event.stopPropagation();
@@ -136,7 +136,7 @@
 		console.log('dragging');
 	}
 
-	// Handle the mouse enter event for real-time feedback
+	// Handle the mouse enter task for real-time feedback
 	function handleMouseMove(hour, minIdx) {
 		if (dragging) {
 			dragEndHour = hour;
@@ -147,7 +147,7 @@
 		}
 	}
 
-	// Handle the mouse up event
+	// Handle the mouse up task
 	function handleMouseUp(hour, min) {
 		if (dragging) {
 			//드래그 시작 시간과 끝 시간이 같고 열 차이가 10분 미만인 경우, 드래그 상태를 초기화하고 함수를 종료.
@@ -178,7 +178,7 @@
 		dragEndMin = null;
 	}
 
-	// event handler
+	// task handler
 	function handleRemoveRecord(e: CustomEvent<any>): void {
 		console.log(e.detail);
 		console.log("remove record");
