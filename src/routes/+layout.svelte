@@ -24,24 +24,32 @@
 
 	onMount(async () => {
 		const loggedIn = getCookie("logged_in");
+		let refresh_interval;
+
 		if (loggedIn) {
 			await auth.getUserInfo();
+			refresh_interval = setInterval(
+				async () => {
+					if ($isRefresh) {
+						await auth.refreshWithFn(null);
+						console.log("refreshed");
+					} else {
+						clearInterval(refresh_interval);
+					}
+				},
+				1000 * 60 * 1,
+			);
 		} else {
 			goto("/login");
 		}
-		const onRefresh = setInterval(
-			async () => {
-				if ($isRefresh) {
-					await auth.refreshWithFn(null);
-				} else {
-					clearInterval(onRefresh);
-				}
-			},
-			1000 * 60 * 10,
-		); 
 
 		if (typeof window !== "undefined")
 			document.addEventListener("keydown", handleKeyDown); // keydown 이벤트 리스너 추가
+
+		return () => {
+			clearInterval(refresh_interval);
+		};
+
 	});
 
 	onDestroy(() => {

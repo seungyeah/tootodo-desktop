@@ -199,7 +199,7 @@
 		<!-- main: gantt chart -->
 		<div
 			slot="main"
-			class="relative w-full h-full -translate-y-1 no-scrollbar"
+			class="relative w-full h-full -translate-y-1 no-scrollbar "
 		>
 			<div
 				class="z-10 absolute -left-4 flex h-[calc(100%-90px)] max-h-[calc(100%-90px)] top-[74px] w-6 flex-col"
@@ -213,7 +213,7 @@
 				/>
 			</div>
 
-			<div class="w-full h-[calc(100%-16px)] max-h-[calc(100%-16px)]">
+			<div class="w-full h-[calc(100%-16px)] max-h-[calc(100%-16px)] font-mono ">
 				<TaskMain bind:this={mainComponent} on:scroll={handleScroll} />
 			</div>
 
@@ -233,7 +233,7 @@
 				class="absolute left-0 flex w-full border-2 border-t-0 rounded-b-lg -bottom-2 border-zinc-800"
 			>
 				<th scope="col" class="w-[20px]"></th>
-				<th scope="col" class="w-full border-r">Title</th>
+				<th scope="col" class="w-full border-r border-zinc-500">Title</th>
 				<th scope="col" class="w-[150px]">Duration</th>
 				<th scope="col" class="w-[20px]"></th>
 			</table>
