@@ -5,23 +5,29 @@
 	import TaskSide from "$components/task/TaskSide.svelte";
 	import TaskSetting from "$components/task/TaskSetting.svelte";
 	import DurationPicker from "$components/task/DurationPicker.svelte";
-	import { goto} from "$app/navigation";
-	import { writable, type Writable } from "svelte/store";
+	import { goto } from "$app/navigation";
+	import { derived, writable, type Writable } from "svelte/store";
 	import { postApi, delApi, patchApi } from "$lib/api";
-	import {type Task } from "$lib/schema";
-	import { type DateRange ,getThis3WeeksRange} from "$lib/utils";
+	import { type Task } from "$lib/schema";
+	import { type DateRange, getThis3WeeksRange } from "$lib/utils";
+	import TaskList from "$components/task/TaskList.svelte";
 	// data
 	export let data;
 	// todo: be 리펙토링 후, events -> tasks로 변경, api경로 수정
-	let tasks: Writable<Task[]> = writable(data?.events || []);
-	
+	let tasks: Writable<Task[]> = writable(
+		data?.events.sort(sort_tasks()) || [],
+	);
+
+	$: $tasks = $tasks.sort(sort_tasks());
+
 	// duration select
-	const selectedDateRange:Writable<DateRange> = writable(getThis3WeeksRange());
+	const selectedDateRange: Writable<DateRange> =
+		writable(getThis3WeeksRange());
 	setContext("selectedDateRange", selectedDateRange);
 	setContext("tasks", tasks);
 
 	onMount(async () => {
-		$selectedDateRange =getThis3WeeksRange();
+		$selectedDateRange = getThis3WeeksRange();
 		await setQuery($selectedDateRange);
 	});
 
@@ -41,23 +47,55 @@
 	}
 
 	async function handleCreateTask(e) {
-		const { title, start_date, end_date } = e.detail.task;
-		const formattedTask = {
-			title,
-			start_date: start_date
-				? new Date(start_date).toISOString().split("T")[0]
-				: null,
-			end_date: end_date
-				? new Date(end_date).toISOString().split("T")[0]
-				: null,
-		};
+		if (!e.detail.task) {
+			return;
+		}
+		let formattedTask = {};
+
+		if (e.detail.addBelow) {
+			// 선택된 task의 하단에 새로운 task 추가
+			const task_before = e.detail.task;
+			formattedTask = {
+				title: "",
+				start_date: task_before.start_date
+					? new Date(task_before.start_date).toISOString().split("T")[0]
+					: null,
+				end_date: task_before.end_date
+					? new Date(task_before.end_date).toISOString().split("T")[0]
+					: null,
+			};
+			// subtask를 추가하는 명령을 받을 경우.
+			if (e.detail.addChild) {
+				formattedTask = {
+					...formattedTask,
+					parent_id: task_before.id,
+				};
+			}
+		} else {
+			// 사용자가 선택한 duration에 새로운 task 추가
+			const { title, start_date, end_date } = e.detail.task;
+			formattedTask = {
+				title,
+				start_date: start_date
+					? new Date(start_date).toISOString().split("T")[0]
+					: null,
+				end_date: end_date
+					? new Date(end_date).toISOString().split("T")[0]
+					: null,
+			};
+		}
+
 		try {
 			const res = await postApi({
-				path: "/tasks/",
+				// todo: be 리펙토링 후, events -> tasks로 api경로 수정
+				path: "/events/",
 				data: formattedTask,
 			});
-			const newTask = res.data.task;
-			$tasks = [ ...$tasks, newTask ];
+			// todo: data.tasks로 변경
+			const newTask = res.data.event;
+
+			$tasks = [...$tasks, newTask];
+
 			await tick();
 		} catch (error) {
 			console.error("Request failed:", error);
@@ -72,23 +110,43 @@
 			await tick();
 		} catch (error) {
 			console.error("Request failed:", error);
-		}		
+		}
 	}
 
 	async function handleUpdateTask(e) {
-		const {id} = e.detail.task;
-		
+		const { id } = e.detail.task;
+		// todo: 기존꺼랑 변화 없으면 냅둬.
 		try {
-			const res = await patchApi({ path: `/events/${id}`, data:e.detail.updateData });
-			const updatedTask = res.data.task;
-			
-			$tasks = $tasks.map(task =>
-            task.id === updatedTask.id ? updatedTask : task
+			const res = await patchApi({
+				path: `/events/${id}`,
+				data: e.detail.updateData,
+			});
+			// todo: data.task로 변경
+			const updatedTask = res.data.event;
+
+			$tasks = $tasks.map((task) =>
+				task.id === updatedTask.id ? updatedTask : task,
 			);
+
+			if (e.detail.updateData.start_date || e.detail.updateData.end_date) {
+				$tasks.sort(sort_tasks());
+			}
 			await tick();
 		} catch (error) {
 			console.error("Request failed:", error);
 		}
+	}
+
+	function sort_tasks() {
+		// duration 기준으로 정렬 (start_date가 빠른 것부터 정렬 -> end_date가 느린것부터 정렬)
+		return (a, b) => {
+			const diff = new Date(a.start_date) - new Date(b.start_date);
+			if (diff === 0) {
+				return new Date(b.end_date) - new Date(a.end_date);
+			} else {
+				return diff;
+			}
+		};
 	}
 
 	// scroll
@@ -106,17 +164,6 @@
 		sideComponent.updateScrollPosition(scrollPosition);
 		settingComponent.updateScrollPosition(scrollPosition);
 	}
-
-	// get setting component's x position
-	let sideComponentWidth = 0;
-	onMount(async () => {
-		if (sideComponent) {
-			sideComponentWidth = sideComponent.clientWidth;
-			await tick().then(() => {
-				sideComponentWidth = sideComponent.clientWidth;
-			});
-		}
-	});
 </script>
 
 <div class="relative w-full h-full">
@@ -125,11 +172,7 @@
 			<DurationPicker on:update={handleDateUpdate} />
 		</div>
 
-		<div
-			slot="side"
-			class="flex flex-col w-full h-full px-2 py-2"
-			bind:clientWidth={sideComponentWidth}
-		>
+		<div slot="side" class="flex flex-col w-full h-full px-2 py-2">
 			<TaskSide
 				bind:this={sideComponent}
 				on:scroll={handleScroll}
@@ -139,26 +182,61 @@
 		</div>
 
 		<!-- setting -->
-		<div
+		<!-- <div
 			slot="options"
-			class="absolute flex h-full max-h-[calc(100%-130px)] w-6 flex-col"
-			style="transform: translate({sideComponentWidth - 22}px, 34px);"
+			class="absolute flex h-full max-h-[calc(100%-140px)] w-6 flex-col"
+			style="transform: translate({sideComponentWidth - 10}px, 24px);"
 		>
 			<TaskSetting
 				bind:this={settingComponent}
 				on:scroll={handleScroll}
 				on:delete={handleDeleteTask}
 				on:update={handleUpdateTask}
+				on:create={handleCreateTask}
 			/>
-		</div>
+		</div> -->
 
 		<!-- main: gantt chart -->
-		<div slot="main" class="w-full h-full">
-			<TaskMain
-				bind:this={mainComponent}
-				bind:scrollPosition
-				on:scroll={handleScroll}
-			/>
+		<div
+			slot="main"
+			class="relative w-full h-full -translate-y-1 no-scrollbar"
+		>
+			<div
+				class="z-10 absolute -left-4 flex h-[calc(100%-90px)] max-h-[calc(100%-90px)] top-[74px] w-6 flex-col"
+			>
+				<TaskSetting
+					bind:this={settingComponent}
+					on:scroll={handleScroll}
+					on:delete={handleDeleteTask}
+					on:update={handleUpdateTask}
+					on:create={handleCreateTask}
+				/>
+			</div>
+
+			<div class="w-full h-[calc(100%-16px)] max-h-[calc(100%-16px)]">
+				<TaskMain bind:this={mainComponent} on:scroll={handleScroll} />
+			</div>
+
+			<div
+				class="absolute left-0 w-full h-[calc(100%-36px)] max-h-[calc(100%-36px)] top-[70px] opacity-90"
+			>
+				<TaskList
+					bind:this={sideComponent}
+					bind:scrollPosition
+					on:scroll={handleScroll}
+					on:create={handleCreateTask}
+					on:update={handleUpdateTask}
+				/>
+			</div>
+
+			<table
+				class="absolute left-0 flex w-full border-2 border-t-0 rounded-b-lg -bottom-2 border-zinc-800"
+			>
+				<th scope="col" class="w-[20px]"></th>
+				<th scope="col" class="w-full border-r">Title</th>
+				<th scope="col" class="w-[150px]">Duration</th>
+				<th scope="col" class="w-[20px]"></th>
+			</table>
 		</div>
 	</PageTemplete>
 </div>

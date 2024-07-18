@@ -37,7 +37,7 @@
 					clearInterval(onRefresh);
 				}
 			},
-			1000 * 60 * 14,
+			1000 * 60 * 10,
 		); 
 
 		if (typeof window !== "undefined")

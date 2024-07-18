@@ -27,6 +27,7 @@ const taskSchema = z.object({
 	end_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), // end_date should be a date string in YYYY-MM-DD format
 	id: z.string(),
 	milestone: z.boolean(), 
+	parent_id: z.string().uuid().optional(),
 	progressRate: z.number().int(), 
 	start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), // start_date should be a date string in YYYY-MM-DD format
 	title: z.string(), 

@@ -19,7 +19,9 @@
 
 		<!-- main: itemlist -->
 		<div
-			class="flex w-full h-full max-w-[calc(100%-260px)] p-2 space-x-2 overflow-x-auto border-4 border-double rounded-lg shadow-md border-zinc-100 shadow-zinc-400"
+			class="flex w-full h-full max-w-[calc(100%-260px)] p-2 space-x-2 overflow-x-auto 
+			overflow-y-clip
+			border-4 border-double rounded-lg shadow-md border-zinc-100 shadow-zinc-400"
 		>
 			<slot name="main" />
 		</div>

@@ -74,7 +74,7 @@
       <thead class="sticky top-0 z-10 h-0 bg-white border-t-2 border-zinc-500">
       </thead>
       <tbody class="h-full text-center">
-         {#if $habits.length === 0}
+         {#if !$habits || $habits.length === 0}
             <td class="h-[300px] w-full" colspan="3">No habits</td>
          {:else}
             {#each $habits as habit, i}

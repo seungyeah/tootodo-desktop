@@ -105,7 +105,10 @@
       <!-- change category color -->
       <DropdownMenu.Root>
          <DropdownMenu.Trigger asChild let:builder
-            ><Button variant="ghost" builders={[builder]} class="px-2 translate-x-1 translate-y-2"
+            ><Button
+               variant="ghost"
+               builders={[builder]}
+               class="px-2 translate-x-1 translate-y-2"
                ><Circle fill={new_color_hex} /></Button
             ></DropdownMenu.Trigger
          >
@@ -145,7 +148,7 @@
                variant="outline"
                role="combobox"
                aria-expanded={open}
-               class="z-10 w-[220px] mx-3 justify-between shadow"
+               class="z-10 w-min-[220px] w-full mx-3 justify-between shadow"
             >
                {selectedValue}
                <ChevronsUpDown class="w-4 h-4 ml-2 opacity-50 shrink-0" />
@@ -178,28 +181,31 @@
          </Popover.Content>
       </Popover.Root>
    </div>
+   
    <!-- properties -->
    <div class="flex flex-col space-y-2">
       <!-- filter -->
       <div
-         class="flex justify-around w-full pt-1.5 mt-2.5 space-x-1 border-t-4 border-double border-zinc-500"
+         class="flex justify-between w-full pt-1.5 mt-2.5 space-x-1 border-t-4 border-double border-zinc-500"
       >
          <!-- filter web -->
-         <div class="flex items-center space-x-2">
+         <div class="flex items-center w-full mx-2 space-x-2">
             <Switch
                id="web"
                class="scale-90 data-[state=checked]:bg-zinc-600"
             />
             <Label for="web" class="text-xs font-semibold ">On Web</Label>
-         </div>        
-         <!-- reset filter -->
-         <Button variant="destructive" class="h-6 p-1.5"
-            ><RotateCcw size={16} /></Button
-         >
-          <!-- add property -->
-          <Button variant="ghost" class="absolute h-6 px-1 bg-white shadow right-2"
-          ><Plus color="#a1a1aa" /></Button
-       >
+         </div>
+         <div class="absolute flex h-6 space-x-2 right-2">
+            <!-- reset filter -->
+            <Button variant="ghost" class="bg-pomodoro-800/70  h-6 px-1.5 shadow hover:bg-pomodoro-900"
+               ><RotateCcw size={16} color="white" /></Button
+            >
+            <!-- add property -->
+            <Button variant="ghost" class="h-6 px-1 bg-white shadow "
+               ><Plus color="#a1a1aa" /></Button
+            >
+         </div>
       </div>
       <!-- props-->
       {#if selectedValue}

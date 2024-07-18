@@ -25,7 +25,7 @@
    import { createEventDispatcher } from "svelte";
 
    const dispatch = createEventDispatcher();
-   let tableContainer;
+   let tableContainer: HTMLElement;
 
    function handleScroll(event) {
       dispatch("scroll", {
@@ -34,16 +34,7 @@
       });
    }
 
-   export let scrollPosition = { scrollTop: 0, scrollLeft: 0 };
-
    export function updateScrollPosition(scrollPosition) {
-      if (tableContainer) {
-         tableContainer.scrollTop = scrollPosition.scrollTop;
-         tableContainer.scrollLeft = scrollPosition.scrollLeft;
-      }
-   }
-
-   $: {
       if (tableContainer) {
          tableContainer.scrollTop = scrollPosition.scrollTop;
          tableContainer.scrollLeft = scrollPosition.scrollLeft;
@@ -52,7 +43,7 @@
 </script>
 
 <div
-   class="w-full h-full max-h-full overflow-y-scroll translate-y-1 border-2 border-zinc-800"
+   class="w-full h-full max-h-full overflow-x-scroll overflow-y-scroll translate-y-1 border-2 no-scrollbar border-zinc-800"
    bind:this={tableContainer}
    on:scroll={handleScroll}
 >
@@ -75,9 +66,9 @@
                >
                   <div
                      class={day === 0
-                        ? " border-r border-zinc-900  bg-red-100"
+                        ? " border-r border-zinc-900  bg-pomodoro-500/10"
                         : day === 6
-                          ? "bg-blue-100"
+                          ? "bg-blue-100/90"
                           : ""}
                   >
                      <div class="py-0 text-xs">{days[day]}</div>
@@ -138,9 +129,9 @@
                            data-percent={task_duration + task_start + 1}
                            ><span class="text-xs opacity-80">#</span>{i + 1}</td
                         >
-                        <td colspan={task_end} class="border-b"></td>
+                        <td colspan={task_end}></td>
                      {:else if task_end <= 0}
-                        <td colspan={task_start} class="border-b"></td>
+                        <td colspan={task_start}></td>
                         <td
                            colspan={task_duration + task_end + 1}
                            class:milestone={task.milestone}
@@ -149,7 +140,7 @@
                            ><span class="text-xs opacity-80">#</span>{i + 1}</td
                         >
                      {:else}
-                        <td colspan={task_start} class="border-b"></td>
+                        <td colspan={task_start}></td>
                         <td
                            colspan={task_duration + 1}
                            class:milestone={task.milestone}
@@ -157,7 +148,7 @@
                            data-percent={task_duration + 1}
                            ><span class="text-xs opacity-80">#</span>{i + 1}</td
                         >
-                        <td colspan={task_end} class="border-b"></td>
+                        <td colspan={task_end}></td>
                      {/if}
                   </tr>
                {/if}
@@ -173,7 +164,7 @@
    }
    .milestone {
       position: relative;
-      background-color: #b91c1c;
+      background-color: rgb(217 43 58 );
       opacity: 80%;
       color: white;
       height: 20px;
