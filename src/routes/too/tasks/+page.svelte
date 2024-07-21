@@ -231,12 +231,13 @@
 			</div>
 
 			<table
-				class="absolute left-0 flex w-full border-2 border-t-0 rounded-b-lg -bottom-2 border-zinc-800"
+				class="absolute left-0 flex w-full font-mono border-2 border-t-0 rounded-b-lg -bottom-2 border-zinc-800"
 			>
-				<th scope="col" class="w-[20px]"></th>
-				<th scope="col" class="w-full border-r border-zinc-500">Title</th>
-				<th scope="col" class="w-[150px]">Duration</th>
-				<th scope="col" class="w-[20px]"></th>
+				<th class=" w-[30px] border-r border-zinc-500">#</th>
+				<th class="w-[140px] border-r border-zinc-500">Progress</th>
+				<th class="w-full border-r border-zinc-500">Title</th>
+				<th class="w-[180px]">Duration</th>
+				<th class="w-[20px]"></th>
 			</table>
 		</div>
 	</PageTemplete>

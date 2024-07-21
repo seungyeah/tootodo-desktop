@@ -194,7 +194,9 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 						<!-- progress rate -->
 						<td class="w-32 h-[30px] border-b border-r px-2">
 							<input
-								class="w-32 h-6 transition-all translate-y-0.5 opacity-70"
+								class="w-32 translate-y-1 shadow opacity-70"
+								class:complete={task.progress_rate === 100}
+								class:inProgress={task.progress_rate > 25 && task.progress_rate < 100}
 								type="range"
 								step="25"
 								min="0"
@@ -203,7 +205,7 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 								list="markers"
 								on:change={(e) => handleUpdateProgressRate(task, e.target.value)}
 							/>
-							<datalist
+							<!-- <datalist
 								id="markers"
 								class="-translate-y-[21px] opacity-50"
 							>
@@ -212,7 +214,7 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 								<option value="50"></option>
 								<option value="75"></option>
 								<option value="100" class="!opacity-0"></option>
-							</datalist>
+							</datalist> -->
 						</td>
 
 						<!-- title -->
@@ -289,12 +291,13 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 		background-color: #f0f0f0;
 	}
 
+	/* https://blog.logrocket.com/creating-custom-css-range-slider-javascript-upgrades/ */
 	input[type="range"] {
 		/* removing default appearance */
 		appearance: none;
 		/* creating a custom design */
 		width: 100%;
-		height: 68%;
+		height: 57%;
 		cursor: pointer;
 		outline: none;
 		/*  slider progress trick  */
@@ -305,31 +308,57 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 	/* Track: webkit browsers */
 	input[type="range"]::-webkit-slider-runnable-track {
 		height: 15px;
-		background: linear-gradient(to right,    #e46b758d 0%,#f8ecec 50%,#7eaf807c 100%);
+		background: linear-gradient(to right,#e46b756d 0%,#f6ecec 50%,#7eaf807c 100%);
 		border-radius: 16px;
 	}
 
 	/* Track: Mozilla Firefox */
 	input[type="range"]::-moz-range-track {
 		height: 15px;
-		background: #f8ecec;
+		background: linear-gradient(to right,#e46b758d 0%,#f8ecec 50%,#7eaf807c 100%);
 		border-radius: 16px;
 	}
 
 	/* Thumb: webkit */
-	input[type="range"]::-webkit-slider-thumb {
+	input[type="range"]::-webkit-slider-thumb  {
 		/* removing default appearance */
 		-webkit-appearance: none;
 		appearance: none;
 		/* creating a custom design */
 		height: 15px;
 		width: 15px;
-		background-color: #fff;
 		border-radius: 50%;
-		border: 2px solid #4CAF50;
+		border: 2px solid #b91c1cb4;
 		/*  slider progress trick  */
-		box-shadow: -407px 0 0 400px #4CAF50;
+		box-shadow: -407px 0 2px 400px #b91c1cb4;
 	}
+
+	input[type="range"].complete::-webkit-slider-thumb  {
+		/* removing default appearance */
+		-webkit-appearance: none;
+		appearance: none;
+		/* creating a custom design */
+		height: 15px;
+		width: 15px;
+		border-radius: 50%;
+		border: 2px solid #7eaf80;
+		/*  slider progress trick  */
+		box-shadow: -407px 0 2px 400px #7eaf80;
+	}
+
+	input[type="range"].inProgress::-webkit-slider-thumb  {
+		/* removing default appearance */
+		-webkit-appearance: none;
+		appearance: none;
+		/* creating a custom design */
+		height: 15px;
+		width: 15px;
+		border-radius: 50%;
+		border: 2px solid #7194b1;
+		/*  slider progress trick  */
+		box-shadow: -407px 0 2px 400px #7194b1;
+	}
+
 
 	/* Thumb: Firefox */
 	input[type="range"]::-moz-range-thumb {
