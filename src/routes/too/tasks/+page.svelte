@@ -121,6 +121,7 @@
 				path: `/events/${id}`,
 				data: e.detail.updateData,
 			});
+			
 			// todo: data.task로 변경
 			const updatedTask = res.data.event;
 

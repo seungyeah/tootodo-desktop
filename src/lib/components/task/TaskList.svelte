@@ -9,6 +9,7 @@
 	import { CirclePlus, Calendar, GripVertical } from "lucide-svelte";
 	import { createEventDispatcher, onMount, tick } from "svelte";
 	import { getContext } from "svelte";
+	import {type Task} from "$lib/schema";
 
 	const selectedDate = getContext("selectedDateRange");
 	const todayValue = today(getLocalTimeZone());
@@ -81,6 +82,13 @@
 		const updateData = {
 			start_date: duration.start.toString(),
 			end_date: duration.end.toString(),
+		};
+		dispatch("update", { task, updateData });
+	}
+
+	function handleUpdateProgressRate(task: Task, progressRate: Number) {
+		const updateData = {
+			progress_rate: +progressRate,
 		};
 		dispatch("update", { task, updateData });
 	}
@@ -158,18 +166,18 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 		bind:this={tableContainer}
 		on:scroll={handleScroll}
 	>
-		<table class="translate-y-1">
+		<table class="w-full translate-y-1">
 			{#if !$tasks || tasks.length === 0}
 				<td class="h-[300px] w-full" colspan="3">No tasks</td>
 			{:else}
 				{#each $tasks as task, i}
 					<tr
-						class={i % 5 === 0 ? "border-t-0 border-zinc-400" : ""}
+						class="flex w-full h-[30px]"
 						class:dragging={draggedIndex === i}
 					>
 						<!-- index -->
 						<td
-							class="h-[30px] draggable inline-block border-b"
+							class="h-[30px] w-7 draggable border-b border-r"
 							draggable="true"
 							on:dragstart={(e) => handleDragStart(e, i)}
 							on:dragover={handleDragOver}
@@ -182,15 +190,40 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 								{/if}
 								<div class="text-center translate-y-1">{i + 1}</div>
 							</div>
-						</td><td>
-							<!-- title -->
-						</td><td class="h-[30px] border border-t-0 w-full"
+						</td>
+						<!-- progress rate -->
+						<td class="w-32 h-[30px] border-b border-r px-2">
+							<input
+								class="w-32 h-6 transition-all translate-y-0.5 opacity-70"
+								type="range"
+								step="25"
+								min="0"
+								max="100"
+								value={task.progress_rate || 0}
+								list="markers"
+								on:change={(e) => handleUpdateProgressRate(task, e.target.value)}
+							/>
+							<datalist
+								id="markers"
+								class="-translate-y-[21px] opacity-50"
+							>
+								<option value="0" class="!opacity-0"></option>
+								<option value="25"></option>
+								<option value="50"></option>
+								<option value="75"></option>
+								<option value="100" class="!opacity-0"></option>
+							</datalist>
+						</td>
+
+						<!-- title -->
+						<td class="h-[30px] border border-t-0 w-full"
 							><input
 								value={task.title}
 								class="h-full px-1.5 w-full bg-transparent"
 								on:blur={(e) => handleUpdateTitle(task, e.target.value)}
 							/>
 						</td>
+
 						<!-- duration -->
 						<Popover.Root
 							onOpenChange={(open) => {
@@ -237,20 +270,6 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 							</Popover.Content>
 						</Popover.Root>
 					</tr>{/each}{/if}
-
-			<!-- <tfoot class="sticky top-0 z-10 h-[20px] bg-white text-center">
-					<tr class="absolute min-w-full border-b-2 border-zinc-500"></tr>
-					<tr class="">
-						<th
-							scope="col"
-							class="flex items-center justify-center h-full translate-y-1 border-r min-w-5"
-							><GripVertical size={14} /></th
-						>
-						<th scope="col" class="w-3/5 border-r">Title</th>
-						<th scope="col" class="w-2/5">Duration</th>
-					</tr>
-					
-				</tfoot> -->
 		</table>
 	</div>
 {/key}
@@ -268,5 +287,74 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 
 	tr.dragging {
 		background-color: #f0f0f0;
+	}
+
+	input[type="range"] {
+		/* removing default appearance */
+		appearance: none;
+		/* creating a custom design */
+		width: 100%;
+		height: 68%;
+		cursor: pointer;
+		outline: none;
+		/*  slider progress trick  */
+		overflow: hidden;
+		border-radius: 16px;
+	}
+
+	/* Track: webkit browsers */
+	input[type="range"]::-webkit-slider-runnable-track {
+		height: 15px;
+		background: linear-gradient(to right,    #e46b758d 0%,#f8ecec 50%,#7eaf807c 100%);
+		border-radius: 16px;
+	}
+
+	/* Track: Mozilla Firefox */
+	input[type="range"]::-moz-range-track {
+		height: 15px;
+		background: #f8ecec;
+		border-radius: 16px;
+	}
+
+	/* Thumb: webkit */
+	input[type="range"]::-webkit-slider-thumb {
+		/* removing default appearance */
+		-webkit-appearance: none;
+		appearance: none;
+		/* creating a custom design */
+		height: 15px;
+		width: 15px;
+		background-color: #fff;
+		border-radius: 50%;
+		border: 2px solid #4CAF50;
+		/*  slider progress trick  */
+		box-shadow: -407px 0 0 400px #4CAF50;
+	}
+
+	/* Thumb: Firefox */
+	input[type="range"]::-moz-range-thumb {
+		height: 15px;
+		width: 15px;
+		background-color: #fff;
+		border-radius: 50%;
+		border: 1px solid #e46b75;
+		/*  slider progress trick  */
+		box-shadow: -407px 0 0 400px #e46b75;
+	}
+
+	datalist {
+		position: relative;
+		display: flex;
+		justify-content: space-between;
+		display: flex;
+		justify-content: space-between;
+		z-index: -1;
+	}
+
+	datalist option {
+		display: flex;
+		justify-content: center;
+		background: #56121800;
+		z-index: -1;
 	}
 </style>
