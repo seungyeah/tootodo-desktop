@@ -102,7 +102,7 @@
 <table class="w-full h-full border-collapse">
 	<thead class="sticky z-[2] top-0 leading-4 bg-zinc-100">
 		{#each columns as column}
-			<th colspan="10" class="p-0 w-2 text-[0.45rem] ">{column + 10}</th>
+			<th colspan="10" class="p-0 w-2 text-[0.45rem] bg-zinc-700 text-zinc-50">{column + 10}</th>
 		{/each}
 	</thead>
 	<tbody>
@@ -121,8 +121,8 @@
 						 {#if getHabitIcon(hour, min)}
 							<svelte:component
 								this={getHabitIcon(hour, min)}
-								size="34"
-								class="absolute w-5 h-5 -top-0.5 left-0  z-[1] rounded-full  border-2 border-white bg-zinc-100 p-0.5 shadow-md "
+								strokeWidth={2.4}
+								class="absolute w-5 h-5 -top-0.5 left-0  z-[1] rounded-full  border-2 border-white text-zinc-950 bg-zinc-50 p-0.5 shadow-md "
 							/>
 						{/if}
 						<!--{#key $currentTime}

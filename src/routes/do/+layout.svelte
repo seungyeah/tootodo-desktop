@@ -30,7 +30,6 @@
 		$selectedWeekRange = selectedWeekRange;
 	}
 
-	
 </script>
 
 <div class="flex flex-col justify-center w-full h-full sm:absolute sm:top-0">

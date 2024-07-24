@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Separator, Switch, Label, Button, Tabs, ContextMenu } from "$ui";
-	import TenMResult from "$components/tenMTable/tenMResult.svelte";
 	import PageTemplete from "$components/PageTemplete.svelte";
 	import {
 		endOfMonth,
@@ -8,7 +7,7 @@
 		startOfWeek,
 		today,
 	} from "@internationalized/date";
-	import { WeeklyChat, Plan } from "$components/schedule";
+	import { WeeklyChat, Plan ,Result} from "$components/schedule";
 	import Memo from "$components/memo/Memo.svelte";
 	import {
 		Columns3,
@@ -23,8 +22,6 @@
 	let openSide = true;
 
 	let selectedWeekRange = getContext("selectedWeekRange");
-	let Stars = new Array(5).fill(0);
-	import { Star } from "lucide-svelte";
 	import { getContext } from "svelte";
 
 	$: currentTimeDisplay = formatTime($currentTime);
@@ -116,11 +113,11 @@
 				value={weeks[$currentTime?.getDay() - 1]}
 				class="w-full h-full"
 			>
-				<Tabs.List class="flex w-full ">
+				<Tabs.List class="flex w-full border-b-[2.5px] border-zinc-700 ">
 					{#each weeks as week, i}
 						<Tabs.Trigger
 							value={week}
-							class="w-1/4 font-digital"
+							class="w-full font-digital"
 							disabled={i != $currentTime?.getDay() - 1}
 						>
 							<span class="mr-2 font-bold">
@@ -141,10 +138,11 @@
 					{/each}
 				</Tabs.List>
 			</Tabs.Root>
+			
 			<!-- schedule -->
 			<div class="bg-zinc-100 w-full h-[40px] flex justify-center">
-				<Tabs.Root value="result" class="h-[40px] w-full" let:value>
-					<Tabs.List class="w-full">
+				<Tabs.Root value="result" class="h-[40px] w-full" >
+					<Tabs.List class="w-full border-t-[2.5px] border-zinc-700   ">
 						<Tabs.Trigger value="plan" class="w-[100px]"
 							><Rows3 size={20} class="mr-1.5" />Plan</Tabs.Trigger
 						>
@@ -161,7 +159,7 @@
 
 					<Tabs.Content
 						value="plan"
-						class="-translate-y-[calc(100vh-146px)] h-[calc(100vh-200px)] w-full   "
+						class="-translate-y-[calc(100vh-146px)] h-[calc(100vh-200px)] w-full "
 					>
 						<Plan />
 					</Tabs.Content>
@@ -175,66 +173,9 @@
 
 					<Tabs.Content
 						value="result"
-						class="-translate-y-[calc(100vh-146px)] h-[calc(100vh-200px)] w-full   "
+						class="-translate-y-[calc(100vh-146px)] h-[calc(100vh-200px)] w-full "
 					>
-						<div class="flex w-full h-full space-x-1.5">
-							{#each weeks as _, i}
-								<div
-									class="flex flex-col w-full h-full rounded-b-lg shadow"
-								>
-									<div
-										class="flex flex-col justify-between w-full h-1/3"
-									>
-										<div
-											class="w-full translate-x-3.5 -translate-y-1"
-										>
-											{#each Stars as star, i}
-												<button
-													class="absolute top-0 left-0 py-1 pt-2 hover:bg-none"
-													style="transform:translateX({i * 18}px)"
-													on:click={() => {
-														Stars = Stars.map((_, j) => j <= i);
-													}}
-												>
-													<Star
-														size={14}
-														fill={star ? "#fde047" : "white"}
-													/>
-												</button>
-											{/each}
-										</div>
-
-										<div
-											class="bg-zinc-50 font-digital text-zinc-800 title h-[20px] text-center font-bold"
-										>
-											05H 30M
-										</div>
-									</div>
-									<!-- tenM planner -->
-									<div
-										class="relative w-full overflow-y-auto rounded-lg shadow h-2/3 overflow-x-clip no-scrollbar"
-									>
-										{#if i == $currentTime?.getDay() - 1}
-											<div
-												class="absolute z-10 flex flex-col justify-between h-[calc(100%-22px)] translate-y-5"
-											>
-												{#each Array.from({ length: 24 }, (_, i) => i) as hour}
-													<div
-														class="px-1 py-0 text-center font-semibold text-[0.6rem] leading-3"
-													>
-														{hour}
-													</div>
-												{/each}
-											</div>
-										{/if}
-
-										<div class="absolute top-0 left-0 w-full h-full">
-											<TenMResult />
-										</div>
-									</div>
-								</div>
-							{/each}
-						</div>
+						<Result/>
 					</Tabs.Content>
 				</Tabs.Root>
 			</div>
