@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PageTemplete from "../PageTemplete.svelte";
+	import PageTemplete from "$components/PageTemplete.svelte";
 	import { SvelteComponent, onMount, setContext, tick } from "svelte";
 	import HabitMain from "$components/habit/HabitMain.svelte";
 	import HabitSide from "$components/habit/HabitSide.svelte";

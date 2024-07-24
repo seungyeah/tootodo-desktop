@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PageTemplete from "../PageTemplete.svelte";
+	import PageTemplete from "$components/PageTemplete.svelte";
 
 	import {
 		Search,

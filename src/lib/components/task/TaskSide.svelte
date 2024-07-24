@@ -97,7 +97,7 @@
 
 	<!-- add task -->
 	<div class="relative flex flex-col justify-between h-full bg-white shadow rounded-xl">
-		<div class="flex justify-center w-full py-1 space-x-2 border-b-2 shadow border-zinc-500 ">
+		<div class="flex justify-center w-full py-1 space-x-2 border-b-2 shadow rounded-t-xl border-zinc-500 ">
 			<BotMessageSquare size={16} />
 			<div class="font-mono font-semibold text-unwrap"> Add Task with Bot!</div>
 			

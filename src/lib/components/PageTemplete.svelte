@@ -4,10 +4,10 @@
 
 <div class="h-full m-2">
 	<Separator class="my-2.5" />
-	<div class="fixed top-5 right-0 z-10 w-[calc(100%-450px)] -translate-x-[20px]">
+	<div class="fixed top-5 right-0 z-10 w-[calc(100%-596px)] -translate-x-[20px]">
 		<slot name="nav" />
 	</div>
-	<div class="flex h-[calc(100%-1.6rem)] max-w-full overflow-x-clip items-center space-x-4 text-sm">
+	<div class="flex h-[calc(100%-1.6rem)] max-w-full items-center space-x-4 text-sm">
 		<!-- side -->
 		<div
 			class=" flex h-full w-2/5 min-w-[260px] max-w-[360px] flex-col items-center justify-start bg-zinc-50"

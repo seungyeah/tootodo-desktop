@@ -99,40 +99,39 @@
 
 </script>
 
-<table class="h-full w-full border-collapse">
-	<thead class="sticky z-[2] top-0 bg-zinc-100">
-		<th></th>
+<table class="w-full h-full border-collapse">
+	<thead class="sticky z-[2] top-0 leading-4 bg-zinc-100">
 		{#each columns as column}
-			<th colspan="10" class="!w-[27px] px-1 text-sm">{column + 10}</th>
+			<th colspan="10" class="p-0 w-2 text-[0.45rem] ">{column + 10}</th>
 		{/each}
 	</thead>
 	<tbody>
 		{#each hours as hour}
 			<tr>
-				<th rowspan="1" class="px-1 py-0 text-[0.9rem]">{hour}</th>
+				<!-- <th rowspan="1" class="px-1 py-0 text-[0.9rem]">{hour}</th> -->
 				{#each minutes as min}
 					{@const color = cellColors[hour][0][min]}
 					<td
 						class={min % 10 === 0
-							? ' relative !m-0 !border-0 !border-l !p-0'
-							: 'relative !m-0 !border-0 !p-0'}
+							? ' relative !m-0 !border-0 !border-l !p-0 w-2'
+							: 'relative !m-0 !border-0 !p-0 w-2'}
 						class:colored={color}
 						style="background-color: {color}"
 					>
-						{#if getHabitIcon(hour, min)}
+						 {#if getHabitIcon(hour, min)}
 							<svelte:component
 								this={getHabitIcon(hour, min)}
 								size="34"
-								class="absolute -top-0.5 left-0  z-[1] rounded-full  border-2 border-white bg-zinc-100 p-0.5 shadow-md "
+								class="absolute w-5 h-5 -top-0.5 left-0  z-[1] rounded-full  border-2 border-white bg-zinc-100 p-0.5 shadow-md "
 							/>
 						{/if}
-						{#key $currentTime}
+						<!--{#key $currentTime}
 						{#if getCurrentTimePosition(hour, min)}
 							<div
 								class="absolute -left-0.5 -top-1 z-[1] h-[calc(100%+8px)] w-1 transform bg-pomodoro-500"
 							/>
 						{/if}
-						{/key}
+						{/key} -->
 					</td>
 				{/each}
 			</tr>

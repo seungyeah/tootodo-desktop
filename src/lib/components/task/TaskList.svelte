@@ -192,7 +192,7 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 							</div>
 						</td>
 						<!-- progress rate -->
-						<td class="w-32 h-[30px] border-b border-r px-2">
+						<td class="w-32 h-[30px] border-b  px-2">
 							<input
 								class="w-32 translate-y-1 shadow opacity-70"
 								class:complete={task.progress_rate === 100}

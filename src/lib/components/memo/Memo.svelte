@@ -111,14 +111,13 @@
 
 	$: memos = memos.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
 
-	$: console.log(memos);
 </script>
 
-<div class="relative h-full w-full space-x-2">
-	<Tabs.Root value="all" class="h-full w-full" let:value>
+<div class="relative w-full h-full space-x-2">
+	<Tabs.Root value="all" class="w-full h-full" let:value>
 		<!-- select color -->
 
-		<Tabs.List class="flex w-full ">
+		<Tabs.List class="flex w-full justify-evenly">
 			<Tabs.Trigger
 				value="all"
 				class="w-[40px] -translate-x-1.5 scale-75"
@@ -140,7 +139,7 @@
 				<Tabs.Trigger
 					value={color.name}
 					style={`background-color: ${color.light};`}
-					class="mx-1 h-7 w-7 rounded-full shadow"
+					class="mx-1 rounded-full shadow h-7 w-7"
 					on:click={() => {
 						newMemo.color = color.name;
 					}}
@@ -151,11 +150,11 @@
 		<!-- input form-->
 		<form
 			on:submit|preventDefault={handleSubmit}
-			class="relative flex h-9 w-full translate-y-2 items-center"
+			class="relative flex items-center w-full translate-y-2 h-9"
 		>
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger class=" h-9 -translate-y-0.5 rounded p-0">
-					<Button variant="ghost" size="sm" class="h-full rounded  p-0 shadow ">
+					<Button variant="ghost" size="sm" class="h-full p-0 rounded shadow ">
 						<Droplet
 							size={30}
 							fill={colors.find((c) => c.name === newMemo.color)?.dark ||
@@ -170,7 +169,7 @@
 						<DropdownMenu.Item class="grid grid-cols-3 data-[highlighted]:bg-zinc-50">
 							{#each colors as color}
 								<Button
-									class="m-2 h-5 w-5 p-2"
+									class="w-5 h-5 p-2 m-2"
 									style={`background-color: ${color.normal};`}
 									on:click={() => {
 										newMemo.color = color.name;
@@ -196,7 +195,7 @@
 			<Button
 				variant="ghost"
 				type="submit"
-				class="botom-0 absolute right-1 z-10 rounded-full p-0 hover:bg-zinc-100"
+				class="absolute z-10 p-0 rounded-full botom-0 right-1 hover:bg-zinc-100"
 				><CirclePlus color="#a1a1aa" /></Button
 			>
 		</form>
@@ -205,12 +204,13 @@
 		<!-- all -->
 		<Tabs.Content
 			value="all"
-			class="h-[calc(100%-90px)]  max-h-[calc(100%-90px)] space-y-3 overflow-y-auto"
+			class="h-[calc(100%-90px)]  max-h-[calc(100%-90px)] space-y-3 overflow-y-auto no-scrollbar"
 		>
 			{#each memos as memo}
 				<MemoEditor bind:memo />
 			{/each}
 		</Tabs.Content>
+		
 		<!-- color filter -->
 		{#each colors as color}
 			<Tabs.Content

@@ -92,6 +92,15 @@ export function getThisMonthRange(): DateRange {
     }
 }
 
+export function getThisWeekRange(): DateRange {
+    const todayValue = today(getLocalTimeZone());
+    const monday = startOfWeek(todayValue,'fr-FR');
+    return {
+        start: monday,
+        end: monday.add({ days: 6 }),
+    };
+}
+
 export function countMonths(
     dates: CalendarDate[],
 ): { month: number; count: number }[] {

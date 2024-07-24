@@ -32,7 +32,7 @@
 
 </script>
 
-<div class="relative flex items-center w-full h-full gap-2 translate-x-4 -translate-y-2">
+<div class="relative flex items-center w-full h-full gap-2 -translate-y-2 xl:translate-x-4">
 	<!-- 7days-- -->
 	<Button
 		class="h-8 w-8 !p-1"
@@ -85,7 +85,7 @@
 	<RotateCcw size={18} strokeWidth={2.2} />
 </Button>
 		</Popover.Trigger>
-		<Popover.Content class="w-auto p-0" align="start">
+		<Popover.Content class="w-auto p-0 translate-y-1" align="center">
 			<RangeCalendar
 				bind:value={selectedDateRange}
 				initialFocus

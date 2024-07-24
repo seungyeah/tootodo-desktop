@@ -1,12 +1,12 @@
 <script lang="ts">
-	import PageTemplete from "../PageTemplete.svelte";
+	import PageTemplete from "$components/PageTemplete.svelte";
 	import { SvelteComponent, onMount, setContext, tick } from "svelte";
 	import TaskMain from "$components/task/TaskMain.svelte";
 	import TaskSide from "$components/task/TaskSide.svelte";
 	import TaskSetting from "$components/task/TaskSetting.svelte";
 	import DurationPicker from "$components/task/DurationPicker.svelte";
 	import { goto } from "$app/navigation";
-	import { derived, writable, type Writable } from "svelte/store";
+	import {  writable, type Writable } from "svelte/store";
 	import { postApi, delApi, patchApi } from "$lib/api";
 	import { type Task } from "$lib/schema";
 	import { type DateRange, getThis3WeeksRange } from "$lib/utils";
@@ -19,12 +19,13 @@
 	);
 
 	$: $tasks = $tasks.sort(sort_tasks());
-
+	setContext("tasks", tasks);
+	
 	// duration select
 	const selectedDateRange: Writable<DateRange> =
 		writable(getThis3WeeksRange());
 	setContext("selectedDateRange", selectedDateRange);
-	setContext("tasks", tasks);
+
 
 	onMount(async () => {
 		$selectedDateRange = getThis3WeeksRange();

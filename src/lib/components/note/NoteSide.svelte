@@ -100,93 +100,12 @@
    class="category relative flex h-full min-w-[240px] max-w-[360px] flex-col items-center justify-start text-lg font-bold"
    style={`background-color: rgb(var(--color-${new_color_name}-50) / 0.35);`}
 >
-   <div class="absolute top-0 w-full h-2 bg-white" />
-   <div class="flex w-full">
-      <!-- change category color -->
-      <DropdownMenu.Root>
-         <DropdownMenu.Trigger asChild let:builder
-            ><Button
-               variant="ghost"
-               builders={[builder]}
-               class="px-2 translate-x-1 translate-y-2"
-               ><Circle fill={new_color_hex} /></Button
-            ></DropdownMenu.Trigger
-         >
-         <DropdownMenu.Content class="bg-white w-[360px]">
-            <DropdownMenu.Label>Category Color</DropdownMenu.Label>
-            <DropdownMenu.Separator />
-            <DropdownMenu.Group>
-               <DropdownMenu.Item
-                  class="grid grid-cols-13 data-[highlighted]:bg-zinc-50"
-               >
-                  {#each tailwindColors as color}
-                     <div class="col-span-2 mr-2 text-xs font-digital">
-                        {color.name}
-                     </div>
 
-                     {#each color.shades as shade}
-                        <Button
-                           class="w-5 h-5 p-2 m-2"
-                           style={`background-color: ${shade.hex};`}
-                           on:click={() => {
-                              new_color_hex = shade.hex;
-                              new_color_name = color.name.toLowerCase();
-                           }}
-                        />
-                     {/each}
-                  {/each}
-               </DropdownMenu.Item>
-            </DropdownMenu.Group>
-         </DropdownMenu.Content>
-      </DropdownMenu.Root>
-
-      <!-- select category -->
-      <Popover.Root bind:open let:ids>
-         <Popover.Trigger asChild let:builder>
-            <Button
-               builders={[builder]}
-               variant="outline"
-               role="combobox"
-               aria-expanded={open}
-               class="z-10 w-min-[220px] w-full mx-3 justify-between shadow"
-            >
-               {selectedValue}
-               <ChevronsUpDown class="w-4 h-4 ml-2 opacity-50 shrink-0" />
-            </Button>
-         </Popover.Trigger>
-         <Popover.Content class="w-[200px] p-0">
-            <Command.Root>
-               <Command.Input placeholder="Select Category" />
-               <Command.Empty>No Category found.</Command.Empty>
-               <Command.Group>
-                  {#each categories as category}
-                     <Command.Item
-                        value={category.value}
-                        onSelect={(currentValue) => {
-                           value = currentValue;
-                           closeAndFocusTrigger(ids.trigger);
-                        }}
-                     >
-                        <Check
-                           class={cn(
-                              "mr-2 h-4 w-4",
-                              value !== category.value && "text-transparent",
-                           )}
-                        />
-                        {category.label}
-                     </Command.Item>
-                  {/each}
-               </Command.Group>
-            </Command.Root>
-         </Popover.Content>
-      </Popover.Root>
-   </div>
-   
    <!-- properties -->
    <div class="flex flex-col space-y-2">
       <!-- filter -->
       <div
-         class="flex justify-between w-full pt-1.5 mt-2.5 space-x-1 border-t-4 border-double border-zinc-500"
+         class="flex justify-between w-full pt-1.5 pb-2 space-x-1 border-b-4 border-double border-zinc-500"
       >
          <!-- filter web -->
          <div class="flex items-center w-full mx-2 space-x-2">
@@ -237,24 +156,4 @@
    </div>
 </div>
 
-<style>
-   :root {
-      --color-red-50: 254 242 242;
-      --color-orange-50: 255 247 237;
-      --color-amber-50: 255 251 235;
-      --color-yellow-50: 254 252 232;
-      --color-lime-50: 247 254 231;
-      --color-green-50: 240 253 244;
-      --color-emerald-50: 236 253 245;
-      --color-teal-50: 240 253 250;
-      --color-cyan-50: 236 254 255;
-      --color-sky-50: 240 249 255;
-      --color-blue-50: 239 246 255;
-      --color-indigo-50: 238 242 255;
-      --color-violet-50: 245 243 255;
-      --color-purple-50: 250 245 255;
-      --color-fuchsia-50: 253 244 255;
-      --color-pink-50: 253 242 248;
-      --color-rose-50: 255 241 242;
-   }
-</style>
+

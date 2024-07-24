@@ -35,7 +35,7 @@
 </script>
 
 <div
-   class="relative flex items-center w-full h-full gap-2 translate-x-4 -translate-y-2"
+   class="relative flex items-center w-full h-full gap-2 -translate-y-2 xl:translate-x-4"
 >
    <!-- 1month-- -->
    <Button
