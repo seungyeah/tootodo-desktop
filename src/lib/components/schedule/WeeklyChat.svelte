@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { Button, Popover } from '$ui';
-	import { BookMarked, Bookmark, Bot, CircleArrowOutUpRight, Send, X } from 'lucide-svelte';
+	import { BookMarked, Bookmark, Bot, CircleArrowOutUpRight, Send, Stamp, X } from 'lucide-svelte';
 	import ChatAsk from './ChatAsk.svelte';
 	import { onDestroy, onMount, tick } from 'svelte';
 	import { currentTime, formatTimeFull, formatDay } from '$store';
-
+    import { today } from '@internationalized/date';
+    import ChatOptions from './ChatOptions.svelte';
+   export let tasks=[];
 	let askMsg = {
 		content: '',
 		ask: true,
@@ -101,22 +103,8 @@
 	
 	onMount(() => {
 		scrollToBottom();
-		if (typeof window !== 'undefined') document.addEventListener('keydown', handleKeyDown); // keydown 이벤트 리스너 추가		
 	});
 
-
-	// 컴포넌트가 파괴될 때 이벤트 리스너 제거
-	onDestroy(() => {
-		if (typeof window !== 'undefined') document.removeEventListener('keydown', handleKeyDown); // keydown 이벤트 리스너 제거
-	});
-
-	// 키보드 이벤트 리스너를 처리하는 함수
-	function handleKeyDown(event) {
-		if (event.key === 'Escape' || event.key === 'Esc') {
-			// Esc 버튼이 눌렸을 때, openChat을 false로 변경
-			record.openChat = false;
-		}
-	}
 
 	async function handleSubmit(
 		event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }
@@ -146,17 +134,17 @@
 <div class="w-full h-full" bind:this={chatContainer}>
 	<!-- top: record info -->
 	<div
-		class="flex items-center justify-between w-full h-10 px-2 bg-yellow-200 border-b-2 border-yellow-300 rounded-lg rounded-b-none shadow text-yellow-950"
+		class="flex items-center justify-between w-full h-10 px-2 border-b-2 rounded-lg rounded-b-none shadow bg-zinc-700 border-zinc-300 text-zinc-950"
 	>
 		<!-- show bookmark list -->
 		<Popover.Root >
 			<Popover.Trigger>
-				<Button variant="ghost" class="h-6 p-1 translate-y-1 hover:bg-yellow-400">
-					<BookMarked size={20} />
+				<Button variant="ghost" class="h-6 p-1 translate-y-1 hover:bg-zinc-400">
+					<BookMarked size={20} class="text-zinc-100"/>
 				</Button>
 			</Popover.Trigger>
 			<Popover.Content
-				class="max-h-[calc(100%-60px)] w-1/4 max-w-[300px] -translate-x-5 translate-y-8 overflow-y-auto px-3 pt-0 "
+				class="max-h-[calc(100%-60px)] w-1/4 max-w-[300px] -translate-x-4 translate-y-20 overflow-y-auto px-3 pt-0 "
 				side="left" avoidCollisions={false}
 			>
 				<div class="flex-col items-center justify-between pt-1">
@@ -174,7 +162,7 @@
 								<div class="flex items-start justify-start space-x-1 border-b border-dashed">
 									<Button variant="ghost" class="h-6 p-1 " on:click={() => (msg.save = !msg.save)}>
 										{#if msg.ask}
-											<Bookmark size={20} color="#52525b" fill="#10b981" />
+											<Bookmark size={20} color="#52525b" fill="#059669" />
 										{:else}
 											<Bookmark size={20} color="#52525b" fill="#facc15" />
 										{/if}
@@ -190,17 +178,35 @@
 			</Popover.Content>
 		</Popover.Root>
 
-		<!-- record info -->
-		<div class="p-1 text-[1.05rem] ">{record.title}</div>
+		 <!-- todo: date of current((scroll)) msg -->
+		<div class="p-1 px-2 mx-2 text-[1.05rem] w-full bg-white text-zinc-800 text-center font-mono font-bold">{today()}</div>
 
-		<!-- close button -->
-		<Button
-			variant="ghost"
-			class="h-6 p-1 hover:bg-yellow-400"
-			on:click={() => (record.openChat = false)}
-		>
-			<X size={20} />
-		</Button>
+		<!-- summary -->
+		<Popover.Root >
+			<Popover.Trigger>
+				<Button variant="ghost" class="h-6 p-1 translate-y-1 hover:bg-zinc-400">
+					<Stamp size={20} class="text-zinc-100"/>
+				</Button>
+			</Popover.Trigger>
+			<Popover.Content
+				class="max-h-[calc(100%-60px)] w-1/4 max-w-[300px] -translate-x-0 translate-y-2 overflow-y-auto px-3 pt-0 "
+				side="bottom" avoidCollisions={false}
+			>
+				<div class="flex-col items-center justify-between pt-1">
+					<div class="sticky top-0 flex items-center justify-between h-8 mb-2 bg-white border-b-2">
+						<h4 class="font-bold">Summary</h4>
+						<Popover.Close>
+							<Button variant="ghost" class="h-6 translate-y-0.5 p-1 hover:bg-zinc-200 "
+								><X color="#a1a1aa" />
+							</Button>
+						</Popover.Close>
+					</div>
+					<div class="flex-col space-y-2 ">
+						
+					</div>
+				</div>
+			</Popover.Content>
+		</Popover.Root>
 	</div>
 
 	<!-- body -->
@@ -210,30 +216,32 @@
 	>
 		{#each messages as msg, i}
 			{#if i === 0 || msg.day !== messages[i - 1].day}
-				<div class="bg-zinc-100 p-0.5 !mt-6" />
+			<div class="flex justify-center w-[96%] m-auto my-2 border-t-4 border-zinc-400 border-double">
 				<div
-					class="w-auto max-w-[300px] mx-20 font-mono text-xs font-normal text-center rounded-full shadow bg-zinc-100 text-zinc-500"
-				>
-					{msg.day}
-				</div>
+				class="w-2/3 my-2 font-mono text-xs font-normal text-center border-t rounded-full shadow bg-zinc-100 text-zinc-500"
+			>
+				{msg.day}
+			</div>
+			</div>
+				
 			{/if}
 
 			{#if msg.ask}
 				<div class="flex items-end justify-start px-2 space-y-1">
-					<div class="relative flex max-w-[80%]">
+					<div class="relative flex max-w-[90%]">
 						<Button
 							variant="ghost"
 							class="absolute left-0 top-0.5 h-6 p-1 hover:bg-zinc-200"
 							on:click={() => (msg.save = !msg.save)}
 						>
 							{#if msg.save}
-								<Bookmark size={16} color="#52525b" fill="#10b981" />
+								<Bookmark size={16} color="#52525b" fill="#059669" />
 							{:else}
 								<Bookmark size={16} color="#52525b" />
 							{/if}
 						</Button>
 						<div
-							class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[1rem] font-normal leading-6 text-zinc-800 shadow-sm shadow-emerald-300"
+							class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[1rem] font-normal leading-6 text-zinc-800 shadow-sm shadow-emerald-800"
 						>
 							{msg.content}
 						</div>
@@ -269,7 +277,7 @@
 					<div class="time translate-y-0.5 px-1.5 text-end text-[0.63rem]">
 						{msg.time}
 					</div>
-					<div class="relative flex max-w-[80%]">
+					<div class="relative flex max-w-[90%]">
 						<Button
 							variant="ghost"
 							class="absolute left-0 top-0.5 h-6 p-1 hover:bg-zinc-200"
@@ -282,7 +290,7 @@
 							{/if}
 						</Button>
 						<div
-							class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[1rem] font-normal leading-6 text-zinc-800 shadow-sm shadow-yellow-300"
+							class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[1rem] font-normal leading-6 text-zinc-800 shadow-sm shadow-zinc-300"
 						>
 							{msg.content}
 						</div>
@@ -293,15 +301,15 @@
 	</div>
 
 	<!-- foot: send message -->
-	<div class="flex items-center w-full h-20 p-1 bg-yellow-200 rounded-lg rounded-t-none">
+	<div class="flex items-center w-full h-20 p-1 rounded-lg rounded-t-none bg-zinc-700">
 		<div class="flex-col w-12 h-full font-digital">
 			<Button
 				variant="ghost"
-				class="px-2 h-1/2 hover:bg-yellow-50"
+				class="px-2 h-1/2 hover:bg-zinc-50 text-zinc-100"
 				on:click={() => (newMsg.save = !newMsg.save)}
 			>
 				{#if newMsg.save}
-					<Bookmark fill="#facc15" />
+					<Bookmark fill="#f4f4f5" />
 				{:else}
 					<Bookmark />
 				{/if}
@@ -309,15 +317,18 @@
 
 			<Button
 				variant="ghost"
-				class="px-2 -translate-y-1 chat h-1/2 hover:bg-emerald-50"
+				class="px-2 -translate-y-1 chat h-1/2 hover:bg-emerald-50 text-zinc-100"
 				on:click={() => (newMsg.ask = !newMsg.ask)}
 			>
-				{#if newMsg.ask}<Bot fill="#10b981" />
+				{#if newMsg.ask}<Bot fill="#059669" />
 				{:else}<Bot />
 				{/if}
 			</Button>
 		</div>
-		<form on:submit|preventDefault={handleSubmit} class="relative w-full h-full">
+		<form on:submit|preventDefault={handleSubmit} class="relative flex flex-col w-full h-full">
+			<div class="w-full h-7 bg-zinc-50">
+				<ChatOptions {tasks}/>
+			</div>
 			<textarea
 				bind:value={newMsg.content}
 				on:keydown={(e) => {
@@ -327,13 +338,13 @@
 					}
 				}}
 				placeholder="Send message"
-				class="font-chat h-full w-full rounded-lg p-2 text-[1.06rem] leading-5"
+				class="font-chat h-[calc(100%-28px)] pr-5 w-full rounded-b-lg p-2 text-[1.06rem] leading-5"
 			></textarea>
 			<Button
 				variant="ghost"
 				type="submit"
-				class="absolute bottom-0 right-0 z-10 p-2 hover:bg-zinc-100"
-				><Send color="#71717a" /></Button
+				class="absolute bottom-0.5 right-0 z-10 p-2 hover:bg-zinc-100 text-zinc-800"
+				><Send  /></Button
 			>
 		</form>
 	</div>

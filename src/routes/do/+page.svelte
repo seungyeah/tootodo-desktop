@@ -7,7 +7,7 @@
 		startOfWeek,
 		today,
 	} from "@internationalized/date";
-	import { WeeklyChat, Plan ,Result} from "$components/schedule";
+	import { WeeklyChat, Plan ,Result, ScheduleList} from "$components/schedule";
 	import Memo from "$components/memo/Memo.svelte";
 	import {
 		Columns3,
@@ -65,44 +65,9 @@
 	>
 		<!-- main: schedule-->
 		<div
-			class="flex flex-col w-1/3 max-w-[220px] xl:max-w-[300px] min-w-[190px]"
+			class="flex flex-col w-1/3 max-w-[320px] xl:max-w-[400px] min-w-[220px]"
 		>
-			<div class="flex justify-between mb-1 mr-1.5 text-lg font-digital">
-				<button
-					on:click={() => (openSide = !openSide)}
-					class="rounded-full z-[1] h-[30px] flex"
-				>
-					<MoonStar fill="black" />
-					{currentTimeDisplay}
-				</button>
-
-				<div class="flex space-x-1">
-					<Button
-						variant="ghost"
-						class="shadow z-[1] h-[30px] px-2 py-0 -translate-y-0.5 translate-x-1 hover:bg-transparent 
-				hover:shadow-lg hover:shadow-zinc-400 hover:-translate-y-1 rounded-full"
-					>
-						<Workflow strokeWidth={2.5} size={16} />
-					</Button>
-					<Button
-						variant="ghost"
-						class="shadow z-[1] h-[30px] px-2 py-0 -translate-y-0.5 translate-x-1 hover:bg-transparent 
-			hover:shadow-lg hover:shadow-zinc-400 hover:-translate-y-1 rounded-full"
-					>
-						<Share strokeWidth={2.5} size={16} />
-					</Button>
-				</div>
-			</div>
-
-			<div
-				class="h-[calc(100%-30px)] overflow-y-auto overflow-x-clip no-scrollbar rounded-lg border-2 border-zinc-700"
-			>
-				{#each tasks as task, i}
-					<div class="flex flex-col h-[45px] border my-1 mx-2">
-						<div class="">{task.title}</div>
-					</div>
-				{/each}
-			</div>
+			<ScheduleList {tasks} />
 		</div>
 
 		<div
@@ -141,7 +106,7 @@
 			
 			<!-- schedule -->
 			<div class="bg-zinc-100 w-full h-[40px] flex justify-center">
-				<Tabs.Root value="result" class="h-[40px] w-full" >
+				<Tabs.Root value="do" class="h-[40px] w-full" >
 					<Tabs.List class="w-full border-t-[2.5px] border-zinc-700   ">
 						<Tabs.Trigger value="plan" class="w-[100px]"
 							><Rows3 size={20} class="mr-1.5" />Plan</Tabs.Trigger
@@ -161,21 +126,21 @@
 						value="plan"
 						class="-translate-y-[calc(100vh-146px)] h-[calc(100vh-200px)] w-full "
 					>
-						<Plan />
+						<Plan {tasks} />
 					</Tabs.Content>
 
 					<Tabs.Content
 						value="do"
-						class="-translate-y-[calc(100vh-146px)] h-[calc(100vh-200px)] w-full   "
+						class="-translate-y-[calc(100vh-148px)] h-[calc(100vh-200px)] w-full   "
 					>
-						<WeeklyChat />
+						<WeeklyChat {tasks} />
 					</Tabs.Content>
 
 					<Tabs.Content
 						value="result"
 						class="-translate-y-[calc(100vh-146px)] h-[calc(100vh-200px)] w-full "
 					>
-						<Result/>
+						<Result {tasks}/>
 					</Tabs.Content>
 				</Tabs.Root>
 			</div>

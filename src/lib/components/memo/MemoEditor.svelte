@@ -27,7 +27,7 @@
 			content: memo.content,
 			editorProps: {
 				attributes: {
-					class: 'w-full  h-[130px] py-1 px-3.5 overflow-y-auto focus:outline-none focus:shadow-xl '
+					class: 'w-full  h-[200px] py-1 px-3.5 overflow-y-auto focus:outline-none focus:shadow-xl '
 				}
 			}
 		});
@@ -130,12 +130,12 @@
 
 		<!-- top, change memo color, pin, created date -->
 		<div
-			class="relative mt-2 flex h-8 w-full gap-1 rounded-t-md border-2 p-2 shadow-sm"
+			class="relative flex w-full h-8 gap-1 p-2 mt-2 border-2 shadow-sm rounded-t-md"
 			style="border-color: {selectedColor}; border-bottom: 0;"
 		>
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger class="z-10 absolute -right-[0.6rem] -top-1  h-9 -translate-y-1.5 rounded p-0">
-					<Button variant="ghost" size="sm" class="h-full rounded-full  py-0 px-1 hover:bg-zinc-50 ">
+					<Button variant="ghost" size="sm" class="h-full px-1 py-0 rounded-full hover:bg-zinc-50 ">
 						<Eclipse
 							size={24}
 							fill={colors.find((c) => c.name === memo.color)?.dark}
@@ -146,7 +146,7 @@
 				<DropdownMenu.Content class="-translate-y-2">
 					<DropdownMenu.Group>
 						<DropdownMenu.Item on:click={() => (memo.pin = true)}
-							><Pin size={16} fill="#e4e4e7" class="mr-2 h-4 w-4" />Set pin</DropdownMenu.Item
+							><Pin size={16} fill="#e4e4e7" class="w-4 h-4 mr-2" />Set pin</DropdownMenu.Item
 						>
 					</DropdownMenu.Group>
 					<DropdownMenu.Separator />
@@ -155,7 +155,7 @@
 						<DropdownMenu.Item class="grid grid-cols-3 data-[highlighted]:bg-zinc-50">
 							{#each colors as color}
 								<Button
-									class="m-2 h-5 w-5 p-2"
+									class="w-5 h-5 p-2 m-2"
 									style={`background-color: ${color.normal};`}
 									on:click={() => {
 										memo.color = color.name;
@@ -168,7 +168,7 @@
 			</DropdownMenu.Root>
 
 			{#if memo.pin}
-				<Button variant="ghost" class="h-6 -translate-y-1 p-0" on:click={() => (memo.pin = false)}
+				<Button variant="ghost" class="h-6 p-0 -translate-y-1" on:click={() => (memo.pin = false)}
 					><Pin size={16} fill="#e4e4e7" />
 				</Button>
 			{/if}

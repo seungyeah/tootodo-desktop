@@ -28,7 +28,7 @@
 
 		if (loggedIn) {
 			await auth.getUserInfo();
-			refresh_interval = setInterval(
+			/* refresh_interval = setInterval(
 				async () => {
 					if ($isRefresh) {
 						await auth.refreshWithFn(null);
@@ -38,7 +38,7 @@
 					}
 				},
 				1000 * 60 * 1,
-			);
+			); */
 		} else {
 			goto("/login");
 		}
@@ -46,9 +46,6 @@
 		if (typeof window !== "undefined")
 			document.addEventListener("keydown", handleKeyDown); // keydown 이벤트 리스너 추가
 
-		return () => {
-			clearInterval(refresh_interval);
-		};
 
 	});
 
@@ -223,4 +220,25 @@
 	.openTimer {
 		@apply block;
 	}
+
+   :root{
+      --bg-light-red: 254 242 242;
+      --bg-light-orange: 255 247 237;
+      --bg-light-amber: 255 251 235;
+      --bg-light-yellow: 254 252 232;
+      --bg-light-lime: 247 254 231;
+      --bg-light-green: 240 253 244;
+      --bg-light-emerald: 236 253 245;
+      --bg-light-teal: 240 253 250;
+      --bg-light-cyan: 236 254 255;
+      --bg-light-sky: 240 249 255;
+      --bg-light-blue: 239 246 255;
+      --bg-light-indigo: 238 242 255;
+      --bg-light-violet: 245 243 255;
+      --bg-light-purple: 250 245 255;
+      --bg-light-fuchsia: 253 244 255;
+      --bg-light-pink: 253 242 248;
+      --bg-light-rose: 255 241 242;
+   }
+
 </style>

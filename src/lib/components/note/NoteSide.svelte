@@ -1,25 +1,15 @@
 <script lang="ts">
    import {
-      Check,
-      ChevronsUpDown,
-      Circle,
       Plus,
-      PlusCircle,
       RotateCcw,
-      SquarePlus,
    } from "lucide-svelte";
    import { onMount, tick } from "svelte";
    import {
       Badge,
       Button,
-      Command,
-      Popover,
-      DropdownMenu,
       Switch,
       Label,
    } from "$ui";
-   import { cn } from "$lib/utils.js";
-   import { tailwindColors } from "$lib/tailwindColors";
    type Category = {
       value: string;
       label: string;
@@ -98,9 +88,8 @@
 
 <div
    class="category relative flex h-full min-w-[240px] max-w-[360px] flex-col items-center justify-start text-lg font-bold"
-   style={`background-color: rgb(var(--color-${new_color_name}-50) / 0.35);`}
+   style={`background-color: rgb(var(--bg-light-${new_color_name}) / 0.35)`}
 >
-
    <!-- properties -->
    <div class="flex flex-col space-y-2">
       <!-- filter -->

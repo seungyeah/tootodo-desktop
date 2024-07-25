@@ -1,17 +1,15 @@
 <script lang="ts">
    import {
-      ToggleGroup,
       Button,
       Command,
       Popover,
       DropdownMenu,
       Label,
    } from "$ui";
-   import { goto } from "$app/navigation";
 
    import { page } from "$app/stores";
    import { Check, ChevronsUpDown, Circle } from "lucide-svelte";
-   import { onMount, tick } from "svelte";
+   import {  tick } from "svelte";
 
    import { cn } from "$lib/utils.js";
    import { tailwindColors } from "$lib/tailwindColors";
@@ -185,25 +183,3 @@
       </Popover.Content>
    </Popover.Root>
 </div>
-
-<style>
-   :root{
-      --bg-light-red: 254 242 242;
-      --bg-light-orange: 255 247 237;
-      --bg-light-amber: 255 251 235;
-      --bg-light-yellow: 254 252 232;
-      --bg-light-lime: 247 254 231;
-      --bg-light-green: 240 253 244;
-      --bg-light-emerald: 236 253 245;
-      --bg-light-teal: 240 253 250;
-      --bg-light-cyan: 236 254 255;
-      --bg-light-sky: 240 249 255;
-      --bg-light-blue: 239 246 255;
-      --bg-light-indigo: 238 242 255;
-      --bg-light-violet: 245 243 255;
-      --bg-light-purple: 250 245 255;
-      --bg-light-fuchsia: 253 244 255;
-      --bg-light-pink: 253 242 248;
-      --bg-light-rose: 255 241 242;
-   }
-</style>

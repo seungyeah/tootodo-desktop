@@ -5,9 +5,8 @@
 	
 	import { Circle, Star } from "lucide-svelte";
    let Stars = new Array(5).fill(0);
-	import { getContext } from "svelte";
 
-
+   export let tasks;
 	const weeks = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 </script>
 
@@ -43,7 +42,7 @@
              <div class="flex flex-col w-[calc(100%-0.5rem)] h-full mx-auto my-1 border-zinc-300 border-dashed border rounded-md">
                {#each Array(5) as _, j}
                <div class="flex items-center px-1 space-x-2 border-b">
-                  <div class="w-1 h-3.5 bg-blue-100"></div>
+                  <div class="w-1 h-3.5 bg-pomodoro-100"></div>
                   <div>title</div>
                </div>
                {/each}
