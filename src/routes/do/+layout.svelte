@@ -34,7 +34,7 @@
 
 <div class="flex flex-col justify-center w-full h-full sm:absolute sm:top-0">
 	<!-- header: select date -->
-	<div class="flex items-center justify-center w-full h-10 space-x-2 translate-y-1">
+	<div class="w-full h-10 translate-y-1 ">
 		<DurationPicker on:update={handleDateUpdate} />
 	</div>
 
@@ -42,71 +42,3 @@
 		<slot />
 	</div>
 </div>
-
-<!-- <script lang="ts">
-	import { CalendarIcon } from 'lucide-svelte';
-	import {
-		type DateValue,
-		DateFormatter,
-		getLocalTimeZone,
-		today,
-		CalendarDate
-	} from '@internationalized/date';
-	import { cn } from '$lib/utils.js';
-	import { Button, Calendar, Popover, Separator } from '$ui';
-	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
-	import {DurationPicker}from "$components/schedule";
-	const df = new DateFormatter('en-US', {
-		dateStyle: 'long'
-	});
-
-	let value: DateValue | undefined = undefined;
-	let selectedDate: CalendarDate = today(getLocalTimeZone());
-</script>
-
-<div class="flex flex-col justify-center w-full h-full sm:absolute sm:top-0">
-	<div class="flex items-center justify-center w-full h-10 space-x-2 translate-y-1">
-		<Button
-			class="h-8 w-8 !p-1"
-			variant="ghost"
-			on:click={() => (selectedDate = selectedDate.subtract({ days: 1 }))}
-		>
-			<ChevronLeft size={20} />
-		</Button>
-
-		<Popover.Root openFocus>
-			<Popover.Trigger asChild let:builder>
-				<Button
-					variant="outline"
-					class={cn(
-						'text-md  w-[280px] text-center font-semibold',
-						!value && 'text-muted-foreground'
-					)}
-					builders={[builder]}
-				>
-					<CalendarIcon class="w-4 h-4 mr-2" />
-					{value
-						? df.format(value.toDate(getLocalTimeZone()))
-						: df.format(selectedDate.toDate(getLocalTimeZone()))}
-				</Button>
-			</Popover.Trigger>
-			<Popover.Content class="w-auto p-0 my-2 shadow shadow-pink">
-				<Calendar bind:value initialFocus />
-			</Popover.Content>
-		</Popover.Root>
-
-		<Button
-			class="h-8 w-8 !p-1"
-			variant="ghost"
-			on:click={() => (selectedDate = selectedDate.add({ days: 1 }))}
-		>
-			<ChevronRight size={20} />
-		</Button>
-		
-	</div>
-
-	<div class="h-[calc(100%-60px)] w-full">
-		
-		<slot />
-	</div>
-</div> -->

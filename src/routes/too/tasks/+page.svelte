@@ -7,7 +7,7 @@
 	import DurationPicker from "$components/task/DurationPicker.svelte";
 	import { goto } from "$app/navigation";
 	import {  writable, type Writable } from "svelte/store";
-	import { postApi, delApi, patchApi } from "$lib/api";
+	import { postApi, delApi, patchApi } from "$lib/api.js";
 	import { type Task } from "$lib/schema";
 	import { type DateRange, getThis3WeeksRange } from "$lib/utils";
 	import TaskList from "$components/task/TaskList.svelte";

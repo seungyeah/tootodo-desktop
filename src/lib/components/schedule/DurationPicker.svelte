@@ -88,13 +88,13 @@
          <Button
             variant="outline"
             class={cn(
-               "text-md  w-[400px] text-center font-semibold ",
+               "w-[260px] md:w-[40%] min-w-[260px] text-start text-zinc-600 md:text-center font-semibold ",
                !selectedDate && "text-muted-foreground",
             )}
             builders={[builder]}
          >
             <CalendarIcon class="w-4 h-4 mr-2" />
-            <span class="text-zinc-600">
+            <div class="w-full">
                {selectedDate && selectedWeekRange.start
                   ? df.format(
                        selectedWeekRange.start.toDate(),
@@ -114,7 +114,7 @@
                           today(getLocalTimeZone()).toDate(),
                        ).end.toDate(),
                     )}
-            </span>
+            </div>
          </Button>
          <!-- reset to today -->
          <Button

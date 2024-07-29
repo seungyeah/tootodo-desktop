@@ -7,7 +7,7 @@
 	import DurationPicker from "$components/habit/DurationPicker.svelte";
 	import { goto } from "$app/navigation";
 	import { writable, type Writable } from "svelte/store";
-	import { postApi, delApi, patchApi } from "$lib/api";
+	import { postApi, delApi, patchApi } from "$lib/api.js";
 	import { type Habit} from "$lib/schema";
 	import { type DateRange ,getThisMonthRange} from "$lib/utils";
 

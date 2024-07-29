@@ -4,8 +4,8 @@
    const weeks = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
    export let tasks;
-   $:scheduledFrom = "";
-   $:scheduledTo = "";
+   $: scheduledFrom = "";
+   $: scheduledTo = "";
    export let record = {
       pin: true,
       alarm: true,
@@ -55,23 +55,26 @@
                         ? `background-color: rgb(var(--bg-light-${record?.category.color}) / 0.8)`
                         : ""}
                   >
-                  {#if record.days.some((item) => item.day === day)}
-                  {@const { from, to } = record.days.find((item) => item.day === day)}
-                     <div
-                        class="relative text-start w-full py-1 px-2 font-serif text-[0.75rem] font-light leading-3 text-zinc-500"
-                        >from: 
-                        <span class="absolute right-2.5">{from || ""}</span>
-                        </div
-                     >
-                     <div
-                        class="text-start w-full py-1 px-2  font-serif text-[0.75rem] font-light leading-3 text-zinc-500"
-                        >to: <span class="absolute right-2.5">{to || ""}</span>
-                     </div
-                     >
-                  {/if}
+                     {#if record.days.some((item) => item.day === day)}
+                        {@const { from, to } = record.days.find(
+                           (item) => item.day === day,
+                        )}
+                        <div
+                           class="relative text-start w-full py-1 px-2 font-serif text-[0.75rem] font-light leading-3 text-zinc-500"
+                        >
+                           from:
+                           <span class="absolute right-2.5">{from || ""}</span>
+                        </div>
+                        <div
+                           class="text-start w-full py-1 px-2 font-serif text-[0.75rem] font-light leading-3 text-zinc-500"
+                        >
+                           to: <span class="absolute right-2.5">{to || ""}</span
+                           >
+                        </div>
+                     {/if}
                   </button>
 
-               <!-- set time -->
+                  <!-- set time -->
                </ContextMenu.Trigger>
                {#if record.days.some((item) => item.day === day)}
                   <ContextMenu.Content>

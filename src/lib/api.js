@@ -1,3 +1,4 @@
+
 const send = async ({ method = '', path = '', data = {} } = {}) => {
 	const commonUrl = import.meta.env.VITE_SERVER_ENDPOINT;
 	const url = commonUrl + '/api' + path;
@@ -51,6 +52,7 @@ const delApi = ({ path = '', data = {} } = {}) => {
 const patchApi=({ path = '', data = {} } = {}) => {
 	return send({ method: 'PATCH', path, data });
 };
+
 
 export {
 	getApi,

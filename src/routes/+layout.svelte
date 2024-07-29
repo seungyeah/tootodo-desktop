@@ -3,8 +3,6 @@
 	import {
 		Button,
 		Breadcrumb,
-		Popover,
-		Input,
 		Avatar,
 		DropdownMenu,
 	} from "$ui";
@@ -24,23 +22,11 @@
 
 	onMount(async () => {
 		const loggedIn = getCookie("logged_in");
-		let refresh_interval;
 
 		if (loggedIn) {
 			await auth.getUserInfo();
-			/* refresh_interval = setInterval(
-				async () => {
-					if ($isRefresh) {
-						await auth.refreshWithFn(null);
-						console.log("refreshed");
-					} else {
-						clearInterval(refresh_interval);
-					}
-				},
-				1000 * 60 * 1,
-			); */
 		} else {
-			goto("/login");
+			goto('/login',{replaceState:true})
 		}
 
 		if (typeof window !== "undefined")

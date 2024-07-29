@@ -1,5 +1,5 @@
 import { writable, derived } from 'svelte/store';
-import { getApi, delApi, postApi } from '../api.js';
+import { getApi, delApi, postApi } from '$lib/api';
 import { goto } from '$app/navigation';
 import { loginSchema,registerSchema } from '$lib/schema.js';
 
@@ -17,7 +17,7 @@ const setAuth = () => {
 		createdAt: ''
 	};
 
-	const { subscribe, set, update } = writable({ ...initValues });
+	const { subscribe, set} = writable({ ...initValues });
 
 	const register = async (userData) => {
 		const result = registerSchema.safeParse(userData);
@@ -98,7 +98,7 @@ const setAuth = () => {
 			set({ ...user, verified: true });
 			// alert('사용자 정보를 불러왔습니다. ' + user.email + ' ' + user.provider);
 		} catch (e) {
-			// alert(e.message);
+			//alert(e.message);
 			await refreshWithFn(getUserInfo);
 		}
 	};
@@ -144,18 +144,17 @@ const setAuth = () => {
 		}
 	};
 
-	const refreshWithFn = async (toExecute) => {
+	const refreshWithFn = async (toExecute:null | Function) => {
 		try {
 			const options = {
 				path: '/auth/refresh'
 			};
 			await getApi(options);
-			// alert('refresh token 완료');
 			isRefresh.set(true) ;
 			if (toExecute) toExecute();
 		} catch (e) {
 			isRefresh.set(false) 
-			alert('refresh token 으로 acces token을 받을 수 없습니다. 다시 로그인하세요. ' + e);
+			alert('refresh token 역시 만료되었습니다. 다시 로그인하세요. ' + e);
 			goto('/login');
 		}
 	};
