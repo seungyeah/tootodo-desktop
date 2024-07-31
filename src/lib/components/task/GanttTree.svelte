@@ -32,11 +32,25 @@
 
    function getColspans(durations) {
       const { task_start, task_duration, task_end } = durations;
-      let colspans = [];
-      if (task_start > 0) colspans.push({ colspan: task_start, isTask: false });
-      colspans.push({ colspan: task_duration, isTask: true });
-      if (task_end > 0) colspans.push({ colspan: task_end, isTask: false });
-      return colspans;
+      if (task_start === 0 && task_end === 0) {
+         return [{ colspan: task_duration + task_start + 1, isTask: true }];
+      } else if (task_start <= 0) {
+         return [
+            { colspan: task_duration + task_start + 1, isTask: true },
+            { colspan: task_end, isTask: false },
+         ];
+      } else if (task_end <= 0) {
+         return [
+            { colspan: task_start, isTask: false },
+            { colspan: task_duration + task_end + 1, isTask: true },
+         ];
+      } else {
+         return [
+            { colspan: task_start, isTask: false },
+            { colspan: task_duration + 1, isTask: true },
+            { colspan: task_end, isTask: false },
+         ];
+      }
    }
 </script>
 
@@ -54,19 +68,31 @@
          })}
       >
          {#each getColspans(durations) as { colspan, isTask }}
-            <td
-               {colspan}
-               class:milestone={isTask && task.milestone}
-               class:task={isTask && !task.milestone}
-               data-percent={isTask ? task.progress_rate : null}
-            >
+            <td {colspan}>
                {#if isTask}
-                  <div class="w-full h-full bg-zinc-200">
+                  <div
+                     class="relative w-full h-full border-t border-b-2 shadow-lg bg-zinc-400 border-zinc-900"
+                  >
                      <div
-                        class="h-5 p-0 bg-zinc-600"
-                        class:milestone={task.milestone}
-                        style="width: {task.progress_rate }%;"
-                     ></div>
+                        class="h-5 p-0 bg-zinc-400"
+                        class:task={!task.milestone}
+                        class:complete={task.progress_rate === 100}
+                        class:start={task.progress_rate > 0 && task.progress_rate <= 25}
+                        class:inProgress={task.progress_rate > 25 &&
+                           task.progress_rate < 100}
+                     >
+                        {colspan}
+                        {#if task.milestone}
+                           <div
+                              class="absolute top-0.5 w-4 h-4 rotate-45 border border-zinc-900 -z-10 bg-inherit -left-2"
+                              class:none={task.progress_rate <= 0}
+                           />
+                           <div
+                              class="absolute top-0.5 w-4 h-4 rotate-45 border-2 border-zinc-900 -z-10 bg-inherit -right-2"
+                              class:complete={task.progress_rate === 100}
+                           />
+                        {/if}
+                     </div>
                   </div>
                {/if}
             </td>
@@ -90,14 +116,19 @@
 {/each}
 
 <style>
-   .task {
-      background-color: #3f3f46;
-      opacity: 80%;
-      color: white;
+   .task{
+      @apply border-r-2 border-l border-zinc-900;
    }
-   .milestone {
-      background-color: rgb(217 43 58);
-      opacity: 80%;
-      color: white;
+   .complete {
+      background-color: #40ad43;
+   }
+   .inProgress {
+      background-color: #2d74af;
+   }
+   .none {
+      background-color: #a1a1aa;
+   }
+   .start {
+      background-color: #d92b3a;
    }
 </style>

@@ -1,9 +1,7 @@
 <script lang="ts">
    import {
-      CalendarDate,
       getLocalTimeZone,
       today,
-      parseDate,
    } from "@internationalized/date";
    import { getContext } from "svelte";
    import { getDatesInRange, getDuration, countMonths } from "$lib/utils";

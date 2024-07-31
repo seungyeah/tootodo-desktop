@@ -178,7 +178,7 @@
 				<!-- progress rate -->
 				<div class="w-24 min-w-24 h-[30px] border-b border-r px-1.5">
 					<input
-						class="w-24 translate-y-1.5 shadow opacity-60"
+						class="w-24 translate-y-1.5 shadow opacity-40"
 						class:complete={task.progress_rate === 100}
 						class:inProgress={task.progress_rate > 25 &&
 							task.progress_rate < 100}
