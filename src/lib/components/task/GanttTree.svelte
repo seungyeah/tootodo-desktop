@@ -10,6 +10,7 @@
 
    const {
       elements: { item, group },
+      helpers: { isExpanded, },
    } = getContext<TreeView>("tree");
 
    const selectedDate = getContext("selectedDateRange");
@@ -60,7 +61,7 @@
    {@const durations = calculateDurations(task)}
 
    {#if isTaskVisible(durations)}
-      <tr
+      <tr      
          class="h-[30px] border-b"
          use:melt={$item({
             id: itemId,
@@ -68,13 +69,13 @@
          })}
       >
          {#each getColspans(durations) as { colspan, isTask }}
-            <td {colspan}>
+            <td {colspan} >
                {#if isTask}
-                  <div
+                  <div        
                      class="relative w-full h-full border-t border-b-2 shadow-lg bg-zinc-400 border-zinc-900"
                   >
                      <div
-                        class="h-5 p-0 bg-zinc-400"
+                        class="h-5 p-0 m-0 bg-zinc-400"
                         class:task={!task.milestone}
                         class:complete={task.progress_rate === 100}
                         class:start={task.progress_rate > 0 && task.progress_rate <= 25}
@@ -101,9 +102,10 @@
    {/if}
 
    {#if hasChildren}
-      <tr use:melt={$group({ id: itemId })}>
-         <td colspan={totalDays} class="p-0">
-            <table class="w-full table-fixed">
+      <tr use:melt={$group({ id: itemId })}   >
+         <td colspan={totalDays} class="p-0"       
+         >
+            <table class="w-full table-fixed" >
                <svelte:self
                   treeItems={subtasks}
                   {totalDays}
@@ -120,15 +122,15 @@
       @apply border-r-2 border-l border-zinc-900;
    }
    .complete {
-      background-color: #40ad43;
+      background-color: #7eaf80;
    }
    .inProgress {
-      background-color: #2d74af;
+      background-color: #7194b1;
    }
    .none {
       background-color: #a1a1aa;
    }
    .start {
-      background-color: #d92b3a;
+      background-color: #e46b75;
    }
 </style>

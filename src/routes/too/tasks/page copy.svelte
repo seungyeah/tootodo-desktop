@@ -1,7 +1,7 @@
 <script lang="ts">
 	import PageTemplete from "$components/PageTemplete.svelte";
 	import { SvelteComponent, onMount, setContext, tick } from "svelte";
-	import TaskMain from "$components/task/TaskGantt.svelte";
+	import TaskMain from "$components/task/TaskGanttMain.svelte";
 	import TaskSide from "$components/task/TaskSide.svelte";
 	import TaskSetting from "$components/task/TaskSetting.svelte";
 	import DurationPicker from "$components/task/DurationPicker.svelte";

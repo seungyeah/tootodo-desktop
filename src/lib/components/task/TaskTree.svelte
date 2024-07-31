@@ -22,8 +22,6 @@
 
 	import { melt, type TreeView } from "@melt-ui/svelte";
 
-
-
 	const {
 		elements: { item, group },
 		helpers: { isExpanded, isSelected },
@@ -51,7 +49,7 @@
 			end: $selectedDate.start.add({ days: 13 }),
 		};
 	});
-	
+
 	////// dispatch
 	const dispatch = createEventDispatcher();
 
@@ -81,12 +79,19 @@
 		dispatch("update", { task, updateData });
 	}
 
+	function handleUpdateParent(task: Task, parentTask: Task) {
+		const updateData = {
+			parent_id: parentTask.id,
+		};
+		dispatch("update", { task, updateData });
+	}
+
 	// 자식 컴포넌트에서 발생한 이벤트를 처리하고 상위로 전달하는 함수
 	function handleChildUpdate(event: CustomEvent) {
 		const { task, updateData } = event.detail;
 		dispatch("update", { task, updateData });
 	}
-	
+
 	// scroll
 	let tableContainer: HTMLElement;
 	export let scrollPosition = { scrollTop: 0, scrollLeft: 0 };
@@ -112,42 +117,41 @@
 	}
 
 	// dnd
-	let draggedIndex = null;
+	let draggedTask: Task | null = null;
 
-	function handleDragStart(e, index) {
-		draggedIndex = index;
-		e.dataTransfer.effectAllowed = "move";
-		e.dataTransfer.setData("text/plain", index);
+	function handleDragStart(e: DragEvent, task: Task) {
+		draggedTask = task;
+		e.dataTransfer!.effectAllowed = "move";
+		e.dataTransfer!.setData("text/plain", task.id);
 	}
 
-	function handleDragOver(e) {
+	function handleDragOver(e: DragEvent) {
 		e.preventDefault();
-		e.dataTransfer.dropEffect = "move";
+		e.dataTransfer!.dropEffect = "move";
 	}
 
-	function handleDrop(e, index) {
+	function handleDrop(e: DragEvent, targetTask: Task) {
 		e.preventDefault();
-		const draggedOverIndex = index;
-
-		if (draggedIndex !== draggedOverIndex) {
-			const reorderedTasks = [...treeItems];
-			const [movedItem] = reorderedTasks.splice(draggedIndex, 1);
-			reorderedTasks.splice(draggedOverIndex, 0, movedItem);
-			treeItems = reorderedTasks;
+		if (
+			draggedTask &&
+			draggedTask.id !== targetTask.id &&
+			!draggedTask.parent_id
+		) {
+			handleUpdateParent(draggedTask, targetTask);
 		}
-
-		draggedIndex = null;
+		draggedTask = null;
 	}
 
 	function handleDragEnd() {
-		draggedIndex = null;
+		console.log("drag end");
+		draggedTask = null;
 	}
 </script>
 
 {#key treeItems}
 	<div
 		class="bg-white border-r-[3px] border-l-2 border-zinc-800
-			 h-full max-h-[calc(100%-48px)] w-full max-w-full overflow-x-clip overflow-y-auto"
+			 h-full max-h-[calc(100%-48px)] w-full min-w-full overflow-x-clip overflow-y-auto"
 		bind:this={tableContainer}
 		on:scroll={handleScroll}
 	>
@@ -156,29 +160,24 @@
 			{@const hasChildren = !!subtasks?.length}
 
 			<div
+				draggable={true}
 				class="flex w-full h-[30px] items-center gap-0 rounded-md"
-				class:dragging={draggedIndex === i}
-				draggable="true"
-				on:dragstart={(e) => handleDragStart(e, i)}
-				on:dragover={handleDragOver}
-				on:drop={(e) => handleDrop(e, i)}
-				on:dragend={handleDragEnd}
-				role="listitem"
+				class:group={$isExpanded(itemId)}
 			>
-				{#if draggedIndex === i}
+				{#if draggedTask}
 					<GripVertical size={18} />
 				{/if}
 
 				{#if !hasChildren}
-				<div
-					class={level !== 1 ? "pl-4 h-full bg-zinc-100 border-b" : ""}
-				/>
+					<div
+						class={level !== 1 ? "pl-4 h-full bg-zinc-100 border-b" : ""}
+					/>
 				{/if}
 
 				<!-- progress rate -->
-				<div class="w-24 min-w-24 h-[30px] border-b border-r px-1.5">
+				<div class="w-20 min-w-20 h-[30px] border-b border-r px-1.5">
 					<input
-						class="w-24 translate-y-1.5 shadow opacity-40"
+						class="w-20 translate-y-1.5 shadow opacity-40"
 						class:complete={task.progress_rate === 100}
 						class:inProgress={task.progress_rate > 25 &&
 							task.progress_rate < 100}
@@ -203,7 +202,7 @@
 					<TaskSettingIcon {task} />
 					<div
 						class={hasChildren && $isSelected(itemId)
-							? "flex space-x-1 border border-zinc-500 border-dotted shadow-sm rounded-full py-0.5 px-2"
+							? "flex space-x-1 border border-zinc-200 shadow-sm rounded-full py-0.5 px-2"
 							: ""}
 					>
 						<!-- Folder icon. -->
@@ -218,12 +217,20 @@
 								this={ArrowRight}
 								class="w-4 h-4 text-pomodoro-500"
 							/>
-						{/if}
+						{/if} 
 					</div>
 				</div>
 
 				<!-- title -->
-				<div class="h-[30px] border-b border-r w-full">
+				<div
+					class="h-[30px] border-b border-r w-full"
+					class:dragging={draggedTask}
+					on:dragstart={(e) => handleDragStart(e, task)}
+					on:dragover={handleDragOver}
+					on:drop={(e) => handleDrop(e, task)}
+					on:dragend={handleDragEnd}
+					role="listitem"
+				>
 					<input
 						value={task.title}
 						class="h-full px-1.5 w-full bg-transparent focus:bg-zinc-50"
@@ -247,6 +254,7 @@
 					<Popover.Trigger
 						><td
 							class="inline-block h-[30px] w-[120px] border-b"
+							class:group_={$isExpanded(itemId)}
 							use:melt={$item({
 								id: itemId,
 								hasChildren,
@@ -281,8 +289,15 @@
 			</div>
 
 			{#if subtasks?.length}
-				<div use:melt={$group({ id: itemId })}>
-					<svelte:self treeItems={subtasks} level={level + 1} on:update={handleChildUpdate}/>
+				<div
+					use:melt={$group({ id: itemId })}
+					class:groupChild={$isExpanded(itemId)}
+				>
+					<svelte:self
+						treeItems={subtasks}
+						level={level + 1}
+						on:update={handleChildUpdate}
+					/>
 				</div>
 			{/if}
 		{/each}
@@ -294,6 +309,18 @@
 		display: flex;
 		align-items: center;
 		cursor: move;
+	}
+
+	.group_{
+		@apply border-r-[3px] border-r-zinc-700;
+	}
+	
+	.group {
+		@apply border-l-2 rounded-b-none ml-1 pr-1 border-zinc-700;
+	}
+
+	.groupChild {
+		@apply  border-zinc-700 ml-1;
 	}
 
 	.dragging {

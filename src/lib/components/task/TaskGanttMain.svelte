@@ -20,6 +20,14 @@
    // 전체 날짜 수 계산
    $: totalDays = months.dates.length;
    
+   // 오늘 날짜의 위치 계산
+   $: todayPosition = months.dates.findIndex((date: CalendarDate) => 
+      date.compare(today(getLocalTimeZone())) === 0
+   );
+
+   // 오늘 날짜의 상대적 위치 (퍼센트) 계산
+   $: todayPositionPercent = todayPosition !== -1 ? (todayPosition / totalDays) * 100 : null;
+   
    // scroll
    import { createEventDispatcher } from "svelte";
     import GanttTree from "./GanttTree.svelte";
@@ -40,6 +48,8 @@
          tableContainer.scrollLeft = scrollPosition.scrollLeft;
       }
    }
+
+
 </script>
 
 <div
@@ -84,11 +94,16 @@
             {/each}
          </tr>
       </thead>
-      <tbody class="relative w-full">
-         <GanttTree {treeItems} {totalDays}/>
+      <tbody>
+         <GanttTree {treeItems} {totalDays}/>         
       </tbody>
       
    </table>
 
+
 </div>
+
+{#if todayPositionPercent}
+   <div class="fixed z-20 h-[calc(100%-44px)] border-4 border-double top-[32px] bg-violet-100/10 border-violet-400/10" style="left: {todayPositionPercent}%; width: calc({100 / totalDays}%);"/>
+{/if}
 

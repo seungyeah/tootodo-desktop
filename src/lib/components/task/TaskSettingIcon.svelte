@@ -41,7 +41,7 @@
 	<table class="w-full">
 		<tbody>
 			<tr
-				class="z-10 flex h-[30px] items-center border-b border-zinc-400 border-dashed"
+				class="z-10 flex h-[30px] items-center"
 			>
 				<DropdownMenu.Root>
 					<DropdownMenu.Trigger>

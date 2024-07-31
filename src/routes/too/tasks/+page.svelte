@@ -3,7 +3,7 @@
 	import { createTreeView } from "@melt-ui/svelte";
 
 	import { SvelteComponent, onMount, setContext, tick } from "svelte";
-	import TaskGantt from "$components/task/TaskGantt.svelte";
+	import TaskGantt from "$components/task/TaskGanttMain.svelte";
 	import TaskSide from "$components/task/TaskSide.svelte";
 	import DurationPicker from "$components/task/DurationPicker.svelte";
 	import { goto } from "$app/navigation";
@@ -92,7 +92,12 @@
 	}
 
 	async function handleUpdateTask(e) {
-		// console.log("update task", e.detail.updateData);
+		console.log("update task", e.detail.updateData);
+		const updateKey = Object.keys(e.detail.updateData)[0];
+		if (e.detail.task[updateKey] === e.detail.updateData[updateKey]) {
+			// console.log("nothing changed")
+			return;
+		}
 		const { id } = e.detail.task;
 		// todo: 기존꺼랑 변화 없으면 냅둬.
 		try {
@@ -249,7 +254,7 @@
 				class="absolute left-0 flex w-full h-5 font-mono border-2 border-t-0 rounded-b-lg -bottom-2 border-zinc-800"
 			>
 				<th
-					class="w-24 min-w-24 max-w-24 border-r border-zinc-500 -translate-y-0.5"
+					class="w-20 min-w-20 max-w-20 border-r border-zinc-500 -translate-y-0.5"
 					>Progress</th
 				>
 				<th class="w-full border-r border-zinc-500 -translate-y-0.5"
