@@ -1,74 +1,31 @@
 <script lang="ts">
 	import PageTemplete from "$components/PageTemplete.svelte";
-	import { createTreeView } from "@melt-ui/svelte";
-
 	import { SvelteComponent, onMount, setContext, tick } from "svelte";
-	import TaskGantt from "$components/task/TaskGantt.svelte";
+	import TaskMain from "$components/task/TaskGantt.svelte";
 	import TaskSide from "$components/task/TaskSide.svelte";
+	import TaskSetting from "$components/task/TaskSetting.svelte";
 	import DurationPicker from "$components/task/DurationPicker.svelte";
 	import { goto } from "$app/navigation";
-	import { derived, writable, type Writable } from "svelte/store";
+	import {  writable, type Writable } from "svelte/store";
 	import { postApi, delApi, patchApi } from "$lib/api.js";
 	import { type Task } from "$lib/schema";
 	import { type DateRange, getThis3WeeksRange } from "$lib/utils";
-	import TaskTree from "$components/task/TaskTree.svelte";
-	import type TreeItem from "$lib/components/task/TaskTree.svelte";
-
-	// treeview
-	const ctx = createTreeView({
-		defaultExpanded: ["lib-0", "tree-0"],
-	});
-	setContext("tree", ctx);
-	const {
-		elements: { tree },
-	} = ctx;
-
+	import TaskList from "$components/task/TaskList.svelte";
 	// data
 	export let data;
 	// todo: be 리펙토링 후, events -> tasks로 변경, api경로 수정
-	const tasks: Writable<Task[]> = writable(data?.events || []);
-	const sortTasks = (a, b) => {
-		const diff = new Date(a.start_date) - new Date(b.start_date);
-		return diff === 0 ? new Date(b.end_date) - new Date(a.end_date) : diff;
-	};
-	const sortedTasks = derived(tasks, ($tasks) => [...$tasks].sort(sortTasks));
-	setContext("tasks", sortedTasks);
+	let tasks: Writable<Task[]> = writable(
+		data?.events.sort(sort_tasks()) || [],
+	);
+
+	$: $tasks = $tasks.sort(sort_tasks());
+	setContext("tasks", tasks);
 	
-	const treeItems = writable(getTreeItems($sortedTasks)||[]);
-	$: {
-	treeItems.set(getTreeItems($sortedTasks));
-	}
-	setContext("treeItems", treeItems);
-	
-	function getTreeItems(tasks) {
-		const itemMap = new Map();
-		const rootItems: TreeItem[] = [];
-
-		tasks.forEach((task) => {
-			const item = { task, subtasks: [] };
-			itemMap.set(task.id, item);
-
-			if (!task.parent_id) {
-				rootItems.push(item);
-			}
-		});
-
-		tasks.forEach((task) => {
-			if (task.parent_id) {
-				const parentItem = itemMap.get(task.parent_id);
-				if (parentItem) {
-					parentItem.subtasks.push(itemMap.get(task.id));
-				}
-			}
-		});
-
-		return rootItems;
-	}
-
 	// duration select
 	const selectedDateRange: Writable<DateRange> =
 		writable(getThis3WeeksRange());
 	setContext("selectedDateRange", selectedDateRange);
+
 
 	onMount(async () => {
 		$selectedDateRange = getThis3WeeksRange();
@@ -81,7 +38,6 @@
 		const searchParams = new URLSearchParams({ start_date, end_date });
 		await goto(`?${searchParams.toString()}`);
 		$tasks = await data?.events;
-		$treeItems = getTreeItems($tasks);
 		await tick();
 	}
 
@@ -89,33 +45,6 @@
 		const { selectedDateRange } = e.detail;
 		await setQuery(selectedDateRange);
 		$selectedDateRange = selectedDateRange;
-	}
-
-	async function handleUpdateTask(e) {
-		// console.log("update task", e.detail.updateData);
-		const { id } = e.detail.task;
-		// todo: 기존꺼랑 변화 없으면 냅둬.
-		try {
-			const res = await patchApi({
-				path: `/events/${id}`,
-				data: e.detail.updateData,
-			});
-
-			// todo: data.task로 변경
-			const updatedTask = res.data.event;
-
-			tasks.update(($tasks) => {
-				const index = $tasks.findIndex((task) => task.id === id);
-				if (index !== -1) {
-					$tasks[index] = updatedTask;
-				}
-				return $tasks;
-			});
-
-			await tick();
-		} catch (error) {
-			console.error("Request failed:", error);
-		}
 	}
 
 	async function handleCreateTask(e) {
@@ -185,10 +114,48 @@
 		}
 	}
 
+	async function handleUpdateTask(e) {
+		const { id } = e.detail.task;
+		// todo: 기존꺼랑 변화 없으면 냅둬.
+		try {
+			const res = await patchApi({
+				path: `/events/${id}`,
+				data: e.detail.updateData,
+			});
+			
+			// todo: data.task로 변경
+			const updatedTask = res.data.event;
+
+			$tasks = $tasks.map((task) =>
+				task.id === updatedTask.id ? updatedTask : task,
+			);
+
+			if (e.detail.updateData.start_date || e.detail.updateData.end_date) {
+				$tasks.sort(sort_tasks());
+			}
+			await tick();
+		} catch (error) {
+			console.error("Request failed:", error);
+		}
+	}
+
+	function sort_tasks() {
+		// duration 기준으로 정렬 (start_date가 빠른 것부터 정렬 -> end_date가 느린것부터 정렬)
+		return (a, b) => {
+			const diff = new Date(a.start_date) - new Date(b.start_date);
+			if (diff === 0) {
+				return new Date(b.end_date) - new Date(a.end_date);
+			} else {
+				return diff;
+			}
+		};
+	}
+
 	// scroll
 	let scrollPosition = { scrollTop: 0, scrollLeft: 0 };
 	let sideComponent: SvelteComponent;
 	let mainComponent: SvelteComponent;
+	let settingComponent: SvelteComponent;
 
 	function handleScroll(e) {
 		scrollPosition = {
@@ -197,6 +164,7 @@
 		};
 		mainComponent.updateScrollPosition(scrollPosition);
 		sideComponent.updateScrollPosition(scrollPosition);
+		settingComponent.updateScrollPosition(scrollPosition);
 	}
 </script>
 
@@ -215,28 +183,46 @@
 			/>
 		</div>
 
+		<!-- setting -->
+		<!-- <div
+			slot="options"
+			class="absolute flex h-full max-h-[calc(100%-140px)] w-6 flex-col"
+			style="transform: translate({sideComponentWidth - 10}px, 24px);"
+		>
+			<TaskSetting
+				bind:this={settingComponent}
+				on:scroll={handleScroll}
+				on:delete={handleDeleteTask}
+				on:update={handleUpdateTask}
+				on:create={handleCreateTask}
+			/>
+		</div> -->
+
 		<!-- main: gantt chart -->
 		<div
 			slot="main"
-			class="relative w-full h-full -translate-y-1 no-scrollbar"
+			class="relative w-full h-full -translate-y-1 no-scrollbar "
 		>
 			<div
-				{...$tree}
-				class="w-full h-[calc(100%-16px)] max-h-[calc(100%-16px)] font-mono"
+				class="z-10 absolute -left-4 flex h-[calc(100%-90px)] max-h-[calc(100%-90px)] top-[74px] w-6 flex-col"
 			>
-				<TaskGantt
-					bind:this={mainComponent}
+				<TaskSetting
+					bind:this={settingComponent}
 					on:scroll={handleScroll}
-					bind:treeItems={$treeItems}
+					on:delete={handleDeleteTask}
+					on:update={handleUpdateTask}
+					on:create={handleCreateTask}
 				/>
 			</div>
 
+			<div class="w-full h-[calc(100%-16px)] max-h-[calc(100%-16px)] font-mono ">
+				<TaskMain bind:this={mainComponent} on:scroll={handleScroll} />
+			</div>
+
 			<div
-				{...$tree}
-				class="absolute left-0 w-full h-[calc(100%-36px)] max-h-[calc(100%-36px)] top-[70.5px] opacity-90"
+				class="absolute left-0 w-full h-[calc(100%-36px)] max-h-[calc(100%-36px)] top-[70px] opacity-90"
 			>
-				<TaskTree
-					bind:treeItems={$treeItems}
+				<TaskList
 					bind:this={sideComponent}
 					bind:scrollPosition
 					on:scroll={handleScroll}
@@ -246,20 +232,13 @@
 			</div>
 
 			<table
-				class="absolute left-0 flex w-full h-5 font-mono border-2 border-t-0 rounded-b-lg -bottom-2 border-zinc-800"
+				class="absolute left-0 flex w-full font-mono border-2 border-t-0 rounded-b-lg -bottom-2 border-zinc-800"
 			>
-				<th
-					class="w-24 min-w-24 max-w-24 border-r border-zinc-500 -translate-y-0.5"
-					>Progress</th
-				>
-				<th class="w-full border-r border-zinc-500 -translate-y-0.5"
-					>Title</th
-				>
-				<th class="w-[120px] min-w-[120px] max-w-[120px] -translate-y-0.5"
-					>Duration</th
-				>
-				<th class="w-[16px] min-w-[16px] max-w-[16px] -translate-y-0.5"
-				></th>
+				<th class=" w-[30px] border-r border-zinc-500">#</th>
+				<th class="w-[140px] border-r border-zinc-500">Progress</th>
+				<th class="w-full border-r border-zinc-500">Title</th>
+				<th class="w-[180px]">Duration</th>
+				<th class="w-[20px]"></th>
 			</table>
 		</div>
 	</PageTemplete>

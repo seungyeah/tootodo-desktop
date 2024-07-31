@@ -5,10 +5,11 @@
 		CalendarDate,
 		parseDate,
 	} from "@internationalized/date";
-	import { Button, DropdownMenu, Input, Popover, RangeCalendar } from "$ui";
-	import { CirclePlus, Calendar, GripVertical } from "lucide-svelte";
+	import { Popover, RangeCalendar } from "$ui";
+	import { GripVertical } from "lucide-svelte";
 	import { createEventDispatcher, onMount, tick } from "svelte";
 	import { getContext } from "svelte";
+	import {type Task} from "$lib/schema";
 	import {type Task} from "$lib/schema";
 
 	const selectedDate = getContext("selectedDateRange");
