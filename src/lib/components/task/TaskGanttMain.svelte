@@ -73,15 +73,14 @@
             {#each months.dates as date}
                {@const day = date.toDate().getDay()}
                <td
-                  class="py-0 text-xs border-b-4 border-r border-zinc-600 text-zinc-600"
-                  
+                  class="py-0 text-xs border-b-4 border-r border-zinc-600 text-zinc-600"                  
                   style="width: calc({100 / totalDays}%);"
                >
                   <div
                      class={day === 0
-                        ? " border-r border-zinc-900  bg-pomodoro-500/10"
+                        ? " border-r border-zinc-900 bg-gradient-to-b from-pomodoro-500/10 to-zinc-100"
                         : day === 6
-                          ? "bg-blue-100/90"
+                          ? "bg-gradient-to-b from-blue-500/10 to-zinc-100"
                           : ""}
                   >
                      <div class="py-0 text-xs">{days[day]}</div>

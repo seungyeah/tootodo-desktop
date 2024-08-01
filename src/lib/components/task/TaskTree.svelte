@@ -5,6 +5,8 @@
 		task: Task;
 		subtasks?: TreeItem[];
 	};
+	
+	let draggedTask: Task | null = null;
 </script>
 
 <script lang="ts">
@@ -31,24 +33,11 @@
 	export let level = 1;
 	export let treeItems: TreeItem[] = [];
 
-	const selectedDate = getContext("selectedDateRange");
 	const todayValue = today(getLocalTimeZone());
 	let cellDuration = {
 		start: today(getLocalTimeZone()),
 		end: todayValue.add({ days: 0 }),
 	};
-
-	let newTaskDuration = {
-		start: $selectedDate.start.add({ days: 7 }),
-		end: $selectedDate.start.add({ days: 13 }),
-	};
-
-	onMount(() => {
-		newTaskDuration = {
-			start: $selectedDate.start.add({ days: 7 }),
-			end: $selectedDate.start.add({ days: 13 }),
-		};
-	});
 
 	////// dispatch
 	const dispatch = createEventDispatcher();
@@ -58,6 +47,7 @@
 		task: Task,
 		duration: { start: CalendarDate; end: CalendarDate },
 	) {
+		//console.log("task transfer",task.start_date, task.end_date);
 		const updateData = {
 			start_date: duration.start.toString(),
 			end_date: duration.end.toString(),
@@ -79,14 +69,7 @@
 		dispatch("update", { task, updateData });
 	}
 
-	function handleUpdateParent(task: Task, parentTask: Task) {
-		const updateData = {
-			parent_id: parentTask.id,
-		};
-		dispatch("update", { task, updateData });
-	}
-
-	// 자식 컴포넌트에서 발생한 이벤트를 처리하고 상위로 전달하는 함수
+	// 자식 컴포넌트(self)에서 발생한 이벤트를 처리하고 상위로 전달하는 함수
 	function handleChildUpdate(event: CustomEvent) {
 		const { task, updateData } = event.detail;
 		dispatch("update", { task, updateData });
@@ -117,33 +100,37 @@
 	}
 
 	// dnd
-	let draggedTask: Task | null = null;
 
 	function handleDragStart(e: DragEvent, task: Task) {
-		draggedTask = task;
+		draggedTask = {...task} ;
 		e.dataTransfer!.effectAllowed = "move";
 		e.dataTransfer!.setData("text/plain", task.id);
 	}
 
 	function handleDragOver(e: DragEvent) {
 		e.preventDefault();
+		console.log(draggedTask?.title, "over");
 		e.dataTransfer!.dropEffect = "move";
 	}
 
 	function handleDrop(e: DragEvent, targetTask: Task) {
 		e.preventDefault();
-		if (
-			draggedTask &&
-			draggedTask.id !== targetTask.id &&
-			!draggedTask.parent_id
-		) {
+		console.log(draggedTask?.title, "target: ",targetTask.title);
+		if (draggedTask && draggedTask.id !== targetTask.id) {
+			console.info("start update")
 			handleUpdateParent(draggedTask, targetTask);
 		}
-		draggedTask = null;
 	}
 
+	function handleUpdateParent(task: Task, targetTask: Task) {
+    const updateData = targetTask.parent_id
+        ? { parent_id: targetTask.parent_id }
+        : { parent_id: targetTask.id };
+    dispatch("update", { task, updateData });
+}
+
 	function handleDragEnd() {
-		console.log("drag end");
+		console.info("drag end")
 		draggedTask = null;
 	}
 </script>
@@ -158,38 +145,27 @@
 		{#each treeItems as { task, subtasks }, i}
 			{@const itemId = `${task.id}`}
 			{@const hasChildren = !!subtasks?.length}
-
-			<div
-				draggable={true}
+			<div				
+				draggable={!hasChildren}
 				class="flex w-full h-[30px] items-center gap-0 rounded-md"
 				class:group={$isExpanded(itemId)}
+				class:dragging={task === draggedTask}
+				class:draggable={!hasChildren}
+				on:dragstart={(e) => handleDragStart(e, task)}
+				on:dragover={handleDragOver}
+				on:drop={(e) => handleDrop(e, task)}
+				on:dragend={handleDragEnd}
+				role="listitem"
 			>
-				{#if draggedTask}
+				{#if task === draggedTask}
 					<GripVertical size={18} />
 				{/if}
 
-				{#if !hasChildren}
+				{#if !hasChildren }
 					<div
 						class={level !== 1 ? "pl-4 h-full bg-zinc-100 border-b" : ""}
 					/>
 				{/if}
-
-				<!-- progress rate -->
-				<div class="w-20 min-w-20 h-[30px] border-b border-r px-1.5">
-					<input
-						class="w-20 translate-y-1.5 shadow opacity-40"
-						class:complete={task.progress_rate === 100}
-						class:inProgress={task.progress_rate > 25 &&
-							task.progress_rate < 100}
-						type="range"
-						step="25"
-						min="0"
-						max="100"
-						value={task.progress_rate || 0}
-						on:change={(e) =>
-							handleUpdateProgressRate(task, e.target.value)}
-					/>
-				</div>
 
 				<!-- icons -->
 				<div
@@ -202,12 +178,12 @@
 					<TaskSettingIcon {task} />
 					<div
 						class={hasChildren && $isSelected(itemId)
-							? "flex space-x-1 border border-zinc-200 shadow-sm rounded-full py-0.5 px-2"
+							? "flex space-x-1 border border-zinc-200 shadow-sm rounded-full py-0.5 px-1.5"
 							: ""}
 					>
 						<!-- Folder icon. -->
 						{#if hasChildren && $isExpanded(itemId)}
-							<svelte:component this={FolderOpen} class="w-4 h-4 " />
+							<svelte:component this={FolderOpen} class="w-4 h-4" />
 						{:else if hasChildren}
 							<svelte:component this={Folder} class="w-4 h-4 " />
 						{/if}
@@ -217,20 +193,12 @@
 								this={ArrowRight}
 								class="w-4 h-4 text-pomodoro-500"
 							/>
-						{/if} 
+						{/if}
 					</div>
 				</div>
 
 				<!-- title -->
-				<div
-					class="h-[30px] border-b border-r w-full"
-					class:dragging={draggedTask}
-					on:dragstart={(e) => handleDragStart(e, task)}
-					on:dragover={handleDragOver}
-					on:drop={(e) => handleDrop(e, task)}
-					on:dragend={handleDragEnd}
-					role="listitem"
-				>
+				<div class="h-[30px] border-b border-r w-full">
 					<input
 						value={task.title}
 						class="h-full px-1.5 w-full bg-transparent focus:bg-zinc-50"
@@ -242,8 +210,6 @@
 				<Popover.Root
 					onOpenChange={(open) => {
 						if (!open) {
-							task.start_date = cellDuration.start.toString();
-							task.end_date = cellDuration.end.toString();
 							handleUpdateDuration(task, cellDuration);
 						} else {
 							cellDuration.start = parseDate(task.start_date);
@@ -253,12 +219,7 @@
 				>
 					<Popover.Trigger
 						><td
-							class="inline-block h-[30px] w-[120px] border-b"
-							class:group_={$isExpanded(itemId)}
-							use:melt={$item({
-								id: itemId,
-								hasChildren,
-							})}
+							class="inline-block h-[30px] w-[120px] border-b border-r"
 						>
 							<div class="inline-flex space-x-1 h-[20px] translate-y-1">
 								{#if task.start_date && task.end_date}
@@ -286,6 +247,26 @@
 						/>
 					</Popover.Content>
 				</Popover.Root>
+
+				<!-- progress rate -->
+				<div
+					class="w-20 min-w-20 h-[30px] border-b border-r px-1.5"
+					class:group_={$isExpanded(itemId)}
+				>
+					<input
+						class="w-20 translate-y-1.5 shadow opacity-40"
+						class:complete={task.progress_rate === 100}
+						class:inProgress={task.progress_rate > 25 &&
+							task.progress_rate < 100}
+						type="range"
+						step="25"
+						min="0"
+						max="100"
+						value={task.progress_rate || 0}
+						on:change={(e) =>
+							handleUpdateProgressRate(task, e.target.value)}
+					/>
+				</div>
 			</div>
 
 			{#if subtasks?.length}
@@ -305,29 +286,26 @@
 {/key}
 
 <style>
+	.group_ {
+		@apply border-r-[3px] border-r-zinc-700 mr-2 ml-[2.5px] rounded-r-md rounded-b-none;
+	}
+
+	.group {
+		@apply border-l-2 rounded-b-none ml-1  border-zinc-700;
+	}
+
+	.groupChild {
+		@apply border-zinc-500 ml-1 mr-1 border-t  border-dashed;
+	}
+
 	.draggable {
 		display: flex;
 		align-items: center;
 		cursor: move;
 	}
 
-	.group_{
-		@apply border-r-[3px] border-r-zinc-700;
-	}
-	
-	.group {
-		@apply border-l-2 rounded-b-none ml-1 pr-1 border-zinc-700;
-	}
-
-	.groupChild {
-		@apply  border-zinc-700 ml-1;
-	}
-
 	.dragging {
 		opacity: 0.5;
-	}
-
-	tr.dragging {
 		background-color: #f0f0f0;
 	}
 

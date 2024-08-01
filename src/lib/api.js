@@ -1,3 +1,4 @@
+import { goto } from "$app/navigation";
 
 const send = async ({ method = '', path = '', data = {} } = {}) => {
 	const commonUrl = import.meta.env.VITE_SERVER_ENDPOINT;
@@ -24,6 +25,7 @@ const send = async ({ method = '', path = '', data = {} } = {}) => {
 		const response = await fetch(url, options);
 		if (!response.ok) {
 			const errorData = await response.json();
+			alert(`${errorData.message}`);
 			throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorData.message}`);
 		}
 		if(method === 'DELETE') return;

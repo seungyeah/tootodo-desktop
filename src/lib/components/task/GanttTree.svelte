@@ -82,7 +82,6 @@
                         class:inProgress={task.progress_rate > 25 &&
                            task.progress_rate < 100}
                      >
-                        {colspan}
                         {#if task.milestone}
                            <div
                               class="absolute top-0.5 w-4 h-4 rotate-45 border border-zinc-900 -z-10 bg-inherit -left-2"

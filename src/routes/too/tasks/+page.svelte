@@ -14,16 +14,8 @@
 	import TaskTree from "$components/task/TaskTree.svelte";
 	import type TreeItem from "$lib/components/task/TaskTree.svelte";
 
-	// treeview
-	const ctx = createTreeView({
-		defaultExpanded: ["lib-0", "tree-0"],
-	});
-	setContext("tree", ctx);
-	const {
-		elements: { tree },
-	} = ctx;
-
-	// data
+	
+	/////// data
 	export let data;
 	// todo: be 리펙토링 후, events -> tasks로 변경, api경로 수정
 	const tasks: Writable<Task[]> = writable(data?.events || []);
@@ -36,10 +28,23 @@
 	
 	const treeItems = writable(getTreeItems($sortedTasks)||[]);
 	$: {
-	treeItems.set(getTreeItems($sortedTasks));
+		treeItems.set(getTreeItems($sortedTasks));
 	}
 	setContext("treeItems", treeItems);
+
+	// treeview
+	const ctx = createTreeView({
+		// expand all tasks that have subtasks
+		//defaultExpanded: $treeItems.map((item) => item.subtasks?.length ? item.task.id: null),
+		defaultExpanded:[],
+	});
+
+	const {
+		elements: { tree },
+	} = ctx;
 	
+	setContext("tree", ctx);
+
 	function getTreeItems(tasks) {
 		const itemMap = new Map();
 		const rootItems: TreeItem[] = [];
@@ -65,7 +70,7 @@
 		return rootItems;
 	}
 
-	// duration select
+	///////// duration select
 	const selectedDateRange: Writable<DateRange> =
 		writable(getThis3WeeksRange());
 	setContext("selectedDateRange", selectedDateRange);
@@ -75,6 +80,7 @@
 		await setQuery($selectedDateRange);
 	});
 
+	///////// req api
 	async function setQuery(duration) {
 		const start_date = duration.start;
 		const end_date = duration.end;
@@ -92,14 +98,20 @@
 	}
 
 	async function handleUpdateTask(e) {
-		console.log("update task", e.detail.updateData);
-		const updateKey = Object.keys(e.detail.updateData)[0];
-		if (e.detail.task[updateKey] === e.detail.updateData[updateKey]) {
-			// console.log("nothing changed")
+		console.info("update task", e.detail.updateData);
+		
+		// task가 변경되지 않았을 경우, 무시
+		const hasChanged = Object.entries(e.detail.updateData).some(([key, value]) => {
+			return !(key in e.detail.task) || e.detail.task[key] !== value;
+		});
+
+		if (!hasChanged) {
+			console.info("nothing changed");
 			return;
 		}
+
+		// 변경된 task를 api로 전송
 		const { id } = e.detail.task;
-		// todo: 기존꺼랑 변화 없으면 냅둬.
 		try {
 			const res = await patchApi({
 				path: `/events/${id}`,
@@ -116,6 +128,8 @@
 				}
 				return $tasks;
 			});
+
+			//console.info("updated")
 
 			await tick();
 		} catch (error) {
@@ -190,7 +204,7 @@
 		}
 	}
 
-	// scroll
+	///////// scroll
 	let scrollPosition = { scrollTop: 0, scrollLeft: 0 };
 	let sideComponent: SvelteComponent;
 	let mainComponent: SvelteComponent;
@@ -238,7 +252,7 @@
 
 			<div
 				{...$tree}
-				class="absolute left-0 w-full h-[calc(100%-36px)] max-h-[calc(100%-36px)] top-[70.5px] opacity-90"
+				class="absolute left-0 w-full h-[calc(100%-36px)] max-h-[calc(100%-36px)] top-[70.5px] opacity-[89%]"
 			>
 				<TaskTree
 					bind:treeItems={$treeItems}
@@ -253,17 +267,18 @@
 			<table
 				class="absolute left-0 flex w-full h-5 font-mono border-2 border-t-0 rounded-b-lg -bottom-2 border-zinc-800"
 			>
-				<th
-					class="w-20 min-w-20 max-w-20 border-r border-zinc-500 -translate-y-0.5"
-					>Progress</th
-				>
+				
 				<th class="w-full border-r border-zinc-500 -translate-y-0.5"
 					>Title</th
 				>
-				<th class="w-[120px] min-w-[120px] max-w-[120px] -translate-y-0.5"
+				<th class="w-[120px] border-r border-zinc-500 min-w-[120px] max-w-[120px] -translate-y-0.5"
 					>Duration</th
 				>
-				<th class="w-[16px] min-w-[16px] max-w-[16px] -translate-y-0.5"
+				<th
+					class="w-20 min-w-20 max-w-20 -translate-y-0.5"
+					>Progress</th
+				>
+				<th class="w-[15px] min-w-[15px] max-w-[15px] -translate-y-0.5"
 				></th>
 			</table>
 		</div>
