@@ -175,7 +175,7 @@
 						hasChildren,
 					})}
 				>
-					<TaskSettingIcon {task} />
+					<TaskSettingIcon {task} {hasChildren} />
 					<div
 						class={hasChildren && $isSelected(itemId)
 							? "flex space-x-1 border border-zinc-200 shadow-sm rounded-full py-0.5 px-1.5"
