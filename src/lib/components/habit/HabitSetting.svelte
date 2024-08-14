@@ -14,13 +14,13 @@
 		dispatch('delete', { habit });	
 	}
 
-	const handleUpdateHabit = getContext('handleUpdateHabit');
+	const dispatchUpdateHabit:Function = getContext('handleUpdateHabit');
 
 	function handleUpdateStatus(habit:Habit,key:string){
 		const updateData = {
 			[key]:habit.status === "InProgress" ? "Archived" : "InProgress"
 		}
-		handleUpdateHabit({ habit, updateData });
+		dispatchUpdateHabit({ habit, updateData });
 	}
 
 	let tableContainer: HTMLElement;

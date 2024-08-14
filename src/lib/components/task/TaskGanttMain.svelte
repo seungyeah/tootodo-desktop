@@ -1,6 +1,7 @@
 <script lang="ts">
    import {
       getLocalTimeZone,
+      CalendarDate,
       today,
    } from "@internationalized/date";
    import { getContext } from "svelte";
@@ -19,18 +20,19 @@
    $: monthCounts = countMonths(months.dates);
    // 전체 날짜 수 계산
    $: totalDays = months.dates.length;
-   
+
    // 오늘 날짜의 위치 계산
-   $: todayPosition = months.dates.findIndex((date: CalendarDate) => 
-      date.compare(today(getLocalTimeZone())) === 0
+   $: todayPosition = months.dates.findIndex(
+      (date: CalendarDate) => date.compare(today(getLocalTimeZone())) === 0,
    );
 
    // 오늘 날짜의 상대적 위치 (퍼센트) 계산
-   $: todayPositionPercent = todayPosition !== -1 ? (todayPosition / totalDays) * 100 : null;
-   
+   $: todayPositionPercent =
+      todayPosition !== -1 ? (todayPosition / totalDays) * 100 : null;
+
    // scroll
    import { createEventDispatcher } from "svelte";
-    import GanttTree from "./GanttTree.svelte";
+   import GanttTree from "./GanttTree.svelte";
 
    const dispatch = createEventDispatcher();
    let tableContainer: HTMLElement;
@@ -48,8 +50,6 @@
          tableContainer.scrollLeft = scrollPosition.scrollLeft;
       }
    }
-
-
 </script>
 
 <div
@@ -63,17 +63,16 @@
             {#each monthCounts as monthCount}
                <td
                   class="border-b-2 border-r border-zinc-600"
-                  colspan={monthCount.count}
-                  >{monthCount.month}</td
+                  colspan={monthCount.count}>{monthCount.month}</td
                >
             {/each}
          </tr>
 
          <tr class="text-center">
-            {#each months.dates as date}
+            {#each months?.dates || [] as date}
                {@const day = date.toDate().getDay()}
                <td
-                  class="py-0 text-xs border-b-4 border-r border-zinc-600 text-zinc-600"                  
+                  class="py-0 text-xs border-b-4 border-r border-zinc-600 text-zinc-600"
                   style="width: calc({100 / totalDays}%);"
                >
                   <div
@@ -94,15 +93,14 @@
          </tr>
       </thead>
       <tbody>
-         <GanttTree {treeItems} {totalDays}/>         
+         <GanttTree {treeItems} {totalDays} />
       </tbody>
-      
    </table>
-
-
 </div>
 
 {#if todayPositionPercent}
-   <div class="fixed z-20 h-[calc(100%-44px)] border-4 border-double top-[32px] bg-violet-100/10 border-violet-400/10" style="left: {todayPositionPercent}%; width: calc({100 / totalDays}%);"/>
+   <div
+      class="fixed z-20 h-[calc(100%-44px)] border-4 border-double top-[32px] bg-violet-100/10 border-violet-400/10"
+      style="left: {todayPositionPercent}%; width: calc({100 / totalDays}%);"
+   />
 {/if}
-

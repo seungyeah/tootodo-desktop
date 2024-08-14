@@ -11,7 +11,7 @@ export const load: Load = async ({ fetch, url }) => {
 		start_date = "";
 		end_date = "";
 	}
-	const path = import.meta.env.VITE_SERVER_ENDPOINT + '/api' +`/events?start_date=${start_date}&end_date=${end_date}`;
+	const path = import.meta.env.VITE_SERVER_ENDPOINT + '/api' +`/tasks?start_date=${start_date}&end_date=${end_date}`;
 
 	try {
 		const response = await fetch(path,{

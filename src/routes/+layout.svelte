@@ -31,8 +31,6 @@
 
 		if (typeof window !== "undefined")
 			document.addEventListener("keydown", handleKeyDown); // keydown 이벤트 리스너 추가
-
-
 	});
 
 	onDestroy(() => {

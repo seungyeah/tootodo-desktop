@@ -133,7 +133,6 @@
 				bind:this={sideComponent}
 				on:scroll={handleScroll}
 				on:create={handleCreateHabit}
-				on:update={handleUpdateHabit}
 			/>
 		</div>
 
@@ -147,7 +146,6 @@
 				bind:this={settingComponent}
 				on:scroll={handleScroll}
 				on:delete={handleDeleteHabit}
-				on:update={handleUpdateHabit}
 			/>
 		</div>
 

@@ -21,7 +21,7 @@
 	)}
 >
 	{#if withHandle}
-		<div class="z-10 flex h-4 w-3 items-center justify-center rounded-sm border bg-border absolute top-1">
+		<div class="absolute z-10 flex items-center justify-center w-3 h-4 border rounded-sm left-3 bg-border ">
 			<GripVertical class="h-2.5 w-2.5" />
 		</div>
 	{/if}

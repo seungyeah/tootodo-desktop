@@ -5,7 +5,7 @@
 		task: Task;
 		subtasks?: TreeItem[];
 	};
-	
+
 	let draggedTask: Task | null = null;
 </script>
 
@@ -41,6 +41,7 @@
 
 	////// dispatch
 	const dispatch = createEventDispatcher();
+	const dispatchUpdateTask: Function = getContext("handleUpdateTask");
 
 	// update
 	function handleUpdateDuration(
@@ -52,27 +53,27 @@
 			start_date: duration.start.toString(),
 			end_date: duration.end.toString(),
 		};
-		dispatch("update", { task, updateData });
+		dispatchUpdateTask({ task, updateData });
 	}
 
 	function handleUpdateProgressRate(task: Task, progressRate: Number) {
 		const updateData = {
 			progress_rate: +progressRate,
 		};
-		dispatch("update", { task, updateData });
+		dispatchUpdateTask({ task, updateData });
 	}
 
 	function handleUpdateTitle(task: Task, title: String) {
 		const updateData = {
 			title: title,
 		};
-		dispatch("update", { task, updateData });
+		dispatchUpdateTask({ task, updateData });
 	}
 
 	// 자식 컴포넌트(self)에서 발생한 이벤트를 처리하고 상위로 전달하는 함수
 	function handleChildUpdate(event: CustomEvent) {
 		const { task, updateData } = event.detail;
-		dispatch("update", { task, updateData });
+		dispatchUpdateTask({ task, updateData });
 	}
 
 	// scroll
@@ -102,7 +103,7 @@
 	// dnd
 
 	function handleDragStart(e: DragEvent, task: Task) {
-		draggedTask = {...task} ;
+		draggedTask = { ...task };
 		e.dataTransfer!.effectAllowed = "move";
 		e.dataTransfer!.setData("text/plain", task.id);
 	}
@@ -115,22 +116,22 @@
 
 	function handleDrop(e: DragEvent, targetTask: Task) {
 		e.preventDefault();
-		console.log(draggedTask?.title, "target: ",targetTask.title);
+		console.log(draggedTask?.title, "target: ", targetTask.title);
 		if (draggedTask && draggedTask.id !== targetTask.id) {
-			console.info("start update")
+			console.info("start update");
 			handleUpdateParent(draggedTask, targetTask);
 		}
 	}
 
 	function handleUpdateParent(task: Task, targetTask: Task) {
-    const updateData = targetTask.parent_id
-        ? { parent_id: targetTask.parent_id }
-        : { parent_id: targetTask.id };
-    dispatch("update", { task, updateData });
-}
+		const updateData = targetTask.parent_id
+			? { parent_id: targetTask.parent_id }
+			: { parent_id: targetTask.id };
+		dispatchUpdateTask({ task, updateData });
+	}
 
 	function handleDragEnd() {
-		console.info("drag end")
+		console.info("drag end");
 		draggedTask = null;
 	}
 </script>
@@ -145,7 +146,7 @@
 		{#each treeItems as { task, subtasks }, i}
 			{@const itemId = `${task.id}`}
 			{@const hasChildren = !!subtasks?.length}
-			<div				
+			<div
 				draggable={!hasChildren}
 				class="flex w-full h-[30px] items-center gap-0 rounded-md"
 				class:group={$isExpanded(itemId)}
@@ -161,7 +162,7 @@
 					<GripVertical size={18} />
 				{/if}
 
-				{#if !hasChildren }
+				{#if !hasChildren}
 					<div
 						class={level !== 1 ? "pl-4 h-full bg-zinc-100 border-b" : ""}
 					/>
@@ -412,5 +413,22 @@
 		justify-content: center;
 		background: #56121800;
 		z-index: -1;
+	}
+
+	/* scroll bar */
+	::-webkit-scrollbar {
+		width: 0.5rem;
+	}
+
+	::-webkit-scrollbar-track {
+		@apply bg-zinc-100;
+	}
+
+	::-webkit-scrollbar-thumb {
+		@apply bg-transparent rounded-full;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		@apply bg-zinc-500 rounded-full;
 	}
 </style>

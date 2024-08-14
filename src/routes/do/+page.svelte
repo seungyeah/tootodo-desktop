@@ -27,7 +27,7 @@
 	$: currentTimeDisplay = formatTime($currentTime);
 
 	export let data;
-	$: tasks = data?.events.sort(sort_tasks());
+	$: tasks = data?.tasks.sort(sort_tasks()); 
 
 	const weeks = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 	$: monday_date =

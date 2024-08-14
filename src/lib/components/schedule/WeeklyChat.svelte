@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, Popover } from '$ui';
+	import { Button, Popover ,ScrollArea} from '$ui';
 	import { BookMarked, Bookmark, Bot, CircleArrowOutUpRight, Send, Stamp, X } from 'lucide-svelte';
 	import ChatAsk from './ChatAsk.svelte';
 	import { onDestroy, onMount, tick } from 'svelte';
@@ -174,7 +174,7 @@
 							{/if}
 						{/each}
 					</div>
-				</div>
+				</div>				
 			</Popover.Content>
 		</Popover.Root>
 
@@ -210,7 +210,7 @@
 	</div>
 
 	<!-- body -->
-	<div
+	<ScrollArea
 		bind:this={messageContainer}
 		class="h-full max-h-[calc(100%-120px)] w-full flex-col space-y-2 overflow-y-auto px-1 pb-3"
 	>
@@ -298,7 +298,7 @@
 				</div>
 			{/if}
 		{/each}
-	</div>
+	</ScrollArea>
 
 	<!-- foot: send message -->
 	<div class="flex items-center w-full h-20 p-1 rounded-lg rounded-t-none bg-zinc-700">

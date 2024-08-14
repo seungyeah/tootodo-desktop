@@ -12,11 +12,11 @@
 		Trash2,
 		Waypoints,
 		EllipsisVertical,
-		Move,
-		NotebookText,
+		Move,CalendarFold
 	} from "lucide-svelte";
 	import { createEventDispatcher, getContext } from "svelte";
 	import { type Task } from "$lib/schema";
+    import type { TaskCreationMode } from "$lib/type";
 
 	export let hasChildren: boolean;
 	export let task: Task;
@@ -24,20 +24,34 @@
 	let openChat = false;
 
 	const dispatch = createEventDispatcher();
+	const dispatchUpdateTask: Function = getContext("handleUpdateTask");
+	const dispatchCreateTask:Function = getContext("handleCreateTask");
+	const disaptchDeleteTask:Function = getContext("handleDeleteTask");
 
 	function handleDelete(task: Task) {
-		dispatch("delete", { task });
+		disaptchDeleteTask(task);
 	}
 
-	function handleCreate(task: Task, addChild: boolean) {
-		dispatch("create", { task, addBelow: true, addChild });
+	function handleCreate(task: Task, mode: TaskCreationMode) {
+		dispatchCreateTask(task,mode)
 	}
 
 	function handleUpdate(task: Task, key: string, value: any) {
 		const updateData = {
 			[key]: value,
 		};
-		dispatch("update", { task, updateData });
+		dispatchUpdateTask(task,updateData)
+	}
+
+	function openNote(task){
+		
+
+	}
+	function openNotePageList(task){
+
+	}
+	function createNote(task){
+
 	}
 </script>
 
@@ -56,7 +70,7 @@
 						</td>
 					</DropdownMenu.Trigger>
 					<DropdownMenu.Content
-						class="border-2 w-[170px] border-double border-zinc-800 "
+						class="border-2 w-[190px] border-double border-zinc-800 "
 						side="bottom"
 						alignOffset={-100}
 						sideOffset={-30}
@@ -74,14 +88,14 @@
 							{#if !task.parent_id}
 								<DropdownMenu.Item class="h-8 py-0">
 									<button
-										on:click={handleCreate(task, false)}
+										on:click={handleCreate(task, 'sameDuration')}
 										class="relative h-8"
 										>task🔻
 									</button>
 								</DropdownMenu.Item>
 							{/if}
 							<DropdownMenu.Item class="h-8 py-0">
-								<button on:click={handleCreate(task, true)} class=" h-7"
+								<button on:click={handleCreate(task, 'child')} class=" h-7"
 									>subtask</button
 								>
 							</DropdownMenu.Item>
@@ -107,14 +121,22 @@
 							{#if hasChildren}
 								<DropdownMenu.Item class="h-8 py-0">
 									<button
-										on:click={handleCreate(task, true)}
+										on:click={handleUpdate(
+											task,
+											"milestone",
+											!task.milestone,
+										)}
 										class=" h-7">ungroup</button
 									>
 								</DropdownMenu.Item>
 							{:else}
 								<DropdownMenu.Item class="h-8 py-0">
 									<button
-										on:click={handleCreate(task, true)}
+										on:click={handleUpdate(
+											task,
+											"milestone",
+											!task.milestone,
+										)}
 										class=" h-7">new group</button
 									>
 								</DropdownMenu.Item>
@@ -127,7 +149,7 @@
 							{#if hasNote}
 								<DropdownMenu.Item class="h-8 ">
 									<button
-										on:click={handleCreate(task, true)}
+										on:click={openNote(task)}
 										class="relative -translate-y-1"
 										><BookOpen size={20} class="mx-1" />
 										<span class="absolute -left-0.5 -bottom-3.5">open</span></button
@@ -135,7 +157,7 @@
 								</DropdownMenu.Item>
 								<DropdownMenu.Item class="h-8">
 									<button
-										on:click={handleCreate(task, true)}
+										on:click={openNotePageList(task)}
 										class="relative -translate-y-1"
 										><FilePlus size={20} /><span class="absolute -left-1 -bottom-3.5">page</span></button
 									>
@@ -144,9 +166,9 @@
 							<DropdownMenu.Label class="absolute text-xs left-1.5"
 								><BookPlus  size={20} />
 							</DropdownMenu.Label>
-								<DropdownMenu.Item class="h-8 ml-8">
+								<DropdownMenu.Item class="h-8 ml-8">									
 									<button
-										on:click={handleCreate(task, false)}
+										on:click={createNote(task)}
 										class="flex h-8 p-1.5"
 									>
 										new note
@@ -172,7 +194,12 @@
 								>
 							</DropdownMenu.Item>
 							<DropdownMenu.Item class="">
-								<button on:click={handleDelete(task)}
+								<button 
+									><CalendarFold size={20} /></button
+								>
+							</DropdownMenu.Item>
+							<DropdownMenu.Item class="">
+								<button 
 									><Waypoints size={20} /></button
 								>
 							</DropdownMenu.Item>

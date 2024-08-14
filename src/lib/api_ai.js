@@ -1,7 +1,6 @@
-import { goto } from "$app/navigation";
 
 const send = async ({ method = '', path = '', data = {} } = {}) => {
-	const commonUrl = import.meta.env.VITE_SERVER_ENDPOINT;
+	const commonUrl = import.meta.env.VITE_AI_SERVER_ENDPOINT;
 	const url = commonUrl + '/api' + path;
 
 	const headers = {
@@ -31,26 +30,7 @@ const send = async ({ method = '', path = '', data = {} } = {}) => {
 		}
 		return responseData;
 	} catch (error) {
-		if (error.message.includes('HTTP error')) {
-			try {
-				// 토큰 갱신 시도
-				const refreshOptions = {
-					path: '/auth/refresh'
-				};
-				await getApi(refreshOptions);
-
-				// 토큰 갱신 후 원래 요청 재시도
-				return await send({ method, path, data });
-			} catch (refreshError) {
-				// 토큰 갱신에 실패한 경우				
-				alert('Session expired. Please log in again.');
-				console.error('Token refresh failed:', refreshError);
-			}
-		} else {
-			// 네트워크 오류 등 다른 종류의 에러
-			console.error('API request failed:', error);
-		}
-		goto('/login');
+		console.error('API request failed:', error);
 	}
 };
 

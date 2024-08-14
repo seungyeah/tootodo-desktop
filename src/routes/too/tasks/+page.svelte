@@ -13,20 +13,19 @@
 	import { type DateRange, getThis3WeeksRange } from "$lib/utils";
 	import TaskTree from "$components/task/TaskTree.svelte";
 	import type TreeItem from "$lib/components/task/TaskTree.svelte";
+    import type { TaskCreationMode } from "$lib/type.js";
 
-	
 	/////// data
 	export let data;
-	// todo: be 리펙토링 후, events -> tasks로 변경, api경로 수정
-	const tasks: Writable<Task[]> = writable(data?.events || []);
+	const tasks: Writable<Task[]> = writable(data?.tasks || []);
 	const sortTasks = (a, b) => {
 		const diff = new Date(a.start_date) - new Date(b.start_date);
 		return diff === 0 ? new Date(b.end_date) - new Date(a.end_date) : diff;
 	};
 	const sortedTasks = derived(tasks, ($tasks) => [...$tasks].sort(sortTasks));
 	setContext("tasks", sortedTasks);
-	
-	const treeItems = writable(getTreeItems($sortedTasks)||[]);
+
+	const treeItems = writable(getTreeItems($sortedTasks) || []);
 	$: {
 		treeItems.set(getTreeItems($sortedTasks));
 	}
@@ -36,13 +35,13 @@
 	const ctx = createTreeView({
 		// expand all tasks that have subtasks
 		//defaultExpanded: $treeItems.map((item) => item.subtasks?.length ? item.task.id: null),
-		defaultExpanded:[],
+		defaultExpanded: [],
 	});
 
 	const {
 		elements: { tree },
 	} = ctx;
-	
+
 	setContext("tree", ctx);
 
 	function getTreeItems(tasks) {
@@ -86,7 +85,7 @@
 		const end_date = duration.end;
 		const searchParams = new URLSearchParams({ start_date, end_date });
 		await goto(`?${searchParams.toString()}`);
-		$tasks = await data?.events;
+		$tasks = await data?.tasks;
 		$treeItems = getTreeItems($tasks);
 		await tick();
 	}
@@ -97,12 +96,12 @@
 		$selectedDateRange = selectedDateRange;
 	}
 
-	async function handleUpdateTask(e) {
-		console.info("update task", e.detail.updateData);
-		
+	async function handleUpdateTask({ task, updateData }) {
+		console.info("update task", updateData);
+
 		// task가 변경되지 않았을 경우, 무시
-		const hasChanged = Object.entries(e.detail.updateData).some(([key, value]) => {
-			return !(key in e.detail.task) || e.detail.task[key] !== value;
+		const hasChanged = Object.entries(updateData).some(([key, value]) => {
+			return !(key in task) || task[key] !== value;
 		});
 
 		if (!hasChanged) {
@@ -111,15 +110,14 @@
 		}
 
 		// 변경된 task를 api로 전송
-		const { id } = e.detail.task;
+		const { id } = task;
 		try {
 			const res = await patchApi({
-				path: `/events/${id}`,
-				data: e.detail.updateData,
+				path: `/tasks/${id}`,
+				data: updateData,
 			});
 
-			// todo: data.task로 변경
-			const updatedTask = res.data.event;
+			const updatedTask = res.data.task;
 
 			tasks.update(($tasks) => {
 				const index = $tasks.findIndex((task) => task.id === id);
@@ -136,54 +134,38 @@
 			console.error("Request failed:", error);
 		}
 	}
-
-	async function handleCreateTask(e) {
-		if (!e.detail.task) {
+	
+	async function handleCreateTask(task: Task, mode: TaskCreationMode) {
+		if (!task) {
 			return;
 		}
-		let formattedTask = {};
 
-		if (e.detail.addBelow) {
-			// 선택된 task의 하단에 새로운 task 추가
-			const task_before = e.detail.task;
+		let formattedTask: Partial<Task> = {};
+
+		if (mode === "new") {
+			formattedTask = {
+				title: task.title,
+				start_date: formatDate(task.start_date),
+				end_date: formatDate(task.end_date),
+			};
+		} else {
 			formattedTask = {
 				title: "",
-				start_date: task_before.start_date
-					? new Date(task_before.start_date).toISOString().split("T")[0]
-					: null,
-				end_date: task_before.end_date
-					? new Date(task_before.end_date).toISOString().split("T")[0]
-					: null,
+				start_date: formatDate(task.start_date),
+				end_date: formatDate(task.end_date),
 			};
-			// subtask를 추가하는 명령을 받을 경우.
-			if (e.detail.addChild) {
-				formattedTask = {
-					...formattedTask,
-					parent_id: task_before.id,
-				};
+
+			if (mode === "child") {
+				formattedTask.parent_id = task.id;
 			}
-		} else {
-			// 사용자가 선택한 duration에 새로운 task 추가
-			const { title, start_date, end_date } = e.detail.task;
-			formattedTask = {
-				title,
-				start_date: start_date
-					? new Date(start_date).toISOString().split("T")[0]
-					: null,
-				end_date: end_date
-					? new Date(end_date).toISOString().split("T")[0]
-					: null,
-			};
 		}
 
 		try {
 			const res = await postApi({
-				// todo: be 리펙토링 후, events -> tasks로 api경로 수정
-				path: "/events/",
+				path: "/tasks/",
 				data: formattedTask,
 			});
-			// todo: data.tasks로 변경
-			const newTask = res.data.event;
+			const newTask = res.data.task;
 
 			$tasks = [...$tasks, newTask];
 
@@ -193,16 +175,24 @@
 		}
 	}
 
-	async function handleDeleteTask(e) {
-		const { id } = e.detail.task;
+	function formatDate(date: string | null): string | null {
+		return date ? new Date(date).toISOString().split("T")[0] : null;
+	}
+
+	async function handleDeleteTask(task: Task) {
+		const { id } = task;
 		try {
-			await delApi({ path: `/events/${id}` });
+			await delApi({ path: `/tasks/${id}` });
 			$tasks = $tasks.filter((task) => task.id !== id);
 			await tick();
 		} catch (error) {
 			console.error("Request failed:", error);
 		}
 	}
+
+	setContext("handleUpdateTask", handleUpdateTask);
+	setContext("handleDeleteTask", handleDeleteTask);
+	setContext("handleCreateTask", handleCreateTask);
 
 	///////// scroll
 	let scrollPosition = { scrollTop: 0, scrollLeft: 0 };
@@ -267,17 +257,14 @@
 			<table
 				class="absolute left-0 flex w-full h-5 font-mono border-2 border-t-0 rounded-b-lg -bottom-2 border-zinc-800"
 			>
-				
 				<th class="w-full border-r border-zinc-500 -translate-y-0.5"
 					>Title</th
 				>
-				<th class="w-[120px] border-r border-zinc-500 min-w-[120px] max-w-[120px] -translate-y-0.5"
+				<th
+					class="w-[120px] border-r border-zinc-500 min-w-[120px] max-w-[120px] -translate-y-0.5"
 					>Duration</th
 				>
-				<th
-					class="w-20 min-w-20 max-w-20 -translate-y-0.5"
-					>Progress</th
-				>
+				<th class="w-20 min-w-20 max-w-20 -translate-y-0.5">Progress</th>
 				<th class="w-[15px] min-w-[15px] max-w-[15px] -translate-y-0.5"
 				></th>
 			</table>

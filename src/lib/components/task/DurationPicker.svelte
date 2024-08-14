@@ -12,7 +12,8 @@
 	import { getThis3WeeksRange} from "$lib/utils";
 	const todayValue = today(getLocalTimeZone());
 	const df = new DateFormatter('en-US', {
-		dateStyle: 'medium'
+		month:"short",
+		day:"numeric",
 	});
 
 	const dispatch = createEventDispatcher();
@@ -56,7 +57,7 @@
 		<Popover.Trigger asChild let:builder>
 			<Button
 				variant="outline"
-				class={cn('w-[270px] min-w-[270px] lg:w-[calc(100%-300px)] justify-start font-semibold text-zinc-600')}
+				class={cn('w-[220px] p-2.5 min-w-[220px] lg:w-[calc(100%-300px)] justify-start font-semibold text-zinc-600')}
 				builders={[builder]}
 			>
 				<CalendarIcon class="w-4 h-4 mr-2" />
