@@ -153,6 +153,7 @@
 				title: "",
 				start_date: formatDate(task.start_date),
 				end_date: formatDate(task.end_date),
+				parent_id: task?.parent_id,
 			};
 
 			if (mode === "child") {

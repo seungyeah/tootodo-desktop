@@ -4,7 +4,7 @@
 
 <div class="h-full m-2">
 	<Separator class="my-2.5" />
-	<div class="fixed top-5 right-0 z-10 w-[calc(100%-596px)] -translate-x-[20px]">
+	<div class="fixed top-5 right-0 z-10 w-[calc(100%-504px)] -translate-x-[20px]">
 		<slot name="nav" />
 	</div>
 	<div class="flex h-[calc(100%-1.6rem)] max-w-full items-center space-x-4 text-sm">

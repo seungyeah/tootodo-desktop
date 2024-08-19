@@ -4,7 +4,10 @@
 
 	import { page } from "$app/stores";
 	import SelectCategory from "$components/SelectCategory.svelte";
-
+    import { getThis3WeeksRange } from "$lib/utils";
+	const date_range = getThis3WeeksRange();
+	const task_start_date = date_range.start;
+	const task_end_date = date_range.end;
 	$: selectedPage = $page.url.pathname.split("/")[2];
 </script>
 
@@ -16,33 +19,31 @@
 	>
 		<ToggleGroup.Root
 			bind:value={selectedPage}
-			class="flex h-full w-[340px] items-center rounded-xl bg-white shadow-md "
+			class="flex h-full w-[240px] items-center rounded-xl bg-white shadow-md "
 		>
-			<div class="h-3/4 w-[40%] px-1 -translate-x-0.5">
-				<SelectCategory />
-			</div>
-			<!-- select item -->
+			<!-- select item -->			
+			<ToggleGroup.Item
+				value="tasks"
+				aria-label="task"
+				class="w-1/3 p-1 ml-2 h-3/4"
+			>
+				<Button on:click={() => goto(`/too/tasks?start_date=${task_start_date}&end_date=${task_end_date}`)}>Task</Button>
+			</ToggleGroup.Item>
 			<ToggleGroup.Item
 				value="notes"
 				aria-label="note"
-				class="h-3/4 w-[20%] px-1 ml-2"
+				class="w-1/3 p-1 h-3/4"
 			>
 				<Button on:click={() => goto("/too/notes")}>Note</Button>
 			</ToggleGroup.Item>
 			<ToggleGroup.Item
-				value="tasks"
-				aria-label="task"
-				class="h-3/4 w-[20%] px-1"
-			>
-				<Button on:click={() => goto("/too/tasks")}>Task</Button>
-			</ToggleGroup.Item>
-			<ToggleGroup.Item
 				value="habits"
 				aria-label="habit"
-				class="h-3/4 w-[20%] px-1 mr-7"
+				class="w-1/3 p-1 mr-2 h-3/4"
 			>
 				<Button on:click={() => goto("/too/habits")}>Habit</Button>
 			</ToggleGroup.Item>
+			
 		</ToggleGroup.Root>
 	</div>
 

@@ -29,6 +29,7 @@ export * as Tooltip from "./tooltip";
 export {ScrollArea} from "./scroll-area";
 export * as Resizable from "./resizable";
 export * as Command from "./command";
+export * as HoverCard from "./hover-card";
 
 export * as Card from "./card";
 export * as Table from "./table";

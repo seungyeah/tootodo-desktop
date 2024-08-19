@@ -31,7 +31,7 @@ const send = async ({ method = '', path = '', data = {} } = {}) => {
 		}
 		return responseData;
 	} catch (error) {
-		if (error.message.includes('HTTP error')) {
+		if (error.message.includes('401')) {
 			try {
 				// 토큰 갱신 시도
 				const refreshOptions = {
@@ -45,12 +45,10 @@ const send = async ({ method = '', path = '', data = {} } = {}) => {
 				// 토큰 갱신에 실패한 경우				
 				alert('Session expired. Please log in again.');
 				console.error('Token refresh failed:', refreshError);
-			}
-		} else {
-			// 네트워크 오류 등 다른 종류의 에러
-			console.error('API request failed:', error);
-		}
-		goto('/login');
+				goto('/login');
+			}			
+		} 		
+		console.error('API request failed:', error);
 	}
 };
 

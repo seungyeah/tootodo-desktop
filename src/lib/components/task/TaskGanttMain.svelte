@@ -13,7 +13,7 @@
 
    $: months = {
       value: today(getLocalTimeZone()),
-      dates: getDatesInRange($selectedDate.start, $selectedDate.end),
+      dates: getDatesInRange($selectedDate.start, $selectedDate.end)|| [],
       duration: getDuration($selectedDate.start, $selectedDate.end),
    };
 
@@ -69,7 +69,7 @@
          </tr>
 
          <tr class="text-center">
-            {#each months?.dates || [] as date}
+            {#each months.dates as date}
                {@const day = date.toDate().getDay()}
                <td
                   class="py-0 text-xs border-b-4 border-r border-zinc-600 text-zinc-600"

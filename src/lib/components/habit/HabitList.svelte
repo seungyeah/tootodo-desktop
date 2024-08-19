@@ -7,7 +7,8 @@
    import IconPicker from "./IconPicker.svelte";
    import icons from "$lib/icons";
    import { type Habit} from "$lib/schema";
-
+   
+   // habit/+page.svelte에서 정의됨
    const habits = getContext("habits");
    const statusOption: string = getContext("statusOption");
 

@@ -1,27 +1,23 @@
 <script lang="ts">
-   import { cn } from "$lib/utils.js";
    import { createTabs, melt } from "@melt-ui/svelte";
-   import { Package } from "lucide-svelte";
-   import { getContext } from "svelte";
+   import { Blend, Kanban, List, Tags, Settings2 } from "lucide-svelte";
    import { cubicInOut } from "svelte/easing";
    import { crossfade } from "svelte/transition";
+   import ViewOptions from "./ViewOptions.svelte";
 
-   // habit/+page.svelte에서 정의됨
-   const statusOption: string = getContext("statusOption");
-
+   export let defaultValue = "list";
    const {
       elements: { root, list, content, trigger },
       states: { value },
    } = createTabs({
-      defaultValue: "tab-1",
+      defaultValue: defaultValue,
    });
 
-   let className = "";
-   export { className as class };
-
    const triggers = [
-      { id: "tab-1", title: "InProgress" },
-      { id: "tab-2", title: "Archived" },
+      { id: "tags", title: "Tags", icon: Tags },
+      { id: "list", title: "List", icon: List },
+      { id: "kanban", title: "Kanban", icon: Kanban },
+      { id: "graph", title: "Graph", icon: Blend },
    ];
 
    const [send, receive] = crossfade({
@@ -32,30 +28,26 @@
 
 <div
    use:melt={$root}
-   class={cn(
-      "flex w-full bg-white flex-col overflow-hidden rounded-t-xl rounded-b-lg shadow-md  data-[orientation=vertical]:flex-row",
-      className,
-   )}
+   class="flex w-full h-full bg-white flex-col overflow-hidden rounded-t-xl rounded-b-lg shadow-md data-[orientation=vertical]:flex-row"
 >
    <!-- tab list -->
    <div
       use:melt={$list}
-      class="flex shrink-0 overflow-x-auto bg-zinc-100
-   data-[orientation=vertical]:flex-col data-[orientation=vertical]:border-r"
+      class="flex shrink-0 w-full overflow-x-auto
+            data-[orientation=vertical]:flex-col data-[orientation=vertical]:border-r"
    >
+      <ViewOptions />
+
       {#each triggers as triggerItem}
          <button
             use:melt={$trigger(triggerItem.id)}
-            class={`relative trigger ${triggerItem.id === "tab-2" ? "w-14" : "w-full"}`}
-            on:click={()=> $statusOption = triggerItem.title}
+            class="relative w-3/4 trigger bg-zinc-100"
          >
-            {#if triggerItem.id === "tab-2"}
-               <Package strokeWidth={1.65} />
-            {:else}
-               <span class="font-semibold -translate-y-0.5"
-                  >{triggerItem.title}</span
-               >
-            {/if}
+            <svelte:component
+               this={triggerItem.icon}
+               size={20}
+               strokeWidth={2}
+            />
             {#if $value === triggerItem.id}
                <div
                   in:send={{ key: "trigger" }}
@@ -67,22 +59,27 @@
       {/each}
    </div>
 
-   <div
-      use:melt={$content("tab-1")}
-      class="content no-scrollbar"
-   >
-      <slot name="tab-1" />
+   <div use:melt={$content("tags")} class="h-full no-scrollbar">
+      <slot name="tags" />
    </div>
 
-   <div use:melt={$content("tab-2")} class="content no-scrollbar">
-      <slot name="tab-2" />
+   <div use:melt={$content("list")} class="h-full no-scrollbar">
+      <slot name="list" />
+   </div>
+
+   <div use:melt={$content("kanban")} class="h-full no-scrollbar">
+      <slot name="kanban" />
+   </div>
+
+   <div use:melt={$content("graph")} class="h-full no-scrollbar">
+      <slot name="graph" />
    </div>
 </div>
 
 <style lang="postcss">
-   .content{
+   /* .content{
       @apply h-full max-h-full m-2 overflow-y-auto bg-white border-2 border-double  border-zinc-600;  
-   }
+   } */
    .trigger {
       display: flex;
       align-items: center;

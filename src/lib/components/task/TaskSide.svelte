@@ -130,8 +130,8 @@
 			</Resizable.Pane>
 			<Resizable.Handle withHandle class="-translate-x-2 bg-zinc-400" />
 			<Resizable.Pane
-				minSize={11}
-				defaultSize={11}
+				minSize={14}
+				defaultSize={14}
 			>
 				<form
 					on:submit|preventDefault={handleSubmit}

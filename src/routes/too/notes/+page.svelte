@@ -77,7 +77,7 @@
 			class="hidden md:block w-[calc(100%-200px)]"
 		/>
 	</div>
-	<div slot="side" class="w-full h-full">
+	<div slot="side" class="w-full h-full px-2 py-2">
 		<NoteSide />
 	</div>
 	<div slot="main" class="w-full h-full">

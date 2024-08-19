@@ -85,7 +85,6 @@
 							<DropdownMenu.Label class="absolute left-0 text-xs"
 								><Plus size={20} />
 							</DropdownMenu.Label>
-							{#if !task.parent_id}
 								<DropdownMenu.Item class="h-8 py-0">
 									<button
 										on:click={handleCreate(task, 'sameDuration')}
@@ -93,12 +92,14 @@
 										>task🔻
 									</button>
 								</DropdownMenu.Item>
-							{/if}
+							
+							{#if !task.parent_id}
 							<DropdownMenu.Item class="h-8 py-0">
 								<button on:click={handleCreate(task, 'child')} class=" h-7"
 									>subtask</button
 								>
 							</DropdownMenu.Item>
+							{/if}
 						</DropdownMenu.Group>
 						<DropdownMenu.Separator />
 

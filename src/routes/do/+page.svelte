@@ -42,7 +42,7 @@
 				return new Date(b.end_date) - new Date(a.end_date);
 			} else {
 				return diff;
-			}
+			}11`																								`
 		};
 	}
 </script>
@@ -71,7 +71,7 @@
 		</div>
 
 		<div
-			class="flex flex-col w-full h-full border-2 overflow-clip border-zinc-700"
+			class="flex flex-col w-full h-full overflow-auto border-2 no-scrollbar border-zinc-700"
 		>
 			<!-- weeks -->
 			<Tabs.Root
@@ -82,10 +82,10 @@
 					{#each weeks as week, i}
 						<Tabs.Trigger
 							value={week}
-							class="w-full font-digital"
+							class="w-20 w-min-20 font-digital"
 							disabled={i != $currentTime?.getDay() - 1}
 						>
-							<span class="mr-2 font-bold">
+							<span class="mr-1 font-bold">
 								{week}
 							</span>
 							{#if $selectedWeekRange.start.day < $selectedWeekRange.end.day}
