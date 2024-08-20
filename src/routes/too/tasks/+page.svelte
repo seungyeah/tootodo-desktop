@@ -243,7 +243,7 @@
 
 			<div
 				{...$tree}
-				class="absolute left-0 w-full h-[calc(100%-36px)] max-h-[calc(100%-36px)] top-[70.5px] opacity-[89%]"
+				class="absolute left-0 w-full h-[calc(100%-36px)] max-h-[calc(100%-36px)] top-[70.5px] opacity-[94%]"
 			>
 				<TaskTree
 					bind:treeItems={$treeItems}

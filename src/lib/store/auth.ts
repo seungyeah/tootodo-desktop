@@ -99,7 +99,7 @@ const setAuth = () => {
 			// alert('사용자 정보를 불러왔습니다. ' + user.email + ' ' + user.provider);
 		} catch (e) {
 			//alert(e.message);
-			await refreshWithFn(getUserInfo);
+			//await refreshWithFn(getUserInfo);
 		}
 	};
 
@@ -144,14 +144,13 @@ const setAuth = () => {
 		}
 	};
 
-	const refreshWithFn = async (toExecute:null | Function) => {
+	const refresh = async () => {
 		try {
 			const options = {
 				path: '/auth/refresh'
 			};
 			await getApi(options);
 			isRefresh.set(true) ;
-			if (toExecute) toExecute();
 		} catch (e) {
 			isRefresh.set(false) 
 			alert('refresh token 역시 만료되었습니다. 다시 로그인하세요. ' + e);
@@ -161,7 +160,7 @@ const setAuth = () => {
 
 	return {
 		subscribe,
-		refreshWithFn,
+		refresh,
 		login,
 		getGoogleUrl,
 		logout,

@@ -31,23 +31,9 @@ const send = async ({ method = '', path = '', data = {} } = {}) => {
 		}
 		return responseData;
 	} catch (error) {
-		if (error.message.includes('401')) {
-			try {
-				// 토큰 갱신 시도
-				const refreshOptions = {
-					path: '/auth/refresh'
-				};
-				await getApi(refreshOptions);
-
-				// 토큰 갱신 후 원래 요청 재시도
-				return await send({ method, path, data });
-			} catch (refreshError) {
-				// 토큰 갱신에 실패한 경우				
-				alert('Session expired. Please log in again.');
-				console.error('Token refresh failed:', refreshError);
-				goto('/login');
-			}			
-		} 		
+		if (error.message.includes('403')) {			
+			alert('Session expired. Please log in again.');
+		}
 		console.error('API request failed:', error);
 	}
 };

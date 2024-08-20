@@ -23,7 +23,7 @@
    >
    <DropdownMenu.Content class="w-44">
       <DropdownMenu.Group>
-         <DropdownMenu.Label class="text-center">Filter Options</DropdownMenu.Label>
+         <DropdownMenu.Label class="text-center">Note Filter Options</DropdownMenu.Label>
          <DropdownMenu.Separator />
          <DropdownMenu.Item class="flex justify-between"
             ><Label class="text-[0.9rem] ">Favorite?</Label>
@@ -40,7 +40,7 @@
       </DropdownMenu.Group>
       <Separator class="my-1" />
       <DropdownMenu.Group>
-         <DropdownMenu.Label class="text-center">Sort Options</DropdownMenu.Label>
+         <DropdownMenu.Label class="text-center">Note Sort Options</DropdownMenu.Label>
          <DropdownMenu.Separator />
          <DropdownMenu.Item class="flex justify-between">
             <RadioGroup.Root value="option-one">

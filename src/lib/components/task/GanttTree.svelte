@@ -124,7 +124,7 @@
       background-color: #7eaf80;
    }
    .inProgress {
-      background-color: #7194b1;
+      background-color: #80b5df;
    }
    .none {
       background-color: #a1a1aa;
