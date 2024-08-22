@@ -24,14 +24,14 @@
       ChevronsRight,
    } from "lucide-svelte";
    import Tab from "./NoteTab.svelte";
-   import TagGroup from "./SideOfListView.svelte";
+   import TagGroup from "./list-view/SideOfListView.svelte";
    import ManageTags from "./ManageTags.svelte";
    import SearchTag from "./SearchTag.svelte";
    import { cn } from "$lib/utils";
    import SelectGroupColor from "./SelectGroupColor.svelte";
    import SelectGroup from "./SelectGroup.svelte";
     import { Select } from "bits-ui";
-    import SideOfKanbanView from "./SideOfKanbanView.svelte";
+    import SideOfKanbanView from "./kanban-view/SideOfKanbanView.svelte";
 
    const dispatch = createEventDispatcher();
 
@@ -65,6 +65,12 @@
          name: "database",
          tags: ["qdrant", "postgres", "mongodb"],
          color: "#d1fae5",
+      },
+      {
+         id: "5",
+         name: "요즘 관심사",
+         tags: ["tootodo 개발", "rust", "mongodb"],
+         color: "#ddd6fe",
       },
    ];
    let tags = [
@@ -260,7 +266,7 @@
       >
    </form>
 
-   <Tab defaultValue="kanban">
+   <Tab defaultValue="tags">
       <div slot="tags" class="h-full">
          <div class="tab-title">Manage Tags</div>
          <ScrollArea class="max-h-[calc(100%-70px)] h-[calc(100%-70px)]  ">
@@ -280,7 +286,7 @@
             >
          </div>
 
-         <ScrollArea class="max-h-[calc(100%-70px)] h-[calc(100%-70px)]  ">
+         <ScrollArea class="max-h-[calc(100%-55px)] h-[calc(100%-55px)]  ">
             {#each tagGroups as tagGroup}
                <TagGroup {tagGroup}></TagGroup>
             {/each}

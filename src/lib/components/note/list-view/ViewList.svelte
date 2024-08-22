@@ -14,67 +14,107 @@
       addResizedColumns,
    } from "svelte-headless-table/plugins";
    import { readable } from "svelte/store";
-   import{ ArrowUpDown, ChevronDown, Milestone } from "lucide-svelte";
+   import { ArrowUpDown, ChevronDown, Milestone } from "lucide-svelte";
    import Actions from "./data-table-actions.svelte";
-   import ItemInfo from "./data-table-connections.svelte"
-   import DataTableCheckbox from "./data-table-checkbox.svelte";   
+   import ItemInfo from "./data-table-connections.svelte";
+   import DataTableCheckbox from "./data-table-checkbox.svelte";
    import Title from "./data-table-title.svelte";
-   import { Button,Table,Input } from "$ui";
+   import { Button, Table, Input } from "$ui";
    import { cn } from "$lib/utils.js";
 
    type Note = {
       id: string;
       tags: {
          name: string;
-         color: string;
+         groups: string[];
       }[];
       title: string;
-      connectedItemInfo: {
+      pages: {
+         title: string|undefined;
          type: string;
-         id: string;
-         title: string;
-         start_date: string;
-         end_date: string;
-         progress: number;
-      } | undefined;
+         content: string;
+      }[];
+      connectedItemInfo:
+         | {
+              type: string;
+              id: string;
+              title: string;
+              start_date: string;
+              end_date: string;
+              progress: number;
+           }
+         | undefined;
    };
 
    const data: Note[] = [
-      {
-         id: "m5gr84i9",
-         tags: [{name:"rust",color:"#fb923c80"},
-            {name:"qdrant",color:"#991b1b80"},
-            {name:"cohere",color:"#facc1580"},
-            {name:"ai",color:"#a3e63580"},
-         ],
-         title: "Qdrant examples, tutorial 분석",
-         connectedItemInfo:{
-            type: "task",
-            id: "123456789",
-            title: "qdrant examples, tutorial 분석",
-            start_date: "2023-09-12T12",
-            end_date: "2023-09-12T12",
-            progress: 75,
-         }
-      },
+      
       {
          id: "m5gr84i89",
-         tags: [{name:"speaking",color:"#2563eb80"}],
+         tags: [{ name: "speaking", groups: ["1"] }],
          title: "speak 하루 한 챕터",
-         connectedItemInfo:{
+         connectedItemInfo: {
             type: "habit",
             id: "123456789",
             title: "speak 하루 한 챕터",
             start_date: "2023-09-12T12",
             end_date: "2023-09-12T12",
             progress: 75,
-         }
+         },
+         pages:[]
       },
       {
          id: "m5gr8479",
-         tags: [{name:"사이드 프로젝트",color:"#a78bfa80"}],
+         tags: [{ name: "사이드 프로젝트", groups: ["0"] }],
          title: "대회 세부 일정",
-         connectedItemInfo:undefined
+         connectedItemInfo: undefined,
+         pages:[{
+            type: "editor",
+            content:"마감: 2024 08 28",            
+         },{
+            type: "editor",
+            content:"마감: 2024 08 28",         
+         }]
+      },
+      {
+         id: "m5gr84i9",
+         tags: [
+            { name: "rust", groups: ["3"] },
+            { name: "qdrant", groups: ["2", "4","5"] },
+            { name: "cohere", groups: ["2"] },
+         ],
+         title: "Qdrant examples, tutorial 분석",
+         connectedItemInfo: {
+            type: "task",
+            id: "123456789",
+            title: "qdrant examples, tutorial 분석",
+            start_date: "2023-09-12T12",
+            end_date: "2023-09-12T12",
+            progress: 75,
+         },
+         pages: [
+            {
+               title: "개발 과정",
+               type: "editor",
+               content: `1. qdrant와 cohere client생성
+                  2. cohere으로 notes 임베딩 데이터 생성(벡터화)
+                  3. qdrant에 2에서 생성한 embeddings 저장 
+                  4. 앱 cors설정
+                  5. searchQuery, Document(note), SearchResult 스키마(class)생성
+                  6. search api생성: 입력 쿼리를 cohere로 벡터화 한 후, 입력 쿼리에 대한 응답를 qdrant에서 검색. 
+               `,
+            },
+            {
+               title: "fastapi",
+               type: "editor",
+               content: `fastapi의 depends가 머임?
+                  - Depends(client): FastAPI에서 client 함수의 반환 값을 엔드포인트 파라미터로 자동으로 주입하는 기능입니다.
+                  - Annotated[QdrantClient, Depends(client)]: client 파라미터가 QdrantClient 타입이며, Depends(client)를 통해 의존성 주입을 수행함을 나타냅니다.
+                  희한한 문법 - 코드에서 Document(**point.payload) for point in results 부분은 파이썬의 리스트 컴프리헨션(List Comprehension)을 사용하여 results 리스트의 각 요소를 Document 객체로 변환하는 작업을 수행하는 부분
+                  - Document(**point.payload): point.payload는 Document 클래스의 필드를 채우기 위한 딕셔너리입니다. **point.payload는 이 딕셔너리의 키와 값을 Document 클래스의 생성자에 전달하여 새로운 Document 객체를 만듭니다.
+                  - 리스트 컴프리헨션: results 리스트의 각 요소를 변환하여 새로운 리스트를 생성합니다. 이 리스트는 Document 객체들로 구성됩니다.
+               `,
+            },
+         ],
       },
    ];
 
@@ -86,7 +126,7 @@
       }),
       select: addSelectedRows(),
       hide: addHiddenColumns(),
-      resize:addResizedColumns(),
+      resize: addResizedColumns(),
    });
 
    const columns = table.createColumns([
@@ -113,7 +153,7 @@
             filter: {
                exclude: true,
             },
-            resize:{
+            resize: {
                initialWidth: 34,
             },
          },
@@ -122,7 +162,7 @@
          header: createRender(Milestone, { size: 18 }),
          accessor: ({ connectedItemInfo }) => connectedItemInfo,
          cell: (item) => {
-            return createRender(ItemInfo, {itemInfo : item.value });
+            return createRender(ItemInfo, { itemInfo: item.value });
          },
          plugins: {
             sort: {
@@ -131,7 +171,7 @@
             filter: {
                exclude: true,
             },
-            resize:{
+            resize: {
                initialWidth: 80,
             },
          },
@@ -139,8 +179,8 @@
       table.column({
          header: "Title",
          accessor: (value) => value,
-         cell: ({value}) => {
-            return createRender(Title, {note:value});
+         cell: ({ value }) => {
+            return createRender(Title, { note: value });
          },
          plugins: {
             filter: {
@@ -148,13 +188,13 @@
                   return value.title.toLowerCase();
                },
             },
-            sort:{
+            sort: {
                getSortValue(value) {
                   return value.title;
                },
-            }
+            },
          },
-      }),      
+      }),
       table.column({
          header: "",
          accessor: ({ id }) => id,
@@ -165,7 +205,7 @@
             sort: {
                disable: true,
             },
-            resize:{
+            resize: {
                initialWidth: 40,
             },
          },
@@ -190,7 +230,6 @@
    const { filterValue } = pluginStates.filter;
 
    const { selectedDataIds } = pluginStates.select;
-
 </script>
 
 <div class="w-full h-full">
@@ -206,9 +245,9 @@
    <!-- table -->
    <div class="border rounded-md">
       <Table.Root {...$tableAttrs}>
-         <Table.Header class="h-6 p-0" >
+         <Table.Header class="h-6 p-0">
             {#each $headerRows as headerRow}
-               <Subscribe rowAttrs={headerRow.attrs()} >
+               <Subscribe rowAttrs={headerRow.attrs()}>
                   <Table.Row class="h-6">
                      {#each headerRow.cells as cell (cell.id)}
                         <Subscribe
@@ -219,7 +258,9 @@
                         >
                            <Table.Head
                               {...attrs}
-                              class={cn("[&:has([role=checkbox])]:px-3 py-0 !h-6")}
+                              class={cn(
+                                 "[&:has([role=checkbox])]:px-3 py-0 !h-6",
+                              )}
                            >
                               {#if cell.id === "Title"}
                                  <Button
@@ -246,21 +287,23 @@
                </Subscribe>
             {/each}
          </Table.Header>
-         
+
          <Table.Body {...$tableBodyAttrs}>
             {#each $pageRows as row (row.id)}
                <Subscribe rowAttrs={row.attrs()} let:rowAttrs>
                   <Table.Row
                      {...rowAttrs}
-                     data-state={$selectedDataIds[row.id] && "selected"}                     
+                     data-state={$selectedDataIds[row.id] && "selected"}
                   >
                      {#each row.cells as cell (cell.id)}
                         <Subscribe attrs={cell.attrs()} let:attrs>
                            <Table.Cell
-                              class={cn("[&:has([role=checkbox])]:pl-3 px-1 py-0 h-12")}
+                              class={cn(
+                                 "[&:has([role=checkbox])]:pl-3 px-1 py-0 h-12 w-full",
+                              )}
                               {...attrs}
                            >
-                                 <Render of={cell.render()} />
+                              <Render of={cell.render()} />
                            </Table.Cell>
                         </Subscribe>
                      {/each}
@@ -270,7 +313,7 @@
          </Table.Body>
       </Table.Root>
    </div>
-   
+
    <!-- pagination -->
    <div class="flex items-center justify-end py-4 space-x-2">
       <div class="flex-1 text-sm text-muted-foreground">

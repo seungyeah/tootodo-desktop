@@ -130,6 +130,6 @@
       background-color: #a1a1aa;
    }
    .start {
-      background-color: #e46b75;
+      background-color: #e46b75e0;
    }
 </style>

@@ -255,7 +255,7 @@
 					class:group_={$isExpanded(itemId)}
 				>
 					<input
-						class="w-20 translate-y-1.5 shadow opacity-40"
+						class="w-20 translate-y-1.5 shadow opacity-30"
 						class:complete={task.progress_rate === 100}
 						class:inProgress={task.progress_rate > 25 &&
 							task.progress_rate < 100}

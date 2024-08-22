@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
 import { CalendarDate, endOfMonth, startOfMonth, startOfWeek } from "@internationalized/date";
+import type TreeItem from "$lib/components/task/TaskTree.svelte";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -68,6 +69,7 @@ import {
     getLocalTimeZone,
     today,
 } from "@internationalized/date";
+import type { Task } from "./schema";
 
 export type DateRange = {
     start: undefined | DateValue;
@@ -144,4 +146,32 @@ export function getDatesInRange(start: CalendarDate, end: CalendarDate) {
     }
 
     return dates;
-}``
+}
+
+// task tree
+export function getTaskTreeItems(tasks:Task[]): TreeItem[] {
+    if(!tasks || tasks.length === 0) return [];
+
+    const itemMap = new Map();
+    const rootItems: TreeItem[] = [];
+
+    tasks.forEach((task) => {
+        const item = { task, subtasks: [] };
+        itemMap.set(task.id, item);
+
+        if (!task.parent_id) {
+            rootItems.push(item);
+        }
+    });
+
+    tasks.forEach((task) => {
+        if (task.parent_id) {
+            const parentItem = itemMap.get(task.parent_id);
+            if (parentItem) {
+                parentItem.subtasks.push(itemMap.get(task.id));
+            }
+        }
+    });
+
+    return rootItems;
+}

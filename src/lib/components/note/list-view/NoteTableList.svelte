@@ -15,7 +15,7 @@
    import { readable } from "svelte/store";
    import{ ArrowUpDown, ChevronDown } from "lucide-svelte";
    import Actions from "./data-table-actions.svelte";
-   import DataTableCheckbox from "./data-table-checkbox.svelte";   
+   import DataTableCheckbox from "../data-table-checkbox.svelte";   
    import { Button,Table,DropdownMenu } from "$ui";
    import { cn } from "$lib/utils.js";
    import { Input } from "$lib/components/ui/input/index.js";

@@ -1,7 +1,7 @@
 <script>
     import Button from "$ui/button/button.svelte";
     import { FileDown, FileUp, Import, ListRestart } from "lucide-svelte";
-    import NoteList from "./ViewList.svelte";
+    import NoteList from "./list-view/ViewList.svelte";
 
 </script>
 <div class="relative w-full">

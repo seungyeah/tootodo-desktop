@@ -27,7 +27,7 @@
 			content: memo.content,
 			editorProps: {
 				attributes: {
-					class: 'w-full  h-[200px] py-1 px-3.5 overflow-y-auto focus:outline-none focus:shadow-xl '
+					class: 'w-full  h-[120px] py-1 px-3.5 overflow-y-auto focus:outline-none focus:shadow-xl '
 				}
 			}
 		});
@@ -91,7 +91,7 @@
 
 	//memo color 300,500,700
 	let colors = [
-		{ name: 'default', normal: '#71717a', light: '#d1d5db', dark: '#3f3f46' },
+		{ name: 'default', normal: '#f59e0b', light: '#fcd34d', dark: '#b45309' },
 		{ name: 'rose', normal: '#f43f5e', light: '#fda4af', dark: '#be123c' },
 		// { name: 'orange', normal: '#f97316', light: '#fdba74', dark: '#c2410c' },
 		{ name: 'violet', normal: '#8b5cf6', light: '#c4b5fd', dark: '#6d28d9' },
@@ -104,7 +104,7 @@
 </script>
 
 {#if editor}
-	<div class="flex-col w-full max-w-full overflow-x-clip">
+	<div class="w-full max-w-full overflow-x-clip my-1">
 		<BubbleMenu editor={$editor}>
 			<div data-test-id="bubble-menu" class="flex">
 				<button
@@ -130,7 +130,7 @@
 
 		<!-- top, change memo color, pin, created date -->
 		<div
-			class="relative flex w-full h-8 gap-1 p-2 mt-2 border-2 shadow-sm rounded-t-md"
+			class="relative flex w-full h-8 gap-1 p-2 border-2 border-double shadow-sm rounded-t-md"
 			style="border-color: {selectedColor}; border-bottom: 0;"
 		>
 			<DropdownMenu.Root>
@@ -176,27 +176,27 @@
 			<input
 				type="text"
 				bind:value={memo.title}
-				class="z-10 h-7 w-[calc(100%-30px)] -translate-y-1 bg-transparent p-1 text-[0.95rem] font-semibold shadow focus-visible:outline-none focus-visible:border-2 focus-visible:rounded "
+				class="z-10 h-7 w-[calc(100%-30px)] -translate-y-1.5 bg-transparent p-1 text-[0.85rem] font-semibold focus-visible:outline-none focus-visible:border-2 focus-visible:rounded "
 			/>
 		</div>
 
 		<main
-			class="font-chat relative rounded-b-lg
-        rounded-r-none border-2 leading-[1.55rem]
+			class="font-chat relative rounded-b-lg -translate-y-1.5
+        rounded-r-none border-2 border-double leading-[1.55rem]
         dark:prose-invert prose-headings:my-1 prose-headings:font-bold
         prose-h1:my-2 prose-h1:text-[1.45rem]
-        prose-h2:text-[1.35rem] prose-h3:text-[1.17rem] prose-p:my-1.5 prose-p:text-[1.1rem]
-        prose-p:font-normal"
+        prose-h2:text-[1.35rem] prose-h3:text-[1.17rem] prose-p:my-1.5 prose-p:text-[1rem]
+        prose-p:font-normal "
 			style="border-color: {selectedColor}; border-top: 0;"
 		>
 			<div
-				class=" absolute -right-[2.1rem] top-5 w-[88px] rotate-90 px-1.5 font-mono text-xs font-light"
+				class=" absolute -right-[2.1rem] top-6 w-[88px] rotate-90 px-1.5 font-mono text-xs font-light"
 				style="color: {selectedColor};"
 			>
 				{memo.date}
 			</div>
 
-			<EditorContent editor={$editor} />
+			<EditorContent editor={$editor}/>
 		</main>
 	</div>
 {/if}

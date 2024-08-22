@@ -241,7 +241,7 @@
 							{/if}
 						</Button>
 						<div
-							class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[1rem] font-normal leading-6 text-zinc-800 shadow-sm shadow-emerald-800"
+							class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[0.9rem] font-normal leading-5 text-zinc-800 shadow-sm shadow-emerald-800"
 						>
 							{msg.content}
 						</div>
@@ -290,7 +290,7 @@
 							{/if}
 						</Button>
 						<div
-							class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[1rem] font-normal leading-6 text-zinc-800 shadow-sm shadow-zinc-300"
+							class=" font-chat w-full rounded-lg rounded-l-none py-1 pl-6 pr-2 text-[0.9rem] font-normal leading-5 text-zinc-800 shadow-sm shadow-zinc-300"
 						>
 							{msg.content}
 						</div>
@@ -299,7 +299,7 @@
 			{/if}
 		{/each}
 	</ScrollArea>
-
+	
 	<!-- foot: send message -->
 	<div class="flex items-center w-full h-20 p-1 rounded-lg rounded-t-none bg-zinc-700">
 		<div class="flex-col w-12 h-full font-digital">

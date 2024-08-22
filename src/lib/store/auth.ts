@@ -99,7 +99,7 @@ const setAuth = () => {
 			// alert('사용자 정보를 불러왔습니다. ' + user.email + ' ' + user.provider);
 		} catch (e) {
 			//alert(e.message);
-			//await refreshWithFn(getUserInfo);
+			await refresh();
 		}
 	};
 

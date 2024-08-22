@@ -21,7 +21,7 @@
 
 		const interval = setInterval(
 			async () => {
-				if (!$isRefresh && loggedIn) {
+				if (loggedIn) {
 					await auth.refresh();
 					await auth.getUserInfo();
 				} else {

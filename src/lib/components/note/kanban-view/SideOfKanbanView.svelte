@@ -1,7 +1,7 @@
 <script lang="ts">
    import { Badge } from "$ui";
-   import SelectGroup from "./SelectGroup.svelte";
-   let xValue = undefined;
+   import SelectGroup from "../SelectGroup.svelte";
+   let xValue = "undefined";
    let yValue = "";
    export let tagGroups;
    $: xGroup = tagGroups.find((f) => f.name === xValue);
@@ -9,9 +9,9 @@
 </script>
 
 <div
-   class="axis"
+   class="axis !border-b-4 text-sm"
 >
-   x: select group
+   X
    <SelectGroup bind:value={xValue} {tagGroups} class="my-2" />
    {#if xValue}
       {#each xGroup.tags as tag}
@@ -26,9 +26,9 @@
 </div>
 
 <div
-   class="axis"
+   class="axis !border-l-4 text-sm"
 >
-   y: select group
+   Y
    <SelectGroup bind:value={yValue} {tagGroups} class="my-2" />
    {#if yValue}
    {#each yGroup.tags as tag}
@@ -44,6 +44,6 @@
 
 <style>
    .axis {
-      @apply min-h-24 p-2 m-2 bg-white border border-l-4 border-dashed rounded-lg shadow border-zinc-500 hover:bg-zinc-50
+      @apply min-h-24  font-bold p-2 m-2 bg-white border border-dashed rounded-lg shadow border-zinc-500 hover:bg-zinc-50
    }
 </style>

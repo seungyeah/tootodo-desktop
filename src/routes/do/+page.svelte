@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Separator, Switch, Label, Button, Tabs, ContextMenu } from "$ui";
+	import { Tabs, Button } from "$ui";
 	import PageTemplete from "$components/PageTemplete.svelte";
 	import {
 		endOfMonth,
@@ -7,7 +7,13 @@
 		startOfWeek,
 		today,
 	} from "@internationalized/date";
-	import { WeeklyChat, Plan ,Result, ScheduleList} from "$components/schedule";
+	import {
+		WeeklyChat,
+		Plan,
+		Result,
+		ScheduleList,
+		ScheduleHeader,
+	} from "$components/schedule";
 	import Memo from "$components/memo/Memo.svelte";
 	import {
 		Columns3,
@@ -18,16 +24,36 @@
 		Workflow,
 	} from "lucide-svelte";
 	import { currentTime, formatTime } from "$store";
+	import { createTreeView } from "@melt-ui/svelte";
+
+	import { SvelteComponent, onMount, setContext, tick } from "svelte";
+	import { derived, writable, type Writable } from "svelte/store";
+	import { getTaskTreeItems } from "$lib/utils";
 
 	let openSide = true;
 
 	let selectedWeekRange = getContext("selectedWeekRange");
 	import { getContext } from "svelte";
-
-	$: currentTimeDisplay = formatTime($currentTime);
+	import ScrollArea from "$ui/scroll-area/scroll-area.svelte";
+	import Input from "$ui/input/input.svelte";
 
 	export let data;
-	$: tasks = data?.tasks.sort(sort_tasks()); 
+	$: tasks = data?.tasks.sort(sort_tasks());
+
+	const treeItems = writable(getTaskTreeItems(tasks) || []);
+	$: treeItems.set(getTaskTreeItems(tasks));
+	setContext("treeItems", treeItems);
+
+	// treeview
+	const ctx = createTreeView({
+		defaultExpanded: [],
+	});
+
+	const {
+		elements: { tree },
+	} = ctx;
+
+	setContext("tree", ctx);
 
 	const weeks = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 	$: monday_date =
@@ -42,8 +68,23 @@
 				return new Date(b.end_date) - new Date(a.end_date);
 			} else {
 				return diff;
-			}11`																								`
+			}
+			11`																								`;
 		};
+	}
+
+	///////// scroll
+	let scrollPosition = { scrollTop: 0, scrollLeft: 0 };
+	let planComponent: SvelteComponent;
+	let scheduleListComponent: SvelteComponent;
+
+	function handleScroll(e) {
+		scrollPosition = {
+			scrollTop: e.detail.scrollTop,
+			scrollLeft: e.detail.scrollLeft,
+		};
+		scheduleListComponent.updateScrollPosition(scrollPosition);
+		planComponent.updateScrollPosition(scrollPosition);
 	}
 </script>
 
@@ -51,10 +92,11 @@
 	<!-- side: memo -->
 	<div
 		slot="side"
-		class="flex flex-col w-full h-full px-2 py-2 bg-white shadow"
+		class="flex flex-col w-full h-full px-2 py-1 bg-white shadow"
 	>
-		<div class="w-full text-lg font-bold text-center">Memo</div>
-		<div class="side-container">
+		<div
+			class="h-[calc(100%-4px)] w-full py-1.5 border-b-4 border-double border-zinc-400"
+		>
 			<Memo />
 		</div>
 	</div>
@@ -65,9 +107,27 @@
 	>
 		<!-- main: schedule-->
 		<div
-			class="flex flex-col w-1/3 max-w-[320px] xl:max-w-[400px] min-w-[220px]"
+			{...$tree}
+			class="relative flex flex-col pt-1 w-1/3 max-w-[320px] xl:max-w-[400px] min-w-[220px]"
 		>
-			<ScheduleList {tasks} />
+			<ScheduleHeader bind:openSide></ScheduleHeader>
+
+			<div class="flex-col flex border-2 h-[calc(100%-34px)] rounded-lg border-zinc-700">
+				<div
+					class="rounded-b-lg pr-1 border-b-[2.5px] border-zinc-700 h-[calc(100%-44px)] bg-white"
+				>
+					<ScheduleList
+						treeItems={$treeItems}
+						bind:this={scheduleListComponent}
+						on:scroll={handleScroll}
+					/>
+				</div>
+
+				<input
+					class="h-10 px-2 py-1 mt-1 w-full rounded-none"
+					placeholder="Search & Add Task.."
+				/>
+			</div>
 		</div>
 
 		<div
@@ -103,10 +163,10 @@
 					{/each}
 				</Tabs.List>
 			</Tabs.Root>
-			
+
 			<!-- schedule -->
 			<div class="bg-zinc-100 w-full h-[40px] flex justify-center">
-				<Tabs.Root value="do" class="h-[40px] w-full" >
+				<Tabs.Root value="plan" class="h-[40px] w-full">
 					<Tabs.List class="w-full border-t-[2.5px] border-zinc-700   ">
 						<Tabs.Trigger value="plan" class="w-[100px]"
 							><Rows3 size={20} class="mr-1.5" />Plan</Tabs.Trigger
@@ -123,10 +183,18 @@
 					</Tabs.List>
 
 					<Tabs.Content
+						{...$tree}
 						value="plan"
-						class="-translate-y-[calc(100vh-146px)] h-[calc(100vh-200px)] w-full "
+						class="-translate-y-[calc(100vh-144px)] w-full "
 					>
-						<Plan {tasks} />
+						<div class=" h-[calc(100vh-198px)]">
+							<Plan
+								treeItems={$treeItems}
+								bind:scrollPosition
+								bind:this={planComponent}
+								on:scroll={handleScroll}
+							/>
+						</div>
 					</Tabs.Content>
 
 					<Tabs.Content
@@ -140,16 +208,10 @@
 						value="result"
 						class="-translate-y-[calc(100vh-146px)] h-[calc(100vh-200px)] w-full "
 					>
-						<Result {tasks}/>
+						<Result {tasks} />
 					</Tabs.Content>
 				</Tabs.Root>
 			</div>
 		</div>
 	</div>
 </PageTemplete>
-
-<style>
-	.side-container {
-		@apply h-[calc(100%-30px)] w-full py-1.5 border-b-4 border-double border-zinc-900;
-	}
-</style>

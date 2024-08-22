@@ -28,21 +28,17 @@
          />
       </Button></Popover.Trigger
    >
-   <Popover.Content class="bg-white w-[360px] translate-y-1 translate-x-2 p-2">
+   <Popover.Content class="bg-white w-[330px] translate-y-1 translate-x-2 p-3">
       <Label class="font-bold text-lg font-digital w-full text-center"
          >Select Tag Group's Color</Label
       >
-      <Separator />
-      <div class="grid grid-cols-9 data-[highlighted]:bg-zinc-50">
+      <Separator class="my-1" />
+      <div class="grid grid-cols-9 data-[highlighted]:bg-zinc-50 translate-x-0.5">
          {#each tailwindColors as color}
-            <!-- <div class="col-span-1 text-xs font-digital">
-               {color.name}
-            </div> -->
-
             {#each color.shades as shade}
                {#if shade.shade === "100" || shade.shade === "200" || shade.shade === "300"}
                   <Button
-                     class="w-5 h-5 p-2 m-2"
+                     class="w-5 h-5 p-2 m-1"
                      style={`background-color: ${shade.hex};`}
                      on:click={() => {
                         tagGroup.color = shade.hex;

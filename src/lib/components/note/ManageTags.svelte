@@ -69,7 +69,7 @@
                use:melt={$input}
                type="text"
                placeholder="Add tag..."
-               class="font-mono shadow min-w-[4.5rem] p-1 shrink grow basis-0 border-0 text-black outline-none focus:shadow focus:ring-2 focus:ring-zinc-900 focus:rounded-sm data-[invalid]:text-red-500"
+               class="font-mono min-w-[4.5rem] p-1 shrink grow basis-0 border-0 text-black outline-none focus:shadow focus:ring-2 focus:ring-zinc-900 focus:rounded-sm data-[invalid]:text-red-500"
             />
          </div>
       </div>

@@ -23,7 +23,7 @@
          >
          <!-- star feedback -->
             <div
-               class="flex justify-center w-full space-x-0.5 -translate-y-0 xl:space-x-1"
+               class="flex w-auto justify-center xl:space-x-1"
             >
                {#each Stars as star, i}
                   <button

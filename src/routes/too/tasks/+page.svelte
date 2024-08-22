@@ -10,7 +10,7 @@
 	import { derived, writable, type Writable } from "svelte/store";
 	import { postApi, delApi, patchApi } from "$lib/api.js";
 	import { type Task } from "$lib/schema";
-	import { type DateRange, getThis3WeeksRange } from "$lib/utils";
+	import { type DateRange, getThis3WeeksRange, getTaskTreeItems } from "$lib/utils";
 	import TaskTree from "$components/task/TaskTree.svelte";
 	import type TreeItem from "$lib/components/task/TaskTree.svelte";
     import type { TaskCreationMode } from "$lib/type.js";
@@ -25,9 +25,9 @@
 	const sortedTasks = derived(tasks, ($tasks) => [...$tasks].sort(sortTasks));
 	setContext("tasks", sortedTasks);
 
-	const treeItems = writable(getTreeItems($sortedTasks) || []);
+	const treeItems = writable(getTaskTreeItems($sortedTasks) || []);
 	$: {
-		treeItems.set(getTreeItems($sortedTasks));
+		treeItems.set(getTaskTreeItems($sortedTasks));
 	}
 	setContext("treeItems", treeItems);
 
@@ -43,31 +43,7 @@
 	} = ctx;
 
 	setContext("tree", ctx);
-
-	function getTreeItems(tasks) {
-		const itemMap = new Map();
-		const rootItems: TreeItem[] = [];
-
-		tasks.forEach((task) => {
-			const item = { task, subtasks: [] };
-			itemMap.set(task.id, item);
-
-			if (!task.parent_id) {
-				rootItems.push(item);
-			}
-		});
-
-		tasks.forEach((task) => {
-			if (task.parent_id) {
-				const parentItem = itemMap.get(task.parent_id);
-				if (parentItem) {
-					parentItem.subtasks.push(itemMap.get(task.id));
-				}
-			}
-		});
-
-		return rootItems;
-	}
+	
 
 	///////// duration select
 	const selectedDateRange: Writable<DateRange> =
@@ -86,7 +62,7 @@
 		const searchParams = new URLSearchParams({ start_date, end_date });
 		await goto(`?${searchParams.toString()}`);
 		$tasks = await data?.tasks;
-		$treeItems = getTreeItems($tasks);
+		$treeItems = getTaskTreeItems($tasks);
 		await tick();
 	}
 
@@ -218,8 +194,6 @@
 
 		<div slot="side" class="flex flex-col w-full h-full px-2 py-2">
 			<TaskSide
-				bind:this={sideComponent}
-				on:scroll={handleScroll}
 				on:create={handleCreateTask}
 				on:update={handleUpdateTask}
 			/>

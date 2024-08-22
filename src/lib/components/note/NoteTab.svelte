@@ -3,7 +3,7 @@
    import { Blend, Kanban, List, Tags, Settings2 } from "lucide-svelte";
    import { cubicInOut } from "svelte/easing";
    import { crossfade } from "svelte/transition";
-   import ViewOptions from "./ViewOptions.svelte";
+   import ViewOptions from "./NoteViewOptions.svelte";
 
    export let defaultValue = "list";
    const {
