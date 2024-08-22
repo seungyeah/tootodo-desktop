@@ -1,3 +1,4 @@
+import type { Pagination } from "bits-ui";
 
 export * as Accordion from "./accordion";
 export * as AlertDialog from "./alert-dialog";
@@ -35,3 +36,4 @@ export * as Card from "./card";
 export * as Table from "./table";
 export {Badge} from "./badge";
 export {Input} from "./input";
+export * as Pagination from "./pagination";

@@ -26,7 +26,6 @@
       helpers: { isExpanded, isSelected },
    } = getContext<TreeView>("tree");
 
-   export let toggleOpenChat;
    // items
    export let level = 1;
    export let treeItems: TreeItem[] = [];
@@ -72,8 +71,8 @@
 {#key treeItems}
    <div
       class={(level !== 1 &&
-         "pl-2 h-full bg-zinc-50 border-b-2  border-zinc-500 border-double rounded-l-lg shadow") ||
-         "max-h-full overflow-y-auto overflow-x-clip no-scrollbar "}
+         "pl-2 bg-zinc-50 border-b-2  border-zinc-500 border-double rounded-l-lg shadow") ||
+         "h-full max-h-full overflow-y-auto overflow-x-clip no-scrollbar "}
       bind:this={tableContainer}
       on:scroll={handleScroll}
    >
@@ -81,9 +80,9 @@
          {@const itemId = `${task.id}`}
          {@const hasChildren = !!subtasks?.length}
          <div
-            class="flex flex-col h-10 mx-2 my-2 rounded-md shadow bg-white border-t border-zinc-50"
+            class="flex flex-col h-11 m-2 rounded-md shadow bg-white border-t border-zinc-50"
          >
-            <div class="relative flex items-center h-10">
+            <div class="relative flex items-center h-11">
                <div
                   class={cn(
                      "w-3 h-full rounded-l",
@@ -99,54 +98,76 @@
                {#if record.pin && level === 1}
                   <Button
                      variant="ghost"
-                     class="absolute h-6  px-1 -top-1.5 -right-2 rotate-45 "
+                     class="absolute h-6  px-1 -top-2 -left-3 -rotate-12 "
                      on:click={() => (record.pin = false)}
-                     ><Pin size={16} fill="#e4e4e7" /></Button
+                     ><Pin size={16} fill="#e4e4e7" color="#52525b" /></Button
                   >
                {/if}
 
-               <!-- item title -->
+               <!-- item info -->
                <button
                   use:melt={$item({
                      id: itemId,
                      hasChildren,
                   })}
-                  class="w-full flex space-x-1 -translate-x-3 h-9"
+                  class="w-full flex flex-col justify-between -ml-2 -translate-x-1"
                >
-                  <!-- Folder icon. -->
-                  {#if hasChildren && $isExpanded(itemId)}
-                     <svelte:component
-                        this={FolderOpen}
-                        class="w-3.5  min-w-3.5 max-w-3.5 h-9"
-                     />
-                  {:else if hasChildren}
-                     <svelte:component
-                        this={Folder}
-                        class="w-3.5 min-w-3.5 max-w-3.5 h-9 "
-                     />
-                  {/if}
+                  <div class="flex h-9">
+                     <!-- Folder icon. -->
+                     {#if hasChildren && $isExpanded(itemId)}
+                        <svelte:component
+                           this={FolderOpen}
+                           fill="white"
+                           class={cn(
+                              "w-3.5 min-w-3.5 max-w-3.5  absolute -left-2.5 -top-3 opacity-70 ",
+                              record.pin
+                                 ? "-left-2.5"
+                                 : "-left-6",
+                           )}
+                        />
+                     {:else if hasChildren}
+                        <svelte:component
+                           this={Folder}
+                           fill="white"
+                           class={cn(
+                              "w-3.5 min-w-3.5 max-w-3.5  absolute -left-2.5 -top-3 opacity-70",
+                              record.pin
+                                 ? "-left-2.5"
+                                 : "-left-6",
+                           )}
+                        />
+                     {/if}
 
-                  <div
-                     class="text-start self-center text-xs font-sans line-clamp-2 leading-[1.1rem]"
-                  >
-                     {task.title}
+                     <div
+                        class="text-start self-center text-xs font-sans line-clamp-2 leading-[1.1rem]"
+                     >
+                        {task.title}
+                     </div>
                   </div>
                </button>
 
                <!-- chatting popup icon-->
                <Button
                   variant="ghost"
-                  class="absolute h-6 px-2 -right-2.5 -bottom-1.5"
-                  on:click={toggleOpenChat}
+                  class="absolute h-6  px-2 -right-4 -bottom-1.5"
+                  on:click={() => (record.openChat = !record.openChat)}
                >
+                  <div
+                     class=" text-zinc-500 text-[0.5rem] w-full h-full absolute rotate-90 -top-[22px] font-digital"
+                  >
+                     {task?.start_date?.slice(8, 10)} - {task?.end_date?.slice(
+                        8,
+                        10,
+                     )}
+                  </div>
                   {#if record.openChat}
                      <MessageCircle
                         size={16}
                         fill="#fef08a"
-                        class="scale-125 "
+                        class="scale-125 -translate-x-0.5 "
                      />
                   {:else}
-                     <MessageCircle size={16} fill="#f4f4f5" color="#a1a1aa" />
+                     <MessageCircle size={16} fill="#f4f4f5" class="text-zinc-400" />
                   {/if}
                </Button>
             </div>

@@ -33,6 +33,7 @@ const send = async ({ method = '', path = '', data = {} } = {}) => {
 	} catch (error) {
 		if (error.message.includes('403')) {			
 			alert('Session expired. Please log in again.');
+			goto('/login');
 		}
 		console.error('API request failed:', error);
 	}

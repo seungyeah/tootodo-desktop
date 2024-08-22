@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Tabs, Button } from "$ui";
+	import { Tabs, Pagination } from "$ui";
 	import PageTemplete from "$components/PageTemplete.svelte";
 	import {
 		endOfMonth,
@@ -28,14 +28,10 @@
 
 	import { SvelteComponent, onMount, setContext, tick } from "svelte";
 	import { derived, writable, type Writable } from "svelte/store";
-	import { getTaskTreeItems } from "$lib/utils";
-
-	let openSide = true;
+	import { cn, getTaskTreeItems } from "$lib/utils";
 
 	let selectedWeekRange = getContext("selectedWeekRange");
 	import { getContext } from "svelte";
-	import ScrollArea from "$ui/scroll-area/scroll-area.svelte";
-	import Input from "$ui/input/input.svelte";
 
 	export let data;
 	$: tasks = data?.tasks.sort(sort_tasks());
@@ -86,9 +82,11 @@
 		scheduleListComponent.updateScrollPosition(scrollPosition);
 		planComponent.updateScrollPosition(scrollPosition);
 	}
+
+	let openSide = true;
 </script>
 
-<PageTemplete>
+<PageTemplete {openSide}>
 	<!-- side: memo -->
 	<div
 		slot="side"
@@ -101,21 +99,21 @@
 		</div>
 	</div>
 
+	<!-- main: schedule-->
 	<div
 		slot="main"
 		class="relative flex w-full h-full max-w-full space-x-2 overflow-clip"
 	>
-		<!-- main: schedule-->
 		<div
 			{...$tree}
 			class="relative flex flex-col pt-1 w-1/3 max-w-[320px] xl:max-w-[400px] min-w-[220px]"
 		>
 			<ScheduleHeader bind:openSide></ScheduleHeader>
 
-			<div class="flex-col flex border-2 h-[calc(100%-34px)] rounded-lg border-zinc-700">
-				<div
-					class="rounded-b-lg pr-1 border-b-[2.5px] border-zinc-700 h-[calc(100%-44px)] bg-white"
-				>
+			<div
+				class="flex-col flex border-2 w-full h-[calc(100%-34px)] max-h-[calc(100%-34px)] rounded-lg border-zinc-700"
+			>
+				<div class="rounded-b-lg pr-1 border-zinc-700 h-[calc(100%-48px)]">
 					<ScheduleList
 						treeItems={$treeItems}
 						bind:this={scheduleListComponent}
@@ -124,28 +122,27 @@
 				</div>
 
 				<input
-					class="h-10 px-2 py-1 mt-1 w-full rounded-none"
+					class="h-11 w-full border-2 border-t-[2.5px] px-2 py-1 rounded-t-lg bg-white absolute left-0 z-10 bottom-0 border-zinc-700"
 					placeholder="Search & Add Task.."
 				/>
 			</div>
 		</div>
 
 		<div
-			class="flex flex-col w-full h-full overflow-auto border-2 no-scrollbar border-zinc-700"
+			class="flex flex-col w-full h-full max-w-full overflow-x-clip border-2 border-zinc-700"
 		>
-			<!-- weeks -->
-			<Tabs.Root
-				value={weeks[$currentTime?.getDay() - 1]}
-				class="w-full h-full"
-			>
-				<Tabs.List class="flex w-full border-b-[2.5px] border-zinc-700 ">
-					{#each weeks as week, i}
-						<Tabs.Trigger
-							value={week}
-							class="w-20 w-min-20 font-digital"
-							disabled={i != $currentTime?.getDay() - 1}
-						>
-							<span class="mr-1 font-bold">
+			<!-- weeks Tab -->
+			<div class="relative w-full h-full flex justify-between">
+				<div
+					class="absolute h-10 w-full rounded-lg border-b-[2.5px] border-zinc-700 bg-zinc-100/20"
+				></div>
+				{#each weeks as week, i}
+					<div
+						class="mt-2 text-[0.9rem] w-full font-digital font-bold text-center flex flex-col items-center text-zinc-400"
+						class:today={i === $currentTime?.getDay() - 1}
+					>
+						<div class="flex  px-1.5 h-6 bg-white">
+							<span class="mr-1 h-10">
 								{week}
 							</span>
 							{#if $selectedWeekRange.start.day < $selectedWeekRange.end.day}
@@ -159,25 +156,32 @@
 										? monday_date + i - 30
 										: monday_date + i}
 							{/if}
-						</Tabs.Trigger>
-					{/each}
-				</Tabs.List>
-			</Tabs.Root>
+						</div>
+						{#if i === $currentTime?.getDay() - 1}
+							<div
+								class="absolute top-[22px] w-[90%] border-2 h-1 rounded-full border-dotted border-zinc-700"
+							></div>
+						{/if}
+					</div>
+				{/each}
+			</div>
 
-			<!-- schedule -->
-			<div class="bg-zinc-100 w-full h-[40px] flex justify-center">
-				<Tabs.Root value="plan" class="h-[40px] w-full">
-					<Tabs.List class="w-full border-t-[2.5px] border-zinc-700   ">
-						<Tabs.Trigger value="plan" class="w-[100px]"
+			<!-- schedule Tab-->
+			<div class="bg-zinc-100 w-full h-11 flex justify-center">
+				<Tabs.Root value="do" class="h-[42px] w-full">
+					<Tabs.List class="w-full border-t-[2.5px] border-zinc-700  ">
+						<Tabs.Trigger value="plan" class="w-[100px] translate-y-0.5"
 							><Rows3 size={20} class="mr-1.5" />Plan</Tabs.Trigger
 						>
-						<Tabs.Trigger value="do" class="w-[100px]"
+						<Tabs.Trigger value="do" class="w-[100px]  translate-y-0.5"
 							><MessageSquareMore
 								size={20}
 								class="mr-1.5"
 							/>Do!</Tabs.Trigger
 						>
-						<Tabs.Trigger value="result" class="w-[100px]"
+						<Tabs.Trigger
+							value="result"
+							class="w-[100px]  translate-y-0.5"
 							><Columns3 size={20} class="mr-1.5" />Result</Tabs.Trigger
 						>
 					</Tabs.List>
@@ -199,7 +203,7 @@
 
 					<Tabs.Content
 						value="do"
-						class="-translate-y-[calc(100vh-148px)] h-[calc(100vh-200px)] w-full   "
+						class="-translate-y-[calc(100vh-152px)] h-[calc(100vh-204px)] w-full   "
 					>
 						<WeeklyChat {tasks} />
 					</Tabs.Content>
@@ -215,3 +219,9 @@
 		</div>
 	</div>
 </PageTemplete>
+
+<style>
+	.today {
+		@apply text-zinc-950 border-[3px] border-double border-zinc-500 -translate-y-1 -z-10;
+	}
+</style>

@@ -72,7 +72,7 @@
          {@const hasChildren = !!subtasks?.length}
          <!-- schedule weekly -->
          <div
-            class="flex h-10 my-2 border-l-2 border-r-2 rounded border-zinc-500"
+            class="flex h-11 my-2 border-l-2 border-r-2 rounded border-zinc-500"
          >
             {#each weeks as day, i}
                <ContextMenu.Root
@@ -101,7 +101,7 @@
                                 ]);
                         }}
                         class={cn(
-                           "relative bg-white w-full h-full mt-1 border-l border-r border-dotted rounded shadow-sm border-zinc-300 hover:bg-zinc-100/90",
+                           "relative bg-white/90 w-full h-full mt-1 border-l border-r border-dotted rounded shadow-sm border-zinc-300 hover:bg-zinc-100/90",
                            record.days.some((item) => item.day === day)
                               ? level === 1
                                  ? "bg-pomodoro-800/5 "
