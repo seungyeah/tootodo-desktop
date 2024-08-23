@@ -35,7 +35,7 @@
             >
          {/if}
       </HoverCard.Trigger>
-      <HoverCard.Content class="-translate-x-1 w-80" side="left">
+      <HoverCard.Content class="-translate-x-1 -translate-y-1.5 w-80" side="bottom">
          <div class="flex justify-between w-full space-x-4">
             <div class="w-full space-y-1">
                <h4 class="text-sm font-semibold">{itemInfo.title}</h4>

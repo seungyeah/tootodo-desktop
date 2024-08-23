@@ -100,7 +100,7 @@
 
 {#if todayPositionPercent}
    <div
-      class="fixed z-20 h-[calc(100%-44px)] border-4 border-double top-[32px] bg-violet-100/10 border-violet-400/10"
+      class="fixed z-20 h-[calc(100%-44px)] border-4 border-double top-[32px] bg-violet-100/10 border-zinc-400/10"
       style="left: {todayPositionPercent}%; width: calc({100 / totalDays}%);"
    />
 {/if}

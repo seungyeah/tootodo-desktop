@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Badge, Button, Resizable } from '$ui';
-	import DiaryEditor from '$components/diary/DiaryEditor.svelte';
+	import DiaryEditor from '$components/note/editor/Editor.svelte';
 	import { Bed, BookOpenText, Dumbbell, Globe, Pill, Star, Sun, Utensils } from 'lucide-svelte';
 	import ItemList from './ItemList.svelte';
 	import { currentTime } from '$store';

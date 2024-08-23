@@ -1,17 +1,10 @@
 <script lang="ts">
-	import { cn } from "$lib/utils";
-	import { Label, Badge, Dialog, Button, ScrollArea, Tabs } from "$ui";
-	import Input from "$ui/input/input.svelte";
-	import Textarea from "$ui/textarea/textarea.svelte";
-	import {
-		Circle,
-		MessageSquare,
-		Text,
-		Brush,
-		Mic,
-		BotMessageSquare,
-		Paperclip,
-	} from "lucide-svelte";
+	import NotePage from "./NotePage.svelte";
+
+	import { Label, Badge, Dialog, Button } from "$ui";
+	import { Circle, MessageCircle, Plus, Tag } from "lucide-svelte";
+	import ItemInfo from "./data-table-connections.svelte";
+
 	export let note;
 	// $: console.log(note);
 	let tagGroups = [
@@ -86,19 +79,22 @@
 		>
 			<Dialog.Header>
 				<Dialog.Title
-					class=" p-2 border-b-2 border-zinc-600 border-dashed flex flex-col space-y-2"
+					class=" p-2 border-b-2 border-zinc-600 border-double flex flex-col space-y-2 "
 				>
-					<div class="flex space-x-2 h-7 items-center">
-						<Button variant="outline" class="p-2 h-7 shadow"
-							>task?.info</Button
+					<div
+						class="flex w-full justify-between space-x-1 h-7 items-center"
+					>
+						<ItemInfo itemInfo={note.connectedItemInfo} />
+						<div class="font-semibold text-zinc-800">{note.title}</div>
+
+						<Button class="justify-end">
+							<MessageCircle class="px-0.5" /></Button
 						>
-						<MessageSquare class="" />
-						<div>{note.title}</div>
 					</div>
 					<div class="flex space-x-1 -translate-x-1">
 						<Button
-							class="h-[18px] shadow-sm translate-y-0.5 font-mono  px-1.5 py-0 text-base font-medium border rounded-md border-b-zinc-950/30 border-r-zinc-950/30"
-							>+</Button
+							class="h-[18px] shadow-sm text-xs bg-zinc-100 translate-y-0.5 font-mono p-0 pr-1 py-0 font-medium rounded-md hover:bg-zinc-100 "
+							><Tag size={19} class="p-1 text-zinc-700"/><input class="w-9 h-3.5 p-1 rounded" placeholder="tag"/></Button
 						>
 						{#each note.tags as tag}
 							<Badge
@@ -121,57 +117,9 @@
 						{/each}
 					</div>
 				</Dialog.Title>
-				<Dialog.Description class="flex w-full h-full space-x-2 ">
-					<div
-						class="w-1/5 min-w-[230px] h-full bg-zinc-50 flex justify-between flex-col p-1"
-					>
-						page toc, treeview
 
-						<div class="flex flex-col bg-white rounded-lg h-15">
-							<Tabs.Root value="editor" class="w-full h-8 p-1 pt-[5px] ">
-								<Tabs.List
-									class="flex space-x-2 p-0 h-7 rounded-b-none"
-								>
-									<Tabs.Trigger value="editor" class="p-1"
-										><Text size={15} /></Tabs.Trigger
-									>
-									<Tabs.Trigger value="drawings" class="p-1"
-										><Brush size={15} /></Tabs.Trigger
-									>
-									<Tabs.Trigger value="recordings" class="p-1"
-										><Mic size={15} /></Tabs.Trigger
-									>
-									<Tabs.Trigger value="chatbot" class="p-1"
-										><BotMessageSquare size={15} /></Tabs.Trigger
-									>
-									<Tabs.Trigger value="file" class="p-1"
-										><Paperclip size={15} /></Tabs.Trigger
-									>
-								</Tabs.List>
-							</Tabs.Root>
-							<Input
-								class="border-zinc-100"
-								placeholder="page title.."
-							/>
-						</div>
-					</div>
-
-					<ScrollArea class="w-full h-[calc(100vh-120px)]  ">
-						{#each note.pages as page}
-							<div
-								class="flex flex-col mb-2 p-2 space-x-1 border rounded-md border-zinc-500"
-							>
-								<div class="h-7">
-									<Badge class="bg-zinc-100">{page.type}</Badge>
-									{page.title}
-								</div>
-								<Textarea
-									value={page.content}
-									class="h-full min-h-96  font-chat p-2 -translate-x-1"
-								/>
-							</div>
-						{/each}
-					</ScrollArea>
+				<Dialog.Description class=" w-full h-full ">
+					<NotePage {note}></NotePage>
 				</Dialog.Description>
 			</Dialog.Header>
 		</Dialog.Content>
