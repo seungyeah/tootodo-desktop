@@ -116,9 +116,9 @@
 <div class="relative w-full h-full">
 	<Tabs.Root value="all" class="w-full h-full flex flex-col" let:value>
 		<div
-			class="w-full text-xs absolute -top-4 left-0 font-bold text-zinc-900"
+			class="w-full text-sm absolute -top-5 left-0 font-bold text-zinc-900"
 		>
-			Memo
+			Don't forget!
 		</div>
 
 		<!-- input form-->

@@ -112,7 +112,7 @@
                   })}
                   class="w-full flex flex-col justify-between -ml-2 -translate-x-1"
                >
-                  <div class="flex h-9">
+                  <div class="flex h-9 w-full">
                      <!-- Folder icon. -->
                      {#if hasChildren && $isExpanded(itemId)}
                         <svelte:component
@@ -120,9 +120,7 @@
                            fill="white"
                            class={cn(
                               "w-3.5 min-w-3.5 max-w-3.5  absolute -left-2.5 -top-3 opacity-70 ",
-                              record.pin
-                                 ? "-left-2.5"
-                                 : "-left-6",
+                              record.pin ? "-left-2.5" : "-left-6",
                            )}
                         />
                      {:else if hasChildren}
@@ -131,35 +129,35 @@
                            fill="white"
                            class={cn(
                               "w-3.5 min-w-3.5 max-w-3.5  absolute -left-2.5 -top-3 opacity-70",
-                              record.pin
-                                 ? "-left-2.5"
-                                 : "-left-6",
+                              record.pin ? "-left-2.5" : "-left-6",
                            )}
                         />
                      {/if}
 
                      <div
-                        class="text-start self-center text-xs font-sans line-clamp-2 leading-[1.1rem]"
+                        class="w-full text-start self-center text-xs font-sans line-clamp-2 leading-[1.1rem]"
                      >
                         {task.title}
                      </div>
                   </div>
-               </button>
 
-               <!-- chatting popup icon-->
-               <Button
-                  variant="ghost"
-                  class="absolute h-6  px-2 -right-4 -bottom-1.5"
-                  on:click={() => (record.openChat = !record.openChat)}
-               >
                   <div
-                     class=" text-zinc-500 text-[0.5rem] w-full h-full absolute rotate-90 -top-[22px] font-digital"
+                     class=" text-zinc-500 text-[0.6rem] absolute top-2 -right-6  font-digital rotate-90"
                   >
                      {task?.start_date?.slice(8, 10)} - {task?.end_date?.slice(
                         8,
                         10,
                      )}
                   </div>
+               </button>
+
+               <!-- chatting popup icon-->
+               <!--
+               <Button
+                  variant="ghost"
+                  class="absolute h-6  px-2 -right-0 -bottom-1.5"
+                  on:click={() => (record.openChat = !record.openChat)}
+               >                 
                   {#if record.openChat}
                      <MessageCircle
                         size={16}
@@ -170,6 +168,8 @@
                      <MessageCircle size={16} fill="#f4f4f5" class="text-zinc-400" />
                   {/if}
                </Button>
+               
+                  -->
             </div>
          </div>
          {#if subtasks?.length}

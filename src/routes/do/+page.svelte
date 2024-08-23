@@ -16,6 +16,7 @@
 	} from "$components/schedule";
 	import Memo from "$components/memo/Memo.svelte";
 	import {
+		Circle,
 		Columns3,
 		MessageSquareMore,
 		MoonStar,
@@ -106,7 +107,7 @@
 	>
 		<div
 			{...$tree}
-			class="relative flex flex-col pt-1 w-1/3 max-w-[320px] xl:max-w-[400px] min-w-[220px]"
+			class="relative flex flex-col pt-1 w-1/3 max-w-[300px] min-w-[220px]"
 		>
 			<ScheduleHeader bind:openSide></ScheduleHeader>
 
@@ -141,7 +142,7 @@
 						class="mt-2 text-[0.9rem] w-full font-digital font-bold text-center flex flex-col items-center text-zinc-400"
 						class:today={i === $currentTime?.getDay() - 1}
 					>
-						<div class="flex  px-1.5 h-6 bg-white">
+						<div class="flex px-1.5 h-6 bg-white">
 							<span class="mr-1 h-10">
 								{week}
 							</span>
@@ -168,7 +169,7 @@
 
 			<!-- schedule Tab-->
 			<div class="bg-zinc-100 w-full h-11 flex justify-center">
-				<Tabs.Root value="do" class="h-[42px] w-full">
+				<Tabs.Root value="result" class="h-[42px] w-full">
 					<Tabs.List class="w-full border-t-[2.5px] border-zinc-700  ">
 						<Tabs.Trigger value="plan" class="w-[100px] translate-y-0.5"
 							><Rows3 size={20} class="mr-1.5" />Plan</Tabs.Trigger
@@ -210,7 +211,7 @@
 
 					<Tabs.Content
 						value="result"
-						class="-translate-y-[calc(100vh-146px)] h-[calc(100vh-200px)] w-full "
+						class="-translate-y-[calc(100vh-152px)] h-[calc(100vh-204px)] w-full "
 					>
 						<Result {tasks} />
 					</Tabs.Content>

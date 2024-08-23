@@ -198,7 +198,7 @@
 		<Resizable.Pane minSize={14} class="relative px-1">
 			<div
 				bind:this={messageContainer}
-				class="h-full max-h-[calc(100%-8px)] w-full flex-col space-y-2 overflow-y-auto px-1 pb-3 bg-pomodoro-50/50"
+				class="h-full max-h-[calc(100%-8px)] w-full flex-col space-y-2 overflow-y-auto px-1 pb-3 bg-pomodoro-50/50 rounded-lg"
 			>
 				{#each messages as msg, i}
 					<!-- 하루의 첫 대화 위엔 날짜 표시 -->
@@ -331,7 +331,7 @@
 
 			<form
 				on:submit|preventDefault={handleSubmit}
-				class="w-full h-full px-1 py-2"
+				class="w-full h-full px-1 pt-1 pb-2"
 			>
 				<textarea
 					placeholder="Send message"
@@ -342,7 +342,7 @@
 							handleSubmit(e);
 						}
 					}}
-					class=" font-chat border rounded-lg h-[calc(100%-24px)] w-full p-2 text-baseas font-normal focus:shadow"
+					class=" font-chat  rounded-lg h-[calc(100%-24px)] w-full p-2 text-baseas font-normal focus:shadow"
 				/>
 			</form>
 		</Resizable.Pane>
