@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Tabs, Pagination } from "$ui";
+	import { Tabs,  } from "$ui";
 	import PageTemplete from "$components/PageTemplete.svelte";
 	import {
 		endOfMonth,
@@ -16,15 +16,11 @@
 	} from "$components/schedule";
 	import Memo from "$components/memo/Memo.svelte";
 	import {
-		Circle,
 		Columns3,
 		MessageSquareMore,
-		MoonStar,
 		Rows3,
-		Share,
-		Workflow,
 	} from "lucide-svelte";
-	import { currentTime, formatTime } from "$store";
+	import { currentTime} from "$store";
 	import { createTreeView } from "@melt-ui/svelte";
 
 	import { SvelteComponent, onMount, setContext, tick } from "svelte";
@@ -103,7 +99,7 @@
 	<!-- main: schedule-->
 	<div
 		slot="main"
-		class="relative flex w-full h-full max-w-full space-x-2 overflow-clip"
+		class="relative flex w-full h-full max-w-full space-x-2 overflow-auto"
 	>
 		<div
 			{...$tree}
@@ -117,8 +113,6 @@
 				<div class="rounded-b-lg pr-1 border-zinc-700 h-[calc(100%-48px)]">
 					<ScheduleList
 						treeItems={$treeItems}
-						bind:this={scheduleListComponent}
-						on:scroll={handleScroll}
 					/>
 				</div>
 
@@ -169,8 +163,8 @@
 
 			<!-- schedule Tab-->
 			<div class="bg-zinc-100 w-full h-11 flex justify-center">
-				<Tabs.Root value="result" class="h-[42px] w-full">
-					<Tabs.List class="w-full border-t-[2.5px] border-zinc-700  ">
+				<Tabs.Root value="do" class="h-[42px] w-full ">
+					<Tabs.List class="w-full border-t-[2.5px] border-zinc-700 ">
 						<Tabs.Trigger value="plan" class="w-[100px] translate-y-0.5"
 							><Rows3 size={20} class="mr-1.5" />Plan</Tabs.Trigger
 						>
@@ -190,7 +184,7 @@
 					<Tabs.Content
 						{...$tree}
 						value="plan"
-						class="-translate-y-[calc(100vh-144px)] w-full "
+						class="-translate-y-[calc(100vh-144px)] w-full  "
 					>
 						<div class=" h-[calc(100vh-198px)]">
 							<Plan
@@ -224,5 +218,30 @@
 <style>
 	.today {
 		@apply text-zinc-950 border-[3px] border-double border-zinc-500 -translate-y-1 -z-10;
+	}
+	.chat {
+		@apply fixed z-50 h-[calc(100vh-120px)] w-full  min-w-[250px] rounded-lg  bg-zinc-50 shadow-lg shadow-emerald-950 sm:h-[calc(100vh-80px)];
+	}
+
+	.time {
+		@apply w-[50px] translate-y-1 scale-90 font-mono text-xs font-light text-zinc-400;
+	}
+
+	/* scroll bar */
+	::-webkit-scrollbar {
+		width: 0.1rem;
+		height: 0.4rem;
+	}
+
+	::-webkit-scrollbar-track {
+		@apply absolute bg-zinc-200/80 rounded-full;
+	}
+
+	::-webkit-scrollbar-thumb {
+		@apply absolute bg-zinc-600/80 rounded-full;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		@apply absolute bg-zinc-900/80 rounded-full;
 	}
 </style>

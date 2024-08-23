@@ -31,7 +31,7 @@
    export let treeItems: TreeItem[] = [];
 
    export let record = {
-      pin: true,
+      pin: false,
       alarm: true,
       item: "note",
       title: "urgent note",

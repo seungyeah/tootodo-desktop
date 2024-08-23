@@ -22,6 +22,7 @@
 
    // scroll
    import { createEventDispatcher } from "svelte";
+    import ScrollArea from "$ui/scroll-area/scroll-area.svelte";
 
    const dispatch = createEventDispatcher();
    let tableContainer;
@@ -50,7 +51,7 @@
    }
 </script>
 
-<div
+<ScrollArea
    class="w-full h-full max-h-full overflow-y-scroll translate-y-1 border-2 border-zinc-800"
    bind:this={tableContainer}
    on:scroll={handleScroll}
@@ -111,7 +112,7 @@
          {/key}
       </tbody>
    </table>
-</div>
+</ScrollArea>
 
 <style>
    td {

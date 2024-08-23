@@ -1,19 +1,14 @@
 <script lang="ts">
 	import { getLocalTimeZone, today } from "@internationalized/date";
-	import {
-		Button,
-		DropdownMenu,
-		RangeCalendar,
-		Resizable,
-	} from "$ui";
+	import { Button, DropdownMenu, RangeCalendar, Resizable,ScrollArea } from "$ui";
 	import { BotMessageSquare, Search } from "lucide-svelte";
 	import { createEventDispatcher, onMount, tick } from "svelte";
 	import { getContext } from "svelte";
 	import Switch from "$ui/switch/switch.svelte";
-	import {postApi} from "$lib/api_ai"
-
+	import { postApi } from "$lib/api_ai";
+	import { ScheduleList } from "$components/schedule";
 	const selectedDate = getContext("selectedDateRange");
-	const dispatchCreateTask=getContext("handleCreateTask");
+	const dispatchCreateTask = getContext("handleCreateTask");
 	const todayValue = today(getLocalTimeZone());
 
 	let askMode = true;
@@ -32,7 +27,7 @@
 	});
 
 	// items
-	const tasks = getContext("tasks");
+	const treeItems = getContext("treeItems");
 
 	function resetNewTask() {
 		newTask = {
@@ -67,25 +62,25 @@
 		resetNewTask();
 	}
 
-	async function handleStoreTasksToAI(){
-		const new_tasks = $tasks.map((task) => {
+	async function handleStoreTasksToAI() {
+		const new_tasks = $treeItems.map((task) => {
 			return {
 				title: task.title,
 				id: task.id,
 				progress_rate: task.progress_rate,
 				user: task.user,
 			};
-		})
-		
-		try{
+		});
+
+		try {
 			const res = await postApi({
 				path: "/ai/store_tasks",
 				data: new_tasks,
 			});
-			console.log(res)
-		}catch (error) {
+			console.log(res);
+		} catch (error) {
 			console.error("Request failed:", error);
-		}		
+		}
 	}
 
 	////// dispatch
@@ -95,11 +90,9 @@
 	function handleCreate(task) {
 		dispatchCreateTask(task, "new");
 	}
-
 </script>
 
 <div class="relative flex flex-col w-full h-full">
-	<!-- add task -->
 	<div
 		class="relative flex flex-col justify-between h-full bg-white shadow rounded-xl"
 	>
@@ -118,27 +111,32 @@
 						</div>
 					</div>
 				{:else}
-					<div
-						class="flex justify-center w-full py-1 space-x-2 border-b-2 shadow rounded-t-xl border-zinc-500"
-					>
-						<Search size={16} />
-						<div class="font-semibold text-unwrap">
-							Add Task by Search!
+					<div class="flex flex-col h-full">
+						<div
+							class="flex justify-center w-full py-1 space-x-2 border-b-2 shadow rounded-t-xl border-zinc-500"
+						>
+							<Search size={16} />
+							<div class="font-semibold text-unwrap">
+								Add Task by Search!
+							</div>
 						</div>
+						<!-- <ScrollArea class=" h-[calc(100%-34px)]">
+							<ScheduleList treeItems={$treeItems} />
+						</ScrollArea> -->
 					</div>
 				{/if}
 			</Resizable.Pane>
+			
 			<Resizable.Handle withHandle class="-translate-x-2 bg-zinc-400" />
-			<Resizable.Pane
-				minSize={14}
-				defaultSize={14}
-			>
+			
+			<!-- add task -->
+			<Resizable.Pane minSize={14} defaultSize={14}>
 				<form
 					on:submit|preventDefault={handleSubmit}
 					class="relative flex items-center w-full h-full p-1"
 				>
 					<div
-						class="flex flex-col  h-[70px] space-y-1 translate-y-0.5 -translate-x-1 justify-evenly"
+						class="flex flex-col h-[70px] space-y-1 translate-y-0.5 -translate-x-1 justify-evenly"
 					>
 						<Button
 							variant="ghost"

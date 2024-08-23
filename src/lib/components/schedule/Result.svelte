@@ -15,7 +15,7 @@
    const weeks = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 </script>
 
-<div class="flex w-full h-full space-x-1.5">
+<div class="flex w-full h-full space-x-1.5 ">
    {#each weeks as _, i}
       <div
          class="relative flex flex-col w-full h-full !ml-0 border border-dotted border-y-0 rounded-b-lg border-zinc-500"

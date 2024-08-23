@@ -198,7 +198,7 @@
 		<Resizable.Pane minSize={14} class="relative px-1">
 			<div
 				bind:this={messageContainer}
-				class="h-full max-h-[calc(100%-8px)] w-full flex-col space-y-2 overflow-y-auto px-1 pb-3 bg-pomodoro-50/50 rounded-lg"
+				class="h-full max-h-[calc(100%-8px)] w-full flex-col space-y-1 overflow-y-auto px-1 pb-3 bg-pomodoro-50/50 rounded-lg"
 			>
 				{#each messages as msg, i}
 					<!-- 하루의 첫 대화 위엔 날짜 표시 -->
