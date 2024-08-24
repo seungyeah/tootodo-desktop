@@ -14,6 +14,7 @@
       RadioGroup,
    } from "$ui";
    export let itemInfo;
+   let newConnectionTitle = "";
 </script>
 
 {#if itemInfo}
@@ -80,7 +81,7 @@
                      </div>
                   </RadioGroup.Root>
                </div>
-               <Input id="maxWidth" value="300px" class="w-full h-8 " />
+               <Input value={newConnectionTitle} placeholder="new connection title" class="w-full h-8 " />
 
             </div>
          </div>

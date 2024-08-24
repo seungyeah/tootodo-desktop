@@ -74,7 +74,7 @@
 				<!-- backward/forward page -->
 				<HeaderNav />
 				<!-- navigation -->
-				<Breadcrumb.Root class="absolute left-16 w-[200px]">
+				<Breadcrumb.Root class="absolute left-16">
 					<Breadcrumb.List>
 						<Breadcrumb.Item>
 							<Breadcrumb.Link

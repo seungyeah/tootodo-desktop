@@ -220,7 +220,6 @@
 
 		<!-- memo list -->
 		<!-- all -->
-
 		<Tabs.Content
 			value="all"
 			class="h-full w-full max-h-full overflow-y-auto m-0"
@@ -229,7 +228,7 @@
 				class="h-full max-h-full border-x-2 border-zinc-400 border-dotted w-full px-2.5 pt-0.5 space-y-1"
 			>
 				{#each memos as memo}
-					<MemoEditor bind:memo />
+					<MemoEditor bind:memo class=""/>
 				{/each}
 			</ScrollArea>
 		</Tabs.Content>
@@ -245,7 +244,7 @@
 				>
 					{#each memos as memo}
 						{#if memo.color === color.name}
-							<MemoEditor bind:memo />
+							<MemoEditor bind:memo class=""/>
 						{/if}
 					{/each}
 				</ScrollArea>

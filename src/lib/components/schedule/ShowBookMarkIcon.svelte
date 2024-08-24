@@ -14,8 +14,8 @@
       </Button>
    </Popover.Trigger>
    <Popover.Content
-      class="max-h-[calc(100%-60px)] w-1/4 max-w-[300px]  overflow-y-auto px-3 pt-0 "
-
+      class="h-[300px] max-h-[calc(100%-60px)] w-1/4 max-w-[300px]  overflow-y-auto px-3 pt-0 "
+      side="top"
       avoidCollisions={false}
    >
       <div class="flex-col items-center justify-between pt-1">

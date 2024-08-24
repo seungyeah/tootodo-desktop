@@ -278,7 +278,7 @@
 
       <div slot="list" class="h-full">
          <div class="tab-title">
-            Filter List by Tags
+            Filter Notes by Tags
             <Button
                variant="ghost"
                class="bg-pomodoro-800/70  h-6 px-1.5 shadow hover:bg-pomodoro-900 absolute right-2"

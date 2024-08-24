@@ -67,14 +67,13 @@
 	}
 
 	///////// scroll
-	let scrollPosition = { scrollTop: 0, scrollLeft: 0 };
+	let scrollPosition = { scrollTop: 0 };
 	let planComponent: SvelteComponent;
 	let scheduleListComponent: SvelteComponent;
 
 	function handleScroll(e) {
 		scrollPosition = {
 			scrollTop: e.detail.scrollTop,
-			scrollLeft: e.detail.scrollLeft,
 		};
 		scheduleListComponent.updateScrollPosition(scrollPosition);
 		planComponent.updateScrollPosition(scrollPosition);
@@ -90,7 +89,7 @@
 		class="flex flex-col w-full h-full px-2 py-1 bg-white shadow"
 	>
 		<div
-			class="h-[calc(100%-4px)] w-full py-1.5 border-b-4 border-double border-zinc-400"
+			class="h-[calc(100%-4px)] w-full max-w-full py-1.5 border-b-4 border-double border-zinc-400"
 		>
 			<Memo />
 		</div>
@@ -112,6 +111,8 @@
 			>
 				<div class="rounded-b-lg pr-1 border-zinc-700 h-[calc(100%-48px)]">
 					<ScheduleList
+						bind:this={scheduleListComponent}
+						on:scroll={handleScroll}
 						treeItems={$treeItems}
 					/>
 				</div>

@@ -56,14 +56,12 @@
    function handleScroll() {
       dispatch("scroll", {
          scrollTop: tableContainer.scrollTop,
-         scrollLeft: tableContainer.scrollLeft,
       });
    }
 
    export function updateScrollPosition(scrollPosition) {
       if (tableContainer) {
          tableContainer.scrollTop = scrollPosition.scrollTop;
-         tableContainer.scrollLeft = scrollPosition.scrollLeft;
       }
    }
 </script>

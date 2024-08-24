@@ -14,7 +14,7 @@
 	let editor: Readable<Editor>;
 	let className: $$Props["class"] = undefined;
 	export { className as class };
-	export let content = "how are you today";
+	export let content = "";
 
 	onMount(() => {
 		editor = createEditor({
