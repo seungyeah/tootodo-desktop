@@ -203,10 +203,8 @@ border-8 border-double border-zinc-50 box-content rounded-2xl shadow-xl
 	<!-- check duration, -> start timer button -->
 	<div class="m-1 flex space-x-2 relative">
 		<div class="font-digital  flex-col">
-			<div class="flex">
+			<div class="flex space-x-1">
 				<Milestone/>				
-
-				<button on:click={changeProjectRecord}><ProjectSelect bind:record  /></button>
 				<div class="text-end">{durationString}</div>		
 			</div>				
 			<div class="w-full text-end text-lg">

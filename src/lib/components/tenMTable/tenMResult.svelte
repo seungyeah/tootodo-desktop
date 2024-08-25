@@ -138,14 +138,14 @@
 								class="absolute w-5 h-5 -top-0.5 left-0  z-[1] rounded-full  border-2 border-white text-zinc-950 bg-white/70 p-0.5 shadow-md "
 							/>
 						{/if}
-						
-						{#key $currentTime}
+
+						<!-- {#key $currentTime}
 							{#if getCurrentTimePosition(hour, min)}
 								<div
 									class="absolute -left-0.5 -top-1 z-[1] h-[calc(100%+8px)] w-1 transform bg-pomodoro-950"
 								/>
 							{/if}
-						{/key}
+						{/key} -->
 					</td>
 				{/each}
 			</tr>

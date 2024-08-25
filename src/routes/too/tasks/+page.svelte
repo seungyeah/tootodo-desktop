@@ -204,6 +204,7 @@
 			slot="main"
 			class="relative w-full h-full -translate-y-1 no-scrollbar"
 		>
+			<!-- today position line, gantt chart -->
 			<div
 				{...$tree}
 				class="w-full h-[calc(100%-16px)] max-h-[calc(100%-16px)] font-mono"

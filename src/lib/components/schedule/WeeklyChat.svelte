@@ -242,8 +242,8 @@
 									color="#52525b"
 									fill={msg.save
 										? msg.ask
-											? "#059669"
-											: "#fde047"
+											? "#05966980"
+											: "#d92b3a80"
 										: "none"}
 								/>
 							</Button>
@@ -297,7 +297,7 @@
 				<Switch
 					id="bookmark-mode"
 					on:click={() => (newMsg.save = !newMsg.save)}
-					class="w-8 h-5 data-[state=checked]:bg-yellow-500/50"
+					class="w-8 h-5 data-[state=checked]:bg-pomodoro-500/50"
 					checked={newMsg.save}
 				/>
 
@@ -325,7 +325,7 @@
 					<ShowBookMarkIcon {messages}></ShowBookMarkIcon>
 
 					<!-- summary -->
-					<ShowSummaryIcon {messages}></ShowSummaryIcon>
+					<ShowSummaryIcon ></ShowSummaryIcon>
 				</div>
 			</div>
 

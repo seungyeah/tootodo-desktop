@@ -61,7 +61,7 @@
       class="border border-dotted border-zinc-500"
    />
    <Resizable.Pane defaultSize={74} minSize={30}>
-      <ScrollArea class="w-full h-[calc(100vh-120px)] font-mono  ">
+      <ScrollArea class="w-full h-[calc(100vh-120px)] font-mono ">
          <!-- pages -->
          {#each note.pages as page}
             <div

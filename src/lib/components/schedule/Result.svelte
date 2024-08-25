@@ -26,18 +26,6 @@
             <Circle fill="white" size={5} class="absolute right-0" />
          </div>
          <div class="flex space-x-1 w-full p-1 mb-2">
-            <!-- star feedback -->
-            <!-- <div class="flex flex-col justify-start space-y-1">
-               {#each Stars as star, i}
-                  <button
-                     on:click={() => {
-                        Stars = Stars.map((_, j) => j <= i);
-                     }}
-                  >
-                     <Star size={13} fill={star ? "#fde047" : "white"} />
-                  </button>
-               {/each}
-            </div> -->
             <div
                class="barcontainer relative bg-zinc-700 w-2 h-full rounded-lg"
             >

@@ -131,25 +131,25 @@
             <Calendar bind:value={selectedDate} initialFocus weekStartsOn={1} />
          </Popover.Content>
       </Popover.Root>
-
-      <!-- 1week++ -->
-      <Button
-         class="h-8 w-8 !p-1"
-         variant="ghost"
-         on:click={() => {
-            selectedWeekRange.start = startOfWeek(
-               selectedWeekRange.start?.add({ weeks: 1 }),
-               "fr-FR",
-            );
-            selectedWeekRange.end = endOfWeek(
-               selectedWeekRange.end?.add({ weeks: 1 }),
-               "fr-FR",
-            );
-            selectedDate = selectedWeekRange.start;
-            updateDates();
-         }}
-      >
-         <ChevronRight size={20} />
-      </Button>
    </div>
+
+   <!-- 1week++ -->
+   <Button
+      class="h-8 w-8 !p-1"
+      variant="ghost"
+      on:click={() => {
+         selectedWeekRange.start = startOfWeek(
+            selectedWeekRange.start?.add({ weeks: 1 }),
+            "fr-FR",
+         );
+         selectedWeekRange.end = endOfWeek(
+            selectedWeekRange.end?.add({ weeks: 1 }),
+            "fr-FR",
+         );
+         selectedDate = selectedWeekRange.start;
+         updateDates();
+      }}
+   >
+      <ChevronRight size={20} />
+   </Button>
 </div>

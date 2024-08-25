@@ -193,7 +193,7 @@
 	<slot />
 </div>
 
-<TWindicator />
+<!-- <TWindicator /> -->
 
 <style>
 	:global(html, body) {

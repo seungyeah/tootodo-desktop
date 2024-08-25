@@ -18,7 +18,8 @@
 			<div>
 				<Button
 					variant="outline"
-					class="h-6 border-2 border-double px-2.5  ">+ Property</Button
+					class="h-6 border-2 border-double px-2.5  -translate-y-1 "
+					>+ Property</Button
 				>
 			</div>
 		{/if}

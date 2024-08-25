@@ -1,5 +1,5 @@
 <script lang="ts">
-   import { DropdownMenu, Button } from "$ui";
+   import { DropdownMenu, Button, ScrollArea } from "$ui";
    export let items = [];
    export let type = "work";
    $: selectedItem = {
@@ -15,27 +15,29 @@
          <Button
             builders={[builder]}
             variant="outline"
-            class="max-w-72 overflow-clip h-full px-3 text-xs text-start shadow-sm"
-            >
-            {#if selectedItem.icon}
-            <svelte:component this={selectedItem.icon} class="w-3 h-3" />
-            {:else}
-            {selectedItem.title || "Select "+ type}
-            {/if}
-            </Button
+            class="max-w-72 overflow-clip h-full px-3 text-xs text-start "
          >
+            {#if selectedItem.icon}
+               <svelte:component this={selectedItem.icon} class="w-3 h-3" />
+            {:else}
+               {selectedItem.title || "Select " + type}
+            {/if}
+         </Button>
       </DropdownMenu.Trigger>
-      <DropdownMenu.Content>
+      <DropdownMenu.Content class="h-[300px]" side="top">
          <DropdownMenu.Group>
-            <DropdownMenu.Label>Today's Todo List</DropdownMenu.Label>
+            <DropdownMenu.Label>Today's {type} List</DropdownMenu.Label>
             <DropdownMenu.Separator />
-            {#each items as item}            
-               <DropdownMenu.Item on:click={() => (selectedItem = item)}
-                  >
-                  <svelte:component this={item.icon} class="w-4 h-4 mr-2" />
+            <ScrollArea class="h-60  w-60">
+               {#each items as item}
+               <DropdownMenu.Item on:click={() => (selectedItem = item)} class="border-b border-dashed m-1.5 mr-2.5">
+                  {#if item.icon}
+                     <svelte:component this={item.icon} class="w-4 h-4 mr-2" />
+                  {/if}
                   {item.title}</DropdownMenu.Item
                >
             {/each}
+            </ScrollArea>
          </DropdownMenu.Group>
       </DropdownMenu.Content>
    </DropdownMenu.Root>
