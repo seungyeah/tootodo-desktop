@@ -95,6 +95,7 @@
             {
                title: "개발 과정",
                type: "editor",
+               updated:"2024-08-28",
                content: `1. qdrant와 cohere client생성
                   2. cohere으로 notes 임베딩 데이터 생성(벡터화)
                   3. qdrant에 2에서 생성한 embeddings 저장 
@@ -106,6 +107,7 @@
             {
                title: "fastapi",
                type: "editor",
+               updated:"2024-08-20",
                content: `fastapi의 depends가 머임?
                   - Depends(client): FastAPI에서 client 함수의 반환 값을 엔드포인트 파라미터로 자동으로 주입하는 기능입니다.
                   - Annotated[QdrantClient, Depends(client)]: client 파라미터가 QdrantClient 타입이며, Depends(client)를 통해 의존성 주입을 수행함을 나타냅니다.

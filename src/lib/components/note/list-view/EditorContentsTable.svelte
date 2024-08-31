@@ -14,7 +14,7 @@
 		<div>
 			<Badge class="bg-pomodoro-900/10 rounded-none">Contents</Badge>
 		</div>
-		{#if size === "lg"}
+		{#if size !== "sm"}
 			<div>
 				<Button
 					variant="outline"
@@ -32,8 +32,11 @@
 		<table class="w-full">
 			<thead>
 				<tr class="w-full border-b text-center">
-					<th class=" text-center border-r"></th>
+					<th class="w-4 text-center border-r"></th>
 					<th class="px-2">Title</th>
+					{#if size !== "sm"}
+						<th class="w-24 px-2">Updated</th>
+					{/if}
 				</tr>
 			</thead>
 			<tbody class="h-10">
@@ -45,9 +48,6 @@
 							{:else}
 								<svelte:component this={Text} size={14} />
 							{/if}
-							<!-- <span class="bg-zinc-100 rounded-sm px-1.5 py-0.5">
-								{page.type.slice(0,1).toUpperCase()}</span
-							> -->
 						</th>
 						<td class="!m-0 !px-1 !pr-1.5"
 							><Input
@@ -55,6 +55,9 @@
 								class="border-0 border-b h-7"
 							/></td
 						>
+						{#if size !== "sm"}
+							<td class="font-mono text-center">{page.updated}</td>
+						{/if}
 					</tr>
 				{/each}
 			</tbody>

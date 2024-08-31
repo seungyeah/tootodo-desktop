@@ -9,6 +9,7 @@
       ScrollArea,
       Separator,
       Command,
+      Badge,
    } from "$ui";
    import {
       CirclePlus,
@@ -30,8 +31,8 @@
    import { cn } from "$lib/utils";
    import SelectGroupColor from "./SelectGroupColor.svelte";
    import SelectGroup from "./SelectGroup.svelte";
-    import { Select } from "bits-ui";
-    import SideOfKanbanView from "./kanban-view/SideOfKanbanView.svelte";
+   import { Select } from "bits-ui";
+   import SideOfKanbanView from "./kanban-view/SideOfKanbanView.svelte";
 
    const dispatch = createEventDispatcher();
 
@@ -43,16 +44,16 @@
          color: "#f4f4f5",
       },
       {
-         id: "1",
-         name: "english",
-         tags: ["speaking", "writing", "reading", "listening", "word"],
-         color: "#f3e8ff",
+         id: "5",
+         name: "요즘 관심사",
+         tags: ["tootodo 개발", "rust", "mongodb"],
+         color: "#ddd6fe",
       },
       {
-         id: "2",
-         name: "ai",
-         tags: ["qdrant", "cohere", "langchain"],
-         color: "#ecfccb",
+         id: "3",
+         name: "grammer",
+         tags: ["error 처리", "소유권", "타입", "메모리", "테스트"],
+         color: "#fed7aa",
       },
       {
          id: "3",
@@ -61,16 +62,22 @@
          color: "#fef3c7",
       },
       {
+         id: "2",
+         name: "ai",
+         tags: ["qdrant", "cohere", "langchain"],
+         color: "#ecfccb",
+      },
+      {
          id: "4",
          name: "database",
          tags: ["qdrant", "postgres", "mongodb"],
          color: "#d1fae5",
       },
       {
-         id: "5",
-         name: "요즘 관심사",
-         tags: ["tootodo 개발", "rust", "mongodb"],
-         color: "#ddd6fe",
+         id: "1",
+         name: "english",
+         tags: ["speaking", "writing", "reading", "listening", "word"],
+         color: "#f3e8ff",
       },
    ];
    let tags = [
@@ -230,7 +237,9 @@
             <div slot="info">Select Color</div>
          </SelectGroupColor>
       {:else}
-         <SelectGroup bind:value {tagGroups}
+         <SelectGroup
+            bind:value
+            {tagGroups}
             class="w-[100px] min-w-[100px] max-w-[100px] h-8 ml-1 px-2 text-xs  translate-y-0.5"
          >
             <div slot="info">
@@ -303,7 +312,7 @@
             >
          </div>
 
-         <SideOfKanbanView {tagGroups}/>
+         <SideOfKanbanView {tagGroups} />
       </div>
 
       <div slot="graph" class="flex flex-col h-full">
@@ -325,18 +334,33 @@
          >
 
          <ScrollArea class="max-h-[calc(100%-110px)] h-auto min-h-64 ">
-            
             {#each searchTags as _, i (i)}
+               {@const tagGroup = tagGroups.filter(
+                  (tag) => tag.name === searchTags[i],
+               )[0] || {}}
                <div
-                  class="flex mx-2 mt-2.5 bg-white border border-dashed rounded-lg shadow-sm border-zinc-500"
-               >               
-                  <SelectGroup bind:value={searchTags[i]} {tagGroups}/>
-                  <Button
-                     class="w-8 p-0"
-                     disabled={searchTags.length <= 1}
-                     on:click={() => (searchTags = searchTags.slice(0, -1))}
-                     ><Minus size={15} /></Button
-                  >
+                  class="flex flex-col space-y-1 mx-2 mt-2.5 p-2 bg-white border border-dashed rounded-lg shadow-sm border-zinc-500"
+               >
+                  <div class="flex w-full">
+                     <SelectGroup bind:value={searchTags[i]} {tagGroups} />
+                     <Button
+                        class="w-8 p-0"
+                        disabled={searchTags.length <= 1}
+                        on:click={() => (searchTags = searchTags.slice(0, -1))}
+                        ><Minus size={15} /></Button
+                     >
+                  </div>
+                  <div class="flex flex-wrap">
+                     {#each tagGroup?.tags || [] as tag}
+                     <Badge
+                        class="m-0.5 w-auto text-nowrap h-5 font-medium rounded-md data-[selected]:bg-zinc-400 "
+                        style={`background-color: ${tagGroup.color};`}
+                     >
+                        {tag}
+                     </Badge>
+                  {/each}
+                  </div>
+                  
                </div>
             {/each}
             <div
