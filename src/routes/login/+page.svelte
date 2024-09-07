@@ -63,7 +63,7 @@
 </script>
 
 {#if !$isAuthed}
-	<div class="login h-screen w-screen flex justify-center items-center">
+	<div class="font-serif h-screen w-screen flex justify-center items-center">
 		<div class="w-1/5">
 		{#if signUp}
 			<!-- sign up -->
@@ -124,8 +124,3 @@
 
 <slot />
 
-<style>
-	.login {
-		font-family: 'Manrope Variable', sans-serif;
-	}
-</style>
