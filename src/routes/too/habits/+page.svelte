@@ -8,40 +8,43 @@
 	import { goto } from "$app/navigation";
 	import { writable, type Writable } from "svelte/store";
 	import { postApi, delApi, patchApi } from "$lib/api.js";
-	import { type Habit} from "$lib/schema";
-	import { type DateRange ,getThisMonthRange} from "$lib/utils";
+	import { type Habit } from "$lib/schema";
+	import { type DateRange, getThisMonthRange,parseMonthRangeFromURL } from "$lib/utils";
 
 	// data
 	export let data;
 	let habits: Writable<Habit[]> = writable(data?.habits || []);
 	setContext("habits", habits);
 
-	let statusOption: Writable<String>  = writable("InProgress");
+	let statusOption: Writable<String> = writable("InProgress");
 	setContext("statusOption", statusOption);
-	
-	// duration select
-	const selectedMonthRange:Writable<DateRange> = writable(getThisMonthRange());
-	setContext("selectedMonthRange", selectedMonthRange);
-	
 
-	onMount(async () => {
-		$selectedMonthRange = getThisMonthRange();
-		await setQuery($selectedMonthRange);
+	// duration select
+	let initialDateRange = parseMonthRangeFromURL() || getThisMonthRange();
+	const selectedMonthRange: Writable<DateRange> =
+		writable(initialDateRange);
+	setContext("selectedMonthRange", selectedMonthRange);
+
+	onMount(() => {
+		const urlParams = new URLSearchParams(window.location.search);
+		if (!urlParams.get("start_month") || !urlParams.get("end_month")) {
+			setQuery(getThisMonthRange());
+		}
 	});
 
-	async function setQuery(duration) {
+	function setQuery(duration) {
 		const start_month = duration.start;
 		const end_month = duration.end;
 		const searchParams = new URLSearchParams({ start_month, end_month });
-		await goto(`?${searchParams.toString()}`);
-		$habits = await data?.habits;
-		await tick();
+		//console.info(searchParams.toString());
+		goto(`?${searchParams.toString()}`);
+		//$habits = data?.habits;
 	}
 
 	async function handleDateUpdate(e) {
-		const { selectedMonthRange } = e.detail;
-		await setQuery(selectedMonthRange);
+		const { selectedMonthRange } = e.detail;		
 		$selectedMonthRange = selectedMonthRange;
+		setQuery($selectedMonthRange);
 	}
 
 	async function handleCreateHabit(e) {
@@ -118,7 +121,6 @@
 </script>
 
 <div class="relative w-full h-full">
-
 	<PageTemplete>
 		<div slot="nav" class="">
 			<DurationPicker on:update={handleDateUpdate} />

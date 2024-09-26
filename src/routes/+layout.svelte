@@ -3,27 +3,53 @@
 	import { Button, Breadcrumb, Avatar, DropdownMenu } from "$ui";
 	import HeaderNav from "$components/HeaderNav.svelte";
 	import TWindicator from "$components/TWindicator.svelte";
-	import { auth, isAuthed, timerOpen, } from "$store";
+	import { auth, isAuthed, timerOpen } from "$store";
 	import { goto } from "$app/navigation";
-	import { onDestroy, onMount } from "svelte";
+	import { onDestroy, onMount, tick } from "svelte";
 	import { LogOut, Clock, Bell } from "lucide-svelte";
 	import { page } from "$app/stores";
 	import ShowRecord from "$components/tenMTable/showRecord.svelte";
 	import PlanRecord from "$components/tenMTable/planRecord.svelte";
 	import { getCookie } from "$lib/utils";
+	import { browser } from "$app/environment";
+
+	import NProgress from "nprogress";
+	import { afterNavigate, beforeNavigate } from "$app/navigation";
+	import "nprogress/nprogress.css";
+
+	NProgress.configure({
+		showSpinner: false,
+	});
+
+	afterNavigate(() => {
+		NProgress.done();
+	});
+	beforeNavigate(() => {
+		NProgress.start();
+		// console.log();
+	});
 
 	let showAlarm = false;
 	let openTenM = false;
 
-	$:{
-		if(!$isAuthed){
-			goto("/login", { replaceState: true });
-		}
-	}
+	
 	onMount(async () => {
+		await auth.getUserInfo();
+		console.info("auth?",$isAuthed)
+		if (!$isAuthed) {
+			alert("로그인이 필요합니다.");
+			goto("/login", { replaceState: true });
+		} else {
+			if (browser && window.history.length > 1) {
+				window.history.back();
+			} else {
+				goto("/do", { replaceState: true });
+			}
+		}
+		
 		const loggedIn = getCookie("logged_in");
 
-		await auth.getUserInfo();		
+		
 
 		const interval = setInterval(
 			async () => {
@@ -47,7 +73,6 @@
 			document.removeEventListener("keydown", handleKeyDown); // keydown 이벤트 리스너 제거
 	});
 
-
 	async function handleLogout(e) {
 		e.preventDefault();
 		try {
@@ -63,7 +88,6 @@
 			openTenM = false;
 		}
 	}
-
 </script>
 
 {#await auth.refresh() then}
@@ -188,8 +212,7 @@
 				</DropdownMenu.Root>
 			</div>
 		</div>
-	{/if}
-{/await}
+	{/if}{/await}
 
 <div class="h-full max-h-[calc(100vh-50px)] w-full">
 	<slot />
@@ -204,6 +227,22 @@
 
 	:global(body) {
 		font-family: "Manrope Variable", sans-serif;
+	}
+
+	:global(#nprogress) {
+		pointer-events: none;
+	}
+
+	:global(#nprogress .bar) {
+		background: #a3202c !important;
+		height: 2px;
+		opacity: 60%;
+	}
+
+	:global(#nprogress .peg) {
+		box-shadow:
+			0 0 10px #a3202c,
+			0 0 5px #a3202c;
 	}
 
 	.currentPage {

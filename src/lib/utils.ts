@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
-import { CalendarDate, endOfMonth, startOfMonth, startOfWeek } from "@internationalized/date";
+import { CalendarDate, endOfMonth, parseDate, startOfMonth, startOfWeek } from "@internationalized/date";
 import type TreeItem from "$lib/components/task/TaskTree.svelte";
 
 export function cn(...inputs: ClassValue[]) {
@@ -86,7 +86,7 @@ export type DateRange = {
 
 export function getThis3WeeksRange(): DateRange {
     const todayValue = today(getLocalTimeZone());
-    const monday = startOfWeek(todayValue,'fr-FR');
+    const monday = startOfWeek(todayValue, 'fr-FR');
     return {
         start: monday.subtract({ days: 7 }),
         end: monday.add({ days: 13 }),
@@ -103,11 +103,53 @@ export function getThisMonthRange(): DateRange {
 
 export function getThisWeekRange(): DateRange {
     const todayValue = today(getLocalTimeZone());
-    const monday = startOfWeek(todayValue,'fr-FR');
+    const monday = startOfWeek(todayValue, 'fr-FR');
     return {
         start: monday,
         end: monday.add({ days: 6 }),
     };
+}
+
+// Function to parse date range from URL query parameters
+export function parseDateRangeFromURL() :DateRange|null{
+    const urlParams = new URLSearchParams(window.location.search);
+    const startParam = urlParams.get('start_date');
+    const endParam = urlParams.get('end_date');
+
+    if (startParam !== null && endParam !== null) {
+        return parseParamsToDate(startParam, endParam);
+    }
+    return null;
+}
+
+export function parseMonthRangeFromURL(): DateRange | null {
+    const urlParams = new URLSearchParams(window.location.search);
+    const startParam = urlParams.get('start_month');
+    const endParam = urlParams.get('end_month');
+
+    if (startParam !== null && endParam !== null) {
+        return parseParamsToDate(startParam, endParam);
+    }
+    return null;
+}
+
+function parseParamsToDate(startParam: string, endParam: string): DateRange | null {
+    if (startParam && endParam) {
+        try {
+            const startDate :DateValue = parseDate(startParam);
+            const endDate:DateValue =  parseDate(endParam);
+
+            if (startDate && endDate) {
+                return {
+                    start: startDate,
+                    end: endDate,
+                };
+            }
+        } catch (error) {
+            console.error('Error parsing date range from URL:', error);
+        }
+    }
+    return null;
 }
 
 export function countMonths(
@@ -117,14 +159,14 @@ export function countMonths(
     let monthCounts = [{ month: 0, count: 0 }];
 
     dates.forEach((date) => {
-    const month = date.toDate().getMonth() + 1; // 월을 1부터 시작하도록 변경
-    let monthEntry = monthCounts.find((entry) => entry.month === month);
+        const month = date.toDate().getMonth() + 1; // 월을 1부터 시작하도록 변경
+        let monthEntry = monthCounts.find((entry) => entry.month === month);
 
-    if (monthEntry) {
-        monthEntry.count++;
-    } else {
-        monthCounts.push({ month, count: 1 });
-    }
+        if (monthEntry) {
+            monthEntry.count++;
+        } else {
+            monthCounts.push({ month, count: 1 });
+        }
     });
 
     // 기본 초기화 객체를 제거
@@ -148,37 +190,9 @@ export function getDatesInRange(start: CalendarDate, end: CalendarDate) {
     let currentDate = start;
 
     while (currentDate.compare(end) <= 0) {
-    dates.push(currentDate);
-    currentDate = currentDate.add({ days: 1 });
+        dates.push(currentDate);
+        currentDate = currentDate.add({ days: 1 });
     }
 
     return dates;
-}
-
-// task tree
-export function getTaskTreeItems(tasks:Task[]): TreeItem[] {
-    if(!tasks || tasks.length === 0) return [];
-
-    const itemMap = new Map();
-    const rootItems: TreeItem[] = [];
-
-    tasks.forEach((task) => {
-        const item = { task, subtasks: [] };
-        itemMap.set(task.id, item);
-
-        if (!task.parent_id) {
-            rootItems.push(item);
-        }
-    });
-
-    tasks.forEach((task) => {
-        if (task.parent_id) {
-            const parentItem = itemMap.get(task.parent_id);
-            if (parentItem) {
-                parentItem.subtasks.push(itemMap.get(task.id));
-            }
-        }
-    });
-
-    return rootItems;
 }

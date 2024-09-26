@@ -29,14 +29,39 @@
             <DropdownMenu.Label>Today's {type} List</DropdownMenu.Label>
             <DropdownMenu.Separator />
             <ScrollArea class="h-60  w-60">
-               {#each items as item}
-               <DropdownMenu.Item on:click={() => (selectedItem = item)} class="border-b border-dashed m-1.5 mr-2.5">
-                  {#if item.icon}
-                     <svelte:component this={item.icon} class="w-4 h-4 mr-2" />
-                  {/if}
-                  {item.title}</DropdownMenu.Item
-               >
-            {/each}
+               {#if type === "task"}
+                  {#each items as { task, subtasks }}
+                     <DropdownMenu.Item
+                        on:click={() => (selectedItem = task)}
+                        class="border-b border-dashed m-1.5 mr-2.5"
+                     >
+                        {task.title}
+                     </DropdownMenu.Item>
+                     {#each subtasks as subtask}
+                        <DropdownMenu.Item
+                           on:click={() => (selectedItem = subtask.task)}
+                           class="border-b border-dashed m-1.5 mr-2.5 ml-4 bg-zinc-50"
+                        >
+                           {subtask.task.title}
+                        </DropdownMenu.Item>
+                     {/each}
+                  {/each}
+               {:else}
+                  {#each items as item}
+                     <DropdownMenu.Item
+                        on:click={() => (selectedItem = item)}
+                        class="border-b border-dashed m-1.5 mr-2.5"
+                     >
+                        {#if item.icon}
+                           <svelte:component
+                              this={item.icon}
+                              class="w-4 h-4 mr-2"
+                           />
+                        {/if}
+                        {item.title}
+                     </DropdownMenu.Item>
+                  {/each}
+               {/if}
             </ScrollArea>
          </DropdownMenu.Group>
       </DropdownMenu.Content>

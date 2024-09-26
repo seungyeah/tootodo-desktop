@@ -14,16 +14,16 @@
       ChevronRight,
       RotateCcw,
    } from "lucide-svelte";
-   import { cn, type DateRange, getThisMonthRange } from "$lib/utils";
+   import { cn, type DateRange, getThisMonthRange ,parseMonthRangeFromURL} from "$lib/utils";
+
    const df = new DateFormatter('en-US', {
 		month:"short",
 		day:"numeric",
 	});
+
    const dispatch = createEventDispatcher();
 
-   let selectedMonthRange: DateRange = getThisMonthRange();
-
-   let selectingMonthRange: DateRange = getThisMonthRange();
+   let selectedMonthRange:DateRange = parseMonthRangeFromURL() || getThisMonthRange(); ;
 
    function updateDates() {
       dispatch("update", { selectedMonthRange: selectedMonthRange });
@@ -33,6 +33,7 @@
       selectedMonthRange = getThisMonthRange();
       updateDates();
    }
+
 </script>
 
 <div
@@ -58,18 +59,8 @@
    <!-- date range picker -->
    <Popover.Root
       openFocus
-      onOpenChange={(open) => {
-         if (!open) {
-            if (selectingMonthRange.start && selectingMonthRange.end) {
-               selectedMonthRange = selectingMonthRange;
-               updateDates();
-            }
-         } else {
-            selectingMonthRange = {
-               start: undefined,
-               end: undefined,
-            };
-         }
+      onOpenChange={() => {
+         updateDates();
       }}
    >
       <Popover.Trigger asChild let:builder>
@@ -108,7 +99,7 @@
       </Popover.Trigger>
       <Popover.Content class="w-[300px] p-0 translate-y-1" align="start">
          <RangeMonthCalendar
-            bind:value={selectingMonthRange}
+            bind:value={selectedMonthRange}
             initValue={selectedMonthRange}
          />
       </Popover.Content>

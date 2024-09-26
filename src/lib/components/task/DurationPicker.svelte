@@ -7,9 +7,9 @@
 	import { Button, RangeCalendar, Popover } from '$ui';
 	import { createEventDispatcher } from 'svelte';
 	import { CalendarIcon, ChevronLeft, ChevronRight, RotateCcw } from 'lucide-svelte';
-	import { cn } from '$lib/utils.js';
-	
+	import { cn, parseDateRangeFromURL } from '$lib/utils.js';	
 	import { getThis3WeeksRange} from "$lib/utils";
+
 	const todayValue = today(getLocalTimeZone());
 	const df = new DateFormatter('en-US', {
 		month:"short",
@@ -18,16 +18,15 @@
 
 	const dispatch = createEventDispatcher();
 
-
 	// 3 weeks duration
-	let selectedDateRange  =getThis3WeeksRange();
+	let selectedDateRange = parseDateRangeFromURL() || getThis3WeeksRange();
 
 	function updateDates() {
 		dispatch('update', { selectedDateRange });
 	}
 
    function resetDates() {        
-		selectedDateRange  =getThis3WeeksRange();
+		selectedDateRange  = getThis3WeeksRange();
 		updateDates();
 	}
 

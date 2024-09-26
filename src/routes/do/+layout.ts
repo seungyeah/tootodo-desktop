@@ -23,7 +23,7 @@ export const load: Load = async ({  fetch, url }) => {
 		});
 		return await response.json();
 	} catch (e) {
-		console.error('이벤트를 불러오는 데 실패했습니다:', e);
+		console.error('task를 불러오는 데 실패했습니다:', e);
 	}
 	return [];
 };

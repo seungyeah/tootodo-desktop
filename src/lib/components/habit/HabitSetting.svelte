@@ -4,7 +4,7 @@
 	import { createEventDispatcher, getContext } from 'svelte';
 	import {type Habit } from "$lib/schema";
 
-	const habits = getContext('habits');
+	export let habits = getContext('habits');	
 	const statusOption: string = getContext("statusOption");
 	let openChat = false;
 

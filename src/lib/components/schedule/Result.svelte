@@ -7,7 +7,7 @@
    import { Circle, Maximize2, Star } from "lucide-svelte";
    let Stars = new Array(5).fill(0);
 
-   export let tasks;
+   export let taskTree = [];
    let record = {
       studytime: "05H 30M",
       totalTime: "10H 00M",

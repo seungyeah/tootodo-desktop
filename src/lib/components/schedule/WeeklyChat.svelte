@@ -24,7 +24,7 @@
 	import { currentTime, formatTimeFull, formatDay } from "$store";
 	import { cn } from "$lib/utils";
 	import ChatOptions from "./ChatOptions.svelte";
-	export let tasks = [];
+	export let taskTree = [];
 	let askMsg = {
 		content: "",
 		ask: true,
@@ -315,7 +315,7 @@
 				<div
 					class="flex items-center justify-center h-8 w-[calc(100%-200px)] max-w-[calc(100%-200px)] overflow-clip"
 				>
-					<ChatOptions items={tasks} type={"task"} />
+					<ChatOptions items={taskTree} type={"task"} />
 					<ChatOptions items={todayHabits} type={"habit"} />
 				</div>
 

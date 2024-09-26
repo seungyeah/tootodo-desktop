@@ -6,7 +6,8 @@
 	import { getContext } from "svelte";
 	import Switch from "$ui/switch/switch.svelte";
 	import { postApi } from "$lib/api_ai";
-	import { ScheduleList } from "$components/schedule";
+
+
 	const selectedDate = getContext("selectedDateRange");
 	const dispatchCreateTask = getContext("handleCreateTask");
 	const todayValue = today(getLocalTimeZone());
@@ -88,7 +89,7 @@
 
 	// crud
 	function handleCreate(task) {
-		dispatchCreateTask(task, "new");
+		dispatchCreateTask(task, "CREATE_TASK_WITH_TITLE");
 	}
 </script>
 

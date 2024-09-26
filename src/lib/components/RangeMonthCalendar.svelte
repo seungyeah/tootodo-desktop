@@ -58,36 +58,29 @@
                      ? value.start?.month < i + 1 && value.end?.month > i + 1
                         ? "bg-zinc-100"
                         : (value.start?.month === i + 1 &&
-                              value.start?.year === year) ||
-                           (value.end?.month === i + 1 &&
-                              value.end?.year === year)
-                        ? "bg-zinc-300"
-                        : ""
+                               value.start?.year === year) ||
+                            (value.end?.month === i + 1 &&
+                               value.end?.year === year)
+                          ? "bg-zinc-300"
+                          : ""
                      : initValue.start?.month < i + 1 &&
-                        initValue.end?.month > i + 1
-                     ? "bg-zinc-100"
-                     : (initValue.end?.month === i + 1 &&
+                         initValue.end?.month > i + 1
+                       ? "bg-zinc-100"
+                       : (initValue.end?.month === i + 1 &&
                               initValue.end?.year === year) ||
                            (initValue.start?.month === i + 1 &&
                               initValue.start?.year === year)
-                        ? "bg-zinc-300"
-                        : ""
+                         ? "bg-zinc-300"
+                         : ""
                }
             `}
             on:click={() => {
-               if (!value.start) {
-                  value.start = new CalendarDate(year, i + 1, 1);
-                  value.end = undefined;
-               } else if (!value.end) {
-                  value.end = new CalendarDate(year, i + 1, 31);
-                  if(value.start > value.end){
-                     const temp = value.start;
-                     value.start = value.end;
-                     value.end = temp;
-                  }
-               } else {
-                  value.start = new CalendarDate(year, i + 1, 1);
-                  value.end = undefined;
+               value.start = new CalendarDate(year, i + 1, 1);
+               value.end = new CalendarDate(year, i + 1, 31);
+               if (value.start > value.end) {
+                  const temp = value.start;
+                  value.start = value.end;
+                  value.end = temp;
                }
             }}>{month}</Button
          >

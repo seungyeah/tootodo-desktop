@@ -1,10 +1,7 @@
 <script context="module" lang="ts">
 	import { type Task } from "$lib/schema";
+	import { type TaskTreeItem } from "$lib/type";
 
-	export type TreeItem = {
-		task: Task;
-		subtasks?: TreeItem[];
-	};
 
 	let draggedTask: Task | null = null;
 </script>
@@ -18,7 +15,7 @@
 	} from "@internationalized/date";
 	import { Popover, RangeCalendar } from "$ui";
 	import { Folder, FolderOpen, ArrowRight, GripVertical } from "lucide-svelte";
-	import { createEventDispatcher, onMount, tick } from "svelte";
+	import { createEventDispatcher } from "svelte";
 	import { getContext } from "svelte";
 	import TaskSettingIcon from "./TaskSettingIcon.svelte";
 
@@ -31,7 +28,7 @@
 
 	// items
 	export let level = 1;
-	export let treeItems: TreeItem[] = [];
+	export let treeItems: TaskTreeItem[] = [];
 
 	const todayValue = today(getLocalTimeZone());
 	let cellDuration = {
@@ -48,7 +45,7 @@
 		task: Task,
 		duration: { start: CalendarDate; end: CalendarDate },
 	) {
-		//console.log("task transfer",task.start_date, task.end_date);
+		//console.log("task transfer",task?.start_date, task?.end_date);
 		const updateData = {
 			start_date: duration.start.toString(),
 			end_date: duration.end.toString(),
@@ -105,7 +102,7 @@
 	function handleDragStart(e: DragEvent, task: Task) {
 		draggedTask = { ...task };
 		e.dataTransfer!.effectAllowed = "move";
-		e.dataTransfer!.setData("text/plain", task.id);
+		e.dataTransfer!.setData("text/plain", task?.id);
 	}
 
 	function handleDragOver(e: DragEvent) {
@@ -144,7 +141,7 @@
 		on:scroll={handleScroll}
 	>
 		{#each treeItems as { task, subtasks }, i}
-			{@const itemId = `${task.id}`}
+			{@const itemId = `${task?.id}`}
 			{@const hasChildren = !!subtasks?.length}
 			<div
 				draggable={!hasChildren}
@@ -201,7 +198,7 @@
 				<!-- title -->
 				<div class="h-[30px] border-b border-r w-full">
 					<input
-						value={task.title}
+						value={task?.title}
 						class="h-full px-1.5 w-full bg-transparent focus:bg-zinc-50"
 						on:blur={(e) => handleUpdateTitle(task, e.target.value)}
 					/>
@@ -213,8 +210,8 @@
 						if (!open) {
 							handleUpdateDuration(task, cellDuration);
 						} else {
-							cellDuration.start = parseDate(task.start_date);
-							cellDuration.end = parseDate(task.end_date);
+							cellDuration.start = parseDate(task?.start_date);
+							cellDuration.end = parseDate(task?.end_date);
 						}
 					}}
 				>
@@ -223,13 +220,13 @@
 							class="inline-block h-[30px] w-[120px] border-b border-r"
 						>
 							<div class="inline-flex space-x-1 h-[20px] translate-y-1">
-								{#if task.start_date && task.end_date}
+								{#if task?.start_date && task?.end_date}
 									<div class="">
-										{task.start_date.slice(5, 10)}
+										{task?.start_date.slice(5, 10)}
 									</div>
 									<div class="font-extrabold text-zinc-400">~</div>
 									<div>
-										{task.end_date.slice(5, 10)}
+										{task?.end_date.slice(5, 10)}
 									</div>
 								{:else}
 									00-00 <span class="font-extrabold text-zinc-400"
@@ -256,14 +253,14 @@
 				>
 					<input
 						class="w-20 translate-y-1.5 shadow opacity-30"
-						class:complete={task.progress_rate === 100}
-						class:inProgress={task.progress_rate > 25 &&
-							task.progress_rate < 100}
+						class:complete={task?.progress_rate === 100}
+						class:inProgress={task?.progress_rate > 25 &&
+							task?.progress_rate < 100}
 						type="range"
 						step="25"
 						min="0"
 						max="100"
-						value={task.progress_rate || 0}
+						value={task?.progress_rate || 0}
 						on:change={(e) =>
 							handleUpdateProgressRate(task, e.target.value)}
 					/>

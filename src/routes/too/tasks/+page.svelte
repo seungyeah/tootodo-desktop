@@ -10,25 +10,23 @@
 	import { derived, writable, type Writable } from "svelte/store";
 	import { postApi, delApi, patchApi } from "$lib/api.js";
 	import { type Task } from "$lib/schema";
-	import { type DateRange, getThis3WeeksRange, getTaskTreeItems } from "$lib/utils";
+	import {
+		type DateRange,
+		getThis3WeeksRange,
+		parseDateRangeFromURL,
+	} from "$lib/utils";
 	import TaskTree from "$components/task/TaskTree.svelte";
-	import type TreeItem from "$lib/components/task/TaskTree.svelte";
-    import type { TaskCreationMode } from "$lib/type.js";
+	import type {
+		TaskCreationMode,
+		TaskDeleteOption,
+		TaskTreeItem,
+	} from "$lib/type.js";
 
 	/////// data
 	export let data;
-	const tasks: Writable<Task[]> = writable(data?.tasks || []);
-	const sortTasks = (a, b) => {
-		const diff = new Date(a.start_date) - new Date(b.start_date);
-		return diff === 0 ? new Date(b.end_date) - new Date(a.end_date) : diff;
-	};
-	const sortedTasks = derived(tasks, ($tasks) => [...$tasks].sort(sortTasks));
-	setContext("tasks", sortedTasks);
 
-	const treeItems = writable(getTaskTreeItems($sortedTasks) || []);
-	$: {
-		treeItems.set(getTaskTreeItems($sortedTasks));
-	}
+	$: treeItems = writable(data?.tasks || []);
+
 	setContext("treeItems", treeItems);
 
 	// treeview
@@ -43,33 +41,35 @@
 	} = ctx;
 
 	setContext("tree", ctx);
-	
 
 	///////// duration select
-	const selectedDateRange: Writable<DateRange> =
-		writable(getThis3WeeksRange());
+	let initialDateRange = parseDateRangeFromURL() || getThis3WeeksRange();
+
+	const selectedDateRange: Writable<DateRange> = writable(initialDateRange);
 	setContext("selectedDateRange", selectedDateRange);
 
-	onMount(async () => {
-		$selectedDateRange = getThis3WeeksRange();
-		await setQuery($selectedDateRange);
+	onMount(() => {
+		const urlParams = new URLSearchParams(window.location.search);
+		if (!urlParams.get("start_date") || !urlParams.get("end_date")) {
+			setQuery(getThis3WeeksRange());
+		}
 	});
 
 	///////// req api
-	async function setQuery(duration) {
+	function setQuery(duration) {
+		// console.table(duration);
 		const start_date = duration.start;
 		const end_date = duration.end;
 		const searchParams = new URLSearchParams({ start_date, end_date });
-		await goto(`?${searchParams.toString()}`);
-		$tasks = await data?.tasks;
-		$treeItems = getTaskTreeItems($tasks);
-		await tick();
+		//console.info(searchParams.toString());
+		goto(`?${searchParams.toString()}`);
 	}
 
-	async function handleDateUpdate(e) {
+	function handleDateUpdate(e) {
 		const { selectedDateRange } = e.detail;
-		await setQuery(selectedDateRange);
+
 		$selectedDateRange = selectedDateRange;
+		setQuery(selectedDateRange);
 	}
 
 	async function handleUpdateTask({ task, updateData }) {
@@ -86,53 +86,66 @@
 		}
 
 		// 변경된 task를 api로 전송
-		const { id } = task;
+		const { id, parent_id } = task;
+
 		try {
 			const res = await patchApi({
 				path: `/tasks/${id}`,
 				data: updateData,
 			});
 
-			const updatedTask = res.data.task;
+			const updatedTask = res.data?.task;
 
-			tasks.update(($tasks) => {
-				const index = $tasks.findIndex((task) => task.id === id);
-				if (index !== -1) {
-					$tasks[index] = updatedTask;
+			treeItems.update(($tasks) => {
+				if (parent_id) {
+					// Find the parent task using parent_id
+					const parentItem = findTaskById($tasks, parent_id);
+					if (parentItem && parentItem.subtasks) {
+						// Update the subtask with the updated task
+						const subtaskIndex = parentItem.subtasks.findIndex(
+							(item) => item.task.id === id,
+						);
+						if (subtaskIndex !== -1) {
+							parentItem.subtasks[subtaskIndex].task = updatedTask;
+							//console.info(parentItem.subtasks[subtaskIndex].task);
+						}
+					}
+				} else {
+					// Update the task with the updated task
+					const index = $tasks.findIndex((item) => item.task.id === id);
+					if (index !== -1) {
+						$tasks[index].task = updatedTask;
+						//console.info($tasks[index].task);
+					}
 				}
+
 				return $tasks;
 			});
-
-			//console.info("updated")
-
 			await tick();
 		} catch (error) {
 			console.error("Request failed:", error);
 		}
 	}
-	
+
 	async function handleCreateTask(task: Task, mode: TaskCreationMode) {
 		if (!task) {
 			return;
 		}
 
 		let formattedTask: Partial<Task> = {};
+		formattedTask.start_date = formatDate(task.start_date);
+		formattedTask.end_date = formatDate(task.end_date);
 
-		if (mode === "new") {
-			formattedTask = {
-				title: task.title,
-				start_date: formatDate(task.start_date),
-				end_date: formatDate(task.end_date),
-			};
+		if (mode === "CREATE_TASK_WITH_TITLE") {
+			formattedTask.title = task.title;
 		} else {
-			formattedTask = {
-				title: "",
-				start_date: formatDate(task.start_date),
-				end_date: formatDate(task.end_date),
-				parent_id: task?.parent_id,
-			};
+			formattedTask.title = "";
 
-			if (mode === "child") {
+			if (mode === "CREATE_TASK_FROM_TASK") {
+				formattedTask.parent_id = task?.parent_id;
+			}
+
+			if (mode === "CREATE_SUBTASK_FROM_TASK") {
 				formattedTask.parent_id = task.id;
 			}
 		}
@@ -144,7 +157,23 @@
 			});
 			const newTask = res.data.task;
 
-			$tasks = [...$tasks, newTask];
+			if (
+				mode === "CREATE_TASK_FROM_TASK" ||
+				mode === "CREATE_SUBTASK_FROM_TASK"
+			) {
+				treeItems.update(($tasks) => {
+					const parentItem = findTaskById($tasks, formattedTask.parent_id);
+					if (parentItem) {
+						if (!parentItem.subtasks) {
+							parentItem.subtasks = [];
+						}
+						parentItem.subtasks.push({ task: newTask });
+					}
+					return $tasks;
+				});
+			} else {
+				$treeItems = [...$treeItems, { task: newTask, subtasks: [] }];
+			}
 
 			await tick();
 		} catch (error) {
@@ -152,15 +181,52 @@
 		}
 	}
 
-	function formatDate(date: string | null): string | null {
-		return date ? new Date(date).toISOString().split("T")[0] : null;
-	}
-
-	async function handleDeleteTask(task: Task) {
-		const { id } = task;
+	async function handleDeleteTask(task: Task, option: TaskDeleteOption) {
+		const { id, parent_id } = task;
 		try {
-			await delApi({ path: `/tasks/${id}` });
-			$tasks = $tasks.filter((task) => task.id !== id);
+			await delApi({ path: `/tasks/${id}`, data: option });
+
+			treeItems.update(($tasks) => {
+				if (parent_id) {
+					// Find the parent task using parent_id
+					const parentItem = findTaskById($tasks, parent_id);
+					if (parentItem && parentItem.subtasks) {
+						// Remove the subtask from the parent's subtasks
+						parentItem.subtasks = parentItem.subtasks.filter(
+							(item) => item.task.id !== id,
+						);
+					}
+				} else {
+					// If no parent_id, remove the task from the root level
+					if (option === "CONVERT_SUBTASK_TO_TASK") {
+						// Find the task to remove from the root level
+						const itemToRemove = $tasks.find(
+							(item) => item.task.id === id,
+						);
+
+						if (itemToRemove) {
+							const subtasks = itemToRemove.subtasks || [];
+
+							$tasks = $tasks.filter((item) => item.task.id !== id);
+
+							// Convert each subtask into a root-level task and add to $tasks
+							const convertedTasks = subtasks.map((subtask) => ({
+								task: subtask.task, // Assuming subtask has a 'task' property
+								subtasks: [], // Initialize with empty subtasks
+							}));
+
+							// Append the converted subtasks to the root tasks
+							$tasks = [...$tasks, ...convertedTasks];
+						}
+					} else {
+						// If option is not "CONVERT_SUBTASK_TO_TASK", simply remove the task
+						$tasks = $tasks.filter((item) => item.task.id !== id);
+					}
+				}
+
+				return $tasks;
+			});
+
 			await tick();
 		} catch (error) {
 			console.error("Request failed:", error);
@@ -171,6 +237,24 @@
 	setContext("handleDeleteTask", handleDeleteTask);
 	setContext("handleCreateTask", handleCreateTask);
 
+	function formatDate(date: string | null): string | null {
+		return date ? new Date(date).toISOString().split("T")[0] : null;
+	}
+
+	function findTaskById(
+		items: TaskTreeItem[],
+		taskId: string,
+	): TaskTreeItem | null {
+		for (let item of items) {
+			if (item.task.id === taskId) {
+				return item;
+			} else if (item.subtasks && item.subtasks.length > 0) {
+				const found = findTaskById(item.subtasks, taskId);
+				if (found) return found;
+			}
+		}
+		return null;
+	}
 	///////// scroll
 	let scrollPosition = { scrollTop: 0, scrollLeft: 0 };
 	let sideComponent: SvelteComponent;
@@ -193,10 +277,7 @@
 		</div>
 
 		<div slot="side" class="flex flex-col w-full h-full px-2 py-2">
-			<TaskSide
-				on:create={handleCreateTask}
-				on:update={handleUpdateTask}
-			/>
+			<TaskSide on:create={handleCreateTask} on:update={handleUpdateTask} />
 		</div>
 
 		<!-- main: gantt chart -->

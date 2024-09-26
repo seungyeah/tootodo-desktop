@@ -65,7 +65,7 @@
       on:scroll={handleScroll}
    >
       {#each treeItems as { task, subtasks }}
-         {@const itemId = `${task.id}`}
+         {@const itemId = `${task?.id}`}
          {@const hasChildren = !!subtasks?.length}
          <!-- schedule weekly -->
          <div

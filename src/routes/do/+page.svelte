@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Tabs,  } from "$ui";
+	import { Tabs } from "$ui";
 	import PageTemplete from "$components/PageTemplete.svelte";
 	import {
 		endOfMonth,
@@ -15,26 +15,17 @@
 		ScheduleHeader,
 	} from "$components/schedule";
 	import Memo from "$components/memo/Memo.svelte";
-	import {
-		Columns3,
-		MessageSquareMore,
-		Rows3,
-	} from "lucide-svelte";
-	import { currentTime} from "$store";
+	import { Columns3, MessageSquareMore, Rows3 } from "lucide-svelte";
+	import { currentTime } from "$store";
 	import { createTreeView } from "@melt-ui/svelte";
 
 	import { SvelteComponent, onMount, setContext, tick } from "svelte";
-	import { derived, writable, type Writable } from "svelte/store";
-	import { cn, getTaskTreeItems } from "$lib/utils";
 
-	let selectedWeekRange = getContext("selectedWeekRange");
+	import { writable, type Writable } from "svelte/store";
 	import { getContext } from "svelte";
 
 	export let data;
-	$: tasks = data?.tasks.sort(sort_tasks());
-
-	const treeItems = writable(getTaskTreeItems(tasks) || []);
-	$: treeItems.set(getTaskTreeItems(tasks));
+	$:treeItems = writable(data?.tasks || []);
 	setContext("treeItems", treeItems);
 
 	// treeview
@@ -48,6 +39,7 @@
 
 	setContext("tree", ctx);
 
+	let selectedWeekRange = getContext("selectedWeekRange");
 	const weeks = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 	$: monday_date =
 		$selectedWeekRange.start.day ||
@@ -62,7 +54,6 @@
 			} else {
 				return diff;
 			}
-			11`																								`;
 		};
 	}
 
@@ -203,14 +194,14 @@
 						value="do"
 						class="-translate-y-[calc(100vh-152px)] h-[calc(100vh-204px)] w-full   "
 					>
-						<WeeklyChat {tasks} />
+						<WeeklyChat taskTree={$treeItems} />
 					</Tabs.Content>
 
 					<Tabs.Content
 						value="result"
 						class="-translate-y-[calc(100vh-152px)] h-[calc(100vh-204px)] w-full "
 					>
-						<Result {tasks} />
+						<Result taskTree={$treeItems} />
 					</Tabs.Content>
 				</Tabs.Root>
 			</div>

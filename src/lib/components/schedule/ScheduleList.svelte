@@ -75,7 +75,7 @@
       on:scroll={handleScroll}
    >
       {#each treeItems as { task, subtasks }}
-         {@const itemId = `${task.id}`}
+         {@const itemId = `${task?.id}`}
          {@const hasChildren = !!subtasks?.length}
          <div
             class="flex flex-col h-11 m-2 rounded-md shadow bg-white border-t border-zinc-50"
@@ -135,17 +135,17 @@
                      <div
                         class="w-full text-start self-center text-xs font-sans line-clamp-2 leading-[1.1rem]"
                      >
-                        {task.title}
+                        {task?.title}
                      </div>
                   </div>
 
                   <div
                      class=" text-zinc-500 text-[0.6rem] absolute top-2 -right-6  font-digital rotate-90"
                   >
-                     {task?.start_date?.slice(8, 10)} - {task?.end_date?.slice(
+                     {task?.start_date?.slice(8, 10) || "00"} - {task?.end_date?.slice(
                         8,
                         10,
-                     )}
+                     )|| "00"}
                   </div>
                </button>
 

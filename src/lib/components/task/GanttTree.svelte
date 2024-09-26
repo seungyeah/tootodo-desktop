@@ -16,8 +16,15 @@
    const selectedDate = getContext("selectedDateRange");
 
    function calculateDurations(task) {
-      const start_date = parseDate(task.start_date);
-      const end_date = parseDate(task.end_date);
+      if(!task?.start_date || !task?.end_date) {
+         return {
+            task_start: 0,
+            task_duration: 0,
+            task_end: 0,
+         };
+      }
+      const start_date = parseDate(task?.start_date);
+      const end_date = parseDate(task?.end_date);
       return {
          task_start: getDuration($selectedDate.start, start_date),
          task_duration: getDuration(start_date, end_date),
@@ -32,7 +39,7 @@
    }
 
    function getColspans(durations) {
-      const { task_start, task_duration, task_end } = durations;
+      const { task_start, task_duration, task_end } = durations;      
       if (task_start === 0 && task_end === 0) {
          return [{ colspan: task_duration + task_start + 1, isTask: true }];
       } else if (task_start <= 0) {
@@ -56,7 +63,7 @@
 </script>
 
 {#each treeItems as { task, subtasks }}
-   {@const itemId = `${task.id}`}
+   {@const itemId = `${task?.id}`}
    {@const hasChildren = !!subtasks?.length}
    {@const durations = calculateDurations(task)}
 
@@ -76,20 +83,20 @@
                   >
                      <div
                         class="h-5 p-0 m-0 bg-zinc-400"
-                        class:task={!task.milestone}
-                        class:complete={task.progress_rate === 100}
-                        class:start={task.progress_rate > 0 && task.progress_rate <= 25}
-                        class:inProgress={task.progress_rate > 25 &&
-                           task.progress_rate < 100}
+                        class:task={!task?.milestone}
+                        class:complete={task?.progress_rate === 100}
+                        class:start={task?.progress_rate > 0 && task?.progress_rate <= 25}
+                        class:inProgress={task?.progress_rate > 25 &&
+                           task?.progress_rate < 100}
                      >
-                        {#if task.milestone}
+                        {#if task?.milestone}
                            <div
                               class="absolute top-0.5 w-4 h-4 rotate-45 border border-zinc-900 -z-10 bg-inherit -left-2"
-                              class:none={task.progress_rate <= 0}
+                              class:none={task?.progress_rate <= 0}
                            />
                            <div
                               class="absolute top-0.5 w-4 h-4 rotate-45 border-2 border-zinc-900 -z-10 bg-inherit -right-2"
-                              class:complete={task.progress_rate === 100}
+                              class:complete={task?.progress_rate === 100}
                            />
                         {/if}
                      </div>
