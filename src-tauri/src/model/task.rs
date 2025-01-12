@@ -85,8 +85,26 @@ pub async fn get_task(db: State<'_, AppDB>, id: String) -> Result<Res<TaskModel>
 }
 
 #[command]
-pub async fn fetch_tasks(db: State<'_, AppDB>) -> Result<Vec<(String, TaskModel)>> {
-    db.fetch("task")
+pub async fn fetch_tasks(
+    db: State<'_, AppDB>,
+    start_date: String,
+    end_date: String,
+) -> Result<Vec<(String, TaskModel)>> {
+    let tasks = db.fetch::<TaskModel>("task")?;
+
+    // start_date와 end_date가 모두 제공된 경우에만 필터링
+    if !start_date.is_empty() && !end_date.is_empty() {
+        Ok(tasks
+            .into_iter()
+            .filter(|(_, task)| {
+                // task의 기간이 주어진 기간과 겹치는지 확인
+                task.start_date < end_date && task.end_date > start_date
+            })
+            .collect())
+    } else {
+        // 날짜 필터가 없는 경우 모든 태스크 반환
+        Ok(tasks)
+    }
 }
 
 #[command]
