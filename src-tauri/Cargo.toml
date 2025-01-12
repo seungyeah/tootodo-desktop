@@ -4,7 +4,7 @@
 name = "app"
 version = "0.1.0"
 description = "A Tauri App"
-authors = ["you"]
+authors = ["seungyeah"]
 license = ""
 repository = ""
 default-run = "app"
@@ -15,17 +15,23 @@ rust-version = "1.60"
 members = ["oqldockey"]
 
 [build-dependencies]
-tauri-build = { version = "2.0.0-rc", features = [] }
+prost-build = "0.12.3"
+tauri-build = { version = "2.0.0", features = [] }
 
 [dependencies]
+tauri = { version = "2.0.0", features = [] }
+prost = "0.12.3"
+rocksdb = "0.22.0"
+
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "2.0.0-rc", features = [] }
-
-rocksdb = "0.22.0"
+thiserror = "1.0.65"
+uuid = { version = "1.11.0", features = ["v7"] }
+chrono = "0.4.31"
+prost-types = "0.12.3"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.
 # If you use cargo directly instead of tauri's cli you can use this feature flag to switch between tauri's `dev` and `build` modes.
 # DO NOT REMOVE!!
-custom-protocol = [ "tauri/custom-protocol" ]
+custom-protocol = ["tauri/custom-protocol"]
