@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package chat;
+
+import "google/protobuf/timestamp.proto";
+
+// MsgModel 정의
+message MsgModel {
+    string id = 1; // BSON ObjectId를 문자열로 처리
+    MsgType msg_type = 2; // 열거형 MsgType
+    string content = 3;
+    bool booked = 4;
+    ChatType chat_type = 5; // 열거형 ChatType
+    repeated MsgModel chat_msgs = 6; // 중첩 MsgModel
+    google.protobuf.Timestamp createdAt = 7; // DateTime 처리
+  }
+
+// 열거형 정의: ChatType
+enum ChatType {
+    ASK = 0;
+    EVENT = 1;
+    TASK = 2;
+  }
+  
+  // 열거형 정의: MsgType
+  enum MsgType {
+    TEXT = 0;
+    QUESTION = 1;
+    ANSWER = 2;
+    IMAGE = 3;
+    FILE = 4;
+    LINK = 5;
+    VIDEO = 6;
+    AUDIO = 7;
+    LOCATION = 8;
+  }

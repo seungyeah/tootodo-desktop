@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package note;
+
+import "google/protobuf/timestamp.proto";
+import "chat_model.proto";
+
+// Protobuf 메시지 정의
+message NoteModel {
+  // ID 필드: BSON ObjectId를 문자열로 처리
+  string id = 1;
+
+  // User UUID: 문자열로 처리 (UUID는 Protobuf에서 직접 지원하지 않음)
+  string user = 2;
+
+  // Title 필드
+  string title = 3;
+
+  // Category 관련 필드
+  string category_id = 4;         // BSON ObjectId를 문자열로 처리
+  string category_color = 5;
+  string category_name = 6;
+
+  // PropValueModel 리스트
+  repeated PropValueModel prop_values = 7;
+
+  // PageModel 리스트
+  repeated PageModel pages = 8;
+
+  // 연결된 Task ID: BSON ObjectId를 문자열로 처리
+  string connected_task = 9;
+
+  // Parent ID: BSON ObjectId를 문자열로 처리
+  string parent_id = 10;
+
+  // Chat 관련 필드
+  chat.ChatType chat_type = 11;
+  repeated chat.MsgModel chat_msgs = 12;
+
+  // 생성일 및 수정일: Google의 Timestamp 타입 사용
+  google.protobuf.Timestamp createdAt = 13;
+  google.protobuf.Timestamp updatedAt = 14;
+}
+
+// PageModel 정의
+message PageModel {
+  string id = 1; // BSON ObjectId를 문자열로 처리
+  string user = 2; // UUID를 문자열로 처리
+  string title = 3;
+  string connected_note = 4; // BSON ObjectId를 문자열로 처리
+  repeated BlockModel contents = 5;
+  google.protobuf.Timestamp createdAt = 6; // DateTime 처리
+  google.protobuf.Timestamp updatedAt = 7;
+}
+
+// BlockModel 정의
+message BlockModel {
+  string id = 1; // BSON ObjectId를 문자열로 처리
+  string src_task_id = 2; // BSON ObjectId를 문자열로 처리
+  BlockType block_type = 3; // 열거형 BlockType
+  string body = 4;
+}
+
+// PropValueModel 정의
+message PropValueModel {
+  string prop_id = 1; // BSON ObjectId를 문자열로 처리
+  string prop_name = 2;
+  PropertyType prop_type = 3; // 열거형 PropertyType
+  PropValueType values = 4; // 중첩 타입 PropValueType
+}
+
+// 열거형 정의: PropertyType
+enum PropertyType {
+  MULTI_SELECT = 0;
+  SINGLE_SELECT = 1;
+  TEXT = 2;
+  NUMBER = 3;
+  DATE_TIME = 4;
+  FILE = 5;
+  IMAGE = 6;
+  LINK = 7;
+  EMAIL = 8;
+  PHONE = 9;
+  LOCATION = 10;
+}
+
+// 열거형 정의: BlockType
+enum BlockType {
+  EDITOR = 0;
+  CODE = 1;
+  DRAWING = 2;
+  TABLE = 3;
+}
+
+// PropValueType 정의
+message PropValueType {
+  oneof value_type {
+    string multiple = 1; // Multiple 값
+    string single = 2; // Single 값
+  }
+}
