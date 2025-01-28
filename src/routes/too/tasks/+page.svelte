@@ -2,7 +2,13 @@
 	import PageTemplete from "$components/PageTemplete.svelte";
 	import { createTreeView } from "@melt-ui/svelte";
 
-	import { SvelteComponent, onMount, setContext, tick } from "svelte";
+	import {
+		SvelteComponent,
+		onMount,
+		setContext,
+		tick,
+		getContext,
+	} from "svelte";
 	import TaskGantt from "$components/task/TaskGanttMain.svelte";
 	import TaskSide from "$components/task/TaskSide.svelte";
 	import DurationPicker from "$components/task/DurationPicker.svelte";
@@ -22,13 +28,10 @@
 		TaskTreeItem,
 	} from "$lib/type.js";
 
-	/////// data
-	export let data;
-
+	import { invoke } from "@tauri-apps/api/core";
+	let data = { tasks: [] };
 	$: treeItems = writable(data?.tasks || []);
-
 	setContext("treeItems", treeItems);
-
 	// treeview
 	const ctx = createTreeView({
 		// expand all tasks that have subtasks
@@ -50,7 +53,7 @@
 
 	onMount(() => {
 		const urlParams = new URLSearchParams(window.location.search);
-		if (!urlParams.get("start_date") || !urlParams.get("end_date")) {
+		if (!urlParams.get("startDate") || !urlParams.get("endDate")) {
 			setQuery(getThis3WeeksRange());
 		}
 	});
@@ -58,11 +61,23 @@
 	///////// req api
 	function setQuery(duration) {
 		// console.table(duration);
-		const start_date = duration.start;
-		const end_date = duration.end;
-		const searchParams = new URLSearchParams({ start_date, end_date });
+		const startDate = duration.start;
+		const endDate = duration.end;
+		const searchParams = new URLSearchParams({ startDate, endDate });
 		//console.info(searchParams.toString());
 		goto(`?${searchParams.toString()}`);
+	}
+
+	$: {
+		invoke("fetch_tasks", {
+			startDate: $selectedDateRange.start.toString(),
+			endDate: $selectedDateRange.end.toString(),
+		})
+			.then((tasks) => {
+				data.tasks = tasks;
+				console.log("tasks", tasks);
+			})
+			.catch(console.error);
 	}
 
 	function handleDateUpdate(e) {
@@ -106,13 +121,16 @@
 							(item) => item.task.id === id,
 						);
 						if (subtaskIndex !== -1) {
-							parentItem.subtasks[subtaskIndex].task = updatedTask;
+							parentItem.subtasks[subtaskIndex].task =
+								updatedTask;
 							//console.info(parentItem.subtasks[subtaskIndex].task);
 						}
 					}
 				} else {
 					// Update the task with the updated task
-					const index = $tasks.findIndex((item) => item.task.id === id);
+					const index = $tasks.findIndex(
+						(item) => item.task.id === id,
+					);
 					if (index !== -1) {
 						$tasks[index].task = updatedTask;
 						//console.info($tasks[index].task);
@@ -133,8 +151,9 @@
 		}
 
 		let formattedTask: Partial<Task> = {};
-		formattedTask.start_date = formatDate(task.start_date);
-		formattedTask.end_date = formatDate(task.end_date);
+		formattedTask.startDate = formatDate(task.startDate);
+		formattedTask.endDate = formatDate(task.endDate);
+		formattedTask.parent_id = "";
 
 		if (mode === "CREATE_TASK_WITH_TITLE") {
 			formattedTask.title = task.title;
@@ -150,35 +169,36 @@
 			}
 		}
 
-		try {
-			const res = await postApi({
-				path: "/tasks/",
-				data: formattedTask,
-			});
-			const newTask = res.data.task;
-
-			if (
-				mode === "CREATE_TASK_FROM_TASK" ||
-				mode === "CREATE_SUBTASK_FROM_TASK"
-			) {
-				treeItems.update(($tasks) => {
-					const parentItem = findTaskById($tasks, formattedTask.parent_id);
-					if (parentItem) {
-						if (!parentItem.subtasks) {
-							parentItem.subtasks = [];
+		invoke("create_task", { ...formattedTask })
+			.then(async (newTask) => {
+				if (
+					mode === "CREATE_TASK_FROM_TASK" ||
+					mode === "CREATE_SUBTASK_FROM_TASK"
+				) {
+					treeItems.update(($tasks) => {
+						const parentItem = findTaskById(
+							$tasks,
+							formattedTask.parent_id,
+						);
+						if (parentItem) {
+							if (!parentItem.subtasks) {
+								parentItem.subtasks = [];
+							}
+							parentItem.subtasks.push({ task: newTask });
 						}
-						parentItem.subtasks.push({ task: newTask });
-					}
-					return $tasks;
-				});
-			} else {
-				$treeItems = [...$treeItems, { task: newTask, subtasks: [] }];
-			}
+						return $tasks;
+					});
+				} else {
+					console.log(newTask);
+					$treeItems = [
+						...$treeItems,
+						{ task: newTask, subtasks: [] },
+					];
+				}
 
-			await tick();
-		} catch (error) {
-			console.error("Request failed:", error);
-		}
+				await tick();
+			})
+			.catch((e) => console.error("Fail to fetch tasks", e));
 	}
 
 	async function handleDeleteTask(task: Task, option: TaskDeleteOption) {
@@ -207,7 +227,9 @@
 						if (itemToRemove) {
 							const subtasks = itemToRemove.subtasks || [];
 
-							$tasks = $tasks.filter((item) => item.task.id !== id);
+							$tasks = $tasks.filter(
+								(item) => item.task.id !== id,
+							);
 
 							// Convert each subtask into a root-level task and add to $tasks
 							const convertedTasks = subtasks.map((subtask) => ({
@@ -277,7 +299,10 @@
 		</div>
 
 		<div slot="side" class="flex flex-col w-full h-full px-2 py-2">
-			<TaskSide on:create={handleCreateTask} on:update={handleUpdateTask} />
+			<TaskSide
+				on:create={handleCreateTask}
+				on:update={handleUpdateTask}
+			/>
 		</div>
 
 		<!-- main: gantt chart -->
@@ -321,7 +346,8 @@
 					class="w-[120px] border-r border-zinc-500 min-w-[120px] max-w-[120px] -translate-y-0.5"
 					>Duration</th
 				>
-				<th class="w-20 min-w-20 max-w-20 -translate-y-0.5">Progress</th>
+				<th class="w-20 min-w-20 max-w-20 -translate-y-0.5">Progress</th
+				>
 				<th class="w-[15px] min-w-[15px] max-w-[15px] -translate-y-0.5"
 				></th>
 			</table>

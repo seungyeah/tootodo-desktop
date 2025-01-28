@@ -21,25 +21,26 @@ export const registerSchema = z
 // task
 const taskSchema = z.object({
 	chat_msgs: z.nullable(z.string()),
-	chat_type: z.nullable(z.string()), 
-	createdAt: z.string().datetime(), 
+	chat_type: z.nullable(z.string()),
+	createdAt: z.string().datetime(),
 	due_at: z.nullable(z.string().datetime()),
-	end_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), // end_date should be a date string in YYYY-MM-DD format
+	endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), // end_date should be a date string in YYYY-MM-DD format
 	id: z.string(),
-	milestone: z.boolean(), 
+	milestone: z.boolean(),
+	completed: z.boolean(),
 	parent_id: z.string().uuid().optional(),
-	progress_rate: z.number().int(), 
-	start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), // start_date should be a date string in YYYY-MM-DD format
-	title: z.string(), 
-	updatedAt: z.string().datetime(), 
-	user: z.string() 
+	progress_rate: z.number().int(),
+	startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), // start_date should be a date string in YYYY-MM-DD format
+	title: z.string(),
+	updatedAt: z.string().datetime(),
+	user: z.string()
 });
 export type Task = z.infer<typeof taskSchema>;
 
 // Habit
 const habitRecordSchema = z.object({
-	start_at: z.string().datetime(), 
-	end_at: z.string().datetime(), 
+	start_at: z.string().datetime(),
+	end_at: z.string().datetime(),
 	msg: z.string(),
 	photo: z.string(),
 });
@@ -54,7 +55,7 @@ const habitSchema = z.object({
 	color: z.string(),
 	records: z.array(habitRecordSchema).optional(),
 	status: statusTypeSchema,
-	createdAt: z.string().datetime(), 
-	updatedAt: z.string().datetime(), 
+	createdAt: z.string().datetime(),
+	updatedAt: z.string().datetime(),
 });
 export type Habit = z.infer<typeof habitSchema>;

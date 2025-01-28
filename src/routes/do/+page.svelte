@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Tabs } from "$ui";
+	import { Button, Tabs } from "$ui";
 	import PageTemplete from "$components/PageTemplete.svelte";
 	import {
 		endOfMonth,
@@ -23,12 +23,28 @@
 
 	import { writable, type Writable } from "svelte/store";
 	import { getContext } from "svelte";
+	import { invoke } from "@tauri-apps/api/core";
 
-	export let data;
-	$:treeItems = writable(data?.tasks || []);
-	setContext("treeItems", treeItems);
+	let data = { tasks: [] };
+	const selectedWeekRange = getContext("selectedWeekRange");
+	const weeks = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+	$: {
+		invoke("fetch_tasks", {
+			startDate: $selectedWeekRange.start.toString(),
+			endDate: $selectedWeekRange.end.toString(),
+		})
+			.then((tasks) => {
+				data.tasks = tasks;
+				console.log("tasks", tasks);
+			})
+			.catch(console.error);
+	}
 
 	// treeview
+	$: treeItems = writable(data?.tasks || []);
+	setContext("treeItems", treeItems);
+
 	const ctx = createTreeView({
 		defaultExpanded: [],
 	});
@@ -39,18 +55,16 @@
 
 	setContext("tree", ctx);
 
-	let selectedWeekRange = getContext("selectedWeekRange");
-	const weeks = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 	$: monday_date =
 		$selectedWeekRange.start.day ||
 		startOfWeek(today(getLocalTimeZone()), "fr-FR").day;
 
 	function sort_tasks() {
-		// duration 기준으로 정렬 (start_date가 빠른 것부터 정렬 -> end_date가 느린것부터 정렬)
+		// duration 기준으로 정렬 (startDate가 빠른 것부터 정렬 -> endDate가 느린것부터 정렬)
 		return (a, b) => {
-			const diff = new Date(a.start_date) - new Date(b.start_date);
+			const diff = new Date(a.startDate) - new Date(b.startDate);
 			if (diff === 0) {
-				return new Date(b.end_date) - new Date(a.end_date);
+				return new Date(b.endDate) - new Date(a.endDate);
 			} else {
 				return diff;
 			}
@@ -72,7 +86,22 @@
 
 	let openSide = false;
 
-	
+	// handle task
+	/*
+	title: String,
+    parent_id: Option<String>,
+    startDate: String,
+    endDate: String,
+	 */
+	let new_task_title = "";
+	function handleCreateTask() {
+		let task = invoke("create_task", {
+			title: new_task_title,
+			parent_id: "",
+			startDate: $selectedWeekRange.start.toString(),
+			endDate: $selectedWeekRange.end.toString(),
+		});
+	}
 </script>
 
 <PageTemplete {openSide}>
@@ -100,9 +129,11 @@
 			<ScheduleHeader bind:openSide></ScheduleHeader>
 
 			<div
-				class="flex-col flex border-2 w-full h-[calc(100%-34px)] max-h-[calc(100%-34px)] rounded-lg border-zinc-700"
+				class="relative flex-col flex border-2 w-full h-[calc(100%-34px)] max-h-[calc(100%-34px)] rounded-lg border-zinc-700"
 			>
-				<div class="rounded-b-lg pr-1 border-zinc-700 h-[calc(100%-48px)]">
+				<div
+					class="rounded-b-lg pr-1 border-zinc-700 h-[calc(100%-48px)]"
+				>
 					<ScheduleList
 						bind:this={scheduleListComponent}
 						on:scroll={handleScroll}
@@ -112,8 +143,13 @@
 
 				<input
 					class="h-11 w-full border-2 border-t-[2.5px] px-2 py-1 rounded-t-lg bg-white absolute left-0 z-10 bottom-0 border-zinc-700"
+					bind:value={new_task_title}
 					placeholder="Search & Add Task.."
 				/>
+				<Button
+					class="absolute bottom-10 right-0"
+					on:click={handleCreateTask}>send</Button
+				>
 			</div>
 		</div>
 
@@ -137,10 +173,11 @@
 							{#if $selectedWeekRange.start.day < $selectedWeekRange.end.day}
 								{monday_date + i}
 							{:else}
-								{endOfMonth($selectedWeekRange.start).day === 31 &&
-								monday_date + i > 31
+								{endOfMonth($selectedWeekRange.start).day ===
+									31 && monday_date + i > 31
 									? monday_date + i - 31
-									: endOfMonth($selectedWeekRange.start).day === 30 &&
+									: endOfMonth($selectedWeekRange.start)
+												.day === 30 &&
 										  monday_date + i > 30
 										? monday_date + i - 30
 										: monday_date + i}
@@ -159,10 +196,17 @@
 			<div class="bg-zinc-100 w-full h-11 flex justify-center">
 				<Tabs.Root value="do" class="h-[42px] w-full ">
 					<Tabs.List class="w-full border-t-[2.5px] border-zinc-700 ">
-						<Tabs.Trigger value="plan" class="w-[100px] translate-y-0.5"
-							><Rows3 size={20} class="mr-1.5" />Plan</Tabs.Trigger
+						<Tabs.Trigger
+							value="plan"
+							class="w-[100px] translate-y-0.5"
+							><Rows3
+								size={20}
+								class="mr-1.5"
+							/>Plan</Tabs.Trigger
 						>
-						<Tabs.Trigger value="do" class="w-[100px]  translate-y-0.5"
+						<Tabs.Trigger
+							value="do"
+							class="w-[100px]  translate-y-0.5"
 							><MessageSquareMore
 								size={20}
 								class="mr-1.5"
@@ -171,7 +215,10 @@
 						<Tabs.Trigger
 							value="result"
 							class="w-[100px]  translate-y-0.5"
-							><Columns3 size={20} class="mr-1.5" />Result</Tabs.Trigger
+							><Columns3
+								size={20}
+								class="mr-1.5"
+							/>Result</Tabs.Trigger
 						>
 					</Tabs.List>
 

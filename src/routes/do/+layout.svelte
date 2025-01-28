@@ -8,6 +8,7 @@
 	import { writable, type Writable } from "svelte/store";
 	import { onMount, setContext } from "svelte";
 	import { goto } from "$app/navigation";
+	import { invoke } from "@tauri-apps/api/core";
 
 	// duration select
 	const selectedWeekRange: Writable<DateRange> = writable(getThisWeekRange());
@@ -19,9 +20,9 @@
 	});
 
 	function setQuery(duration) {
-		const start_date = duration.start;
-		const end_date = duration.end;
-		const searchParams = new URLSearchParams({ start_date, end_date });
+		const startDate = duration.start;
+		const endDate = duration.end;
+		const searchParams = new URLSearchParams({ startDate, endDate });
 		goto(`?${searchParams.toString()}`);
 	}
 
