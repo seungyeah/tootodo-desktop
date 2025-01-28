@@ -29,7 +29,7 @@
                     <Button
                         class="m-2 h-5 w-5 p-2"
                         style={`background-color: ${project.color};`}
-                        on:click={() => {
+                        onclick={() => {
                             record.projectId = project.id;
                             record.color = project.color;
                         }}

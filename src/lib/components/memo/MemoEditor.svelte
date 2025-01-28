@@ -172,7 +172,7 @@
 				</DropdownMenu.Trigger>
 				<DropdownMenu.Content class="-translate-y-2">
 					<DropdownMenu.Group>
-						<DropdownMenu.Item on:click={() => (memo.pin = true)}
+						<DropdownMenu.Item onclick={() => (memo.pin = true)}
 							><Pin size={16} fill="#e4e4e7" class="w-4 h-4 mr-2" />Set
 							pin</DropdownMenu.Item
 						>
@@ -189,7 +189,7 @@
 								<Button
 									class="w-5 h-5 p-2 m-2"
 									style={`background-color: ${color.normal};`}
-									on:click={() => {
+									onclick={() => {
 										memo.color = color.name;
 									}}
 								/>
@@ -203,7 +203,7 @@
 				<Button
 					variant="ghost"
 					class="h-6 p-0 -translate-y-1"
-					on:click={() => (memo.pin = false)}
+					onclick={() => (memo.pin = false)}
 					><Pin size={16} fill="#e4e4e7" />
 				</Button>
 			{/if}

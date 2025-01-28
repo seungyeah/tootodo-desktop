@@ -125,7 +125,7 @@
                      <Button
                         class="w-5 h-5 p-2 m-2"
                         style={`background-color: ${shade.hex};`}
-                        on:click={() => {
+                        onclick={() => {
                            new_color_hex = shade.hex;
                            new_color_name = color.name.toLowerCase();
                         }}

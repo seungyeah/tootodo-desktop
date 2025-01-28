@@ -111,7 +111,7 @@ border-8 border-double border-zinc-50 box-content rounded-2xl shadow-xl
 			class="absolute right-4 top-3 p-1 aspect-square h-7 bg-zinc-950 text-pomodoro-200
 			border-2 border-pomodoro-400 rounded-xl border-double
 			hover:bg-pomodoro-500 hover:text-white   "
-			on:click={removeRecord}
+			onclick={removeRecord}
 		>
 		<Trash2 size={16} />
 	</Button>
@@ -221,7 +221,7 @@ border-8 border-double border-zinc-50 box-content rounded-2xl shadow-xl
 		<Button
 			variant="outline"
 			class="absolute -top-1.5  right-0 m-2 px-4 h-12 w-18 text-2xl font-bold font-digital text-black shadow-inner shadow-zinc-400 "
-			on:click={() => {				
+			onclick={() => {				
 				storeTimerSetting();
 				$timerOpen = true;
 			}}>D<PomoIcon />!</Button

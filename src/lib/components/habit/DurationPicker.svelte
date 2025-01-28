@@ -1,7 +1,6 @@
 <script lang="ts">
    import { Button, Popover } from "$ui";
    import RangeMonthCalendar from "$lib/components/RangeMonthCalendar.svelte";
-   import { createEventDispatcher } from "svelte";
    import {
       DateFormatter,
       endOfMonth,
@@ -16,22 +15,20 @@
    } from "lucide-svelte";
    import { cn, type DateRange, getThisMonthRange ,parseMonthRangeFromURL} from "$lib/utils";
 
+   let {update} = $props();
+
    const df = new DateFormatter('en-US', {
 		month:"short",
 		day:"numeric",
 	});
 
-   const dispatch = createEventDispatcher();
 
    let selectedMonthRange:DateRange = $state(parseMonthRangeFromURL() || getThisMonthRange()); ;
 
-   function updateDates() {
-      dispatch("update", { selectedMonthRange: selectedMonthRange });
-   }
-
    function resetDates() {
       selectedMonthRange = getThisMonthRange();
-      updateDates();
+
+      update(selectedMonthRange)
    }
 
 </script>
@@ -43,14 +40,15 @@
    <Button
       class="h-8 w-8 !p-1"
       variant="ghost"
-      on:click={() => {
+      onclick={() => {
          selectedMonthRange.start = startOfMonth(
             selectedMonthRange.start?.subtract({ months: 1 }),
          );
          selectedMonthRange.end = endOfMonth(
             selectedMonthRange.end?.subtract({ months: 1 }),
          );
-         updateDates();
+
+      update(selectedMonthRange)
       }}
    >
       <ChevronLeft size={20} />
@@ -60,7 +58,8 @@
    <Popover.Root
       openFocus
       onOpenChange={() => {
-         updateDates();
+
+      update(selectedMonthRange)
       }}
    >
       <Popover.Trigger asChild >
@@ -91,7 +90,7 @@
             <Button
                variant="secondary"
                class="z-50 h-6 px-1 shadow -translate-x-11"
-               on:click={() => {
+               onclick={() => {
                   resetDates();
                }}
             >
@@ -111,14 +110,15 @@
    <Button
       class="h-8 w-8 !p-1 -translate-x-[34px]"
       variant="ghost"
-      on:click={() => {
+      onclick={() => {
          selectedMonthRange.start = startOfMonth(
             selectedMonthRange.start?.add({ months: 1 }),
          );
          selectedMonthRange.end = endOfMonth(
             selectedMonthRange.end?.add({ months: 1 }),
          );
-         updateDates();
+
+      update(selectedMonthRange)
       }}
    >
       <ChevronRight size={20} />

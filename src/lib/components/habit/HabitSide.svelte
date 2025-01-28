@@ -1,18 +1,15 @@
 <script lang="ts">
-	import { run, preventDefault } from 'svelte/legacy';
+	import { run, preventDefault } from "svelte/legacy";
 
 	import { getContext, tick } from "svelte";
 	import { createEventDispatcher } from "svelte";
-	import { Button, Input, } from "$ui";
-	import {
-		CirclePlus,
-		Hexagon,
-	} from "lucide-svelte";
+	import { Button, Input } from "$ui";
+	import { CirclePlus, Hexagon } from "lucide-svelte";
 	import Tab from "./HabitTab.svelte";
 	import IconPicker from "./IconPicker.svelte";
 	import icons from "$lib/icons";
 	import HabitList from "./HabitList.svelte";
-	
+
 	const dispatch = createEventDispatcher();
 	// new habit
 	function resetNewHabit() {
@@ -65,7 +62,7 @@
 		} else if (key === "color") {
 			habit.color = value;
 			updateData.color = value;
-		} 
+		}
 		return habit;
 	}
 
@@ -93,9 +90,11 @@
 		onsubmit={preventDefault(handleSubmit)}
 		class="relative flex items-center w-full h-9"
 	>
-		<IconPicker on:update={(e) => (newHabit = handleUpdateIcon(newHabit, e))}>
+		<IconPicker
+			on:update={(e) => (newHabit = handleUpdateIcon(newHabit, e))}
+		>
 			{#snippet trigger()}
-						<div >
+				<div>
 					<Button
 						variant="ghost"
 						size="sm"
@@ -104,15 +103,12 @@
 						{#if newHabit.icon.trim() === ""}
 							<Hexagon size={20} strokeWidth={3} />
 						{:else}
-							{@const SvelteComponent = icons[newHabit.icon]}
-						<SvelteComponent
-								size={16}
-								color={newHabit?.color}
-							/>
+							{@const Component = icons[newHabit.icon]}
+							<Component size={16} color={newHabit?.color} />
 						{/if}
 					</Button>
 				</div>
-					{/snippet}
+			{/snippet}
 		</IconPicker>
 		<Input
 			type="text"
@@ -136,12 +132,14 @@
 
 	<Tab class="w-full h-full">
 		<!-- @migration-task: migrate this slot by hand, `tab-1` is an invalid identifier -->
-	<div slot="tab-1" bind:this={tableContainer} onscroll={handleScroll}>
+		<!-- @migration-task: migrate this slot by hand, `tab-1` is an invalid identifier -->
+		<div slot="tab-1" bind:this={tableContainer} onscroll={handleScroll}>
 			<HabitList></HabitList>
 		</div>
 
 		<!-- @migration-task: migrate this slot by hand, `tab-2` is an invalid identifier -->
-	<div slot="tab-2" bind:this={tableContainer} onscroll={handleScroll}>
+		<!-- @migration-task: migrate this slot by hand, `tab-2` is an invalid identifier -->
+		<div slot="tab-2" bind:this={tableContainer} onscroll={handleScroll}>
 			<HabitList></HabitList>
 		</div>
 	</Tab>

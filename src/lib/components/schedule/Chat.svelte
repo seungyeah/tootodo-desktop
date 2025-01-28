@@ -176,7 +176,7 @@
 						{#each messages as msg}
 							{#if msg.save}
 								<div class="flex items-start justify-start space-x-1 border-b border-dashed">
-									<Button variant="ghost" class="h-6 p-1 " on:click={() => (msg.save = !msg.save)}>
+									<Button variant="ghost" class="h-6 p-1 " onclick={() => (msg.save = !msg.save)}>
 										{#if msg.ask}
 											<Bookmark size={20} color="#52525b" fill="#10b981" />
 										{:else}
@@ -201,7 +201,7 @@
 		<Button
 			variant="ghost"
 			class="h-6 p-1 hover:bg-yellow-400"
-			on:click={() => (record.openChat = false)}
+			onclick={() => (record.openChat = false)}
 		>
 			<X size={20} />
 		</Button>
@@ -228,7 +228,7 @@
 						<Button
 							variant="ghost"
 							class="absolute left-0 top-0.5 h-6 p-1 hover:bg-zinc-200"
-							on:click={() => (msg.save = !msg.save)}
+							onclick={() => (msg.save = !msg.save)}
 						>
 							{#if msg.save}
 								<Bookmark size={16} color="#52525b" fill="#10b981" />
@@ -248,7 +248,7 @@
 							<Button
 								variant="ghost"
 								class="absolute bottom-0 right-1 h-6 w-6 p-1 hover:bg-zinc-100"
-								on:click={() => {
+								onclick={() => {
 									if (msg.content !== askMsg.content) {
 										askMsg = {
 											...askMsg,
@@ -277,7 +277,7 @@
 						<Button
 							variant="ghost"
 							class="absolute left-0 top-0.5 h-6 p-1 hover:bg-zinc-200"
-							on:click={() => (msg.save = !msg.save)}
+							onclick={() => (msg.save = !msg.save)}
 						>
 							{#if msg.save}
 								<Bookmark size={16} color="#52525b" fill="#fde047" />
@@ -302,7 +302,7 @@
 			<Button
 				variant="ghost"
 				class="h-1/2 px-2  hover:bg-yellow-50"
-				on:click={() => (newMsg.save = !newMsg.save)}
+				onclick={() => (newMsg.save = !newMsg.save)}
 			>
 				{#if newMsg.save}
 					<Bookmark fill="#facc15" />
@@ -314,7 +314,7 @@
 			<Button
 				variant="ghost"
 				class="chat h-1/2 -translate-y-1  px-2 hover:bg-emerald-50"
-				on:click={() => (newMsg.ask = !newMsg.ask)}
+				onclick={() => (newMsg.ask = !newMsg.ask)}
 			>
 				{#if newMsg.ask}<Bot fill="#10b981" />
 				{:else}<Bot />

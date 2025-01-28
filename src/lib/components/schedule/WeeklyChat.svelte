@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run, preventDefault } from 'svelte/legacy';
-
 	import ShowPromptIcon from "./ShowPromptIcon.svelte";
 
 	import ShowSummaryIcon from "./ShowSummaryIcon.svelte";
@@ -120,7 +118,7 @@
 	let newMsg = $state({
 		content: "",
 		ask: false,
-		save: true,
+		save: false,
 	});
 
 	onMount(() => {
@@ -144,7 +142,7 @@
 			content: "",
 			ask: false,
 			save: false,
-		}; // 메시지를 추가한 후 입력 필드 초기화
+		};
 		await tick(); // DOM 업데이트를 기다림
 		scrollToBottom();
 	}	
@@ -177,10 +175,7 @@
 			done: true,
 			doneTime: new Date("Fri Apr 26 2024 1:50:30 GMT+0900 (한국 표준시)"),
 		},
-	];
-	run(() => {
-		askMsg;
-	});
+	]
 
 	function handleAskClick() {
 		if (msg.content !== askMsg.content) {
@@ -238,7 +233,7 @@
 									"absolute top-0.5 h-6 p-1 hover:bg-zinc-200",
 									msg.ask ? "left-0" : "right-0",
 								)}
-								on:click={() => (msg.save = !msg.save)}
+								onclick={() => (msg.save = !msg.save)}
 							>
 								<Bookmark
 									size={16}
@@ -269,7 +264,7 @@
 									<Button
 										variant="ghost"
 										class="absolute bottom-0 w-6 h-6 p-1 right-0.5 hover:bg-zinc-100"
-										on:click={handleAskClick}
+										onclick={handleAskClick}
 									>
 										<CircleArrowOutUpRight
 											size={18}
@@ -299,7 +294,7 @@
 				>
 				<Switch
 					id="bookmark-mode"
-					on:click={() => (newMsg.save = !newMsg.save)}
+					onclick={() => (newMsg.save = !newMsg.save)}
 					class="w-8 h-5 data-[state=checked]:bg-pomodoro-500/50"
 					checked={newMsg.save}
 				/>
@@ -309,7 +304,7 @@
 				>
 				<Switch
 					id="ask-mode"
-					on:click={() => (newMsg.ask = !newMsg.ask)}
+					onclick={() => (newMsg.ask = !newMsg.ask)}
 					class="w-8 h-5 data-[state=checked]:bg-emerald-600/50"
 					checked={newMsg.ask}
 				/>
@@ -333,7 +328,7 @@
 			</div>
 
 			<form
-				onsubmit={preventDefault(handleSubmit)}
+				onsubmit={handleSubmit}
 				class="w-full h-full px-1 pt-1 pb-2"
 			>
 				<textarea
@@ -341,7 +336,6 @@
 					bind:value={newMsg.content}
 					onkeydown={(e) => {
 						if (e.key === "Enter" && !e.shiftKey) {
-							e.preventDefault();
 							handleSubmit(e);
 						}
 					}}

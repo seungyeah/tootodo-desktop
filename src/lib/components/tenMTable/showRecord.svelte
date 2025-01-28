@@ -44,9 +44,9 @@ https://svelte.dev/e/node_invalid_placement -->
 	let isAM = new Date().getHours() < 12;
 
 	// Initialize cell colors
-	let cellColors = Array.from({ length: 24 }, () => [
+	let cellColors = $state(Array.from({ length: 24 }, () => [
 		Array.from({ length: 60 }, () => 0),
-	]);
+	]));
 
 	onMount(() => {
 		cellColors = getCellColor();

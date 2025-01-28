@@ -237,7 +237,7 @@
 				{#each todayHabits as habit}
 					<Button
 						variant="ghost"
-						on:click={() => {
+						onclick={() => {
 							habit.done = !habit.done;
 							if (habit.done) habit.doneTime = $currentTime;
 							else habit.doneTime = '';

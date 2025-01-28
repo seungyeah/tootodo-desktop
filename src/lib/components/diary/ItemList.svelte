@@ -44,7 +44,7 @@
 						</div>
 					</Label>
 					<!-- <button
-						on:click={() => (record.openChatInDiary = !record.openChatInDiary)}
+						onclick={() => (record.openChatInDiary = !record.openChatInDiary)}
 						class="absolute right-2 top-0 h-full bg-white"
 					>
 						{#if record.openChatInDiary}

@@ -138,7 +138,7 @@
 										<Button
 											variant="ghost"
 											class="h-6 p-1 "
-											on:click={() => (msg.save = !msg.save)}
+											onclick={() => (msg.save = !msg.save)}
 										>											
 											{#if msg.answer}
 												<Bookmark size={20} color="#52525b" fill="#10b981" />
@@ -159,7 +159,7 @@
 			<Button
 				variant="ghost" 
 				class="h-6 p-1 hover:bg-emerald-600"
-				on:click={() => (askMsg.open = false)}
+				onclick={() => (askMsg.open = false)}
 			>
 				<X size={20} />
 			</Button>
@@ -196,7 +196,7 @@
 							<Button
 								variant="ghost"
 								class="absolute left-0 top-0.5 h-6 p-1 hover:bg-zinc-200"
-								on:click={() => (msg.save = !msg.save)}
+								onclick={() => (msg.save = !msg.save)}
 							>
 								{#if msg.save}
 									<Bookmark size={16} color="#52525b" fill="#10b981" />
@@ -220,7 +220,7 @@
 							<Button
 								variant="ghost"
 								class="absolute left-0 top-0.5 h-6 p-1 hover:bg-zinc-200"
-								on:click={() => (msg.save = !msg.save)}
+								onclick={() => (msg.save = !msg.save)}
 							>
 								{#if msg.save}
 									<Bookmark size={16} color="#52525b" fill="#fde047" />
@@ -245,7 +245,7 @@
 				<Button
 					variant="ghost"
 					class="h-1/2 px-2  hover:bg-emerald-600"
-					on:click={() => (newMsg.save = !newMsg.save)}
+					onclick={() => (newMsg.save = !newMsg.save)}
 				>
 					{#if newMsg.save}
 						<Bookmark fill="#facc15" />

@@ -102,7 +102,7 @@
                   <Button
                      variant="ghost"
                      class="absolute h-6  px-1 -top-2 -left-3 -rotate-12 "
-                     on:click={() => (record.pin = false)}
+                     onclick={() => (record.pin = false)}
                      ><Pin size={16} fill="#e4e4e7" color="#52525b" /></Button
                   >
                {/if}
@@ -157,7 +157,7 @@
                <Button
                   variant="ghost"
                   class="absolute h-6  px-2 -right-0 -bottom-1.5"
-                  on:click={() => (record.openChat = !record.openChat)}
+                  onclick={() => (record.openChat = !record.openChat)}
                >                 
                   {#if record.openChat}
                      <MessageCircle

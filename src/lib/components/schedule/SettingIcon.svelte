@@ -38,15 +38,15 @@
    <DropdownMenu.Content>
       <DropdownMenu.Group>
          <DropdownMenu.Separator />
-         <DropdownMenu.Item on:click={() => (record.pin = true)}
+         <DropdownMenu.Item onclick={() => (record.pin = true)}
             ><Pin size={16} class="mr-2" />Pin</DropdownMenu.Item
          >
          {#if record.note}
-            <DropdownMenu.Item on:click={() => (record.pin = true)}
+            <DropdownMenu.Item onclick={() => (record.pin = true)}
                ><Book size={16} class="mr-2" />Open Note</DropdownMenu.Item
             >
          {:else}
-            <DropdownMenu.Item on:click={() => (record.pin = true)}
+            <DropdownMenu.Item onclick={() => (record.pin = true)}
                ><BookPlus size={16} class="mr-2" />Add Note</DropdownMenu.Item
             >
          {/if}

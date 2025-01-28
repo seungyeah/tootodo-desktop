@@ -1,4 +1,5 @@
 <!-- @migration-task Error while migrating Svelte code: Can't migrate code with afterUpdate. Please migrate by hand. -->
+<!-- @migration-task Error while migrating Svelte code: Can't migrate code with afterUpdate. Please migrate by hand. -->
 <script lang="ts">
 	import Chat from './Chat.svelte';
 	import { Button, ContextMenu, DropdownMenu } from '$ui';
@@ -56,11 +57,11 @@
 				<DropdownMenu.Group>
 					<DropdownMenu.Label class="text-center">Set {value}</DropdownMenu.Label>
 					<DropdownMenu.Separator />
-					<DropdownMenu.Item on:click={() => (record.pin = true)}
+					<DropdownMenu.Item onclick={() => (record.pin = true)}
 						><Pin size={16} class="mr-2" />Set Pin</DropdownMenu.Item
 					>
 
-					<DropdownMenu.Item on:click={() => (record.alarm = true)}
+					<DropdownMenu.Item onclick={() => (record.alarm = true)}
 						><Bell size={16} class="mr-2" />Set Alarm</DropdownMenu.Item
 					>
 					<DropdownMenu.Item><Trash2 size={16} class="mr-2" />Delete</DropdownMenu.Item>
@@ -70,12 +71,12 @@
 
 		<!-- item content -->
 		{#if record.pin}
-			<Button variant="ghost" class="h-6 px-1" on:click={() => (record.pin = false)}
+			<Button variant="ghost" class="h-6 px-1" onclick={() => (record.pin = false)}
 				><Pin size={16} fill="#e4e4e7" /></Button
 			>
 		{/if}
 		{#if record.alarm}
-			<Button variant="ghost" class="h-6 px-1" on:click={() => (record.alarm = false)}
+			<Button variant="ghost" class="h-6 px-1" onclick={() => (record.alarm = false)}
 				><BellRing size={16} fill="#fde68a" /></Button
 			>
 		{/if}
@@ -83,7 +84,7 @@
 
 		<!-- chatting popup icon-->
 		{#if record.item == 'note' || record.item == 'event'}
-			<Button variant="ghost" class="absolute right-0 top-1 h-6 px-2" on:click={toggleOpenChat}>
+			<Button variant="ghost" class="absolute right-0 top-1 h-6 px-2" onclick={toggleOpenChat}>
 				{#if record.openChat}
 					<MessageCircle size={16} fill="#fef08a" class=" scale-125" />
 				{:else}
@@ -110,7 +111,7 @@
 				<ContextMenu.Trigger class="h-full w-full -translate-y-1 "
 					><button
 						class:selectedDay={record.days.some((item) => item.day === day)}
-						on:click={() => {
+						onclick={() => {
 							// record.days에 day가 있다면 제거하고, 없다면 추가.
 							record.days.some((item) => item.day === day)
 								? (record.days = record.days.filter((item) => item.day !== day))

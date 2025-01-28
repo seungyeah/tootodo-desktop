@@ -37,7 +37,9 @@
 			icon: Sun,
 			title: "wake up",
 			done: true,
-			doneTime: new Date("Fri Apr 26 2024 10:20:30 GMT+0900 (한국 표준시)"),
+			doneTime: new Date(
+				"Fri Apr 26 2024 10:20:30 GMT+0900 (한국 표준시)",
+			),
 		},
 		{ id: 3, icon: Pill, title: "take pills", done: false, doneTime: "" },
 		{
@@ -52,7 +54,9 @@
 			icon: Dumbbell,
 			title: "workout",
 			done: true,
-			doneTime: new Date("Fri Apr 26 2024 21:40:30 GMT+0900 (한국 표준시)"),
+			doneTime: new Date(
+				"Fri Apr 26 2024 21:40:30 GMT+0900 (한국 표준시)",
+			),
 		},
 	];
 
@@ -61,9 +65,9 @@
 	const minutes = Array.from({ length: 60 }, (_, i) => i);
 
 	// Initialize cell colors
-	let cellColors = $state(Array.from({ length: 24 }, () => [
-		Array.from({ length: 60 }, () => 0),
-	]));
+	let cellColors = $state(
+		Array.from({ length: 24 }, () => [Array.from({ length: 60 }, () => 0)]),
+	);
 
 	function getCellColor() {
 		records.forEach((record) => {
@@ -95,14 +99,17 @@
 	function getHabitIcon(hour, min) {
 		const habit = todayHabits.find((habit) => {
 			const doneTime = new Date(habit.doneTime);
-			return doneTime.getHours() === hour && doneTime.getMinutes() === min;
+			return (
+				doneTime.getHours() === hour && doneTime.getMinutes() === min
+			);
 		});
 		return habit ? habit.icon : null;
 	}
 
 	function getCurrentTimePosition(hour, min) {
 		return $currentTime
-			? $currentTime.getHours() === hour && $currentTime.getMinutes() === min
+			? $currentTime.getHours() === hour &&
+					$currentTime.getMinutes() === min
 			: false;
 	}
 </script>
@@ -132,8 +139,8 @@
 						class:colored={color}
 					>
 						{#if getHabitIcon(hour, min)}
-							{@const SvelteComponent = getHabitIcon(hour, min)}
-							<SvelteComponent
+							{@const Component = getHabitIcon(hour, min)}
+							<Component
 								strokeWidth={2.4}
 								class="absolute w-5 h-5 -top-0.5 left-0  z-[1] rounded-full  border-2 border-white text-zinc-950 bg-white/70 p-0.5 shadow-md "
 							/>

@@ -224,7 +224,7 @@
             variant="ghost"
             size="sm"
             class="h-8 px-1 rounded shadow bg-zinc-100 translate-y-0.5"
-            on:click={() => (isAddTagGroupMode = !isAddTagGroupMode)}
+            onclick={() => (isAddTagGroupMode = !isAddTagGroupMode)}
          >
             {#if isAddTagGroupMode}
                <Tags size={22} strokeWidth={1.8} />
@@ -344,7 +344,7 @@
             <Button
                variant="ghost"
                class="self-center w-full h-8 p-0 mt-2 font-bold border-t-2 border-double rounded-t-none shadow border-zinc-500"
-               on:click={() => (searchTags = [{}, ...searchTags])}
+               onclick={() => (searchTags = [{}, ...searchTags])}
             >
                <Plus size={20} /></Button
             >
@@ -362,7 +362,7 @@
                         <Button
                            class="w-8 p-0"
                            disabled={searchTags.length <= 1}
-                           on:click={() => (searchTags = searchTags.slice(0, -1))}
+                           onclick={() => (searchTags = searchTags.slice(0, -1))}
                            ><Minus size={15} /></Button
                         >
                      </div>

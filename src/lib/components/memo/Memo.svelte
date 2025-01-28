@@ -158,7 +158,7 @@
 									<Button
 										class="w-5 h-5 p-2 m-2"
 										style={`background-color: ${color.normal};`}
-										on:click={() => {
+										onclick={() => {
 											newMemo.color = color.name;
 										}}
 									/>
@@ -194,7 +194,7 @@
 				<Tabs.Trigger
 					value="all"
 					class="w-[40px] -translate-x-1.5 scale-75"
-					on:click={() => {
+					onclick={() => {
 						newMemo.color = "default";
 					}}
 				>
@@ -210,7 +210,7 @@
 						value={color.name}
 						style={`background-color: ${color.light};`}
 						class="mx-1 rounded-full border-double border-2 border-zinc-500 shadow-inner h-7 w-7"
-						on:click={() => {
+						onclick={() => {
 							newMemo.color = color.name;
 						}}
 					>
@@ -232,9 +232,9 @@
 				<ScrollArea
 					class="h-full max-h-full border-x-2 border-zinc-400 border-dotted w-full px-2.5 pt-0.5 space-y-1"
 				>
-					{#each memos as memo}
-						<MemoEditor bind:memo class=""/>
-					{/each}
+				{#if memo.color === color.name}
+					<MemoEditor bind:memo={memos[i]} class=""/>
+				{/if}
 				</ScrollArea>
 			</Tabs.Content>
 
@@ -247,9 +247,9 @@
 					<ScrollArea
 						class="h-full max-h-full border-x-2 border-zinc-400 border-dotted w-full px-2.5 pt-0.5 space-y-1"
 					>
-						{#each memos as memo}
+						{#each memos as memo,i}
 							{#if memo.color === color.name}
-								<MemoEditor bind:memo class=""/>
+								<MemoEditor bind:memo={memos[i]} class=""/>
 							{/if}
 						{/each}
 					</ScrollArea>

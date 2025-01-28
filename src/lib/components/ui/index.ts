@@ -1,5 +1,3 @@
-import type { Pagination } from "bits-ui";
-
 export * as Accordion from "./accordion";
 export * as AlertDialog from "./alert-dialog";
 export * as AspectRatio from "./aspect-ratio";

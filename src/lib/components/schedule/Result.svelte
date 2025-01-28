@@ -40,10 +40,11 @@
             >
                {#each [record.studytime, record.totalTime] as time, i}
                   <Button
+                     variant="outline"
                      class="relative flex items-center text-center border w-full px-0.5 xl:px-1 "
                   >
                      <div
-                        class="absolute w-full -top-1 text-pomodoro-800 font-serif font-bold text-xs"
+                        class="absolute w-full -top-1.5 text-pomodoro-800 font-serif font-bold text-xs"
                      >
                         {#if i === 0}
                            Study
@@ -52,13 +53,12 @@
                         {/if}
                      </div>
                      <div
-                        class="font-digital text-zinc-800 title h-[20px] font-bold translate-y-0.5"
+                        class="font-digital text-zinc-800 title h-[20px]  translate-y-0.5"
                      >
                         {time}
                      </div>
                   </Button>
                {/each}
-               <Maximize2 size={15} class="mr-1" />
             </button>
          </div>
          <!-- tenM planner -->

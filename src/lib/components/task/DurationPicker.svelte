@@ -37,7 +37,7 @@
 	<Button
 		class="h-8 w-8 !p-1"
 		variant="ghost"
-		on:click={() => {
+		onclick={() => {
 			selectedDateRange.start = selectedDateRange.start.subtract({ days: 7 });
 			selectedDateRange.end = selectedDateRange.end.subtract({ days: 7 });
 			updateDates();
@@ -79,7 +79,7 @@
 				<Button
 				variant="secondary"
 				class="z-50 h-6 px-1 shadow -translate-x-11"
-				on:click={() => {
+				onclick={() => {
 						resetDates();
 				}}
 			>
@@ -102,7 +102,7 @@
 	<Button
 		class="h-8 w-8 !p-1 -translate-x-[34px]"
 		variant="ghost"
-		on:click={() => {
+		onclick={() => {
 			selectedDateRange.start = selectedDateRange.start.add({ days: 7 });
 			selectedDateRange.end = selectedDateRange.end.add({ days: 7 });
 			updateDates();

@@ -153,7 +153,7 @@
 							><BotMessageSquare size={16} />
 						</Button>
 						<Switch
-							on:click={() => (askMode = !askMode)}
+							onclick={() => (askMode = !askMode)}
 							class="w-8 h-4 data-[state=checked]:bg-emerald-700"
 							checked={askMode}
 						/>

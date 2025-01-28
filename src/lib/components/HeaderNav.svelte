@@ -1,82 +1,88 @@
-
 <script lang="ts">
-	import { afterNavigate, preloadData } from '$app/navigation';
-	import { Button} from '$ui';
-	import { page } from '$app/stores';
-	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
-	let backStack: string[] = $state([]); // Stores previous route's pathnames
-	let forwardStack: string[] = $state([]); // Stores next route's pathnames
-	let navClicked = $state(false); // Keeps track of weather we navigated using the back and forward buttons or navigated using a link or any other way in the app.
-	// After every navigation:
+	import { afterNavigate } from "$app/navigation";
+	import { preloadData } from "$app/navigation";
+	import { page } from "$app/state";
+	import { writable } from "svelte/store";
+	import { Button } from "$ui";
+	import { ChevronLeft, ChevronRight } from "lucide-svelte";
+
+	// 스토어 선언
+	const backStack = writable<string[]>([]); // 이전 경로 저장
+	const forwardStack = writable<string[]>([]); // 다음 경로 저장
+	const navClicked = writable(false); // 네비게이션 클릭 상태 관리
+
 	afterNavigate(({ from, to }) => {
-		// If we navigated to our app from outside our app, we don't need to store a route in the back stack.
-		if (!from) return;
-		// If we navigated using the back and forward buttons, we don't need to re-store the routes again in the stack because we are just moving in the history we are not adding a new item to the stack.
-		if (navClicked) {
-			navClicked = false;
-			return;
-		}
-		// Otherwise, store the previous route in the back stack and clear the forward stack.
-		backStack = [...backStack, from.url.pathname];
-		forwardStack = [];
+		if (!from) return; // 외부에서 들어온 경우 `from`이 null이므로 처리하지 않음
+
+		// `navClicked`가 true라면 스택 저장을 하지 않음
+		navClicked.update((clicked) => {
+			if (clicked) {
+				navClicked.set(false);
+				return clicked;
+			}
+
+			// 이전 경로를 `backStack`에 추가, `forwardStack` 초기화
+			backStack.update((stack) => [...stack, from.url.pathname]);
+			forwardStack.set([]);
+			return clicked;
+		});
 	});
+
+	function preloadPage(stack: string[]) {
+		if (stack.length === 0) return;
+		preloadData(stack[stack.length - 1]);
+	}
+
+	function navigateBack() {
+		backStack.update((stack) => {
+			if (stack.length === 0) return stack;
+
+			const currPage = page.url.pathname;
+			const newStack = stack.slice(0, -1); // 마지막 아이템 제거
+			forwardStack.update((forward) => [...forward, currPage]); // 현재 경로를 forwardStack에 추가
+			history.back(); // 브라우저 뒤로가기
+			return newStack;
+		});
+		navClicked.set(true); // 클릭 상태를 업데이트
+	}
+
+	function navigateForward() {
+		forwardStack.update((stack) => {
+			if (stack.length === 0) return stack;
+
+			const currPage = page.url.pathname;
+			const newStack = stack.slice(0, -1); // 마지막 아이템 제거
+			backStack.update((back) => [...back, currPage]); // 현재 경로를 backStack에 추가
+			history.forward(); // 브라우저 앞으로 가기
+			return newStack;
+		});
+		navClicked.set(true); // 클릭 상태를 업데이트
+	}
 </script>
-<div class="w-12 h-6 flex justify-between space-x-2">
-<Button
-	class="w-6 h-6 !p-0 !m-0 "
-	variant="outline"
-	on:mouseover={() => {
-		// If we have items in the back stack, preload the page programmatically on hover using preloadData. This mimics hovering over links.
-		if (backStack.length === 0) return;
-		const prevPage = backStack[backStack.length - 1];
-		preloadData(prevPage);
-	}}
-	on:click={async () => {
-		if (backStack.length === 0) return;
-		navClicked = true; // Set navClicked to true so that afterNavigate won't restore the route.
-		const currPage = $page.url.pathname; // Get the current page pathname before navigating
-		history.back(); // Navigate backwards
-		forwardStack = [...forwardStack, currPage]; // Store the path that we navigated from in the forward stack.
-		backStack = backStack.slice(0, -1); // Remove the last item in the back stack (the path that we navigated to when we clicked back)
-	}}
-	disabled={backStack.length === 0}
->
-	<ChevronLeft size={20} />
-</Button>
-.
-<Button
-	class="w-6 h-6 !p-0 !m-0"
-	variant="outline"
-	on:mouseover={() => {
-		// If we have items in the forward stack, preload the page programmatically on hover using preloadData. This mimics hovering over links.
-		if (forwardStack.length === 0) return;
-		const forwardPage = forwardStack[forwardStack.length - 1];
-		preloadData(forwardPage);
-	}}
-	on:click={async () => {
-		if (forwardStack.length === 0) return;
-		navClicked = true; // Set navClicked to true so that afterNavigate won't restore the route.
-		const currPage = $page.url.pathname; // Get the current page pathname before navigating
-		history.forward(); // Navigate forwards
-		backStack = [...backStack, currPage]; // Store the path that we navigated from in the back stack.
-		forwardStack = forwardStack.slice(0, -1); // Remove the last item in the forward stack (the path that we navigated to when we clicked forward)
-	}}
-	disabled={forwardStack.length === 0}
+
+<div class="w-12 h-6 flex justify-between space-x-1">
+	<!-- 이전 페이지 버튼 -->
+	<Button
+		class="w-6 h-6 !p-0 "
+		variant="outline"
+		onmouseover={() => $backStack.length && preloadPage($backStack)}
+		onclick={navigateBack}
+		disabled={$backStack.length === 0}
 	>
-	<ChevronRight size={20} />
-</Button>
+		<ChevronLeft size={20} />
+	</Button>
+
+	<!-- 다음 페이지 버튼 -->
+	<Button
+		class="w-6 h-6 !p-0 "
+		variant="outline"
+		onmouseover={() => $forwardStack.length && preloadPage($forwardStack)}
+		onclick={navigateForward}
+		disabled={$forwardStack.length === 0}
+	>
+		<ChevronRight size={20} />
+	</Button>
 </div>
 
-<style >
-/* <!--	:global(button.nav-button) {-->
-<!--		background-color: rgba(29,185,84,0.7);-->
-<!--		margin-right: 4px;-->
-<!--		margin-left: 4px;-->
-<!--		border-radius: 100%;-->
-<!--		height: 30px;-->
-<!--		width: 30px;-->
-<!--		&:active {-->
-<!--			background-color: rgba(29,185,84,0.7);-->
-<!--		}-->
-<!--	}--> */
+<style>
 </style>

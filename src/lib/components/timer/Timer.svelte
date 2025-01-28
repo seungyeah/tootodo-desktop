@@ -244,7 +244,7 @@
 				variant="secondary"
 				class="absolute -left-[2.9rem] -top-7 z-50 h-[220px]  w-[220px] translate-x-1/3 translate-y-1/4
 		 rounded-full  border-4  border-amber-950 bg-black/20 p-0 shadow-xl hover:bg-black/60"
-				on:click={async () => {
+				onclick={async () => {
 					$timerStatus.play ? await stopTimer() : await playTimer();
 				}}
 			>
@@ -269,7 +269,7 @@
 			<Button
 				variant="ghost"
 				class="absolute -left-2 top-0 z-10  px-1 hover:bg-zinc-200 hover:shadow hover:shadow-zinc-50"
-				on:click={async () => {
+				onclick={async () => {
 					setNewRecordAt($timerStatus.cycle);
 					await resetTimer();					
 					$timerOpen = false;
@@ -280,7 +280,7 @@
 			<Button
 				variant="ghost"
 				class="absolute -right-2 bottom-0 z-10  px-1  hover:bg-zinc-200 hover:shadow hover:shadow-zinc-50"
-				on:click={async () => {
+				onclick={async () => {
 					await switchSession();
 				}}><StepForward color="#52525b" fill="#52525b" size={32} /></Button
 			>
@@ -371,7 +371,7 @@
 {:else}
 	<div class="flex h-full w-full items-center justify-center">
 		<Button
-			on:click={() => {
+			onclick={() => {
 				resetTimerStatus();
 				$timerOpen = false;
 			}}

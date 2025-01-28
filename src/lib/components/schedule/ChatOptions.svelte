@@ -43,14 +43,14 @@
                {#if type === "task"}
                   {#each items as { task, subtasks }}
                      <DropdownMenu.Item
-                        on:click={() => (selectedItem = task)}
+                        onclick={() => (selectedItem = task)}
                         class="border-b border-dashed m-1.5 mr-2.5"
                      >
                         {task.title}
                      </DropdownMenu.Item>
                      {#each subtasks as subtask}
                         <DropdownMenu.Item
-                           on:click={() => (selectedItem = subtask.task)}
+                           onclick={() => (selectedItem = subtask.task)}
                            class="border-b border-dashed m-1.5 mr-2.5 ml-4 bg-zinc-50"
                         >
                            {subtask.task.title}
@@ -60,7 +60,7 @@
                {:else}
                   {#each items as item}
                      <DropdownMenu.Item
-                        on:click={() => (selectedItem = item)}
+                        onclick={() => (selectedItem = item)}
                         class="border-b border-dashed m-1.5 mr-2.5"
                      >
                         {#if item.icon}

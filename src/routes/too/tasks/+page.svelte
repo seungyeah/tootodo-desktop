@@ -1,11 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot subscribe to stores that are not declared at the top level of the component
-https://svelte.dev/e/store_invalid_scoped_subscription -->
+
 <script lang="ts">
 	import PageTemplete from "$components/PageTemplete.svelte";
 	import { createTreeView } from "@melt-ui/svelte";
-
 	import {
-		SvelteComponent,
+		type Component,
 		onMount,
 		setContext,
 		tick,
@@ -29,11 +27,14 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 		TaskDeleteOption,
 		TaskTreeItem,
 	} from "$lib/type.js";
-
 	import { invoke } from "@tauri-apps/api/core";
+	import {page} from "$app/state";
+
 	let data = { tasks: [] };
-	$: treeItems = writable(data?.tasks || []);
+
+	let treeItems = writable(data?.tasks || []);
 	setContext("treeItems", treeItems);
+
 	// treeview
 	const ctx = createTreeView({
 		// expand all tasks that have subtasks
@@ -50,7 +51,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 	///////// duration select
 	let initialDateRange = parseDateRangeFromURL() || getThis3WeeksRange();
 
-	const selectedDateRange: Writable<DateRange> = writable(initialDateRange);
+	const selectedDateRange = writable<DateRange>(initialDateRange);
 	setContext("selectedDateRange", selectedDateRange);
 
 	onMount(() => {
@@ -62,30 +63,35 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 
 	///////// req api
 	function setQuery(duration) {
-		// console.table(duration);
+		console.table(duration);
 		const startDate = duration.start;
 		const endDate = duration.end;
 		const searchParams = new URLSearchParams({ startDate, endDate });
-		//console.info(searchParams.toString());
 		goto(`?${searchParams.toString()}`);
+
 	}
 
-	$: {
+	$effect(() => {
+		const { start, end } = $selectedDateRange;
+
 		invoke("fetch_tasks", {
-			startDate: $selectedDateRange.start.toString(),
-			endDate: $selectedDateRange.end.toString(),
+			startDate: start.toString(),
+			endDate: end.toString(),
 		})
-			.then((tasks) => {
-				data.tasks = tasks;
-				console.log("tasks", tasks);
-			})
-			.catch(console.error);
-	}
+				.then((tasks) => {
+					data.tasks = tasks;
+					console.log("tasks", tasks);
+
+					console.log(page.url.href);
+				})
+				.catch(console.error);
+	});
+
 
 	function handleDateUpdate(e) {
 		const { selectedDateRange } = e.detail;
 
-		$selectedDateRange = selectedDateRange;
+		selectedDateRange.set(selectedDateRange);
 		setQuery(selectedDateRange);
 	}
 
@@ -279,10 +285,11 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 		}
 		return null;
 	}
+
 	///////// scroll
 	let scrollPosition = { scrollTop: 0, scrollLeft: 0 };
-	let sideComponent: SvelteComponent;
-	let mainComponent: SvelteComponent;
+	let sideComponent: Component;
+	let mainComponent: Component;
 
 	function handleScroll(e) {
 		scrollPosition = {
@@ -296,20 +303,22 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 
 <div class="relative w-full h-full">
 	<PageTemplete>
-		<div slot="nav" class="">
+		{#snippet nav()}
 			<DurationPicker on:update={handleDateUpdate} />
-		</div>
+		{/snippet}
 
-		<div slot="side" class="flex flex-col w-full h-full px-2 py-2">
+		{#snippet side()}
+		<div class="flex flex-col w-full h-full px-2 py-2">
 			<TaskSide
 				on:create={handleCreateTask}
 				on:update={handleUpdateTask}
 			/>
 		</div>
+		{/snippet}
 
 		<!-- main: gantt chart -->
+		{#snippet main()}
 		<div
-			slot="main"
 			class="relative w-full h-full -translate-y-1 no-scrollbar"
 		>
 			<!-- today position line, gantt chart -->
@@ -341,18 +350,26 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 			<table
 				class="absolute left-0 flex w-full h-5 font-mono border-2 border-t-0 rounded-b-lg -bottom-2 border-zinc-800"
 			>
-				<th class="w-full border-r border-zinc-500 -translate-y-0.5"
-					>Title</th
-				>
-				<th
-					class="w-[120px] border-r border-zinc-500 min-w-[120px] max-w-[120px] -translate-y-0.5"
-					>Duration</th
-				>
-				<th class="w-20 min-w-20 max-w-20 -translate-y-0.5">Progress</th
-				>
-				<th class="w-[15px] min-w-[15px] max-w-[15px] -translate-y-0.5"
-				></th>
+				<thead>
+					<tr>
+						<th
+							class="w-full border-r border-zinc-500 -translate-y-0.5"
+							>Title</th
+						>
+						<th
+							class="w-[120px] border-r border-zinc-500 min-w-[120px] max-w-[120px] -translate-y-0.5"
+							>Duration</th
+						>
+						<th class="w-20 min-w-20 max-w-20 -translate-y-0.5"
+							>Progress</th
+						>
+						<th
+							class="w-[15px] min-w-[15px] max-w-[15px] -translate-y-0.5"
+						></th>
+					</tr>
+				</thead>
 			</table>
 		</div>
+		{/snippet}
 	</PageTemplete>
 </div>

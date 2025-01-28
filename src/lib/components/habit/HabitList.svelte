@@ -1,19 +1,19 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment -->
 <script lang="ts">
-   import { getContext,  } from "svelte";
-   import { Button,  } from "$ui";
-   import {
-      GripVertical,
-   } from "lucide-svelte";
+   import { getContext } from "svelte";
+   import { Button } from "$ui";
+   import { GripVertical } from "lucide-svelte";
    import IconPicker from "./IconPicker.svelte";
    import icons from "$lib/icons";
-   import { type Habit} from "$lib/schema";
-   
+   import { type Habit } from "$lib/schema";
+
    // habit/+page.svelte에서 정의됨
    const habits = getContext("habits");
    const statusOption: string = getContext("statusOption");
 
    // update
-   const handleUpdateHabit = getContext('handleUpdateHabit');
+   const handleUpdateHabit = getContext("handleUpdateHabit");
 
    function handleUpdateName(habit: Habit, name: String) {
       const updateData = {
@@ -71,7 +71,7 @@
 </script>
 
 {#key $habits}
-   <table class="h-full ">
+   <table class="h-full">
       <thead class="sticky top-0 z-10 h-0 bg-white border-t-2 border-zinc-500">
       </thead>
       <tbody class="h-full text-center">
@@ -97,7 +97,7 @@
                         </div>
                      </td>
                      <!-- name -->
-                     <td class="h-[30px] border border-t-0 w-full "
+                     <td class="h-[30px] border border-t-0 w-full"
                         ><input
                            value={habit.name}
                            class="h-full px-1.5 w-full bg-transparent"
@@ -109,22 +109,19 @@
                      <td class="h-[30px] border border-t-0 w-full inline-block">
                         <IconPicker
                            on:update={(e) =>
-                              (habit = handleUpdateIcon(habit, e))}
+                              $habits[i] = handleUpdateIcon(habit, e)}
                         >
                            {#snippet trigger()}
-                                                      <div  class="h-[30px]">
+                              <div class="h-[30px]">
                                  <Button
                                     variant="ghost"
                                     class="p-1.5 h-[24px] bg-white"
                                  >
-                                    {@const SvelteComponent = icons[habit.icon]}
-                                 <SvelteComponent
-                                       size={16}
-                                       color={habit.color}
-                                    />
+                                    {@const Component = icons[habit.icon]}
+                                    <Component size={16} color={habit.color} />
                                  </Button>
                               </div>
-                                                   {/snippet}
+                           {/snippet}
                         </IconPicker>
                      </td>
                   </tr>{/if}{/each}{/if}

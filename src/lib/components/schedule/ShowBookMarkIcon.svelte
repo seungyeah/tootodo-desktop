@@ -31,7 +31,7 @@
                            <Button
                               variant="ghost"
                               class="h-6 p-1 "
-                              on:click={() => (msg.save = !msg.save)}
+                              onclick={() => (msg.save = !msg.save)}
                            >
                               <Bookmark
                                  size={16}

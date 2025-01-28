@@ -1,8 +1,10 @@
 <!-- @migration-task Error while migrating Svelte code: Cannot subscribe to stores that are not declared at the top level of the component
 https://svelte.dev/e/store_invalid_scoped_subscription -->
+<!-- @migration-task Error while migrating Svelte code: Cannot subscribe to stores that are not declared at the top level of the component
+https://svelte.dev/e/store_invalid_scoped_subscription -->
 <script lang="ts">
 	import PageTemplete from "$components/PageTemplete.svelte";
-	import { SvelteComponent, onMount, setContext, tick } from "svelte";
+	import { type Component, onMount, setContext, tick } from "svelte";
 	import HabitMain from "$components/habit/HabitMain.svelte";
 	import HabitSide from "$components/habit/HabitSide.svelte";
 	import HabitSetting from "$components/habit/HabitSetting.svelte";
@@ -11,7 +13,11 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 	import { writable, type Writable } from "svelte/store";
 	import { postApi, delApi, patchApi } from "$lib/api.js";
 	import { type Habit } from "$lib/schema";
-	import { type DateRange, getThisMonthRange,parseMonthRangeFromURL } from "$lib/utils";
+	import {
+		type DateRange,
+		getThisMonthRange,
+		parseMonthRangeFromURL,
+	} from "$lib/utils";
 
 	// data
 	export let data;
@@ -23,8 +29,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 
 	// duration select
 	let initialDateRange = parseMonthRangeFromURL() || getThisMonthRange();
-	const selectedMonthRange: Writable<DateRange> =
-		writable(initialDateRange);
+	const selectedMonthRange: Writable<DateRange> = writable(initialDateRange);
 	setContext("selectedMonthRange", selectedMonthRange);
 
 	onMount(() => {
@@ -35,19 +40,15 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 	});
 
 	function setQuery(duration) {
-		const start_month = duration.start;
-		const end_month = duration.end;
+		$selectedMonthRange = duration;
+		const start_month = $selectedMonthRange.start;
+		const end_month = $selectedMonthRange.end;
 		const searchParams = new URLSearchParams({ start_month, end_month });
 		//console.info(searchParams.toString());
 		goto(`?${searchParams.toString()}`);
 		//$habits = data?.habits;
 	}
 
-	async function handleDateUpdate(e) {
-		const { selectedMonthRange } = e.detail;		
-		$selectedMonthRange = selectedMonthRange;
-		setQuery($selectedMonthRange);
-	}
 
 	async function handleCreateHabit(e) {
 		const { name, icon, color } = e.detail.habit;
@@ -96,9 +97,9 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 	setContext("handleUpdateHabit", handleUpdateHabit);
 	// scroll
 	let scrollPosition = { scrollTop: 0, scrollLeft: 0 };
-	let sideComponent: SvelteComponent;
-	let mainComponent: SvelteComponent;
-	let settingComponent: SvelteComponent;
+	let sideComponent: Component;
+	let mainComponent: Component;
+	let settingComponent: Component;
 
 	function handleScroll(e) {
 		scrollPosition = {
@@ -124,12 +125,12 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 
 <div class="relative w-full h-full">
 	<PageTemplete>
-		<div slot="nav" class="">
-			<DurationPicker on:update={handleDateUpdate} />
-		</div>
+		{#snippet nav()}
+			<DurationPicker update={(newRange)=>setQuery(newRange)} />
+		{/snippet}
 		<!-- haibt list, create habit -->
+		{#snippet side()}
 		<div
-			slot="side"
 			class="flex flex-col w-full h-full px-2 py-2"
 			bind:clientWidth={sideComponentWidth}
 		>
@@ -139,10 +140,12 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 				on:create={handleCreateHabit}
 			/>
 		</div>
+		{/snippet}
 
 		<!-- setting -->
-		<div
-			slot="options"
+
+		{#snippet options()}
+			<div
 			class="absolute flex h-full max-h-[calc(100%-130px)] w-6 flex-col"
 			style="transform: translate({sideComponentWidth - 22}px, 36px);"
 		>
@@ -152,14 +155,17 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 				on:delete={handleDeleteHabit}
 			/>
 		</div>
+		{/snippet}
 
 		<!-- main: gantt chart -->
-		<div slot="main" class="w-full h-full">
+		{#snippet main()}
+		<div  class="w-full h-full">
 			<HabitMain
 				bind:this={mainComponent}
 				bind:scrollPosition
 				on:scroll={handleScroll}
 			/>
 		</div>
+		{/snippet}
 	</PageTemplete>
 </div>

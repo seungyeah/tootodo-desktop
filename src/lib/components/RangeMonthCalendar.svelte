@@ -31,7 +31,7 @@
 <div class="flex flex-col w-full">
    <div class="flex justify-between w-full p-2 border-b-2 shadow">
       <Button
-         on:click={() => {
+         onclick={() => {
             year--;
          }}
          variant="outline"
@@ -41,7 +41,7 @@
       </Button>
       {year}
       <Button
-         on:click={() => {
+         onclick={() => {
             year++;
          }}
          variant="outline"
@@ -78,7 +78,7 @@
                          : ""
                }
             `}
-            on:click={() => {
+            onclick={() => {
                value.start = new CalendarDate(year, i + 1, 1);
                value.end = new CalendarDate(year, i + 1, 31);
                if (value.start > value.end) {

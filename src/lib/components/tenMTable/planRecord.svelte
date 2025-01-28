@@ -11,15 +11,15 @@ https://svelte.dev/e/node_invalid_placement -->
 	const hours = Array.from({ length: 24 }, (_, i) => i);
 	const tenMinute = [0, 10, 20, 30, 40, 50];
 
-	$: isAM = new Date().getHours() < 12;
+	let isAM = $derived(new Date().getHours() < 12);
 
 	onMount(() => {
 		cellColors = getCellColor();
 	});
 
-	let cellColors = Array.from({ length: 24 }, () => [
+	let cellColors = $state(Array.from({ length: 24 }, () => [
 		Array.from({ length: 6 }, () => ({ colorFill: 0, record: null })),
-	]);
+	]));
 
 	// 600
 	let projects = [
@@ -34,16 +34,16 @@ https://svelte.dev/e/node_invalid_placement -->
 		{ color: "#0284c7", id: "p8", title: "프로젝트 8" },
 	];
 
-	$: selectedProject = { color: "#3f3f46", id: "p0", title: "프로젝트 0" };
+	let selectedProject = $derived({ color: "#3f3f46", id: "p0", title: "프로젝트 0" });
 
-	let records = [
+	let records = $state([
 		{ id: 0, start: "12:10", end: "13:30", dragged: true },
 		{ id: 1, start: "0:30", end: "2:00", projectId: "p1", dragged: true },
 		{ id: 2, start: "4:00", end: "5:30", projectId: "p2", dragged: true },
 		{ id: 3, start: "9:30", end: "10:20", projectId: "p3", dragged: true },
 		{ id: 4, start: "10:20", end: "11:40", dragged: true },
 		{ id: 5, start: "22:30", end: "23:40", projectId: "p8", dragged: true },
-	];
+	]);
 
 	function getStartRecordPosition(hour, min) {
 		let record = records.find((record) => {
@@ -247,30 +247,30 @@ https://svelte.dev/e/node_invalid_placement -->
 											<td
 												class="!m-0 !h-[24px] !w-[24px] !p-0"
 												class:colored={colorFill}
-												on:mousedown={(event) =>
+												onmousedown={(event) =>
 													handleMouseDown(
 														hour,
 														min,
 														event,
 														record,
 													)}
-												on:mouseup={() =>
+												onmouseup={() =>
 													handleMouseUp(hour, min)}
-												on:mousemove={() =>
+												onmousemove={() =>
 													handleMouseMove(
 														hour,
 														minIndex,
 													)}
-												on:touchstart={(event) =>
+												ontouchstart={(event) =>
 													handleMouseDown(
 														hour,
 														min,
 														event,
 														record,
 													)}
-												on:touchend={() =>
+												ontouchend={() =>
 													handleMouseUp(hour, min)}
-												on:touchmove={() =>
+												ontouchmove={() =>
 													handleMouseMove(
 														hour,
 														minIndex,
@@ -280,26 +280,28 @@ https://svelte.dev/e/node_invalid_placement -->
 													<Popover.Root>
 														<Popover.Trigger
 															asChild
-															let:builder
+															
 														>
-															<Button
-																builders={[
-																	builder,
-																]}
-																variant="ghost"
-																class="h-full w-full !p-0 translate-y-[0.235rem]  relative bg-zinc-100 hover:bg-zinc-500"
-															>
-																<div
-																	class="absolute top-0.5 left-1 w-1 h-2 opacity-90 transform rotate-45 bg-white"
-																/>
-																<div
-																	class="absolute top-0 w-1 h-6 opacity-90 transform rotate-45 bg-white"
-																/>
-																<div
-																	class="absolute top-3.5 right-1 w-1 h-2 opacity-90 transform rotate-45 bg-white"
-																/>
-															</Button>
-														</Popover.Trigger>
+															{#snippet children({ builder })}
+																														<Button
+																	builders={[
+																		builder,
+																	]}
+																	variant="ghost"
+																	class="h-full w-full !p-0 translate-y-[0.235rem]  relative bg-zinc-100 hover:bg-zinc-500"
+																>
+																	<div
+																		class="absolute top-0.5 left-1 w-1 h-2 opacity-90 transform rotate-45 bg-white"
+																	></div>
+																	<div
+																		class="absolute top-0 w-1 h-6 opacity-90 transform rotate-45 bg-white"
+																	></div>
+																	<div
+																		class="absolute top-3.5 right-1 w-1 h-2 opacity-90 transform rotate-45 bg-white"
+																	></div>
+																</Button>
+																																												{/snippet}
+																												</Popover.Trigger>
 														<Popover.Content
 															class="w-auto translate-y-[0.2rem] p-0 "
 														>
@@ -333,12 +335,12 @@ https://svelte.dev/e/node_invalid_placement -->
 												{#if getStartRecordPosition(hour, min)}
 													<button
 														class="absolute -top-[1.56rem] left-0 h-6 w-2.5 rounded-r-full border-r-2 border-l border-zinc-100 bg-zinc-500"
-													/>
+													></button>
 												{/if}
 												{#if getEndRecordPosition(hour, min + 10)}
 													<div
 														class="absolute -top-[1.56rem] right-0 h-6 w-2.5 rounded-l-full border-l-2 border-r border-zinc-100 bg-zinc-500"
-													/>
+													></div>
 												{/if}
 											{/key}
 										</td>

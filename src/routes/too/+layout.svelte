@@ -4,7 +4,7 @@
 	import { ToggleGroup, Button } from "$ui";
 	import { goto } from "$app/navigation";
 
-	import { page } from "$app/stores";
+	import { page } from "$app/state";
 	import { getThis3WeeksRange, parseDateRangeFromURL } from "$lib/utils";
 	import { onMount, tick } from "svelte";
 	interface Props {
@@ -25,9 +25,11 @@
 		const searchParams = new URLSearchParams({ startDate, endDate });
 		goto(`/too/tasks?${searchParams.toString()}`);
 	}
-	let selectedPage;
-	run(() => {
-		selectedPage = $page.url.pathname.split("/")[2];
+
+	let selectedPage = $state(page.url.pathname.split("/")[2]);
+
+	$effect(() => {
+		selectedPage = page.url.pathname.split("/")[2];
 	});
 </script>
 
@@ -47,21 +49,21 @@
 				aria-label="task"
 				class="w-1/3 p-1 ml-2 h-3/4"
 			>
-				<Button on:click={() => goto("/too/tasks")}>Task</Button>
+				<Button variant="ghost" onclick={() => goto("/too/tasks")}>Task</Button>
 			</ToggleGroup.Item>
 			<ToggleGroup.Item
 				value="notes"
 				aria-label="note"
 				class="w-1/3 p-1 h-3/4"
 			>
-				<Button on:click={() => goto("/too/notes")}>Note</Button>
+				<Button variant="ghost" onclick={() => goto("/too/notes")}>Note</Button>
 			</ToggleGroup.Item>
 			<ToggleGroup.Item
 				value="habits"
 				aria-label="habit"
 				class="w-1/3 p-1 mr-2 h-3/4"
 			>
-				<Button on:click={() => goto("/too/habits")}>Habit</Button>
+				<Button variant="ghost" onclick={() => goto("/too/habits")}>Habit</Button>
 			</ToggleGroup.Item>
 		</ToggleGroup.Root>
 	</div>

@@ -6,21 +6,19 @@
 	import { auth, isAuthed, timerOpen } from "$store";
 	import { goto } from "$app/navigation";
 	import { onDestroy, onMount, tick } from "svelte";
-	import { LogOut, Clock, Bell } from "lucide-svelte";
-	import { page } from "$app/stores";
+	import { LogOut, Clock } from "lucide-svelte";
+	import { page } from "$app/state";
 	import ShowRecord from "$components/tenMTable/showRecord.svelte";
 	import PlanRecord from "$components/tenMTable/planRecord.svelte";
-	import { getCookie } from "$lib/utils";
-	import { browser } from "$app/environment";
 
 	import NProgress from "nprogress";
 	import { afterNavigate, beforeNavigate } from "$app/navigation";
 	import "nprogress/nprogress.css";
-	interface Props {
-		children?: import('svelte').Snippet;
-	}
 
-	let { children }: Props = $props();
+
+	let { children } = $props();
+
+	onMount(()=>console.log(children))
 
 	NProgress.configure({
 		showSpinner: false,
@@ -29,16 +27,15 @@
 	afterNavigate(() => {
 		NProgress.done();
 	});
+
 	beforeNavigate(() => {
 		NProgress.start();
-		// console.log();
 	});
 
-	let showAlarm = $state(false);
 	let openTenM = $state(false);
 
 	onMount(async () => {
-		goto("/do", { replaceState: true });
+		await goto("/do", { replaceState: true });
 
 		if (typeof window !== "undefined")
 			document.addEventListener("keydown", handleKeyDown); // keydown 이벤트 리스너 추가
@@ -51,7 +48,6 @@
 
 	function handleKeyDown(event) {
 		if (event.key === "Escape" || event.key === "Esc") {
-			// Esc 버튼이 눌렸을 때, openChat을 false로 변경
 			openTenM = false;
 		}
 	}
@@ -63,7 +59,7 @@
 		class="absolute left-0 z-50 flex h-full w-[200px] items-center space-x-3 rounded-b-2xl rounded-r-2xl bg-zinc-800 px-4"
 	>
 		<!-- backward/forward page -->
-		<HeaderNav />
+		 <HeaderNav />
 		<!-- navigation -->
 		<Breadcrumb.Root class="absolute left-16">
 			<Breadcrumb.List>
@@ -72,7 +68,7 @@
 						href="/too"
 						class="text-xl font-bold text-white hover:text-zinc-100"
 						><div
-							class:currentPage={$page.url.pathname.includes(
+							class:currentPage={page.url.pathname.includes(
 								"too",
 							)}
 						>
@@ -86,7 +82,7 @@
 						href="/do"
 						class="text-xl font-bold text-white hover:text-zinc-100"
 						><span
-							class:currentPage={$page.url.pathname.includes(
+							class:currentPage={page.url.pathname.includes(
 								"do",
 							)}>Do</span
 						>
@@ -100,28 +96,10 @@
 	<div
 		class="absolute right-0 z-50 flex h-12 w-[200px] items-center justify-evenly space-x-2 rounded-b-2xl rounded-l-2xl bg-zinc-800 px-4"
 	>
-		<!-- alerm -->
-		<Button
-			variant="ghost"
-			class="h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200"
-			on:click={() => (showAlarm = !showAlarm)}
-		>
-			<Bell
-				size={26}
-				strokeWidth={2}
-				color="white"
-				fill="#09090b"
-				class={showAlarm
-					? "scale-1 scale-125 rounded-full bg-zinc-900 shadow-xl shadow-zinc-50"
-					: ""}
-			/>
-			<!-- todo! show alarm -->
-		</Button>
-
 		<!-- timer, tenMplanner -->
 		<Button
 			variant="ghost"
-			on:click={() => (openTenM = !openTenM)}
+			onclick={() => (openTenM = !openTenM)}
 			class={openTenM
 				? "-translate-x-1 translate-y-1 scale-105 rounded-full border  border-dotted bg-zinc-900 !p-2 shadow-xl shadow-zinc-500 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200"
 				: "h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200"}
@@ -151,7 +129,7 @@
 
 		<!-- profile -->
 		<DropdownMenu.Root>
-			<DropdownMenu.Trigger asChild >
+			<DropdownMenu.Trigger >
 					<Button
 						variant="ghost"
 						class="w-8 h-8 hover:bg-zinc-950 "
@@ -178,10 +156,10 @@
 </div>
 
 <div class="h-full max-h-[calc(100vh-50px)] w-full">
-	{@render children?.()}
+	{@render children()}
 </div>
 
-<!-- <TWindicator /> -->
+ <TWindicator />
 
 <style>
 	:global(html, body) {
@@ -210,10 +188,6 @@
 
 	.currentPage {
 		@apply underline underline-offset-[3px];
-	}
-
-	.openTimer {
-		@apply block;
 	}
 
 	:root {

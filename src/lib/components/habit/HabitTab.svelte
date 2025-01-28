@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Cannot set properties of undefined (setting 'next') -->
 <!-- @migration-task Error while migrating Svelte code: This migration would change the name of a slot making the component unusable -->
 <script lang="ts">
    import { cn } from "$lib/utils.js";
@@ -48,7 +49,7 @@
          <button
             use:melt={$trigger(triggerItem.id)}
             class={`relative trigger ${triggerItem.id === "tab-2" ? "w-14" : "w-full"}`}
-            on:click={()=> $statusOption = triggerItem.title}
+            onclick={()=> $statusOption = triggerItem.title}
          >
             {#if triggerItem.id === "tab-2"}
                <Package strokeWidth={1.65} />
