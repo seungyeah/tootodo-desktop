@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package habit;
+
+import "chat.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+message HabitModel {
+    string id = 1;
+    string name = 2;
+    string icon = 3;
+    string color = 4;
+    HabitStatus status = 5;
+    repeated HabitRecord records = 6;
+
+    chat.ChatModel chat = 7;
+    repeated string related_notes = 8;
+
+    google.protobuf.Timestamp created_at = 9;
+    google.protobuf.Timestamp updated_at = 10;
+}
+
+enum HabitStatus {
+    UNKNOWN = 0;
+    INPROGRESS = 1;
+    ARCHIVED = 2;
+}
+
+message HabitRecord {
+    string date=1;
+    google.protobuf.Duration duration=2;
+    google.protobuf.Timestamp start_at = 3;
+    google.protobuf.Timestamp end_at = 4;
+}

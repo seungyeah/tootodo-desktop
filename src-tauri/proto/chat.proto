@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package chat;
+
+import "google/protobuf/timestamp.proto";
+
+message ChatModel{
+    string id = 1;
+    ChatForm chat_type = 2;
+    repeated chat.MsgModel chat_msgs = 3;
+    MsgModel fixed_msg = 4;
+}
+
+message MsgModel {
+    string id = 1;
+    MsgType msg_type = 2;
+    string content = 3;
+    bool booked = 4;
+    repeated MsgReplyModel replies = 5;
+    google.protobuf.Timestamp createdAt = 6;
+  }
+
+message MsgReplyModel{
+    string id = 1;
+    MsgType msg_type = 2;
+    string content = 3;
+    google.protobuf.Timestamp createdAt = 6;
+}
+
+enum ChatForm {
+    UNKNOWN = 0;
+    TASK = 1;
+    NOTE = 2;
+    WEEKLY = 3;
+    AI = 4;
+  }
+
+enum MsgType {
+    TEXT = 0;
+    QUESTION = 1;
+    ANSWER = 2;
+    IMAGE = 3;
+    FILE = 4;
+    LINK = 5;
+    AUDIO = 6;
+  }

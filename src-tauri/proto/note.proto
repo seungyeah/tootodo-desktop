@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package note;
+
+import "google/protobuf/timestamp.proto";
+import "chat.proto";
+
+message NoteModel {
+  string id = 1;
+
+  string title = 2;
+
+  repeated Tag tags = 3;
+  repeated PageModel pages = 4;
+
+  repeated string related_tasks = 5;
+  repeated string related_habits = 6;
+  repeated string related_notes = 7;
+
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+message Tag{
+    string id = 1;
+    string name=2;
+    repeated TagGroup groups = 3;
+}
+
+message TagGroup{
+    string id = 1;
+    string name=2;
+    string color=3;
+}
+
+message PageModel {
+  string id = 1;
+  PageType type = 2;
+  string title = 3;
+  repeated Property properties = 4;
+  repeated Block contents = 5;
+  chat.ChatModel chat = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+}
+
+
+
+enum PageType {
+  EDITOR = 0;
+  CODE = 1;
+  DRAWING = 2;
+  QnA = 3;
+  RECORDING = 4;
+}
+
+
+message Property {
+  string id = 1;
+  string name = 2;
+  PropertyType type = 3;
+  oneof values {
+    string single_value = 4; // 단일 값
+    MultipleValues multi_values = 5; // 여러 값을 포함하는 메시지
+  }
+}
+
+message MultipleValues {
+  repeated string values = 1;
+}
+
+enum PropertyType {
+    PROP_TEXT = 0;
+    PROP_SINGLE_SELECT = 1;
+    PROP_MULTI_SELECT = 2;
+    PROP_NUMBER = 3;
+    PROP_DATE_TIME = 4;
+    PROP_FILE = 5;
+    PROP_IMAGE = 6;
+    PROP_LINK = 7;
+    PROP_EMAIL = 8;
+    PROP_PHONE = 9;
+    PROP_LOCATION = 10;
+}
+
+message Block {
+  string id = 1;
+  EditorBlockType type = 2;
+  string body = 3;
+}
+
+enum EditorBlockType {
+    BLOCK_TEXT = 0;
+    BLOCK_CODE = 1;
+    BLOCK_HEADING = 2;
+    BLOCK_TABLE = 3;
+    BLOCK_LIST = 4;
+    BLOCK_FILE = 5;
+    BLOCK_IMAGE = 6;
+    BLOCK_TASK = 7;
+    BLOCK_HABIT = 8;
+    BLOCK_CURIOSITY = 9;
+    BLOCK_THOUGHT = 10;
+    BLOCK_REFLECTION = 11;
+    BLOCK_CONFUSION = 12;
+    BLOCK_DOUBT = 13;
+    BLOCK_ISSUE = 14;
+}
+
+message EditorPageTemplate{
+    string id = 1;
+    string title = 2;
+    repeated Block contents = 3;
+
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
+}

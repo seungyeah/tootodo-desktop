@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package task;
+
+import "chat.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+message TaskModel {
+    string id = 1;
+    string title = 2;
+    bool completed = 3;
+    bool milestone = 4;
+    repeated WorkPlan plans = 5;
+
+    string parent_id = 6;
+    repeated CriticalPathInfo critical_paths = 7;
+
+    repeated WorkDay work_days = 8;
+    uint32 total_time = 9;
+
+    chat.ChatModel chat = 10;
+    repeated string related_notes = 11;
+    google.protobuf.Timestamp created_at = 12;
+    google.protobuf.Timestamp updated_at = 13;
+}
+
+message WorkPlan{
+    string start_date = 1;
+    string end_date = 2;
+}
+
+message WorkDay{
+    string date=1;
+    google.protobuf.Duration working_time=2;
+}
+
+message CriticalPathInfo{
+    string id = 1;
+    string name = 2;
+    string color = 3;
+}
+
+message CriticalPath{
+    string id = 1;
+    string name = 2;
+    string color = 3;
+    repeated string task_ids = 4;
+}

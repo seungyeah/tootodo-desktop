@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package memo;
+
+import "google/protobuf/timestamp.proto";
+
+message MemoModel{
+    string id = 1;
+
+    string title = 2;
+    Color color = 3;
+    bool fixed = 5;
+    string content = 6;
+
+    google.protobuf.Timestamp created_at = 7;
+    google.protobuf.Timestamp updated_at = 8;
+}
+
+enum Color{
+    UNKNOWN = 0;
+    YELLOW = 1;
+    GREEN = 2;
+    BLUE = 3;
+    PURPLE = 4;
+    PINK = 5;
+    RED = 6;
+}
