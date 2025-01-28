@@ -2,7 +2,6 @@
 	import { type Task } from "$lib/schema";
 	import { type TaskTreeItem } from "$lib/type";
 
-
 	let draggedTask: Task | null = null;
 </script>
 
@@ -14,7 +13,12 @@
 		parseDate,
 	} from "@internationalized/date";
 	import { Popover, RangeCalendar } from "$ui";
-	import { Folder, FolderOpen, ArrowRight, GripVertical } from "lucide-svelte";
+	import {
+		Folder,
+		FolderOpen,
+		ArrowRight,
+		GripVertical,
+	} from "lucide-svelte";
 	import { createEventDispatcher } from "svelte";
 	import { getContext } from "svelte";
 	import TaskSettingIcon from "./TaskSettingIcon.svelte";
@@ -45,10 +49,10 @@
 		task: Task,
 		duration: { start: CalendarDate; end: CalendarDate },
 	) {
-		//console.log("task transfer",task?.start_date, task?.end_date);
+		//console.log("task transfer",task?.startDate, task?.endDate);
 		const updateData = {
-			start_date: duration.start.toString(),
-			end_date: duration.end.toString(),
+			startDate: duration.start.toString(),
+			endDate: duration.end.toString(),
 		};
 		dispatchUpdateTask({ task, updateData });
 	}
@@ -161,7 +165,9 @@
 
 				{#if !hasChildren}
 					<div
-						class={level !== 1 ? "pl-4 h-full bg-zinc-100 border-b" : ""}
+						class={level !== 1
+							? "pl-4 h-full bg-zinc-100 border-b"
+							: ""}
 					/>
 				{/if}
 
@@ -181,7 +187,10 @@
 					>
 						<!-- Folder icon. -->
 						{#if hasChildren && $isExpanded(itemId)}
-							<svelte:component this={FolderOpen} class="w-4 h-4" />
+							<svelte:component
+								this={FolderOpen}
+								class="w-4 h-4"
+							/>
 						{:else if hasChildren}
 							<svelte:component this={Folder} class="w-4 h-4 " />
 						{/if}
@@ -205,13 +214,13 @@
 				</div>
 
 				<!-- duration -->
-				<Popover.Root
+				<!-- <Popover.Root
 					onOpenChange={(open) => {
 						if (!open) {
 							handleUpdateDuration(task, cellDuration);
 						} else {
-							cellDuration.start = parseDate(task?.start_date);
-							cellDuration.end = parseDate(task?.end_date);
+							cellDuration.start = parseDate(task?.startDate);
+							cellDuration.end = parseDate(task?.endDate);
 						}
 					}}
 				>
@@ -219,17 +228,22 @@
 						><td
 							class="inline-block h-[30px] w-[120px] border-b border-r"
 						>
-							<div class="inline-flex space-x-1 h-[20px] translate-y-1">
-								{#if task?.start_date && task?.end_date}
+							<div
+								class="inline-flex space-x-1 h-[20px] translate-y-1"
+							>
+								{#if task?.startDate && task?.endDate}
 									<div class="">
-										{task?.start_date.slice(5, 10)}
+										{task?.startDate.slice(5, 10)}
 									</div>
-									<div class="font-extrabold text-zinc-400">~</div>
+									<div class="font-extrabold text-zinc-400">
+										~
+									</div>
 									<div>
-										{task?.end_date.slice(5, 10)}
+										{task?.endDate.slice(5, 10)}
 									</div>
 								{:else}
-									00-00 <span class="font-extrabold text-zinc-400"
+									00-00 <span
+										class="font-extrabold text-zinc-400"
 										>~</span
 									> 00-00
 								{/if}
@@ -237,17 +251,16 @@
 						</td></Popover.Trigger
 					>
 					<Popover.Content class="w-[300px]">
-						<!-- select range -->
 						<RangeCalendar
 							bind:value={cellDuration}
 							weekStartsOn={1}
 							class="w-full bg-white border rounded-lg shadow "
 						/>
 					</Popover.Content>
-				</Popover.Root>
+				</Popover.Root> -->
 
 				<!-- progress rate -->
-				<div
+				<!-- <div
 					class="w-20 min-w-20 h-[30px] border-b border-r px-1.5"
 					class:group_={$isExpanded(itemId)}
 				>
@@ -264,7 +277,7 @@
 						on:change={(e) =>
 							handleUpdateProgressRate(task, e.target.value)}
 					/>
-				</div>
+				</div> -->
 			</div>
 
 			{#if subtasks?.length}

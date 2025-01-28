@@ -10,25 +10,25 @@
 
    const {
       elements: { item, group },
-      helpers: { isExpanded, },
+      helpers: { isExpanded },
    } = getContext<TreeView>("tree");
 
    const selectedDate = getContext("selectedDateRange");
 
    function calculateDurations(task) {
-      if(!task?.start_date || !task?.end_date) {
+      if (!task?.startDate || !task?.endDate) {
          return {
             task_start: 0,
             task_duration: 0,
             task_end: 0,
          };
       }
-      const start_date = parseDate(task?.start_date);
-      const end_date = parseDate(task?.end_date);
+      const startDate = parseDate(task?.startDate);
+      const endDate = parseDate(task?.endDate);
       return {
-         task_start: getDuration($selectedDate.start, start_date),
-         task_duration: getDuration(start_date, end_date),
-         task_end: getDuration(end_date, $selectedDate.end),
+         task_start: getDuration($selectedDate.start, startDate),
+         task_duration: getDuration(startDate, endDate),
+         task_end: getDuration(endDate, $selectedDate.end),
       };
    }
 
@@ -39,7 +39,7 @@
    }
 
    function getColspans(durations) {
-      const { task_start, task_duration, task_end } = durations;      
+      const { task_start, task_duration, task_end } = durations;
       if (task_start === 0 && task_end === 0) {
          return [{ colspan: task_duration + task_start + 1, isTask: true }];
       } else if (task_start <= 0) {
@@ -68,7 +68,7 @@
    {@const durations = calculateDurations(task)}
 
    {#if isTaskVisible(durations)}
-      <tr      
+      <tr
          class="h-[30px] border-b"
          use:melt={$item({
             id: itemId,
@@ -76,16 +76,17 @@
          })}
       >
          {#each getColspans(durations) as { colspan, isTask }}
-            <td {colspan} >
+            <td {colspan}>
                {#if isTask}
-                  <div        
+                  <div
                      class="relative w-full h-full border-t border-b-2 shadow-lg bg-zinc-400 border-zinc-900"
                   >
                      <div
                         class="h-5 p-0 m-0 bg-zinc-400"
                         class:task={!task?.milestone}
                         class:complete={task?.progress_rate === 100}
-                        class:start={task?.progress_rate > 0 && task?.progress_rate <= 25}
+                        class:start={task?.progress_rate > 0 &&
+                           task?.progress_rate <= 25}
                         class:inProgress={task?.progress_rate > 25 &&
                            task?.progress_rate < 100}
                      >
@@ -108,10 +109,9 @@
    {/if}
 
    {#if hasChildren}
-      <tr use:melt={$group({ id: itemId })}   >
-         <td colspan={totalDays} class="p-0"       
-         >
-            <table class="w-full table-fixed" >
+      <tr use:melt={$group({ id: itemId })}>
+         <td colspan={totalDays} class="p-0">
+            <table class="w-full table-fixed">
                <svelte:self
                   treeItems={subtasks}
                   {totalDays}
@@ -124,7 +124,7 @@
 {/each}
 
 <style>
-   .task{
+   .task {
       @apply border-r-2 border-l border-zinc-900;
    }
    .complete {

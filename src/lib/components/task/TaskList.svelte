@@ -9,8 +9,8 @@
 	import { GripVertical } from "lucide-svelte";
 	import { createEventDispatcher, onMount, tick } from "svelte";
 	import { getContext } from "svelte";
-	import {type Task} from "$lib/schema";
-	import {type Task} from "$lib/schema";
+	import { type Task } from "$lib/schema";
+	import { type Task } from "$lib/schema";
 
 	const selectedDate = getContext("selectedDateRange");
 	const todayValue = today(getLocalTimeZone());
@@ -38,15 +38,15 @@
 	function resetNewTask() {
 		newTask = {
 			title: "",
-			start_date: todayValue,
-			end_date: todayValue.add({ days: 0 }),
+			startDate: todayValue,
+			endDate: todayValue.add({ days: 0 }),
 		};
 	}
 
 	let newTask = {
 		title: "",
-		start_date: todayValue,
-		end_date: todayValue.add({ days: 0 }),
+		startDate: todayValue,
+		endDate: todayValue.add({ days: 0 }),
 	};
 
 	async function handleSubmit(
@@ -62,8 +62,8 @@
 
 		handleCreate({
 			title: newTask.title,
-			start_date: newTaskDuration.start,
-			end_date: newTaskDuration.end,
+			startDate: newTaskDuration.start,
+			endDate: newTaskDuration.end,
 		});
 		resetNewTask();
 	}
@@ -81,8 +81,8 @@
 		duration: { start: CalendarDate; end: CalendarDate },
 	) {
 		const updateData = {
-			start_date: duration.start.toString(),
-			end_date: duration.end.toString(),
+			startDate: duration.start.toString(),
+			endDate: duration.end.toString(),
 		};
 		dispatch("update", { task, updateData });
 	}
@@ -189,22 +189,29 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 								{#if draggedIndex === i}
 									<GripVertical size={18} />
 								{/if}
-								<div class="text-center translate-y-1">{i + 1}</div>
+								<div class="text-center translate-y-1">
+									{i + 1}
+								</div>
 							</div>
 						</td>
 						<!-- progress rate -->
-						<td class="w-32 h-[30px] border-b  px-2">
+						<td class="w-32 h-[30px] border-b px-2">
 							<input
 								class="w-32 translate-y-1 shadow opacity-70"
 								class:complete={task.progress_rate === 100}
-								class:inProgress={task.progress_rate > 25 && task.progress_rate < 100}
+								class:inProgress={task.progress_rate > 25 &&
+									task.progress_rate < 100}
 								type="range"
 								step="25"
 								min="0"
 								max="100"
 								value={task.progress_rate || 0}
 								list="markers"
-								on:change={(e) => handleUpdateProgressRate(task, e.target.value)}
+								on:change={(e) =>
+									handleUpdateProgressRate(
+										task,
+										e.target.value,
+									)}
 							/>
 							<!-- <datalist
 								id="markers"
@@ -223,7 +230,8 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 							><input
 								value={task.title}
 								class="h-full px-1.5 w-full bg-transparent"
-								on:blur={(e) => handleUpdateTitle(task, e.target.value)}
+								on:blur={(e) =>
+									handleUpdateTitle(task, e.target.value)}
 							/>
 						</td>
 
@@ -231,33 +239,41 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 						<Popover.Root
 							onOpenChange={(open) => {
 								if (!open) {
-									task.start_date = cellDuration.start.toString();
-									task.end_date = cellDuration.end.toString();
+									task.startDate =
+										cellDuration.start.toString();
+									task.endDate = cellDuration.end.toString();
 									handleUpdateDuration(task, cellDuration);
 								} else {
-									cellDuration.start = parseDate(task.start_date);
-									cellDuration.end = parseDate(task.end_date);
+									cellDuration.start = parseDate(
+										task.startDate,
+									);
+									cellDuration.end = parseDate(task.endDate);
 								}
 							}}
 						>
 							<Popover.Trigger
-								><td class="inline-block h-[30px] w-[120px] border-b">
+								><td
+									class="inline-block h-[30px] w-[120px] border-b"
+								>
 									<div
 										class="inline-flex space-x-1 h-[20px] translate-y-1"
 									>
-										{#if task.start_date && task.end_date}
+										{#if task.startDate && task.endDate}
 											<div class="">
-												{task.start_date.slice(5, 10)}
+												{task.startDate.slice(5, 10)}
 											</div>
-											<div class="font-extrabold text-zinc-400">
+											<div
+												class="font-extrabold text-zinc-400"
+											>
 												~
 											</div>
 											<div>
-												{task.end_date.slice(5, 10)}
+												{task.endDate.slice(5, 10)}
 											</div>
 										{:else}
 											00-00 <span
-												class="font-extrabold text-zinc-400">~</span
+												class="font-extrabold text-zinc-400"
+												>~</span
 											> 00-00
 										{/if}
 									</div>
@@ -309,19 +325,29 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 	/* Track: webkit browsers */
 	input[type="range"]::-webkit-slider-runnable-track {
 		height: 15px;
-		background: linear-gradient(to right,#e46b756d 0%,#f6ecec 50%,#7eaf807c 100%);
+		background: linear-gradient(
+			to right,
+			#e46b756d 0%,
+			#f6ecec 50%,
+			#7eaf807c 100%
+		);
 		border-radius: 16px;
 	}
 
 	/* Track: Mozilla Firefox */
 	input[type="range"]::-moz-range-track {
 		height: 15px;
-		background: linear-gradient(to right,#e46b758d 0%,#f8ecec 50%,#7eaf807c 100%);
+		background: linear-gradient(
+			to right,
+			#e46b758d 0%,
+			#f8ecec 50%,
+			#7eaf807c 100%
+		);
 		border-radius: 16px;
 	}
 
 	/* Thumb: webkit */
-	input[type="range"]::-webkit-slider-thumb  {
+	input[type="range"]::-webkit-slider-thumb {
 		/* removing default appearance */
 		-webkit-appearance: none;
 		appearance: none;
@@ -334,7 +360,7 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 		box-shadow: -407px 0 2px 400px #b91c1cb4;
 	}
 
-	input[type="range"].complete::-webkit-slider-thumb  {
+	input[type="range"].complete::-webkit-slider-thumb {
 		/* removing default appearance */
 		-webkit-appearance: none;
 		appearance: none;
@@ -347,7 +373,7 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 		box-shadow: -407px 0 2px 400px #7eaf80;
 	}
 
-	input[type="range"].inProgress::-webkit-slider-thumb  {
+	input[type="range"].inProgress::-webkit-slider-thumb {
 		/* removing default appearance */
 		-webkit-appearance: none;
 		appearance: none;
@@ -359,7 +385,6 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 		/*  slider progress trick  */
 		box-shadow: -407px 0 2px 400px #7194b1;
 	}
-
 
 	/* Thumb: Firefox */
 	input[type="range"]::-moz-range-thumb {

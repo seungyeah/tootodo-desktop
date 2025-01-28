@@ -29,7 +29,6 @@
    // items
    export let level = 1;
    export let treeItems: TreeItem[] = [];
-
    export let record = {
       pin: false,
       alarm: true,
@@ -140,12 +139,12 @@
                   </div>
 
                   <div
-                     class=" text-zinc-500 text-[0.6rem] absolute top-2 -right-6  font-digital rotate-90"
+                     class=" text-zinc-500 text-[0.6rem] absolute top-2 -right-6 font-digital rotate-90"
                   >
-                     {task?.start_date?.slice(8, 10) || "00"} - {task?.end_date?.slice(
+                     {task?.startDate?.slice(8, 10) || "00"} - {task?.endDate?.slice(
                         8,
                         10,
-                     )|| "00"}
+                     ) || "00"}
                   </div>
                </button>
 

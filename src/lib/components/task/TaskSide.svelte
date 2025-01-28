@@ -1,12 +1,17 @@
 <script lang="ts">
 	import { getLocalTimeZone, today } from "@internationalized/date";
-	import { Button, DropdownMenu, RangeCalendar, Resizable,ScrollArea } from "$ui";
+	import {
+		Button,
+		DropdownMenu,
+		RangeCalendar,
+		Resizable,
+		ScrollArea,
+	} from "$ui";
 	import { BotMessageSquare, Search } from "lucide-svelte";
 	import { createEventDispatcher, onMount, tick } from "svelte";
 	import { getContext } from "svelte";
 	import Switch from "$ui/switch/switch.svelte";
 	import { postApi } from "$lib/api_ai";
-
 
 	const selectedDate = getContext("selectedDateRange");
 	const dispatchCreateTask = getContext("handleCreateTask");
@@ -33,15 +38,15 @@
 	function resetNewTask() {
 		newTask = {
 			title: "",
-			start_date: todayValue,
-			end_date: todayValue.add({ days: 0 }),
+			startDate: todayValue,
+			endDate: todayValue.add({ days: 0 }),
 		};
 	}
 
 	let newTask = {
 		title: "",
-		start_date: todayValue,
-		end_date: todayValue.add({ days: 0 }),
+		startDate: todayValue,
+		endDate: todayValue.add({ days: 0 }),
 	};
 
 	async function handleSubmit(
@@ -57,8 +62,8 @@
 
 		handleCreate({
 			title: newTask.title,
-			start_date: newTaskDuration.start,
-			end_date: newTaskDuration.end,
+			startDate: newTaskDuration.start,
+			endDate: newTaskDuration.end,
 		});
 		resetNewTask();
 	}
@@ -127,9 +132,9 @@
 					</div>
 				{/if}
 			</Resizable.Pane>
-			
+
 			<Resizable.Handle withHandle class="-translate-x-2 bg-zinc-400" />
-			
+
 			<!-- add task -->
 			<Resizable.Pane minSize={14} defaultSize={14}>
 				<form

@@ -13,9 +13,9 @@
 	});
 
 	function setQuery(duration) {
-		const start_date = duration.start;
-		const end_date = duration.end;
-		const searchParams = new URLSearchParams({ start_date, end_date });
+		const startDate = duration.start;
+		const endDate = duration.end;
+		const searchParams = new URLSearchParams({ startDate, endDate });
 		goto(`/too/tasks?${searchParams.toString()}`);
 	}
 	$: selectedPage = $page.url.pathname.split("/")[2];
