@@ -90,15 +90,24 @@ https://svelte.dev/e/node_invalid_placement -->
 			for (let i = startHour; i <= endHour; i++) {
 				if (i === startHour) {
 					for (let j = startMin; j < 6; j++) {
-						cellColors[i][0][j] = { colorFill: record.color, record };
+						cellColors[i][0][j] = {
+							colorFill: record.color,
+							record,
+						};
 					}
 				} else if (i === endHour) {
 					for (let j = 0; j <= endMin - 1; j++) {
-						cellColors[i][0][j] = { colorFill: record.color, record };
+						cellColors[i][0][j] = {
+							colorFill: record.color,
+							record,
+						};
 					}
 				} else {
 					for (let j = 0; j < 6; j++) {
-						cellColors[i][0][j] = { colorFill: record.color, record };
+						cellColors[i][0][j] = {
+							colorFill: record.color,
+							record,
+						};
 					}
 				}
 			}
@@ -213,96 +222,130 @@ https://svelte.dev/e/node_invalid_placement -->
 						{period}
 					</div>
 					<table class="h-[410px]">
-						<tr>
-							<th></th>
-							{#each tenMinute as min}
-								<th class="!w-[27px] px-1 text-sm">{min + 10}</th>
-							{/each}
-						</tr>
-						{#each hours.slice(periodIndex * 12, (periodIndex + 1) * 12) as hour}
+						<thead>
 							<tr>
-								<th rowspan="2" class="px-1.5">{hour}</th>
-								{#each tenMinute as min, minIndex}
-									{@const colorFill =
-										cellColors[hour][0][minIndex].colorFill}
-									{@const record =
-										cellColors[hour][0][minIndex].record}
-									{#key records}
-										<td
-											class="!m-0 !h-[24px] !w-[24px] !p-0"
-											class:colored={colorFill}
-											on:mousedown={(event) =>
-												handleMouseDown(hour, min, event, record)}
-											on:mouseup={() => handleMouseUp(hour, min)}
-											on:mousemove={() =>
-												handleMouseMove(hour, minIndex)}
-											on:touchstart={(event) =>
-												handleMouseDown(hour, min, event, record)}
-											on:touchend={() => handleMouseUp(hour, min)}
-											on:touchmove={() =>
-												handleMouseMove(hour, minIndex)}
-										>
-											{#if colorFill}
-												<Popover.Root>
-													<Popover.Trigger asChild let:builder>
-														<Button
-															builders={[builder]}
-															variant="ghost"
-															class="h-full w-full !p-0 translate-y-[0.235rem]  relative bg-zinc-100 hover:bg-zinc-500"
-														>
-															<div
-																class="absolute top-0.5 left-1 w-1 h-2 opacity-90 transform rotate-45 bg-white"
-															/>
-															<div
-																class="absolute top-0 w-1 h-6 opacity-90 transform rotate-45 bg-white"
-															/>
-															<div
-																class="absolute top-3.5 right-1 w-1 h-2 opacity-90 transform rotate-45 bg-white"
-															/>
-														</Button>
-													</Popover.Trigger>
-													<Popover.Content
-														class="w-auto translate-y-[0.2rem] p-0 "
-													>
-														<TimerSetting
-															{record}
-															on:remove={handleRemoveRecord}
-															on:changeProject={hadnleChangeProject}
-														/>
-													</Popover.Content>
-												</Popover.Root>
-											{:else}
-												<Button
-													variant="ghost"
-													class="h-full w-full !p-0 hover:bg-neutral-600"
-												></Button>
-											{/if}
-										</td>
-									{/key}
+								<th></th>
+								{#each tenMinute as min}
+									<th class="!w-[27px] px-1 text-sm"
+										>{min + 10}</th
+									>
 								{/each}
 							</tr>
-							<tr>
-								<!-- record의 시작시간, 끝 시간 표시 -->
-								{#each tenMinute as min, minIndex}
-									{@const record =
-										cellColors[hour][0][minIndex].record}
-									<td class="relative !border-0 py-[0.18rem]">
+						</thead>
+						<tbody>
+							{#each hours.slice(periodIndex * 12, (periodIndex + 1) * 12) as hour}
+								<tr>
+									<th rowspan="2" class="px-1.5">{hour}</th>
+									{#each tenMinute as min, minIndex}
+										{@const colorFill =
+											cellColors[hour][0][minIndex]
+												.colorFill}
+										{@const record =
+											cellColors[hour][0][minIndex]
+												.record}
 										{#key records}
-											{#if getStartRecordPosition(hour, min)}
-												<button
-													class="absolute -top-[1.56rem] left-0 h-6 w-2.5 rounded-r-full border-r-2 border-l border-zinc-100 bg-zinc-500"
-												/>
-											{/if}
-											{#if getEndRecordPosition(hour, min + 10)}
-												<div
-													class="absolute -top-[1.56rem] right-0 h-6 w-2.5 rounded-l-full border-l-2 border-r border-zinc-100 bg-zinc-500"
-												/>
-											{/if}
+											<td
+												class="!m-0 !h-[24px] !w-[24px] !p-0"
+												class:colored={colorFill}
+												on:mousedown={(event) =>
+													handleMouseDown(
+														hour,
+														min,
+														event,
+														record,
+													)}
+												on:mouseup={() =>
+													handleMouseUp(hour, min)}
+												on:mousemove={() =>
+													handleMouseMove(
+														hour,
+														minIndex,
+													)}
+												on:touchstart={(event) =>
+													handleMouseDown(
+														hour,
+														min,
+														event,
+														record,
+													)}
+												on:touchend={() =>
+													handleMouseUp(hour, min)}
+												on:touchmove={() =>
+													handleMouseMove(
+														hour,
+														minIndex,
+													)}
+											>
+												{#if colorFill}
+													<Popover.Root>
+														<Popover.Trigger
+															asChild
+															let:builder
+														>
+															<Button
+																builders={[
+																	builder,
+																]}
+																variant="ghost"
+																class="h-full w-full !p-0 translate-y-[0.235rem]  relative bg-zinc-100 hover:bg-zinc-500"
+															>
+																<div
+																	class="absolute top-0.5 left-1 w-1 h-2 opacity-90 transform rotate-45 bg-white"
+																/>
+																<div
+																	class="absolute top-0 w-1 h-6 opacity-90 transform rotate-45 bg-white"
+																/>
+																<div
+																	class="absolute top-3.5 right-1 w-1 h-2 opacity-90 transform rotate-45 bg-white"
+																/>
+															</Button>
+														</Popover.Trigger>
+														<Popover.Content
+															class="w-auto translate-y-[0.2rem] p-0 "
+														>
+															<TimerSetting
+																{record}
+																on:remove={handleRemoveRecord}
+																on:changeProject={hadnleChangeProject}
+															/>
+														</Popover.Content>
+													</Popover.Root>
+												{:else}
+													<Button
+														variant="ghost"
+														class="h-full w-full !p-0 hover:bg-neutral-600"
+													></Button>
+												{/if}
+											</td>
 										{/key}
-									</td>
-								{/each}
-							</tr>
-						{/each}
+									{/each}
+								</tr>
+								<tr>
+									<!-- record의 시작시간, 끝 시간 표시 -->
+									{#each tenMinute as min, minIndex}
+										{@const record =
+											cellColors[hour][0][minIndex]
+												.record}
+										<td
+											class="relative !border-0 py-[0.18rem]"
+										>
+											{#key records}
+												{#if getStartRecordPosition(hour, min)}
+													<button
+														class="absolute -top-[1.56rem] left-0 h-6 w-2.5 rounded-r-full border-r-2 border-l border-zinc-100 bg-zinc-500"
+													/>
+												{/if}
+												{#if getEndRecordPosition(hour, min + 10)}
+													<div
+														class="absolute -top-[1.56rem] right-0 h-6 w-2.5 rounded-l-full border-l-2 border-r border-zinc-100 bg-zinc-500"
+													/>
+												{/if}
+											{/key}
+										</td>
+									{/each}
+								</tr>
+							{/each}
+						</tbody>
 					</table>
 				</div>
 			{/each}

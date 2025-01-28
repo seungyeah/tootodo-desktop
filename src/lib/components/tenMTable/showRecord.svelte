@@ -89,36 +89,45 @@ https://svelte.dev/e/node_invalid_placement -->
 						{period}
 					</div>
 					<table class="h-[410px]">
-						<tr>
-							<th></th>
-							{#each columns as column}
-								<th colspan="10" class="!w-[27px] px-1 text-sm"
-									>{column + 10}</th
-								>
+						<thead>
+							<tr>
+								<th></th>
+								{#each columns as column}
+									<th
+										colspan="10"
+										class="!w-[27px] px-1 text-sm"
+										>{column + 10}</th
+									>
+								{/each}
+							</tr>
+						</thead>
+						<tbody>
+							{#each hours.slice(periodIndex * 12, (periodIndex + 1) * 12) as hour}
+								<tr>
+									<th rowspan="2" class="px-1.5">{hour}</th>
+									{#each minutes as min}
+										<td
+											class={min % 10 === 0
+												? " !border-0 !border-l !m-0 !h-[25px] !p-0"
+												: "!border-0 !m-0 !h-[25px]  !p-0"}
+										></td>
+									{/each}
+								</tr>
+								<tr>
+									{#each minutes as min}
+										{@const color =
+											cellColors[hour][0][min]}
+										<td
+											class="!border-0 py-[0.18rem]"
+											class:colored={cellColors[hour][0][
+												min
+											]}
+											style="background-color: {color}"
+										></td>
+									{/each}
+								</tr>
 							{/each}
-						</tr>
-						{#each hours.slice(periodIndex * 12, (periodIndex + 1) * 12) as hour}
-							<tr>
-								<th rowspan="2" class="px-1.5">{hour}</th>
-								{#each minutes as min}
-									<td
-										class={min % 10 === 0
-											? " !border-0 !border-l !m-0 !h-[25px] !p-0"
-											: "!border-0 !m-0 !h-[25px]  !p-0"}
-									></td>
-								{/each}
-							</tr>
-							<tr>
-								{#each minutes as min}
-									{@const color = cellColors[hour][0][min]}
-									<td
-										class="!border-0 py-[0.18rem]"
-										class:colored={cellColors[hour][0][min]}
-										style="background-color: {color}"
-									></td>
-								{/each}
-							</tr>
-						{/each}
+						</tbody>
 					</table>
 				</div>
 			{/each}
