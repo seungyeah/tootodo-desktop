@@ -152,9 +152,7 @@
 		<!-- profile -->
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger asChild >
-				{#snippet children({ builder })}
-								<Button
-						builders={[builder]}
+					<Button
 						variant="ghost"
 						class="w-8 h-8 hover:bg-zinc-950 "
 						><Avatar.Root
@@ -166,7 +164,6 @@
 							>
 						</Avatar.Root></Button
 					>
-				{/snippet}
 						</DropdownMenu.Trigger>
 			<DropdownMenu.Content class="w-56">
 				<DropdownMenu.Label>{$auth.email}</DropdownMenu.Label>
