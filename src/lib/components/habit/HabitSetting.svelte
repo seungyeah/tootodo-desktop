@@ -4,9 +4,9 @@
 	import { createEventDispatcher, getContext } from 'svelte';
 	import {type Habit } from "$lib/schema";
 
-	export let habits = getContext('habits');	
+	let { habits = getContext('habits') } = $props();
 	const statusOption: string = getContext("statusOption");
-	let openChat = false;
+	let openChat = $state(false);
 
 	const dispatch = createEventDispatcher();
 	
@@ -23,7 +23,7 @@
 		dispatchUpdateHabit({ habit, updateData });
 	}
 
-	let tableContainer: HTMLElement;
+	let tableContainer: HTMLElement = $state();
 
 	function handleScroll() {
 		dispatch('scroll', {
@@ -43,7 +43,7 @@
 <div
 	class="flex flex-col w-6 max-h-full overflow-y-scroll no-scrollbar"
 	bind:this={tableContainer}
-	on:scroll={handleScroll}
+	onscroll={handleScroll}
 >
 	<table class="w-full">
 		<tbody>
@@ -60,7 +60,7 @@
 						<DropdownMenu.Content class="border-2 border-double border-zinc-800 " side="right">
 							<DropdownMenu.Group class="flex items-center justify-center ">
 								<DropdownMenu.Item class="">
-									<button on:click={handleUpdateStatus(habit,'status')}>
+									<button onclick={handleUpdateStatus(habit,'status')}>
 										{#if habit.status === "InProgress"}
 										<Package  size={20}  />
 										{:else}
@@ -69,10 +69,10 @@
 									</button>
 								</DropdownMenu.Item>
 								<DropdownMenu.Item class="">
-									<button on:click={()=>openChat = !openChat}><MessageCircle size={20} /></button>
+									<button onclick={()=>openChat = !openChat}><MessageCircle size={20} /></button>
 								</DropdownMenu.Item>
 								<DropdownMenu.Item class="">
-									<button on:click={handleDelete(habit)}><Trash2 size={20} /></button>
+									<button onclick={handleDelete(habit)}><Trash2 size={20} /></button>
 								</DropdownMenu.Item>
 							</DropdownMenu.Group>
 						</DropdownMenu.Content>

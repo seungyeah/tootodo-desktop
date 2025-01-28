@@ -4,9 +4,9 @@
 	import { Button} from '$ui';
 	import { page } from '$app/stores';
 	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
-	let backStack: string[] = []; // Stores previous route's pathnames
-	let forwardStack: string[] = []; // Stores next route's pathnames
-	let navClicked = false; // Keeps track of weather we navigated using the back and forward buttons or navigated using a link or any other way in the app.
+	let backStack: string[] = $state([]); // Stores previous route's pathnames
+	let forwardStack: string[] = $state([]); // Stores next route's pathnames
+	let navClicked = $state(false); // Keeps track of weather we navigated using the back and forward buttons or navigated using a link or any other way in the app.
 	// After every navigation:
 	afterNavigate(({ from, to }) => {
 		// If we navigated to our app from outside our app, we don't need to store a route in the back stack.

@@ -1,4 +1,4 @@
-<script context="module" lang="ts">
+<script module lang="ts">
    import { type Task } from "$lib/schema";
 
    export type TreeItem = {
@@ -10,6 +10,7 @@
 </script>
 
 <script lang="ts">
+   import ScheduleList from './ScheduleList.svelte';
    import SettingIcon from "./SettingIcon.svelte";
 
    import { Button } from "$ui";
@@ -26,10 +27,15 @@
       helpers: { isExpanded, isSelected },
    } = getContext<TreeView>("tree");
 
-   // items
-   export let level = 1;
-   export let treeItems: TreeItem[] = [];
-   export let record = {
+   
+   interface Props {
+      // items
+      level?: number;
+      treeItems?: TreeItem[];
+      record?: any;
+   }
+
+   let { level = 1, treeItems = [], record = $bindable({
       pin: false,
       alarm: true,
       item: "note",
@@ -41,7 +47,7 @@
       openChat: false,
 
       category: { title: "Project K", color: "#e46b75" },
-   };
+   }) }: Props = $props();
    const dispatch = createEventDispatcher();
 
    // 자식 컴포넌트(self)에서 발생한 이벤트를 처리하고 상위로 전달하는 함수
@@ -51,7 +57,7 @@
    }
 
    // scroll
-   let tableContainer: HTMLElement;
+   let tableContainer: HTMLElement = $state();
    function handleScroll() {
       dispatch("scroll", {
          scrollTop: tableContainer.scrollTop,
@@ -71,7 +77,7 @@
          "pl-2 bg-zinc-50 border-b-2  border-zinc-500 border-double rounded-l-lg shadow") ||
          "h-full max-h-full overflow-y-auto overflow-x-clip no-scrollbar "}
       bind:this={tableContainer}
-      on:scroll={handleScroll}
+      onscroll={handleScroll}
    >
       {#each treeItems as { task, subtasks }}
          {@const itemId = `${task?.id}`}
@@ -87,7 +93,7 @@
                         ? " bg-pomodoro-900/10 border-b border-pomodoro-900/60"
                         : " bg-zinc-900/10 border-b border-zinc-900",
                   )}
-               />
+></div>
 
                <SettingIcon></SettingIcon>
 
@@ -112,8 +118,7 @@
                   <div class="flex h-9 w-full">
                      <!-- Folder icon. -->
                      {#if hasChildren && $isExpanded(itemId)}
-                        <svelte:component
-                           this={FolderOpen}
+                        <FolderOpen
                            fill="white"
                            class={cn(
                               "w-3.5 min-w-3.5 max-w-3.5  absolute -left-2.5 -top-3 opacity-70 ",
@@ -121,8 +126,7 @@
                            )}
                         />
                      {:else if hasChildren}
-                        <svelte:component
-                           this={Folder}
+                        <Folder
                            fill="white"
                            class={cn(
                               "w-3.5 min-w-3.5 max-w-3.5  absolute -left-2.5 -top-3 opacity-70",
@@ -174,7 +178,7 @@
                use:melt={$group({ id: itemId })}
                class:groupChild={$isExpanded(itemId)}
             >
-               <svelte:self
+               <ScheduleList
                   treeItems={subtasks}
                   level={level + 1}
                   on:update={handleChildUpdate}

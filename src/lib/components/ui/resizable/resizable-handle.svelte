@@ -8,11 +8,20 @@
 		direction?: "vertical" | "horizontal";
 	};
 
-	export let withHandle: $$Props["withHandle"] = false;
-	export let direction: $$Props["direction"] = "vertical";
-	export let el: $$Props["el"] = undefined;
-	let className: $$Props["class"] = undefined;
-	export { className as class };
+	interface Props {
+		withHandle?: $$Props["withHandle"];
+		direction?: $$Props["direction"];
+		el?: $$Props["el"];
+		class?: $$Props["class"];
+	}
+
+	let {
+		withHandle = false,
+		direction = "vertical",
+		el = $bindable(undefined),
+		class: className = undefined
+	}: Props = $props();
+	
 </script>
 
 <ResizablePrimitive.PaneResizer

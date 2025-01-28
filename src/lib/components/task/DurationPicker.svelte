@@ -19,7 +19,7 @@
 	const dispatch = createEventDispatcher();
 
 	// 3 weeks duration
-	let selectedDateRange = parseDateRangeFromURL() || getThis3WeeksRange();
+	let selectedDateRange = $state(parseDateRangeFromURL() || getThis3WeeksRange());
 
 	function updateDates() {
 		dispatch('update', { selectedDateRange });
@@ -53,38 +53,40 @@
 			updateDates();
 		}}
 	>
-		<Popover.Trigger asChild let:builder>
-			<Button
-				variant="outline"
-				class={cn('w-[300px] p-2.5 min-w-[300px] lg:w-[calc(100%-300px)] justify-start font-semibold text-zinc-600')}
-				builders={[builder]}
-			>
-				<CalendarIcon class="w-4 h-4 mr-2" />
-				{#if selectedDateRange && selectedDateRange.start}
-					{#if selectedDateRange.end}
-						{df.format(selectedDateRange.start.toDate(getLocalTimeZone()))} - {df.format(
-							selectedDateRange.end.toDate(getLocalTimeZone())
-						)}
+		<Popover.Trigger asChild >
+			{#snippet children({ builder })}
+						<Button
+					variant="outline"
+					class={cn('w-[300px] p-2.5 min-w-[300px] lg:w-[calc(100%-300px)] justify-start font-semibold text-zinc-600')}
+					builders={[builder]}
+				>
+					<CalendarIcon class="w-4 h-4 mr-2" />
+					{#if selectedDateRange && selectedDateRange.start}
+						{#if selectedDateRange.end}
+							{df.format(selectedDateRange.start.toDate(getLocalTimeZone()))} - {df.format(
+								selectedDateRange.end.toDate(getLocalTimeZone())
+							)}
+						{:else}
+							{df.format(selectedDateRange.start.toDate(getLocalTimeZone()))}
+						{/if}
+					{:else if todayValue}
+						{df.format(todayValue.toDate(getLocalTimeZone()))}
 					{:else}
-						{df.format(selectedDateRange.start.toDate(getLocalTimeZone()))}
+						Pick a date
 					{/if}
-				{:else if todayValue}
-					{df.format(todayValue.toDate(getLocalTimeZone()))}
-				{:else}
-					Pick a date
-				{/if}
-			</Button>
-			<!-- reset to today -->
-			<Button
-			variant="secondary"
-			class="z-50 h-6 px-1 shadow -translate-x-11"
-			on:click={() => {
-					resetDates();
-			}}
-		>
-	<RotateCcw size={18} strokeWidth={2.2} />
-</Button>
-		</Popover.Trigger>
+				</Button>
+				<!-- reset to today -->
+				<Button
+				variant="secondary"
+				class="z-50 h-6 px-1 shadow -translate-x-11"
+				on:click={() => {
+						resetDates();
+				}}
+			>
+		<RotateCcw size={18} strokeWidth={2.2} />
+	</Button>
+								{/snippet}
+				</Popover.Trigger>
 		<Popover.Content class="w-auto p-0 translate-y-1" align="center">
 			<RangeCalendar
 				bind:value={selectedDateRange}

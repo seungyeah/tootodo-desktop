@@ -2,15 +2,20 @@
 	import { Button, DropdownMenu, } from "$ui";
 	import icons from "$lib/icons";
    import { createEventDispatcher } from "svelte";
+   interface Props {
+      trigger?: import('svelte').Snippet;
+   }
+
+   let { trigger }: Props = $props();
    const dispatch = createEventDispatcher();
-   let color = "#09090b";
+   let color = $state("#09090b");
    export function updateHabit(key, value){
       dispatch("update", { key,value });
    }
 </script>
 <DropdownMenu.Root closeOnItemClick={false}>
    <DropdownMenu.Trigger class=" h-9 -translate-y-0.5 rounded p-0">
-      <slot name="trigger">Icon</slot>
+      {#if trigger}{@render trigger()}{:else}Icon{/if}
    </DropdownMenu.Trigger>
    <DropdownMenu.Content
       class="w-[300px] translate-x-2 border-2 border-double border-zinc-800 "
@@ -25,8 +30,8 @@
                   class="px-1"
                   on:click={()=>updateHabit("icon", icon)}
                >
-                  <svelte:component
-                     this={icons[icon]}
+                  {@const SvelteComponent = icons[icon]}
+                  <SvelteComponent
                      size={16}
                      color={color}
                   />
@@ -38,7 +43,7 @@
             <DropdownMenu.Label class="w-full text-center ">
                Color
             </DropdownMenu.Label>
-            <input type="color" bind:value={color} on:change={()=>updateHabit("color", color)} />
+            <input type="color" bind:value={color} onchange={()=>updateHabit("color", color)} />
          </DropdownMenu.Item>
       </DropdownMenu.Group>
    </DropdownMenu.Content>

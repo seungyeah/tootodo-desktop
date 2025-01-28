@@ -15,7 +15,7 @@
 
 	const tasks = getContext("tasks");
 
-	let openChat = false;
+	let openChat = $state(false);
 
 	const dispatch = createEventDispatcher();
 
@@ -34,7 +34,7 @@
 		dispatch("update", { task, updateData });
 	}
 
-	let tableContainer: HTMLElement;
+	let tableContainer: HTMLElement = $state();
 
 	function handleScroll() {
 		dispatch("scroll", {
@@ -54,7 +54,7 @@
 <div
 	class="flex flex-col w-6 max-h-full overflow-y-scroll no-scrollbar"
 	bind:this={tableContainer}
-	on:scroll={handleScroll}
+	onscroll={handleScroll}
 >
 	<table class="w-full">
 		<tbody>
@@ -79,12 +79,12 @@
 									class="flex items-center justify-center"
 								>
 									<DropdownMenu.Item class="h-8 py-0">
-										<button on:click={handleCreate(task, false)} class="relative h-8 w-7"
+										<button onclick={handleCreate(task, false)} class="relative h-8 w-7"
 											><Plus size={20} /><span class="absolute bottom-0 right-0">🔻</span>
 										</button>
 									</DropdownMenu.Item>
 									<DropdownMenu.Item class="h-8 py-0">
-										<button on:click={handleCreate(task, true)}  class="relative w-6 h-7"
+										<button onclick={handleCreate(task, true)}  class="relative w-6 h-7"
 											><Plus size={20} /><CornerDownRight class="absolute bottom-0 right-0 w-3 h-3"/></button
 										>
 									</DropdownMenu.Item>
@@ -98,7 +98,7 @@
 									
 									<DropdownMenu.Item class="">
 										<button
-											on:click={handleUpdate(
+											onclick={handleUpdate(
 												task,
 												"milestone",
 												!task.milestone,
@@ -106,12 +106,12 @@
 										>
 									</DropdownMenu.Item>
 									<DropdownMenu.Item class="">
-										<button on:click={() => (openChat = !openChat)}
+										<button onclick={() => (openChat = !openChat)}
 											><MessageCircle size={20} /></button
 										>
 									</DropdownMenu.Item>
 									<DropdownMenu.Item class="">
-										<button on:click={handleDelete(task)}
+										<button onclick={handleDelete(task)}
 											><Trash2 size={20} /></button
 										>
 									</DropdownMenu.Item>

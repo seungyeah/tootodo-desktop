@@ -2,7 +2,11 @@
 	import type { Writable } from "svelte/store";
 	import { Checkbox } from "$ui";
 
-	export let checked: Writable<boolean>;
+	interface Props {
+		checked: Writable<boolean>;
+	}
+
+	let { checked }: Props = $props();
 </script>
 
 <Checkbox bind:checked={$checked} />

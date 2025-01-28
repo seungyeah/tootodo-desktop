@@ -7,15 +7,19 @@
 	} from "lucide-svelte";
 	import { currentTime, formatTime } from "$store";
 
-	export let openSide = true;
+	interface Props {
+		openSide?: boolean;
+	}
 
-	$: currentTimeDisplay = formatTime($currentTime);
+	let { openSide = $bindable(true) }: Props = $props();
+
+	let currentTimeDisplay = $derived(formatTime($currentTime));
 
 </script>
 
 <header class="flex justify-between mb-1 mr-1.5 text-lg font-digital">
 				<button
-					on:click={() => (openSide = !openSide)}
+					onclick={() => (openSide = !openSide)}
 					class="rounded-full z-[1] h-[30px] flex"
 				>
 					<MoonStar fill="black" />

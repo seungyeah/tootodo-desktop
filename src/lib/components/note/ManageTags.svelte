@@ -5,7 +5,7 @@
    import { cn } from "$lib/utils";
    import SelectGroupColor from "./SelectGroupColor.svelte";
 
-   export let tagGroup;
+   let { tagGroup } = $props();
    const {
       elements: { root, input, tag, deleteTrigger, edit },
       states: { tags },
@@ -62,7 +62,7 @@
                   use:melt={$edit(t)}
                   class="flex items-center overflow-hidden rounded-md px-1.5 [word-break:break-word]
                 data-[invalid-edit]:focus:!ring-red-500"
-               />
+></div>
             {/each}
 
             <input

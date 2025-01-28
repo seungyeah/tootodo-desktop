@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
    import { Button, Badge } from "$ui";
    import { Plus, RotateCcw } from "lucide-svelte";
 
-   export let tagGroup;
+   let { tagGroup } = $props();
 </script>
 
 <div class="m-2 bg-white border rounded-lg shadow border-zinc-500">

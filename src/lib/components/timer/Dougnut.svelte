@@ -1,17 +1,16 @@
 <script lang="ts">
-    export let data = [30, 0, 30];
-    export let color = (d: number, i: number) => ['#c32734', '#09090b', '#501016'][i];
+  let { data = [30, 0, 30], color = (d: number, i: number) => ['#c32734', '#09090b', '#501016'][i] } = $props();
     
     let size = 190;
     let strokeWidth = 0;
     
-    $: total = data.reduce((sum, d) => sum + d, 0);
-    $: angles = data.reduce((acc, d, i) => {
+    let total = $derived(data.reduce((sum, d) => sum + d, 0));
+    let angles = $derived(data.reduce((acc, d, i) => {
       const startAngle = i === 0 ? 0 : acc[i - 1].endAngle;
       const endAngle = startAngle + (d / total) * (Math.PI * 2);
       acc.push({ startAngle, endAngle });
       return acc;
-    }, []);
+    }, []));
   </script>
   
   <div class="pie-chart" style="width: {size}px; height: {size}px;">

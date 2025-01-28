@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run, preventDefault } from 'svelte/legacy';
+
 	import { Tabs, Button, Input, DropdownMenu } from "$ui";
 	import { CirclePlus, Droplet, Grip } from "lucide-svelte";
 	import MemoEditor from "./MemoEditor.svelte";
@@ -6,7 +8,7 @@
 	import { onMount, tick } from "svelte";
 	import ScrollArea from "$ui/scroll-area/scroll-area.svelte";
 
-	let memos = [
+	let memos = $state([
 		{
 			pin: true,
 			title: "Take a break",
@@ -49,15 +51,15 @@
 			color: "green",
 			content: "Review and provide feedback on the design mockups",
 		},
-	];
+	]);
 
-	let newMemo = {
+	let newMemo = $state({
 		pin: true,
 		title: "",
 		date: "",
 		color: "default",
 		content: "",
-	};
+	});
 
 	function resetNewMemo() {
 		newMemo = {
@@ -110,145 +112,149 @@
 		{ name: "rose", normal: "#fb7185", light: "#fecdd3", dark: "#e11d48" },
 	];
 
-	$: memos = memos.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
+	run(() => {
+		memos = memos.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
+	});
 </script>
 
 <div class="relative w-full h-full">
-	<Tabs.Root value="all" class="w-full h-full flex flex-col" let:value>
-		<div
-			class="w-full text-sm absolute -top-5 left-0 font-bold text-zinc-900"
-		>
-			Don't forget!
-		</div>
-
-		<!-- input form-->
-		<form
-			on:submit|preventDefault={handleSubmit}
-			class="relative flex items-center w-full h-9 mb-2"
-		>
-			<DropdownMenu.Root>
-				<DropdownMenu.Trigger class=" h-9 -translate-y-0.5 rounded p-0">
-					<Button
-						variant="ghost"
-						size="sm"
-						class="h-full p-0 rounded shadow "
-					>
-						<Droplet
-							size={30}
-							fill={colors.find((c) => c.name === newMemo.color)?.dark ||
-								colors.find((c) => c.name === "default")?.dark}
-							color="white"
-						/>
-					</Button>
-				</DropdownMenu.Trigger>
-				<DropdownMenu.Content class="-translate-y-2">
-					<DropdownMenu.Group>
-						<DropdownMenu.Label class="text-center"
-							>Select Color</DropdownMenu.Label
-						>
-						<DropdownMenu.Item
-							class="grid grid-cols-3 data-[highlighted]:bg-zinc-50"
-						>
-							{#each colors as color}
-								<Button
-									class="w-5 h-5 p-2 m-2"
-									style={`background-color: ${color.normal};`}
-									on:click={() => {
-										newMemo.color = color.name;
-									}}
-								/>
-							{/each}
-						</DropdownMenu.Item>
-					</DropdownMenu.Group>
-				</DropdownMenu.Content>
-			</DropdownMenu.Root>
-			<Input
-				type="text"
-				placeholder="title : put more than 1 char"
-				bind:value={newMemo.title}
-				on:keydown={(e) => {
-					if (e.key === "Enter" && !e.shiftKey) {
-						e.preventDefault();
-						handleSubmit(e);
-					}
-				}}
-				class="my-2 ml-2 h-9 w-full scale-y-95 rounded-r-full p-2 pr-9 text-[1rem] font-normal focus:shadow"
-			/>
-			<Button
-				variant="ghost"
-				type="submit"
-				class="absolute z-10 p-0 rounded-full botom-0 right-1 hover:bg-zinc-100"
-				><CirclePlus color="#a1a1aa" /></Button
+	<Tabs.Root value="all" class="w-full h-full flex flex-col" >
+		{#snippet children({ value })}
+				<div
+				class="w-full text-sm absolute -top-5 left-0 font-bold text-zinc-900"
 			>
-		</form>
+				Don't forget!
+			</div>
 
-		<!-- select color -->
-		<Tabs.List
-			class="flex w-full justify-evenly bg-zinc-100 rounded-b-none border-2 border-zinc-400 border-dotted"
-		>
-			<Tabs.Trigger
-				value="all"
-				class="w-[40px] -translate-x-1.5 scale-75"
-				on:click={() => {
-					newMemo.color = "default";
-				}}
+			<!-- input form-->
+			<form
+				onsubmit={preventDefault(handleSubmit)}
+				class="relative flex items-center w-full h-9 mb-2"
 			>
+				<DropdownMenu.Root>
+					<DropdownMenu.Trigger class=" h-9 -translate-y-0.5 rounded p-0">
+						<Button
+							variant="ghost"
+							size="sm"
+							class="h-full p-0 rounded shadow "
+						>
+							<Droplet
+								size={30}
+								fill={colors.find((c) => c.name === newMemo.color)?.dark ||
+									colors.find((c) => c.name === "default")?.dark}
+								color="white"
+							/>
+						</Button>
+					</DropdownMenu.Trigger>
+					<DropdownMenu.Content class="-translate-y-2">
+						<DropdownMenu.Group>
+							<DropdownMenu.Label class="text-center"
+								>Select Color</DropdownMenu.Label
+							>
+							<DropdownMenu.Item
+								class="grid grid-cols-3 data-[highlighted]:bg-zinc-50"
+							>
+								{#each colors as color}
+									<Button
+										class="w-5 h-5 p-2 m-2"
+										style={`background-color: ${color.normal};`}
+										on:click={() => {
+											newMemo.color = color.name;
+										}}
+									/>
+								{/each}
+							</DropdownMenu.Item>
+						</DropdownMenu.Group>
+					</DropdownMenu.Content>
+				</DropdownMenu.Root>
+				<Input
+					type="text"
+					placeholder="title : put more than 1 char"
+					bind:value={newMemo.title}
+					on:keydown={(e) => {
+						if (e.key === "Enter" && !e.shiftKey) {
+							e.preventDefault();
+							handleSubmit(e);
+						}
+					}}
+					class="my-2 ml-2 h-9 w-full scale-y-95 rounded-r-full p-2 pr-9 text-[1rem] font-normal focus:shadow"
+				/>
 				<Button
 					variant="ghost"
-					class="absolute left-0 my-2 bg-zinc-700 !p-3 hover:bg-zinc-900  "
+					type="submit"
+					class="absolute z-10 p-0 rounded-full botom-0 right-1 hover:bg-zinc-100"
+					><CirclePlus color="#a1a1aa" /></Button
 				>
-					<Grip color="#fffbeb" fill="white" />
-				</Button>
-			</Tabs.Trigger>
-			{#each colors as color}
+			</form>
+
+			<!-- select color -->
+			<Tabs.List
+				class="flex w-full justify-evenly bg-zinc-100 rounded-b-none border-2 border-zinc-400 border-dotted"
+			>
 				<Tabs.Trigger
-					value={color.name}
-					style={`background-color: ${color.light};`}
-					class="mx-1 rounded-full border-double border-2 border-zinc-500 shadow-inner h-7 w-7"
+					value="all"
+					class="w-[40px] -translate-x-1.5 scale-75"
 					on:click={() => {
-						newMemo.color = color.name;
+						newMemo.color = "default";
 					}}
 				>
-					{#if value === color.name}
-						<div class="my-2 bg-zinc-700 rounded-full w-3 h-3">
-							<Grip color="#fffbeb" fill="white" size={12} />
-						</div>
-					{/if}
+					<Button
+						variant="ghost"
+						class="absolute left-0 my-2 bg-zinc-700 !p-3 hover:bg-zinc-900  "
+					>
+						<Grip color="#fffbeb" fill="white" />
+					</Button>
 				</Tabs.Trigger>
-			{/each}
-		</Tabs.List>
-
-		<!-- memo list -->
-		<!-- all -->
-		<Tabs.Content
-			value="all"
-			class="h-full w-full max-h-full overflow-y-auto m-0"
-		>
-			<ScrollArea
-				class="h-full max-h-full border-x-2 border-zinc-400 border-dotted w-full px-2.5 pt-0.5 space-y-1"
-			>
-				{#each memos as memo}
-					<MemoEditor bind:memo class=""/>
+				{#each colors as color}
+					<Tabs.Trigger
+						value={color.name}
+						style={`background-color: ${color.light};`}
+						class="mx-1 rounded-full border-double border-2 border-zinc-500 shadow-inner h-7 w-7"
+						on:click={() => {
+							newMemo.color = color.name;
+						}}
+					>
+						{#if value === color.name}
+							<div class="my-2 bg-zinc-700 rounded-full w-3 h-3">
+								<Grip color="#fffbeb" fill="white" size={12} />
+							</div>
+						{/if}
+					</Tabs.Trigger>
 				{/each}
-			</ScrollArea>
-		</Tabs.Content>
+			</Tabs.List>
 
-		<!-- color filter -->
-		{#each colors as color}
+			<!-- memo list -->
+			<!-- all -->
 			<Tabs.Content
-				value={color.name}
+				value="all"
 				class="h-full w-full max-h-full overflow-y-auto m-0"
 			>
 				<ScrollArea
 					class="h-full max-h-full border-x-2 border-zinc-400 border-dotted w-full px-2.5 pt-0.5 space-y-1"
 				>
 					{#each memos as memo}
-						{#if memo.color === color.name}
-							<MemoEditor bind:memo class=""/>
-						{/if}
+						<MemoEditor bind:memo class=""/>
 					{/each}
 				</ScrollArea>
 			</Tabs.Content>
-		{/each}
-	</Tabs.Root>
+
+			<!-- color filter -->
+			{#each colors as color}
+				<Tabs.Content
+					value={color.name}
+					class="h-full w-full max-h-full overflow-y-auto m-0"
+				>
+					<ScrollArea
+						class="h-full max-h-full border-x-2 border-zinc-400 border-dotted w-full px-2.5 pt-0.5 space-y-1"
+					>
+						{#each memos as memo}
+							{#if memo.color === color.name}
+								<MemoEditor bind:memo class=""/>
+							{/if}
+						{/each}
+					</ScrollArea>
+				</Tabs.Content>
+			{/each}
+					{/snippet}
+		</Tabs.Root>
 </div>

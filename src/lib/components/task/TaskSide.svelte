@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	import { getLocalTimeZone, today } from "@internationalized/date";
 	import {
 		Button,
@@ -17,11 +19,11 @@
 	const dispatchCreateTask = getContext("handleCreateTask");
 	const todayValue = today(getLocalTimeZone());
 
-	let askMode = true;
-	let newTaskDuration = {
+	let askMode = $state(true);
+	let newTaskDuration = $state({
 		start: $selectedDate.start.add({ days: 7 }),
 		end: $selectedDate.start.add({ days: 13 }),
-	};
+	});
 
 	onMount(async () => {
 		await tick();
@@ -43,11 +45,11 @@
 		};
 	}
 
-	let newTask = {
+	let newTask = $state({
 		title: "",
 		startDate: todayValue,
 		endDate: todayValue.add({ days: 0 }),
-	};
+	});
 
 	async function handleSubmit(
 		event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement },
@@ -138,7 +140,7 @@
 			<!-- add task -->
 			<Resizable.Pane minSize={14} defaultSize={14}>
 				<form
-					on:submit|preventDefault={handleSubmit}
+					onsubmit={preventDefault(handleSubmit)}
 					class="relative flex items-center w-full h-full p-1"
 				>
 					<div
@@ -159,14 +161,14 @@
 					<textarea
 						placeholder="title : put more than 1 char"
 						bind:value={newTask.title}
-						on:keydown={(e) => {
+						onkeydown={(e) => {
 							if (e.key === "Enter" && !e.shiftKey) {
 								e.preventDefault();
 								handleSubmit(e);
 							}
 						}}
 						class="absolute right-2 top-0.5 border rounded-lg ml-2 h-full w-10/12 scale-y-95 p-2 pr-9 text-[0.9rem] font-normal focus:shadow"
-					/>
+					></textarea>
 					<!-- 
 			<Button
 				variant="ghost"

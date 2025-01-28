@@ -38,7 +38,7 @@
    }
 
    // dnd
-   let draggedIndex = null;
+   let draggedIndex = $state(null);
 
    function handleDragStart(e, index) {
       draggedIndex = index;
@@ -85,10 +85,10 @@
                      <td
                         class="h-[30px] w-5 draggable inline-block border-b"
                         draggable="true"
-                        on:dragstart={(e) => handleDragStart(e, i)}
-                        on:dragover={handleDragOver}
-                        on:drop={(e) => handleDrop(e, i)}
-                        on:dragend={handleDragEnd}
+                        ondragstart={(e) => handleDragStart(e, i)}
+                        ondragover={handleDragOver}
+                        ondrop={(e) => handleDrop(e, i)}
+                        ondragend={handleDragEnd}
                      >
                         <div class="w-full h-full text-center translate-y-1">
                            {#if draggedIndex === i}
@@ -101,7 +101,7 @@
                         ><input
                            value={habit.name}
                            class="h-full px-1.5 w-full bg-transparent"
-                           on:blur={(e) =>
+                           onblur={(e) =>
                               handleUpdateName(habit, e.target.value)}
                         />
                      </td>
@@ -111,18 +111,20 @@
                            on:update={(e) =>
                               (habit = handleUpdateIcon(habit, e))}
                         >
-                           <div slot="trigger" class="h-[30px]">
-                              <Button
-                                 variant="ghost"
-                                 class="p-1.5 h-[24px] bg-white"
-                              >
-                                 <svelte:component
-                                    this={icons[habit.icon]}
-                                    size={16}
-                                    color={habit.color}
-                                 />
-                              </Button>
-                           </div>
+                           {#snippet trigger()}
+                                                      <div  class="h-[30px]">
+                                 <Button
+                                    variant="ghost"
+                                    class="p-1.5 h-[24px] bg-white"
+                                 >
+                                    {@const SvelteComponent = icons[habit.icon]}
+                                 <SvelteComponent
+                                       size={16}
+                                       color={habit.color}
+                                    />
+                                 </Button>
+                              </div>
+                                                   {/snippet}
                         </IconPicker>
                      </td>
                   </tr>{/if}{/each}{/if}

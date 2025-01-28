@@ -1,4 +1,4 @@
-<script context="module" lang="ts">
+<script module lang="ts">
 	import { type Task } from "$lib/schema";
 	import { type TaskTreeItem } from "$lib/type";
 
@@ -6,6 +6,9 @@
 </script>
 
 <script lang="ts">
+	import TaskTree from './TaskTree.svelte';
+	import { run } from 'svelte/legacy';
+
 	import {
 		getLocalTimeZone,
 		today,
@@ -30,9 +33,7 @@
 		helpers: { isExpanded, isSelected },
 	} = getContext<TreeView>("tree");
 
-	// items
-	export let level = 1;
-	export let treeItems: TaskTreeItem[] = [];
+	
 
 	const todayValue = today(getLocalTimeZone());
 	let cellDuration = {
@@ -78,8 +79,15 @@
 	}
 
 	// scroll
-	let tableContainer: HTMLElement;
-	export let scrollPosition = { scrollTop: 0, scrollLeft: 0 };
+	let tableContainer: HTMLElement = $state();
+	interface Props {
+		// items
+		level?: number;
+		treeItems?: TaskTreeItem[];
+		scrollPosition?: any;
+	}
+
+	let { level = 1, treeItems = [], scrollPosition = { scrollTop: 0, scrollLeft: 0 } }: Props = $props();
 	function handleScroll() {
 		dispatch("scroll", {
 			scrollTop: tableContainer.scrollTop,
@@ -94,12 +102,12 @@
 		}
 	}
 
-	$: {
+	run(() => {
 		if (tableContainer) {
 			tableContainer.scrollTop = scrollPosition.scrollTop;
 			tableContainer.scrollLeft = scrollPosition.scrollLeft;
 		}
-	}
+	});
 
 	// dnd
 
@@ -142,7 +150,7 @@
 		class="bg-white border-r-[3px] border-l-2 border-zinc-800
 			 h-full max-h-[calc(100%-48px)] w-full min-w-full overflow-x-clip overflow-y-auto"
 		bind:this={tableContainer}
-		on:scroll={handleScroll}
+		onscroll={handleScroll}
 	>
 		{#each treeItems as { task, subtasks }, i}
 			{@const itemId = `${task?.id}`}
@@ -153,10 +161,10 @@
 				class:group={$isExpanded(itemId)}
 				class:dragging={task === draggedTask}
 				class:draggable={!hasChildren}
-				on:dragstart={(e) => handleDragStart(e, task)}
-				on:dragover={handleDragOver}
-				on:drop={(e) => handleDrop(e, task)}
-				on:dragend={handleDragEnd}
+				ondragstart={(e) => handleDragStart(e, task)}
+				ondragover={handleDragOver}
+				ondrop={(e) => handleDrop(e, task)}
+				ondragend={handleDragEnd}
 				role="listitem"
 			>
 				{#if task === draggedTask}
@@ -168,7 +176,7 @@
 						class={level !== 1
 							? "pl-4 h-full bg-zinc-100 border-b"
 							: ""}
-					/>
+					></div>
 				{/if}
 
 				<!-- icons -->
@@ -187,17 +195,15 @@
 					>
 						<!-- Folder icon. -->
 						{#if hasChildren && $isExpanded(itemId)}
-							<svelte:component
-								this={FolderOpen}
+							<FolderOpen
 								class="w-4 h-4"
 							/>
 						{:else if hasChildren}
-							<svelte:component this={Folder} class="w-4 h-4 " />
+							<Folder class="w-4 h-4 " />
 						{/if}
 						<!-- Selected icon. -->
 						{#if $isSelected(itemId)}
-							<svelte:component
-								this={ArrowRight}
+							<ArrowRight
 								class="w-4 h-4 text-pomodoro-500"
 							/>
 						{/if}
@@ -209,7 +215,7 @@
 					<input
 						value={task?.title}
 						class="h-full px-1.5 w-full bg-transparent focus:bg-zinc-50"
-						on:blur={(e) => handleUpdateTitle(task, e.target.value)}
+						onblur={(e) => handleUpdateTitle(task, e.target.value)}
 					/>
 				</div>
 
@@ -285,7 +291,7 @@
 					use:melt={$group({ id: itemId })}
 					class:groupChild={$isExpanded(itemId)}
 				>
-					<svelte:self
+					<TaskTree
 						treeItems={subtasks}
 						level={level + 1}
 						on:update={handleChildUpdate}

@@ -1,9 +1,14 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import Clock from './Clock.svelte';
 	import { timerSetting, timerStatus,timerOpen } from '$store';
 	import Dougnut from './Dougnut.svelte';
-	$:leftMinutes = ($timerStatus.leftTime/60)%60 || $timerSetting.working%60;
-	$: data= [leftMinutes, 0, 60-leftMinutes];
+	let leftMinutes = $derived(($timerStatus.leftTime/60)%60 || $timerSetting.working%60);
+	let data;
+	run(() => {
+		data= [leftMinutes, 0, 60-leftMinutes];
+	});
 	// $:console.log(leftMinutes);
 	// $:console.log($timerStatus.workSession);
 	const value = (d: number) => d;

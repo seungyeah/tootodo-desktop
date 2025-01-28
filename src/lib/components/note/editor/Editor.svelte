@@ -11,10 +11,14 @@
 		BubbleMenu,
 	} from "svelte-tiptap";
 
-	let editor: Readable<Editor>;
-	let className: $$Props["class"] = undefined;
-	export { className as class };
-	export let content = "";
+	let editor: Readable<Editor> = $state();
+	
+	interface Props {
+		class?: $$Props["class"];
+		content?: string;
+	}
+
+	let { class: className = undefined, content = $bindable("") }: Props = $props();
 
 	onMount(() => {
 		editor = createEditor({
@@ -49,9 +53,9 @@
 		$editor.chain().focus().setParagraph().run();
 	};
 
-	$: isActive = (name: string, attrs = {}) => $editor.isActive(name, attrs);
+	let isActive = $derived((name: string, attrs = {}) => $editor.isActive(name, attrs));
 
-	$: menuItems = [
+	let menuItems = $derived([
 		{
 			name: "heading-1",
 			command: toggleHeading(1),
@@ -82,7 +86,7 @@
 			content: "P",
 			active: () => isActive("paragraph"),
 		},
-	];
+	]);
 </script>
 
 <div class="h-full w-full flex-col">
@@ -94,7 +98,7 @@
 						"!text-white": isActive("bold"),
 					})}
 					type="button"
-					on:click={toggleBold}
+					onclick={toggleBold}
 				>
 					bold
 				</button>
@@ -103,7 +107,7 @@
 						"!text-white": isActive("italic"),
 					})}
 					type="button"
-					on:click={toggleItalic}
+					onclick={toggleItalic}
 				>
 					italic
 				</button>
@@ -123,7 +127,7 @@
 							"bg-zinc-500 text-white": item.active(),
 						},
 					)}
-					on:click={item.command}
+					onclick={item.command}
 				>
 					{item.content}
 				</button>

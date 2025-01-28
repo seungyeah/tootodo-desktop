@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { Button, DropdownMenu } from "$ui";
     let projects =  [
 		{ color: '#3f3f46', id: 'p0', title: '프로젝트 0' },
@@ -11,7 +11,7 @@
 		{ color: '#2563eb', id: 'p7', title: '프로젝트 7' },
 		{ color: '#0284c7', id: 'p8', title: '프로젝트 8' }
 	];
-    export let record;
+    let { record = $bindable() } = $props();
 
 </script>
 

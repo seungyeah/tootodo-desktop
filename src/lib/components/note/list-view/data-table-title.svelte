@@ -5,7 +5,7 @@
 	import { Circle, MessageCircle, Plus, Tag } from "lucide-svelte";
 	import ItemInfo from "./data-table-connections.svelte";
 
-	export let note;
+	let { note } = $props();
 	// $: console.log(note);
 	let tagGroups = [
 		{

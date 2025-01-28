@@ -164,22 +164,22 @@
 
 	// export let day = new Date().getDay();
 	let day = 'fri';
-	$: sortedRecords = records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
-	$: taskRecords = sortedRecords.filter(
+	let sortedRecords = $derived(records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1)));
+	let taskRecords = $derived(sortedRecords.filter(
 		(record) => record.item === 'note' && record.days.includes(day)
-	);
-	$: eventRecords = sortedRecords.filter(
+	));
+	let eventRecords = $derived(sortedRecords.filter(
 		(record) => record.item === 'event' && record.days.includes(day)
-	);
-	$: habitRecords = sortedRecords.filter(
+	));
+	let habitRecords = $derived(sortedRecords.filter(
 		(record) => record.item === 'habit' && record.days.includes(day)
-	);
-	$: todayHabits = habits.filter((habit) =>
+	));
+	let todayHabits = $derived(habits.filter((habit) =>
 		habitRecords.some((record) => record.title === habit.title)
-	);
+	));
 
 	// $:console.log(todayHabits);
-	let Stars = new Array(5).fill(0);
+	let Stars = $state(new Array(5).fill(0));
 </script>
 
 <div class="relative h-full w-full flex-col">
@@ -191,7 +191,7 @@
 				<button
 					class="absolute left-0 top-0 py-1 pt-2 hover:bg-none"
 					style="transform:translateX({i * 24}px)"
-					on:click={() => {
+					onclick={() => {
 						Stars = Stars.map((_, j) => j <= i);
 					}}
 				>
@@ -244,7 +244,7 @@
 						}}
 						class={habit.done
 							? 'aspect-square rounded-full bg-zinc-200 p-1'
-							: 'aspect-square rounded-full p-1'}><svelte:component this={habit.icon} /></Button
+							: 'aspect-square rounded-full p-1'}><habit.icon /></Button
 					>
 				{/each}
 			</div>

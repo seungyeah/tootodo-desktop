@@ -2,7 +2,7 @@
 	import { Button, Checkbox, Label } from '$ui';
 	import { MessageCircle } from 'lucide-svelte';
 
-	export let records = [
+	let { records = [
 		{
 			item: 'note',
 			title: 'urgent note',
@@ -12,7 +12,7 @@
 			openChatInDiary: false,
 			done: false
 		}
-	];
+	] } = $props();
 </script>
 
 <div class="no-scrollbar max-h-full overflow-y-auto">

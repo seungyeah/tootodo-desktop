@@ -1,7 +1,21 @@
 <script lang="ts">
 	import { Separator } from "$ui";
 	import {cn} from "$lib/utils";
-	export let openSide = true;
+	interface Props {
+		openSide?: boolean;
+		nav?: import('svelte').Snippet;
+		side?: import('svelte').Snippet;
+		options?: import('svelte').Snippet<[any]>;
+		main?: import('svelte').Snippet;
+	}
+
+	let {
+		openSide = true,
+		nav,
+		side,
+		options,
+		main
+	}: Props = $props();
 </script>
 
 <div class="h-full m-2">
@@ -9,7 +23,7 @@
 	<div
 		class="fixed top-5 right-0 z-10 w-[calc(100%-504px)] -translate-x-[20px]"
 	>
-		<slot name="nav" />
+		{@render nav?.()}
 	</div>
 	<div
 		class="flex h-[calc(100%-1.6rem)] max-w-full items-center space-x-4 text-sm"
@@ -19,11 +33,11 @@
 			<div
 				class=" flex h-full w-2/5 min-w-[260px] max-w-[360px] flex-col items-center justify-start bg-zinc-50"
 			>
-				<slot name="side" />
+				{@render side?.()}
 			</div>
 		{/if}
 
-		<slot name="options" class="h-full" />
+		{@render options?.({ class: "h-full", })}
 
 		<!-- main: itemlist -->
 		<div
@@ -32,7 +46,7 @@
 				"max-w-full": !openSide,
 			})}
 		>
-			<slot name="main" />
+			{@render main?.()}
 		</div>
 	</div>
 </div>

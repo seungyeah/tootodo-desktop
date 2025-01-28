@@ -254,36 +254,38 @@
                      {#each headerRow.cells as cell (cell.id)}
                         <Subscribe
                            attrs={cell.attrs()}
-                           let:attrs
+                           
                            props={cell.props()}
-                           let:props
+                           
                         >
-                           <Table.Head
-                              {...attrs}
-                              class={cn(
-                                 "[&:has([role=checkbox])]:px-3 py-0 !h-6",
-                              )}
-                           >
-                              {#if cell.id === "Title"}
-                                 <Button
-                                    variant="ghost"
-                                    on:click={props.sort.toggle}
-                                    class="w-full "
-                                 >
+                           {#snippet children({ attrs, props })}
+                                                      <Table.Head
+                                 {...attrs}
+                                 class={cn(
+                                    "[&:has([role=checkbox])]:px-3 py-0 !h-6",
+                                 )}
+                              >
+                                 {#if cell.id === "Title"}
+                                    <Button
+                                       variant="ghost"
+                                       on:click={props.sort.toggle}
+                                       class="w-full "
+                                    >
+                                       <Render of={cell.render()} />
+                                       <ArrowUpDown
+                                          class={cn(
+                                             $sortKeys[0]?.id === cell.id &&
+                                                "text-foreground",
+                                             "ml-2 h-4 p-0 w-4",
+                                          )}
+                                       />
+                                    </Button>
+                                 {:else}
                                     <Render of={cell.render()} />
-                                    <ArrowUpDown
-                                       class={cn(
-                                          $sortKeys[0]?.id === cell.id &&
-                                             "text-foreground",
-                                          "ml-2 h-4 p-0 w-4",
-                                       )}
-                                    />
-                                 </Button>
-                              {:else}
-                                 <Render of={cell.render()} />
-                              {/if}
-                           </Table.Head>
-                        </Subscribe>
+                                 {/if}
+                              </Table.Head>
+                                                                              {/snippet}
+                                                </Subscribe>
                      {/each}
                   </Table.Row>
                </Subscribe>
@@ -292,25 +294,29 @@
 
          <Table.Body {...$tableBodyAttrs}>
             {#each $pageRows as row (row.id)}
-               <Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-                  <Table.Row
-                     {...rowAttrs}
-                     data-state={$selectedDataIds[row.id] && "selected"}
-                  >
-                     {#each row.cells as cell (cell.id)}
-                        <Subscribe attrs={cell.attrs()} let:attrs>
-                           <Table.Cell
-                              class={cn(
-                                 "[&:has([role=checkbox])]:pl-3 px-1 py-0 h-12 w-full",
-                              )}
-                              {...attrs}
-                           >
-                              <Render of={cell.render()} />
-                           </Table.Cell>
-                        </Subscribe>
-                     {/each}
-                  </Table.Row>
-               </Subscribe>
+               <Subscribe rowAttrs={row.attrs()} >
+                  {#snippet children({ rowAttrs })}
+                                    <Table.Row
+                        {...rowAttrs}
+                        data-state={$selectedDataIds[row.id] && "selected"}
+                     >
+                        {#each row.cells as cell (cell.id)}
+                           <Subscribe attrs={cell.attrs()} >
+                              {#snippet children({ attrs })}
+                                                      <Table.Cell
+                                    class={cn(
+                                       "[&:has([role=checkbox])]:pl-3 px-1 py-0 h-12 w-full",
+                                    )}
+                                    {...attrs}
+                                 >
+                                    <Render of={cell.render()} />
+                                 </Table.Cell>
+                                                                                 {/snippet}
+                                                </Subscribe>
+                        {/each}
+                     </Table.Row>
+                                                   {/snippet}
+                              </Subscribe>
             {/each}
          </Table.Body>
       </Table.Root>

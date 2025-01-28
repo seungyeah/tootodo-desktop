@@ -13,7 +13,7 @@
       Input,
       RadioGroup,
    } from "$ui";
-   export let itemInfo;
+   let { itemInfo } = $props();
    let newConnectionTitle = "";
 </script>
 
@@ -56,14 +56,16 @@
    </HoverCard.Root>
 {:else}
    <Popover.Root portal={null}>
-      <Popover.Trigger asChild let:builder>
-         <Button
-            builders={[builder]}
-            variant="ghost"
-            class="w-[70px] h-6 px-2 shadow-sm"
-            ><CalendarPlus size={14} class="mr-1" /></Button
-         >
-      </Popover.Trigger>
+      <Popover.Trigger asChild >
+         {#snippet children({ builder })}
+                  <Button
+               builders={[builder]}
+               variant="ghost"
+               class="w-[70px] h-6 px-2 shadow-sm"
+               ><CalendarPlus size={14} class="mr-1" /></Button
+            >
+                        {/snippet}
+            </Popover.Trigger>
       <Popover.Content class="-translate-x-1 w-80" side="left">
          <div class="grid gap-4">
             <h4 class="text-sm font-semibold">Add New Connection</h4>

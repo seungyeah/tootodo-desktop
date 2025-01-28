@@ -19,10 +19,14 @@
 	import { type Task } from "$lib/schema";
 	import type { TaskCreationMode, TaskDeleteOption } from "$lib/type";
 
-	export let hasChildren: boolean;
-	export let task: Task;
-	export let hasNote: boolean = false;
-	let openChat = false;
+	interface Props {
+		hasChildren: boolean;
+		task: Task;
+		hasNote?: boolean;
+	}
+
+	let { hasChildren, task, hasNote = false }: Props = $props();
+	let openChat = $state(false);
 
 	const dispatch = createEventDispatcher();
 	const dispatchUpdateTask: Function = getContext("handleUpdateTask");
@@ -81,7 +85,7 @@
 							</DropdownMenu.Label>
 							<DropdownMenu.Item class="h-8 py-0">
 								<button
-									on:click={handleCreate(
+									onclick={handleCreate(
 										task,
 										"CREATE_TASK_FROM_TASK",
 									)}
@@ -93,7 +97,7 @@
 							{#if !task.parent_id}
 								<DropdownMenu.Item class="h-8 py-0">
 									<button
-										on:click={handleCreate(
+										onclick={handleCreate(
 											task,
 											"CREATE_SUBTASK_FROM_TASK",
 										)}
@@ -123,7 +127,7 @@
 							{#if hasChildren}
 								<DropdownMenu.Item class="h-8 py-0">
 									<button
-										on:click={handleUpdate(
+										onclick={handleUpdate(
 											task,
 											"milestone",
 											!task.milestone,
@@ -134,7 +138,7 @@
 							{:else}
 								<DropdownMenu.Item class="h-8 py-0">
 									<button
-										on:click={handleUpdate(
+										onclick={handleUpdate(
 											task,
 											"milestone",
 											!task.milestone,
@@ -151,7 +155,7 @@
 							{#if hasNote}
 								<DropdownMenu.Item class="h-8 ">
 									<button
-										on:click={openNote(task)}
+										onclick={openNote(task)}
 										class="relative -translate-y-1"
 										><BookOpen size={20} class="mx-1" />
 										<span class="absolute -left-0.5 -bottom-3.5"
@@ -161,7 +165,7 @@
 								</DropdownMenu.Item>
 								<DropdownMenu.Item class="h-8">
 									<button
-										on:click={openNotePageList(task)}
+										onclick={openNotePageList(task)}
 										class="relative -translate-y-1"
 										><FilePlus size={20} /><span
 											class="absolute -left-1 -bottom-3.5">page</span
@@ -174,7 +178,7 @@
 								</DropdownMenu.Label>
 								<DropdownMenu.Item class="h-8 ml-8">
 									<button
-										on:click={createNote(task)}
+										onclick={createNote(task)}
 										class="flex h-8 p-1.5"
 									>
 										new note
@@ -194,7 +198,7 @@
 
 							{#if !hasChildren}
 								<DropdownMenu.Item class="">
-									<button on:click={handleDelete(task, "DELETE_TASK")}
+									<button onclick={handleDelete(task, "DELETE_TASK")}
 										>Delete Task</button
 									>
 								</DropdownMenu.Item>
@@ -206,7 +210,7 @@
 								<div class="flex w-full items-center justify-center">
 									<DropdownMenu.Item class="">
 										<button
-											on:click={handleDelete(
+											onclick={handleDelete(
 												task,
 												"CONVERT_SUBTASK_TO_TASK",
 											)}>task로 전환</button
@@ -214,7 +218,7 @@
 									</DropdownMenu.Item>
 									<DropdownMenu.Item class="">
 										<button
-											on:click={handleDelete(
+											onclick={handleDelete(
 												task,
 												"DELETE_ALL_SUBTASK",
 											)}>제거</button
@@ -231,7 +235,7 @@
 						<DropdownMenu.Group class="flex items-center justify-center ">
 							<DropdownMenu.Item class="">
 								<button
-									on:click={handleUpdate(
+									onclick={handleUpdate(
 										task,
 										"milestone",
 										!task.milestone,
@@ -249,7 +253,7 @@
 								<button><Waypoints size={20} /></button>
 							</DropdownMenu.Item>
 							<DropdownMenu.Item class="">
-								<button on:click={() => (openChat = !openChat)}
+								<button onclick={() => (openChat = !openChat)}
 									><MessageCircle size={20} /></button
 								>
 							</DropdownMenu.Item>

@@ -18,9 +18,9 @@
 	let worker: Worker;
 
 	let leftSecondsDefault = 25;
-	let stopSeconds = 0;
+	let stopSeconds = $state(0);
 	let sessionSwitched = false;
-	let records = [{ startTime: '', endTime: '', done: false, leftTime: 25, studyTime: 0 }];
+	let records = $state([{ startTime: '', endTime: '', done: false, leftTime: 25, studyTime: 0 }]);
 
 	onMount(async () => {
 		await initWebWorker();
@@ -289,7 +289,7 @@
 			<div class="absolute top-2 right-1 flex items-end text-xs text-zinc-100">
 				<div class="p-0 rounded-full w-8 h-8 border-2 border-zinc-100 border-dashed opacity-80"
 					style="background-color:{$timerSetting.projectColor}"
-				/>
+				></div>
 				<div class="absolute w-8 h-7 text-center font-bold text-lg ">
 					{$timerSetting.working}
 					<span class="absolute text-sm bottom-0 translate-x-1">min</span>
@@ -361,7 +361,7 @@
 			<div
 				class="font-digital flex h-[22px] w-full -translate-x-1.5 justify-start text-pomodoro-300"
 			>
-				<div class="w-[32px]" />
+				<div class="w-[32px]"></div>
 				<div class="w-[60px] text-center font-extrabold">Start</div>
 				<div class="w-[20px] text-center font-extrabold"></div>
 				<div class=" w-[60px] text-center font-extrabold">End</div>

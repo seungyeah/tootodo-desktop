@@ -15,7 +15,7 @@
       BotMessageSquare,
       Paperclip,
    } from "lucide-svelte";
-   export let note;
+   let { note } = $props();
 </script>
 
 <Resizable.PaneGroup direction="horizontal" class="gap-2">

@@ -1,4 +1,6 @@
 <script lang="ts">
+   import { run, preventDefault } from 'svelte/legacy';
+
    import { getContext, setContext, tick } from "svelte";
    import { createEventDispatcher } from "svelte";
    import {
@@ -139,15 +141,18 @@
    ];
    setContext("tagGroups", tagGroups);
 
-   let isAddTagGroupMode = true;
-   let searchTags = [{}];
+   let isAddTagGroupMode = $state(true);
+   let searchTags = $state([{}]);
 
    // new tag group
-   $: newTagGroup = {
-      name: "",
-      tags: [],
-      color: "#f4f4f5",
-   };
+   let newTagGroup;
+   run(() => {
+      newTagGroup = {
+         name: "",
+         tags: [],
+         color: "#f4f4f5",
+      };
+   });
 
    async function handleSubmit(
       event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement },
@@ -205,13 +210,13 @@
    }
 
    // select tag group when add tag
-   let value = "undefined";
+   let value = $state("undefined");
 </script>
 
 <div class="flex flex-col w-full h-full space-y-2">
    <!-- add tag -->
    <form
-      on:submit|preventDefault={handleSubmit}
+      onsubmit={preventDefault(handleSubmit)}
       class="relative flex items-center w-full h-9"
    >
       <div>
@@ -234,7 +239,9 @@
             bind:tagGroup={newTagGroup}
             class="absolute shadow h-6 w-6 left-8 rounded-full ml-2 border-zinc-300 border-2 border-dashed text-zinc-100 hover:text-zinc-100"
          >
-            <div slot="info">Select Color</div>
+            {#snippet info()}
+                        <div >Select Color</div>
+                     {/snippet}
          </SelectGroupColor>
       {:else}
          <SelectGroup
@@ -242,13 +249,15 @@
             {tagGroups}
             class="w-[100px] min-w-[100px] max-w-[100px] h-8 ml-1 px-2 text-xs  translate-y-0.5"
          >
-            <div slot="info">
-               <div
-                  class="absolute -top-3.5 font-bold text-xs left-10 text-zinc-500"
-               >
-                  Select Group
+            {#snippet info()}
+                        <div >
+                  <div
+                     class="absolute -top-3.5 font-bold text-xs left-10 text-zinc-500"
+                  >
+                     Select Group
+                  </div>
                </div>
-            </div>
+                     {/snippet}
          </SelectGroup>
       {/if}
 
@@ -276,98 +285,106 @@
    </form>
 
    <Tab defaultValue="tags">
-      <div slot="tags" class="h-full">
-         <div class="tab-title">Manage Tags</div>
-         <ScrollArea class="max-h-[calc(100%-70px)] h-[calc(100%-70px)]  ">
-            {#each tagGroups as tagGroup}
-               <ManageTags {tagGroup}></ManageTags>
-            {/each}
-         </ScrollArea>
-      </div>
-
-      <div slot="list" class="h-full">
-         <div class="tab-title">
-            Filter Notes by Tags
-            <Button
-               variant="ghost"
-               class="bg-pomodoro-800/70  h-6 px-1.5 shadow hover:bg-pomodoro-900 absolute right-2"
-               ><ChevronsRight size={16} color="white" /></Button
-            >
+      {#snippet tags()}
+            <div  class="h-full">
+            <div class="tab-title">Manage Tags</div>
+            <ScrollArea class="max-h-[calc(100%-70px)] h-[calc(100%-70px)]  ">
+               {#each tagGroups as tagGroup}
+                  <ManageTags {tagGroup}></ManageTags>
+               {/each}
+            </ScrollArea>
          </div>
+         {/snippet}
 
-         <ScrollArea class="max-h-[calc(100%-55px)] h-[calc(100%-55px)]  ">
-            {#each tagGroups as tagGroup}
-               <TagGroup {tagGroup}></TagGroup>
-            {/each}
-         </ScrollArea>
-      </div>
-
-      <div slot="kanban" class="flex flex-col w-full">
-         <div class="tab-title">
-            Build Kanban Board
-            <Button
-               variant="ghost"
-               class="bg-pomodoro-800/70  h-6 px-1.5 shadow hover:bg-pomodoro-900 absolute right-2"
-               ><ChevronsRight size={16} color="white" /></Button
-            >
-         </div>
-
-         <SideOfKanbanView {tagGroups} />
-      </div>
-
-      <div slot="graph" class="flex flex-col h-full">
-         <div class="tab-title">
-            Build Classify Map
-            <Button
-               variant="ghost"
-               class="bg-pomodoro-800/70  h-6 px-1.5 shadow hover:bg-pomodoro-900 absolute right-2"
-               ><ChevronsRight size={16} color="white" /></Button
-            >
-         </div>
-         <!-- add tag group -->
-         <Button
-            variant="ghost"
-            class="self-center w-full h-8 p-0 mt-2 font-bold border-t-2 border-double rounded-t-none shadow border-zinc-500"
-            on:click={() => (searchTags = [{}, ...searchTags])}
-         >
-            <Plus size={20} /></Button
-         >
-
-         <ScrollArea class="max-h-[calc(100%-110px)] h-auto min-h-64 ">
-            {#each searchTags as _, i (i)}
-               {@const tagGroup = tagGroups.filter(
-                  (tag) => tag.name === searchTags[i],
-               )[0] || {}}
-               <div
-                  class="flex flex-col space-y-1 mx-2 mt-2.5 p-2 bg-white border border-dashed rounded-lg shadow-sm border-zinc-500"
+      {#snippet list()}
+            <div  class="h-full">
+            <div class="tab-title">
+               Filter Notes by Tags
+               <Button
+                  variant="ghost"
+                  class="bg-pomodoro-800/70  h-6 px-1.5 shadow hover:bg-pomodoro-900 absolute right-2"
+                  ><ChevronsRight size={16} color="white" /></Button
                >
-                  <div class="flex w-full">
-                     <SelectGroup bind:value={searchTags[i]} {tagGroups} />
-                     <Button
-                        class="w-8 p-0"
-                        disabled={searchTags.length <= 1}
-                        on:click={() => (searchTags = searchTags.slice(0, -1))}
-                        ><Minus size={15} /></Button
-                     >
+            </div>
+
+            <ScrollArea class="max-h-[calc(100%-55px)] h-[calc(100%-55px)]  ">
+               {#each tagGroups as tagGroup}
+                  <TagGroup {tagGroup}></TagGroup>
+               {/each}
+            </ScrollArea>
+         </div>
+         {/snippet}
+
+      {#snippet kanban()}
+            <div  class="flex flex-col w-full">
+            <div class="tab-title">
+               Build Kanban Board
+               <Button
+                  variant="ghost"
+                  class="bg-pomodoro-800/70  h-6 px-1.5 shadow hover:bg-pomodoro-900 absolute right-2"
+                  ><ChevronsRight size={16} color="white" /></Button
+               >
+            </div>
+
+            <SideOfKanbanView {tagGroups} />
+         </div>
+         {/snippet}
+
+      {#snippet graph()}
+            <div  class="flex flex-col h-full">
+            <div class="tab-title">
+               Build Classify Map
+               <Button
+                  variant="ghost"
+                  class="bg-pomodoro-800/70  h-6 px-1.5 shadow hover:bg-pomodoro-900 absolute right-2"
+                  ><ChevronsRight size={16} color="white" /></Button
+               >
+            </div>
+            <!-- add tag group -->
+            <Button
+               variant="ghost"
+               class="self-center w-full h-8 p-0 mt-2 font-bold border-t-2 border-double rounded-t-none shadow border-zinc-500"
+               on:click={() => (searchTags = [{}, ...searchTags])}
+            >
+               <Plus size={20} /></Button
+            >
+
+            <ScrollArea class="max-h-[calc(100%-110px)] h-auto min-h-64 ">
+               {#each searchTags as _, i (i)}
+                  {@const tagGroup = tagGroups.filter(
+                     (tag) => tag.name === searchTags[i],
+                  )[0] || {}}
+                  <div
+                     class="flex flex-col space-y-1 mx-2 mt-2.5 p-2 bg-white border border-dashed rounded-lg shadow-sm border-zinc-500"
+                  >
+                     <div class="flex w-full">
+                        <SelectGroup bind:value={searchTags[i]} {tagGroups} />
+                        <Button
+                           class="w-8 p-0"
+                           disabled={searchTags.length <= 1}
+                           on:click={() => (searchTags = searchTags.slice(0, -1))}
+                           ><Minus size={15} /></Button
+                        >
+                     </div>
+                     <div class="flex flex-wrap">
+                        {#each tagGroup?.tags || [] as tag}
+                        <Badge
+                           class="m-0.5 w-auto text-nowrap h-5 font-medium rounded-md data-[selected]:bg-zinc-400 "
+                           style={`background-color: ${tagGroup.color};`}
+                        >
+                           {tag}
+                        </Badge>
+                     {/each}
+                     </div>
+                     
                   </div>
-                  <div class="flex flex-wrap">
-                     {#each tagGroup?.tags || [] as tag}
-                     <Badge
-                        class="m-0.5 w-auto text-nowrap h-5 font-medium rounded-md data-[selected]:bg-zinc-400 "
-                        style={`background-color: ${tagGroup.color};`}
-                     >
-                        {tag}
-                     </Badge>
-                  {/each}
-                  </div>
-                  
-               </div>
-            {/each}
-            <div
-               class="w-full mt-2 rounded-b-md z-50 bg-white absolute -bottom-4 h-5 shadow rotate-180"
-            />
-         </ScrollArea>
-      </div>
+               {/each}
+               <div
+                  class="w-full mt-2 rounded-b-md z-50 bg-white absolute -bottom-4 h-5 shadow rotate-180"
+></div>
+            </ScrollArea>
+         </div>
+         {/snippet}
    </Tab>
 </div>
 

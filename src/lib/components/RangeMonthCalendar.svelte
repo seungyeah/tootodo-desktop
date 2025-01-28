@@ -1,12 +1,16 @@
 <script lang="ts">
+   import { run } from 'svelte/legacy';
+
    import { Button } from "$ui";
    import { CalendarDate } from "@internationalized/date";
    import { ChevronLeft, ChevronRight } from "lucide-svelte";
 
-   export let value;
 
-   export let initValue;
-   $: year = initValue.start?.year;
+   let { value = $bindable(), initValue } = $props();
+   let year;
+   run(() => {
+      year = initValue.start?.year;
+   });
 
    const months = [
       "Jan",

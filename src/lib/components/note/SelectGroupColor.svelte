@@ -3,30 +3,43 @@
    import { Circle } from "lucide-svelte";
    import { tailwindColors } from "$lib/tailwindColors";
    import { cn } from "$lib/utils";
-   export let tagGroup;
-   export let icon: $$Props["icon"] = Circle;
-   export { className as class };
-   let className: $$Props["class"] = undefined;
+   
+   interface Props {
+      tagGroup: any;
+      icon?: $$Props["icon"];
+      class?: $$Props["class"];
+      info?: import('svelte').Snippet;
+   }
+
+   let {
+      tagGroup = $bindable(),
+      icon = Circle,
+      class: className = undefined,
+      info
+   }: Props = $props();
 
 </script>
 
 <Popover.Root>
-   <Popover.Trigger asChild let:builder>
-      <div class="absolute -top-3.5 font-bold text-xs left-10 text-zinc-500">
-         <slot name="info" />
-      </div>
-      <Button
-         builders={[builder]}
-         variant="ghost"
-         size="sm"
-         class={cn(" z-10 p-0   translate-y-0"
-         ,className)}>
-         <svelte:component this={icon}
-            fill={tagGroup.color}
-            class="p-0"
-            size={17}
-         />
-      </Button></Popover.Trigger
+   <Popover.Trigger asChild >
+      {#snippet children({ builder })}
+            <div class="absolute -top-3.5 font-bold text-xs left-10 text-zinc-500">
+            {@render info?.()}
+         </div>
+         <Button
+            builders={[builder]}
+            variant="ghost"
+            size="sm"
+            class={cn(" z-10 p-0   translate-y-0"
+            ,className)}>
+            {@const SvelteComponent = icon}
+         <SvelteComponent
+               fill={tagGroup.color}
+               class="p-0"
+               size={17}
+            />
+         </Button>         {/snippet}
+      </Popover.Trigger
    >
    <Popover.Content class="bg-white w-[330px] translate-y-1 translate-x-2 p-3">
       <Label class="font-bold text-lg font-digital w-full text-center"

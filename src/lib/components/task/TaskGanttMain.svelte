@@ -7,35 +7,35 @@
    import { getContext } from "svelte";
    import { getDatesInRange, getDuration, countMonths } from "$lib/utils";
 
-   export let treeItems = [];
    const days = ["S", "M", "T", "W", "T", "F", "S"];
    const selectedDate = getContext("selectedDateRange");
 
-   $: months = {
+   let months = $derived({
       value: today(getLocalTimeZone()),
       dates: getDatesInRange($selectedDate.start, $selectedDate.end)|| [],
       duration: getDuration($selectedDate.start, $selectedDate.end),
-   };
+   });
 
-   $: monthCounts = countMonths(months.dates);
+   let monthCounts = $derived(countMonths(months.dates));
    // 전체 날짜 수 계산
-   $: totalDays = months.dates.length;
+   let totalDays = $derived(months.dates.length);
 
    // 오늘 날짜의 위치 계산
-   $: todayPosition = months.dates.findIndex(
+   let todayPosition = $derived(months.dates.findIndex(
       (date: CalendarDate) => date.compare(today(getLocalTimeZone())) === 0,
-   );
+   ));
 
    // 오늘 날짜의 상대적 위치 (퍼센트) 계산
-   $: todayPositionPercent =
-      todayPosition !== -1 ? (todayPosition / totalDays) * 100 : null;
+   let todayPositionPercent =
+      $derived(todayPosition !== -1 ? (todayPosition / totalDays) * 100 : null);
 
    // scroll
    import { createEventDispatcher } from "svelte";
    import GanttTree from "./GanttTree.svelte";
+   let { treeItems = [] } = $props();
 
    const dispatch = createEventDispatcher();
-   let tableContainer: HTMLElement;
+   let tableContainer: HTMLElement = $state();
 
    function handleScroll() {
       dispatch("scroll", {
@@ -55,7 +55,7 @@
 <div
    class="w-full h-full max-h-full overflow-x-scroll overflow-y-scroll translate-y-1 border-2 no-scrollbar border-zinc-800"
    bind:this={tableContainer}
-   on:scroll={handleScroll}
+   onscroll={handleScroll}
 >
    <table class="relative w-full border-separate table-fixed border-spacing-0">
       <thead class="sticky top-0 z-10 text-center bg-white shadow-lg">
@@ -102,5 +102,5 @@
    <div
       class=" pointer-events-none fixed z-10 h-[calc(100%-44px)] border-4 border-double top-[32px] bg-violet-100/10 border-zinc-400/10"
       style="left: {todayPositionPercent}%; width: calc({100 / totalDays}%);"
-   />
+></div>
 {/if}

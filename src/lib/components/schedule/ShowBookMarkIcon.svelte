@@ -1,19 +1,21 @@
 <script lang="ts">
    import { DropdownMenu, Button, ScrollArea } from "$ui";
    import { BookMarked, Bookmark, X } from "lucide-svelte";
-   export let messages = [];
+   let { messages = [] } = $props();
 </script>
 
 <DropdownMenu.Root>
-   <DropdownMenu.Trigger asChild let:builder>
-      <Button
-         builders={[builder]}
-         variant="ghost"
-         size="sm"
-         class="w-auto h-8 p-2 text-xs bg-white rounded-lg shadow"
-         ><BookMarked size={16} />
-      </Button>
-   </DropdownMenu.Trigger>
+   <DropdownMenu.Trigger asChild >
+      {#snippet children({ builder })}
+            <Button
+            builders={[builder]}
+            variant="ghost"
+            size="sm"
+            class="w-auto h-8 p-2 text-xs bg-white rounded-lg shadow"
+            ><BookMarked size={16} />
+         </Button>
+               {/snippet}
+      </DropdownMenu.Trigger>
    <DropdownMenu.Content class="h-[300px]" side="top">
       <DropdownMenu.Group>
          <DropdownMenu.Label>Bookmarked</DropdownMenu.Label>

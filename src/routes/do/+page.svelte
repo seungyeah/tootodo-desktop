@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { Button, Tabs } from "$ui";
 	import PageTemplete from "$components/PageTemplete.svelte";
 	import {
@@ -25,11 +27,11 @@
 	import { getContext } from "svelte";
 	import { invoke } from "@tauri-apps/api/core";
 
-	let data = { tasks: [] };
+	let data = $state({ tasks: [] });
 	const selectedWeekRange = getContext("selectedWeekRange");
 	const weeks = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-	$: {
+	run(() => {
 		invoke("fetch_tasks", {
 			startDate: $selectedWeekRange.start.toString(),
 			endDate: $selectedWeekRange.end.toString(),
@@ -39,10 +41,10 @@
 				console.log("tasks", tasks);
 			})
 			.catch(console.error);
-	}
+	});
 
 	// treeview
-	$: treeItems = writable(data?.tasks || []);
+	let treeItems = $derived(writable(data?.tasks || []));
 	setContext("treeItems", treeItems);
 
 	const ctx = createTreeView({
@@ -55,9 +57,9 @@
 
 	setContext("tree", ctx);
 
-	$: monday_date =
-		$selectedWeekRange.start.day ||
-		startOfWeek(today(getLocalTimeZone()), "fr-FR").day;
+	let monday_date =
+		$derived($selectedWeekRange.start.day ||
+		startOfWeek(today(getLocalTimeZone()), "fr-FR").day);
 
 	function sort_tasks() {
 		// duration 기준으로 정렬 (startDate가 빠른 것부터 정렬 -> endDate가 느린것부터 정렬)
@@ -72,9 +74,9 @@
 	}
 
 	///////// scroll
-	let scrollPosition = { scrollTop: 0 };
-	let planComponent: SvelteComponent;
-	let scheduleListComponent: SvelteComponent;
+	let scrollPosition = $state({ scrollTop: 0 });
+	let planComponent: SvelteComponent = $state();
+	let scheduleListComponent: SvelteComponent = $state();
 
 	function handleScroll(e) {
 		scrollPosition = {
@@ -84,7 +86,7 @@
 		planComponent.updateScrollPosition(scrollPosition);
 	}
 
-	let openSide = false;
+	let openSide = $state(false);
 
 	// handle task
 	/*
@@ -93,7 +95,7 @@
     startDate: String,
     endDate: String,
 	 */
-	let new_task_title = "";
+	let new_task_title = $state("");
 	function handleCreateTask() {
 		let task = invoke("create_task", {
 			title: new_task_title,
@@ -106,154 +108,158 @@
 
 <PageTemplete {openSide}>
 	<!-- side: memo -->
-	<div
-		slot="side"
-		class="flex flex-col w-full h-full px-2 py-1 bg-white shadow"
-	>
+	{#snippet side()}
 		<div
-			class="h-[calc(100%-4px)] w-full max-w-full py-1.5 border-b-4 border-double border-zinc-400"
+			
+			class="flex flex-col w-full h-full px-2 py-1 bg-white shadow"
 		>
-			<Memo />
+			<div
+				class="h-[calc(100%-4px)] w-full max-w-full py-1.5 border-b-4 border-double border-zinc-400"
+			>
+				<Memo />
+			</div>
 		</div>
-	</div>
+	{/snippet}
 
 	<!-- main: schedule-->
-	<div
-		slot="main"
-		class="relative flex w-full h-full max-w-full space-x-2 overflow-auto"
-	>
+	{#snippet main()}
 		<div
-			{...$tree}
-			class="relative flex flex-col pt-1 w-1/3 max-w-[300px] min-w-[220px]"
+			
+			class="relative flex w-full h-full max-w-full space-x-2 overflow-auto"
 		>
-			<ScheduleHeader bind:openSide></ScheduleHeader>
+			<div
+				{...$tree}
+				class="relative flex flex-col pt-1 w-1/3 max-w-[300px] min-w-[220px]"
+			>
+				<ScheduleHeader bind:openSide></ScheduleHeader>
+
+				<div
+					class="relative flex-col flex border-2 w-full h-[calc(100%-34px)] max-h-[calc(100%-34px)] rounded-lg border-zinc-700"
+				>
+					<div
+						class="rounded-b-lg pr-1 border-zinc-700 h-[calc(100%-48px)]"
+					>
+						<ScheduleList
+							bind:this={scheduleListComponent}
+							on:scroll={handleScroll}
+							treeItems={$treeItems}
+						/>
+					</div>
+
+					<input
+						class="h-11 w-full border-2 border-t-[2.5px] px-2 py-1 rounded-t-lg bg-white absolute left-0 z-10 bottom-0 border-zinc-700"
+						bind:value={new_task_title}
+						placeholder="Search & Add Task.."
+					/>
+					<Button
+						class="absolute bottom-10 right-0"
+						on:click={handleCreateTask}>send</Button
+					>
+				</div>
+			</div>
 
 			<div
-				class="relative flex-col flex border-2 w-full h-[calc(100%-34px)] max-h-[calc(100%-34px)] rounded-lg border-zinc-700"
+				class="flex flex-col w-full h-full max-w-full overflow-x-clip border-2 border-zinc-700"
 			>
-				<div
-					class="rounded-b-lg pr-1 border-zinc-700 h-[calc(100%-48px)]"
-				>
-					<ScheduleList
-						bind:this={scheduleListComponent}
-						on:scroll={handleScroll}
-						treeItems={$treeItems}
-					/>
-				</div>
-
-				<input
-					class="h-11 w-full border-2 border-t-[2.5px] px-2 py-1 rounded-t-lg bg-white absolute left-0 z-10 bottom-0 border-zinc-700"
-					bind:value={new_task_title}
-					placeholder="Search & Add Task.."
-				/>
-				<Button
-					class="absolute bottom-10 right-0"
-					on:click={handleCreateTask}>send</Button
-				>
-			</div>
-		</div>
-
-		<div
-			class="flex flex-col w-full h-full max-w-full overflow-x-clip border-2 border-zinc-700"
-		>
-			<!-- weeks Tab -->
-			<div class="relative w-full h-full flex justify-between">
-				<div
-					class="absolute h-10 w-full rounded-lg border-b-[2.5px] border-zinc-700 bg-zinc-100/20"
-				></div>
-				{#each weeks as week, i}
+				<!-- weeks Tab -->
+				<div class="relative w-full h-full flex justify-between">
 					<div
-						class="mt-2 text-[0.9rem] w-full font-digital font-bold text-center flex flex-col items-center text-zinc-400"
-						class:today={i === $currentTime?.getDay() - 1}
-					>
-						<div class="flex px-1.5 h-6 bg-white">
-							<span class="mr-1 h-10">
-								{week}
-							</span>
-							{#if $selectedWeekRange.start.day < $selectedWeekRange.end.day}
-								{monday_date + i}
-							{:else}
-								{endOfMonth($selectedWeekRange.start).day ===
-									31 && monday_date + i > 31
-									? monday_date + i - 31
-									: endOfMonth($selectedWeekRange.start)
-												.day === 30 &&
-										  monday_date + i > 30
-										? monday_date + i - 30
-										: monday_date + i}
+						class="absolute h-10 w-full rounded-lg border-b-[2.5px] border-zinc-700 bg-zinc-100/20"
+					></div>
+					{#each weeks as week, i}
+						<div
+							class="mt-2 text-[0.9rem] w-full font-digital font-bold text-center flex flex-col items-center text-zinc-400"
+							class:today={i === $currentTime?.getDay() - 1}
+						>
+							<div class="flex px-1.5 h-6 bg-white">
+								<span class="mr-1 h-10">
+									{week}
+								</span>
+								{#if $selectedWeekRange.start.day < $selectedWeekRange.end.day}
+									{monday_date + i}
+								{:else}
+									{endOfMonth($selectedWeekRange.start).day ===
+										31 && monday_date + i > 31
+										? monday_date + i - 31
+										: endOfMonth($selectedWeekRange.start)
+													.day === 30 &&
+											  monday_date + i > 30
+											? monday_date + i - 30
+											: monday_date + i}
+								{/if}
+							</div>
+							{#if i === $currentTime?.getDay() - 1}
+								<div
+									class="absolute top-[22px] w-[90%] border-2 h-1 rounded-full border-dotted border-zinc-700"
+								></div>
 							{/if}
 						</div>
-						{#if i === $currentTime?.getDay() - 1}
-							<div
-								class="absolute top-[22px] w-[90%] border-2 h-1 rounded-full border-dotted border-zinc-700"
-							></div>
-						{/if}
-					</div>
-				{/each}
-			</div>
+					{/each}
+				</div>
 
-			<!-- schedule Tab-->
-			<div class="bg-zinc-100 w-full h-11 flex justify-center">
-				<Tabs.Root value="do" class="h-[42px] w-full ">
-					<Tabs.List class="w-full border-t-[2.5px] border-zinc-700 ">
-						<Tabs.Trigger
+				<!-- schedule Tab-->
+				<div class="bg-zinc-100 w-full h-11 flex justify-center">
+					<Tabs.Root value="do" class="h-[42px] w-full ">
+						<Tabs.List class="w-full border-t-[2.5px] border-zinc-700 ">
+							<Tabs.Trigger
+								value="plan"
+								class="w-[100px] translate-y-0.5"
+								><Rows3
+									size={20}
+									class="mr-1.5"
+								/>Plan</Tabs.Trigger
+							>
+							<Tabs.Trigger
+								value="do"
+								class="w-[100px]  translate-y-0.5"
+								><MessageSquareMore
+									size={20}
+									class="mr-1.5"
+								/>Do!</Tabs.Trigger
+							>
+							<Tabs.Trigger
+								value="result"
+								class="w-[100px]  translate-y-0.5"
+								><Columns3
+									size={20}
+									class="mr-1.5"
+								/>Result</Tabs.Trigger
+							>
+						</Tabs.List>
+
+						<Tabs.Content
+							{...$tree}
 							value="plan"
-							class="w-[100px] translate-y-0.5"
-							><Rows3
-								size={20}
-								class="mr-1.5"
-							/>Plan</Tabs.Trigger
+							class="-translate-y-[calc(100vh-144px)] w-full  "
 						>
-						<Tabs.Trigger
+							<div class=" h-[calc(100vh-198px)]">
+								<Plan
+									treeItems={$treeItems}
+									bind:scrollPosition
+									bind:this={planComponent}
+									on:scroll={handleScroll}
+								/>
+							</div>
+						</Tabs.Content>
+
+						<Tabs.Content
 							value="do"
-							class="w-[100px]  translate-y-0.5"
-							><MessageSquareMore
-								size={20}
-								class="mr-1.5"
-							/>Do!</Tabs.Trigger
+							class="-translate-y-[calc(100vh-152px)] h-[calc(100vh-204px)] w-full   "
 						>
-						<Tabs.Trigger
+							<WeeklyChat taskTree={$treeItems} />
+						</Tabs.Content>
+
+						<Tabs.Content
 							value="result"
-							class="w-[100px]  translate-y-0.5"
-							><Columns3
-								size={20}
-								class="mr-1.5"
-							/>Result</Tabs.Trigger
+							class="-translate-y-[calc(100vh-152px)] h-[calc(100vh-204px)] w-full "
 						>
-					</Tabs.List>
-
-					<Tabs.Content
-						{...$tree}
-						value="plan"
-						class="-translate-y-[calc(100vh-144px)] w-full  "
-					>
-						<div class=" h-[calc(100vh-198px)]">
-							<Plan
-								treeItems={$treeItems}
-								bind:scrollPosition
-								bind:this={planComponent}
-								on:scroll={handleScroll}
-							/>
-						</div>
-					</Tabs.Content>
-
-					<Tabs.Content
-						value="do"
-						class="-translate-y-[calc(100vh-152px)] h-[calc(100vh-204px)] w-full   "
-					>
-						<WeeklyChat taskTree={$treeItems} />
-					</Tabs.Content>
-
-					<Tabs.Content
-						value="result"
-						class="-translate-y-[calc(100vh-152px)] h-[calc(100vh-204px)] w-full "
-					>
-						<Result taskTree={$treeItems} />
-					</Tabs.Content>
-				</Tabs.Root>
+							<Result taskTree={$treeItems} />
+						</Tabs.Content>
+					</Tabs.Root>
+				</div>
 			</div>
 		</div>
-	</div>
+	{/snippet}
 </PageTemplete>
 
 <style>

@@ -1,18 +1,20 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	import { onDestroy, onMount, tick } from 'svelte';
 	import { Button, Popover } from '$ui';
 	import { BookMarked, Bookmark, Bot, BotMessageSquare, Send, X } from 'lucide-svelte';
 	import { currentTime, formatTimeFull, formatDay } from '$store';
 
-	export let askMsg = {
+	let { askMsg = $bindable({
 		content: '배포할 때 yarn_version이 왜 문제였을까.',
 		ask: true,
 		question: true,
 		answer: false,
 		open: false
-	};
+	}) } = $props();
 
-	let messages = [
+	let messages = $state([
 		{
 			content:
 				'yarn_version이 문제가 되는 이유는 프로젝트에서 사용하는 Yarn 버전과 배포 환경에서 사용하는 Yarn 버전이 일치하지 않을 때 발생할 수 있습니다.',
@@ -61,18 +63,18 @@
 			time: 'AM 10:42',
 			day: '2024-04-19'
 		}
-	];
+	]);
 
-	let messageContainer: HTMLDivElement;
+	let messageContainer: HTMLDivElement = $state();
 	let askMsgHeight = 0;
 
-	let newMsg = {
+	let newMsg = $state({
 		content: '',
 		ask: true,
 		question: true,
 		answer: false,
 		save: false
-	};
+	});
 
 	onMount(() => {
 		if (askMsg.open) {
@@ -176,7 +178,7 @@
 			</div>
 			{#each messages as msg, i}
 				{#if i === 0 || msg.day !== messages[i - 1].day}
-				<div class="bg-zinc-100 p-0.5 !mt-6 " />
+				<div class="bg-zinc-100 p-0.5 !mt-6 "></div>
 					<div
 						class="mx-20 mt-4 w-auto rounded-full bg-zinc-100 text-center font-mono text-xs font-normal text-zinc-500 shadow"
 					>
@@ -256,10 +258,10 @@
 					<Bot fill="white" color="#022c22" />
 				</Button>
 			</div>
-			<form on:submit|preventDefault={handleSubmit} class="relative h-full w-full">
+			<form onsubmit={preventDefault(handleSubmit)} class="relative h-full w-full">
 				<textarea
 					bind:value={newMsg.content}
-					on:keydown={(e) => {
+					onkeydown={(e) => {
 						if (e.key === 'Enter' && !e.shiftKey) {
 							e.preventDefault();
 							handleSubmit(e);

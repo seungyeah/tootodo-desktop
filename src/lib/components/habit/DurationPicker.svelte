@@ -23,7 +23,7 @@
 
    const dispatch = createEventDispatcher();
 
-   let selectedMonthRange:DateRange = parseMonthRangeFromURL() || getThisMonthRange(); ;
+   let selectedMonthRange:DateRange = $state(parseMonthRangeFromURL() || getThisMonthRange()); ;
 
    function updateDates() {
       dispatch("update", { selectedMonthRange: selectedMonthRange });
@@ -63,40 +63,42 @@
          updateDates();
       }}
    >
-      <Popover.Trigger asChild let:builder>
-         <Button
-            variant="outline"
-            class={cn('w-[300px] p-2.5 min-w-[300px] lg:w-[calc(100%-300px)] justify-start font-semibold text-zinc-600')}
-            builders={[builder]}
-         >
-            <CalendarIcon class="w-4 h-4 mr-2" />
-            {#if selectedMonthRange && selectedMonthRange.start}
-               {#if selectedMonthRange.end}
-                  {df.format(
-                     selectedMonthRange.start.toDate(getLocalTimeZone()),
-                  )} - {df.format(
-                     selectedMonthRange.end.toDate(getLocalTimeZone()),
-                  )}
+      <Popover.Trigger asChild >
+         {#snippet children({ builder })}
+                  <Button
+               variant="outline"
+               class={cn('w-[300px] p-2.5 min-w-[300px] lg:w-[calc(100%-300px)] justify-start font-semibold text-zinc-600')}
+               builders={[builder]}
+            >
+               <CalendarIcon class="w-4 h-4 mr-2" />
+               {#if selectedMonthRange && selectedMonthRange.start}
+                  {#if selectedMonthRange.end}
+                     {df.format(
+                        selectedMonthRange.start.toDate(getLocalTimeZone()),
+                     )} - {df.format(
+                        selectedMonthRange.end.toDate(getLocalTimeZone()),
+                     )}
+                  {:else}
+                     {df.format(
+                        selectedMonthRange.start.toDate(getLocalTimeZone()),
+                     )}
+                  {/if}
                {:else}
-                  {df.format(
-                     selectedMonthRange.start.toDate(getLocalTimeZone()),
-                  )}
+                  Pick a month
                {/if}
-            {:else}
-               Pick a month
-            {/if}
-         </Button>
-         <!-- reset to today -->
-         <Button
-            variant="secondary"
-            class="z-50 h-6 px-1 shadow -translate-x-11"
-            on:click={() => {
-               resetDates();
-            }}
-         >
-            <RotateCcw size={18} strokeWidth={2.2} />
-         </Button>
-      </Popover.Trigger>
+            </Button>
+            <!-- reset to today -->
+            <Button
+               variant="secondary"
+               class="z-50 h-6 px-1 shadow -translate-x-11"
+               on:click={() => {
+                  resetDates();
+               }}
+            >
+               <RotateCcw size={18} strokeWidth={2.2} />
+            </Button>
+                        {/snippet}
+            </Popover.Trigger>
       <Popover.Content class="w-[300px] p-0 translate-y-1" align="start">
          <RangeMonthCalendar
             bind:value={selectedMonthRange}

@@ -1,4 +1,6 @@
 <script lang="ts">
+   import { run } from 'svelte/legacy';
+
    import { Button, Calendar, Popover } from "$ui";
    import { createEventDispatcher } from "svelte";
    import {
@@ -21,7 +23,7 @@
    });
    const dispatch = createEventDispatcher();
 
-   let selectedWeekRange: DateRange = getThisWeekRange();
+   let selectedWeekRange: DateRange = $state(getThisWeekRange());
 
    function updateDates() {
       dispatch("update", { selectedWeekRange });
@@ -33,14 +35,14 @@
       updateDates();
    }
 
-   let selectedDate = today(getLocalTimeZone());
-   $: {
+   let selectedDate = $state(today(getLocalTimeZone()));
+   run(() => {
       if (selectedDate) {
          selectedWeekRange.start = startOfWeek(selectedDate, "fr-FR");
          selectedWeekRange.end = endOfWeek(selectedDate, "fr-FR");
          selectedDate = selectedWeekRange.start;
       }
-   }
+   });
 </script>
 
 <div
@@ -86,46 +88,48 @@
             }
          }}
       >
-         <Popover.Trigger asChild let:builder class="">
-            <Button
-               variant="outline"
-               class={cn(
-                  " relative w-full text-start text-zinc-600 md:text-center font-semibold ",
-                  !selectedDate && "text-muted-foreground",
-               )}
-               builders={[builder]}
-            >
-               <CalendarIcon class="w-4 h-4 mr-2" />
-               <div class="w-full">
-                  {selectedDate && selectedWeekRange.start
-                     ? df.format(selectedWeekRange.start.toDate())
-                     : df.format(
-                          getThisWeekRange(
-                             today(getLocalTimeZone()).toDate(),
-                          ).start.toDate(),
-                       )}
-                  -
-                  {selectedDate && selectedWeekRange.end
-                     ? df.format(selectedWeekRange.end.toDate())
-                     : df.format(
-                          getThisWeekRange(
-                             today(getLocalTimeZone()).toDate(),
-                          ).end.toDate(),
-                       )}
-               </div>
-
-               <!-- reset to today -->
-               <Button
-                  variant="secondary"
-                  class="z-50 h-6 px-1 shadow absolute top-1.5 right-3"
-                  on:click={() => {
-                     resetDates();
-                  }}
+         <Popover.Trigger asChild  class="">
+            {#snippet children({ builder })}
+                        <Button
+                  variant="outline"
+                  class={cn(
+                     " relative w-full text-start text-zinc-600 md:text-center font-semibold ",
+                     !selectedDate && "text-muted-foreground",
+                  )}
+                  builders={[builder]}
                >
-                  <RotateCcw size={18} strokeWidth={2.2} />
+                  <CalendarIcon class="w-4 h-4 mr-2" />
+                  <div class="w-full">
+                     {selectedDate && selectedWeekRange.start
+                        ? df.format(selectedWeekRange.start.toDate())
+                        : df.format(
+                             getThisWeekRange(
+                                today(getLocalTimeZone()).toDate(),
+                             ).start.toDate(),
+                          )}
+                     -
+                     {selectedDate && selectedWeekRange.end
+                        ? df.format(selectedWeekRange.end.toDate())
+                        : df.format(
+                             getThisWeekRange(
+                                today(getLocalTimeZone()).toDate(),
+                             ).end.toDate(),
+                          )}
+                  </div>
+
+                  <!-- reset to today -->
+                  <Button
+                     variant="secondary"
+                     class="z-50 h-6 px-1 shadow absolute top-1.5 right-3"
+                     on:click={() => {
+                        resetDates();
+                     }}
+                  >
+                     <RotateCcw size={18} strokeWidth={2.2} />
+                  </Button>
                </Button>
-            </Button>
-         </Popover.Trigger>
+                                 {/snippet}
+                  </Popover.Trigger>
          <!-- date range picker : pick a date and update the week range -->
          <Popover.Content class="p-0 translate-y-1 " align="center">
             <Calendar bind:value={selectedDate} initialFocus weekStartsOn={1} />

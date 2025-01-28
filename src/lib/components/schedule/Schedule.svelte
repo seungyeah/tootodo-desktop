@@ -93,11 +93,11 @@
 		}
 	];
 
-	$: sortedRecords = records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1));
-	$: taskRecords = sortedRecords.filter((record) => record.item === 'note');
-	$: eventRecords = sortedRecords.filter((record) => record.item === 'event');
-	$: habitRecords = sortedRecords.filter((record) => record.item === 'habit');
-	$: alarmRecords = sortedRecords.filter((record) => record.alarm);
+	let sortedRecords = $derived(records.sort((a, b) => (b.pin === a.pin ? 0 : b.pin ? 1 : -1)));
+	let taskRecords = $derived(sortedRecords.filter((record) => record.item === 'note'));
+	let eventRecords = $derived(sortedRecords.filter((record) => record.item === 'event'));
+	let habitRecords = $derived(sortedRecords.filter((record) => record.item === 'habit'));
+	let alarmRecords = $derived(sortedRecords.filter((record) => record.alarm));
 
 	// 딱 하나의 record에 대한 채팅만을 open하기 위함.
 	function handleToggleOpenChat(event) {
@@ -122,61 +122,63 @@
 	<Tabs.Root
 		value="task"
 		class="h-full w-full"
-		let:value
+		
 		onValueChange={() => madeOtherRecordFalse(records, {})}
 	>
-		<Tabs.List class="flex w-full ">
-			<Tabs.Trigger value="alarm" class="w-[40px] -translate-x-1.5 scale-75">
-				{#if value == 'alarm'}
-					<Button
-						variant="ghost"
-						class="absolute left-0 my-2 rounded-full bg-zinc-700 !p-3 hover:bg-zinc-900  "
-					>
-						<BellRing color="#fde68a" fill="#fde68a" />
-					</Button>
-				{:else}
-					<Button
-						variant="ghost"
-						class="absolute left-0 my-2  rounded-full bg-zinc-300 !p-3    hover:bg-zinc-400"
-					>
-						<Bell color="#09090b" />
-					</Button>
-				{/if}
-			</Tabs.Trigger>
-			<Tabs.Trigger value="event" class="w-1/4">Event</Tabs.Trigger>
-			<Tabs.Trigger value="task" class="w-1/4">Task</Tabs.Trigger>
-			<Tabs.Trigger value="habit" class="w-1/4">Habit</Tabs.Trigger>
-		</Tabs.List>
+		{#snippet children({ value })}
+				<Tabs.List class="flex w-full ">
+				<Tabs.Trigger value="alarm" class="w-[40px] -translate-x-1.5 scale-75">
+					{#if value == 'alarm'}
+						<Button
+							variant="ghost"
+							class="absolute left-0 my-2 rounded-full bg-zinc-700 !p-3 hover:bg-zinc-900  "
+						>
+							<BellRing color="#fde68a" fill="#fde68a" />
+						</Button>
+					{:else}
+						<Button
+							variant="ghost"
+							class="absolute left-0 my-2  rounded-full bg-zinc-300 !p-3    hover:bg-zinc-400"
+						>
+							<Bell color="#09090b" />
+						</Button>
+					{/if}
+				</Tabs.Trigger>
+				<Tabs.Trigger value="event" class="w-1/4">Event</Tabs.Trigger>
+				<Tabs.Trigger value="task" class="w-1/4">Task</Tabs.Trigger>
+				<Tabs.Trigger value="habit" class="w-1/4">Habit</Tabs.Trigger>
+			</Tabs.List>
 
-		<div class="flex items-center">
-			<Button variant="ghost" class="py-0 pl-2 pr-1">
-				<Filter color="#71717a"/>
-			</Button>
-			<Input type="text" placeholder="search and add " class="my-2 h-9 w-full scale-95 p-2" />
-		</div>
-		
-		<Tabs.Content
-			value="alarm"
-			class="h-[calc(100%-94px)]  max-h-[calc(100%)] space-y-2 overflow-y-auto pb-2"
-		>
-			{#each alarmRecords as record}
-				<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat} />
-			{/each}
-		</Tabs.Content>
-
-		{#each ['event','note','habit'] as tab}
+			<div class="flex items-center">
+				<Button variant="ghost" class="py-0 pl-2 pr-1">
+					<Filter color="#71717a"/>
+				</Button>
+				<Input type="text" placeholder="search and add " class="my-2 h-9 w-full scale-95 p-2" />
+			</div>
+			
 			<Tabs.Content
-				value={tab}
-				class="h-[calc(100%-94px)]  max-h-[calc(100%-94px)] space-y-2 overflow-y-auto pb-2"
+				value="alarm"
+				class="h-[calc(100%-94px)]  max-h-[calc(100%)] space-y-2 overflow-y-auto pb-2"
 			>
-				{#each tab==='event' ? eventRecords : tab==='note' ? taskRecords : habitRecords as record}
-					
-						<ScheduleCard bind:record on:toggleOpenChat={handleToggleOpenChat} />
-
+				{#each alarmRecords as record}
+					<ScheduleCard {value} bind:record on:toggleOpenChat={handleToggleOpenChat} />
 				{/each}
 			</Tabs.Content>
-		{/each}
-	</Tabs.Root>
+
+			{#each ['event','note','habit'] as tab}
+				<Tabs.Content
+					value={tab}
+					class="h-[calc(100%-94px)]  max-h-[calc(100%-94px)] space-y-2 overflow-y-auto pb-2"
+				>
+					{#each tab==='event' ? eventRecords : tab==='note' ? taskRecords : habitRecords as record}
+						
+							<ScheduleCard bind:record on:toggleOpenChat={handleToggleOpenChat} />
+
+					{/each}
+				</Tabs.Content>
+			{/each}
+					{/snippet}
+		</Tabs.Root>
 </div>
 
 <style>

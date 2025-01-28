@@ -1,10 +1,17 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { ToggleGroup, Button } from "$ui";
 	import { goto } from "$app/navigation";
 
 	import { page } from "$app/stores";
 	import { getThis3WeeksRange, parseDateRangeFromURL } from "$lib/utils";
 	import { onMount, tick } from "svelte";
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	const date_range = parseDateRangeFromURL() || getThis3WeeksRange();
 
@@ -18,7 +25,10 @@
 		const searchParams = new URLSearchParams({ startDate, endDate });
 		goto(`/too/tasks?${searchParams.toString()}`);
 	}
-	$: selectedPage = $page.url.pathname.split("/")[2];
+	let selectedPage;
+	run(() => {
+		selectedPage = $page.url.pathname.split("/")[2];
+	});
 </script>
 
 <div
@@ -57,6 +67,6 @@
 	</div>
 
 	<div class="h-[calc(100%-60px)] w-full">
-		<slot />
+		{@render children?.()}
 	</div>
 </div>

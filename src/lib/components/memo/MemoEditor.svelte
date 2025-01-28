@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { onMount } from "svelte";
 	import type { Readable } from "svelte/store";
 	import { cn } from "$lib/utils.js";
@@ -13,19 +15,23 @@
 	import { Button, DropdownMenu } from "$ui";
 	import { Eclipse, Pin } from "lucide-svelte";
 
-	let className: $$Props["class"] = undefined;
-	export { className as class };
-	let editor: Readable<Editor>;
-	let selectedColor = "#d1d5db";
+	
+	let editor: Readable<Editor> = $state();
+	let selectedColor = $state("#d1d5db");
 	let content;
 
-	export let memo = {
+	interface Props {
+		class?: $$Props["class"];
+		memo?: any;
+	}
+
+	let { class: className = undefined, memo = $bindable({
 		date: "2024-04-21",
 		color: "default",
 		title: "Memo Title",
 		content: "",
 		pin: true,
-	};
+	}) }: Props = $props();
 
 	onMount(() => {
 		selectedColor =
@@ -66,9 +72,9 @@
 		$editor.chain().focus().setParagraph().run();
 	};
 
-	$: isActive = (name: string, attrs = {}) => $editor.isActive(name, attrs);
+	let isActive = $derived((name: string, attrs = {}) => $editor.isActive(name, attrs));
 
-	$: menuItems = [
+	let menuItems = $derived([
 		{
 			name: "heading-1",
 			command: toggleHeading(1),
@@ -99,7 +105,7 @@
 			content: "P",
 			active: () => isActive("paragraph"),
 		},
-	];
+	]);
 
 	//memo color 300,500,700
 	let colors = [
@@ -112,8 +118,10 @@
 		{ name: "fuchsia", normal: "#d946ef", light: "#f0abfc", dark: "#a21caf" },
 	];
 
-	$: selectedColor =
-		colors.find((c) => c.name === memo.color)?.light || "#d1d5db";
+	run(() => {
+		selectedColor =
+			colors.find((c) => c.name === memo.color)?.light || "#d1d5db";
+	});
 </script>
 
 {#if editor}
@@ -125,7 +133,7 @@
 						"!text-white": isActive("bold"),
 					})}
 					type="button"
-					on:click={toggleBold}
+					onclick={toggleBold}
 				>
 					bold
 				</button>
@@ -134,7 +142,7 @@
 						"!text-white": isActive("italic"),
 					})}
 					type="button"
-					on:click={toggleItalic}
+					onclick={toggleItalic}
 				>
 					italic
 				</button>

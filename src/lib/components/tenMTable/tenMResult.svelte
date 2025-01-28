@@ -61,9 +61,9 @@
 	const minutes = Array.from({ length: 60 }, (_, i) => i);
 
 	// Initialize cell colors
-	let cellColors = Array.from({ length: 24 }, () => [
+	let cellColors = $state(Array.from({ length: 24 }, () => [
 		Array.from({ length: 60 }, () => 0),
-	]);
+	]));
 
 	function getCellColor() {
 		records.forEach((record) => {
@@ -132,8 +132,8 @@
 						class:colored={color}
 					>
 						{#if getHabitIcon(hour, min)}
-							<svelte:component
-								this={getHabitIcon(hour, min)}
+							{@const SvelteComponent = getHabitIcon(hour, min)}
+							<SvelteComponent
 								strokeWidth={2.4}
 								class="absolute w-5 h-5 -top-0.5 left-0  z-[1] rounded-full  border-2 border-white text-zinc-950 bg-white/70 p-0.5 shadow-md "
 							/>

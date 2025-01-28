@@ -1,4 +1,7 @@
 <script lang="ts">
+   import Plan from './Plan.svelte';
+   import { run } from 'svelte/legacy';
+
    import { cn } from "$lib/utils";
    import { Button, ContextMenu, DropdownMenu, Label, Separator } from "$ui";
    import { melt, type TreeView } from "@melt-ui/svelte";
@@ -9,14 +12,34 @@
       helpers: { isExpanded, isSelected },
    } = getContext<TreeView>("tree");
 
-   // items
-   export let level = 1;
-   export let treeItems: TreeItem[] = [];
+   
    const weeks = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
-   $: scheduledFrom = "";
-   $: scheduledTo = "";
-   export let record = {
+   let scheduledFrom = $state("");
+   
+   let scheduledTo = $state("");
+   
+
+   function handleChildUpdate(event: CustomEvent) {
+      const { task, updateData } = event.detail;
+      //dispatchUpdateTask({ task, updateData });
+   }
+
+   const dispatch = createEventDispatcher();
+   let tableContainer: HTMLElement = $state();
+
+   interface Props {
+      // items
+      level?: number;
+      treeItems?: TreeItem[];
+      record?: any;
+      scrollPosition?: any;
+   }
+
+   let {
+      level = 1,
+      treeItems = [],
+      record = $bindable({
       pin: true,
       alarm: true,
       item: "note",
@@ -26,17 +49,9 @@
          { day: "wed", from: "", to: "" },
       ],
       openChat: false,
-   };
-
-   function handleChildUpdate(event: CustomEvent) {
-      const { task, updateData } = event.detail;
-      //dispatchUpdateTask({ task, updateData });
-   }
-
-   const dispatch = createEventDispatcher();
-   let tableContainer: HTMLElement;
-
-   export let scrollPosition = { scrollTop: 0 };
+   }),
+      scrollPosition = { scrollTop: 0 }
+   }: Props = $props();
    function handleScroll() {
       dispatch("scroll", {
          scrollTop: tableContainer.scrollTop,
@@ -49,11 +64,11 @@
       }
    }
 
-   $: {
+   run(() => {
       if (tableContainer) {
          tableContainer.scrollTop = scrollPosition.scrollTop;
       }
-   }
+   });
 </script>
 
 {#key treeItems}
@@ -62,7 +77,7 @@
          "px-1.5 h-full border-b-2 bg-zinc-50  border-zinc-500 border-double rounded-r-lg shadow") ||
          "max-h-full overflow-y-auto no-scrollbar"}
       bind:this={tableContainer}
-      on:scroll={handleScroll}
+      onscroll={handleScroll}
    >
       {#each treeItems as { task, subtasks }}
          {@const itemId = `${task?.id}`}
@@ -86,7 +101,7 @@
                >
                   <ContextMenu.Trigger class="w-full h-full -translate-y-1 "
                      ><button
-                        on:click={() => {
+                        onclick={() => {
                            // record.days에 day가 있다면 제거하고, 없다면 추가.
                            record.days.some((item) => item.day === day)
                               ? (record.days = record.days.filter(
@@ -164,7 +179,7 @@
                use:melt={$group({ id: itemId })}
                class:groupChild={$isExpanded(itemId)}
             >
-               <svelte:self
+               <Plan
                   treeItems={subtasks}
                   level={level + 1}
                   on:update={handleChildUpdate}

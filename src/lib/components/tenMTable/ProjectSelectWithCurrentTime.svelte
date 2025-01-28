@@ -1,9 +1,8 @@
-<script>
+<script lang="ts">
 	import { currentTime, formatTime} from '$store';
 	import { Button, DropdownMenu } from "$ui";
-    export let projects;
-    export let selectedProject;
-    $: currentTimeDisplay = formatTime($currentTime);
+    let { projects, selectedProject = $bindable() } = $props();
+    let currentTimeDisplay = $derived(formatTime($currentTime));
 
 </script>
 

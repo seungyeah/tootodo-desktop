@@ -1,24 +1,26 @@
 <script lang="ts">
+	import { run, preventDefault } from 'svelte/legacy';
+
 	import { Button, Popover } from '$ui';
 	import { BookMarked, Bookmark, Bot, CircleArrowOutUpRight, Send, X } from 'lucide-svelte';
 	import ChatAsk from './ChatAsk.svelte';
 	import { onDestroy, onMount, tick } from 'svelte';
 	import { currentTime, formatTimeFull, formatDay } from '$store';
 
-	let askMsg = {
+	let askMsg = $state({
 		content: '',
 		ask: true,
 		question: true,
 		answer: false,
 		open: false
-	};
+	});
 
-	export let record = {
+	let { record = $bindable({
 		title: 'happy',
 		openChat : false
-	};
+	}) } = $props();
 
-	let messages = [
+	let messages = $state([
 		{
 			time: 'AM 09:15',
 			day: '2024-04-19',
@@ -89,15 +91,15 @@
 			ask: false,
 			save: true
 		}
-	];
-	let messageContainer: HTMLDivElement;
-	let chatContainer: HTMLDivElement;
+	]);
+	let messageContainer: HTMLDivElement = $state();
+	let chatContainer: HTMLDivElement = $state();
 
-	let newMsg = {
+	let newMsg = $state({
 		content: '',
 		ask: false,
 		save: false
-	};
+	});
 	
 	onMount(() => {
 		scrollToBottom();
@@ -140,7 +142,9 @@
 		if (messageContainer) messageContainer.scrollTop = messageContainer.scrollHeight;
 	}
 
-	$: askMsg;
+	run(() => {
+		askMsg;
+	});
 </script>
 
 <div class="h-full w-full" bind:this={chatContainer}>
@@ -210,7 +214,7 @@
 	>
 		{#each messages as msg, i}
 			{#if i === 0 || msg.day !== messages[i - 1].day}
-				<div class="bg-zinc-100 p-0.5 !mt-6" />
+				<div class="bg-zinc-100 p-0.5 !mt-6"></div>
 				<div
 					class="mx-20 w-auto rounded-full bg-zinc-100 text-center font-mono text-xs font-normal text-zinc-500 shadow"
 				>
@@ -317,10 +321,10 @@
 				{/if}
 			</Button>
 		</div>
-		<form on:submit|preventDefault={handleSubmit} class="relative h-full w-full">
+		<form onsubmit={preventDefault(handleSubmit)} class="relative h-full w-full">
 			<textarea
 				bind:value={newMsg.content}
-				on:keydown={(e) => {
+				onkeydown={(e) => {
 					if (e.key === 'Enter' && !e.shiftKey) {
 						e.preventDefault();
 						handleSubmit(e);

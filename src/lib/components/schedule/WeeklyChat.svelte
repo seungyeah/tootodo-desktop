@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run, preventDefault } from 'svelte/legacy';
+
 	import ShowPromptIcon from "./ShowPromptIcon.svelte";
 
 	import ShowSummaryIcon from "./ShowSummaryIcon.svelte";
@@ -24,22 +26,21 @@
 	import { currentTime, formatTimeFull, formatDay } from "$store";
 	import { cn } from "$lib/utils";
 	import ChatOptions from "./ChatOptions.svelte";
-	export let taskTree = [];
-	let askMsg = {
+	let askMsg = $state({
 		content: "",
 		ask: true,
 		question: true,
 		answer: false,
 		open: false,
-	};
+	});
 
 	let askMode;
-	export let record = {
+	let { taskTree = [], record = {
 		title: "happy",
 		openChat: false,
-	};
+	} } = $props();
 
-	let messages = [
+	let messages = $state([
 		{
 			time: "AM 09:15",
 			day: "2024-04-19",
@@ -112,15 +113,15 @@
 			ask: false,
 			save: true,
 		},
-	];
-	let messageContainer: HTMLDivElement;
+	]);
+	let messageContainer: HTMLDivElement = $state();
 	let chatContainer: HTMLDivElement;
 
-	let newMsg = {
+	let newMsg = $state({
 		content: "",
 		ask: false,
 		save: true,
-	};
+	});
 
 	onMount(() => {
 		scrollToBottom();
@@ -177,7 +178,9 @@
 			doneTime: new Date("Fri Apr 26 2024 1:50:30 GMT+0900 (한국 표준시)"),
 		},
 	];
-	$: askMsg;
+	run(() => {
+		askMsg;
+	});
 
 	function handleAskClick() {
 		if (msg.content !== askMsg.content) {
@@ -330,20 +333,20 @@
 			</div>
 
 			<form
-				on:submit|preventDefault={handleSubmit}
+				onsubmit={preventDefault(handleSubmit)}
 				class="w-full h-full px-1 pt-1 pb-2"
 			>
 				<textarea
 					placeholder="Send message"
 					bind:value={newMsg.content}
-					on:keydown={(e) => {
+					onkeydown={(e) => {
 						if (e.key === "Enter" && !e.shiftKey) {
 							e.preventDefault();
 							handleSubmit(e);
 						}
 					}}
 					class=" font-chat  rounded-lg h-[calc(100%-24px)] w-full p-2 text-baseas font-normal focus:shadow"
-				/>
+				></textarea>
 			</form>
 		</Resizable.Pane>
 	</Resizable.PaneGroup>

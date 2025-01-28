@@ -1,29 +1,40 @@
 <script lang="ts">
+   import { run } from 'svelte/legacy';
+
    import { DropdownMenu, Button, ScrollArea } from "$ui";
-   export let items = [];
-   export let type = "work";
-   $: selectedItem = {
-      title: "",
-      id: "",
-      icon: "",
-   };
+   interface Props {
+      items?: any;
+      type?: string;
+   }
+
+   let { items = [], type = "work" }: Props = $props();
+   let selectedItem;
+   run(() => {
+      selectedItem = {
+         title: "",
+         id: "",
+         icon: "",
+      };
+   });
 </script>
 
 <div class="flex h-full p-1">
    <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild let:builder>
-         <Button
-            builders={[builder]}
-            variant="outline"
-            class="max-w-72 overflow-clip h-full px-3 text-xs text-start "
-         >
-            {#if selectedItem.icon}
-               <svelte:component this={selectedItem.icon} class="w-3 h-3" />
-            {:else}
-               {selectedItem.title || "Select " + type}
-            {/if}
-         </Button>
-      </DropdownMenu.Trigger>
+      <DropdownMenu.Trigger asChild >
+         {#snippet children({ builder })}
+                  <Button
+               builders={[builder]}
+               variant="outline"
+               class="max-w-72 overflow-clip h-full px-3 text-xs text-start "
+            >
+               {#if selectedItem.icon}
+                  <selectedItem.icon class="w-3 h-3" />
+               {:else}
+                  {selectedItem.title || "Select " + type}
+               {/if}
+            </Button>
+                        {/snippet}
+            </DropdownMenu.Trigger>
       <DropdownMenu.Content class="h-[300px]" side="top">
          <DropdownMenu.Group>
             <DropdownMenu.Label>Today's {type} List</DropdownMenu.Label>
@@ -53,8 +64,7 @@
                         class="border-b border-dashed m-1.5 mr-2.5"
                      >
                         {#if item.icon}
-                           <svelte:component
-                              this={item.icon}
+                           <item.icon
                               class="w-4 h-4 mr-2"
                            />
                         {/if}

@@ -16,6 +16,11 @@
 	import NProgress from "nprogress";
 	import { afterNavigate, beforeNavigate } from "$app/navigation";
 	import "nprogress/nprogress.css";
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	NProgress.configure({
 		showSpinner: false,
@@ -29,8 +34,8 @@
 		// console.log();
 	});
 
-	let showAlarm = false;
-	let openTenM = false;
+	let showAlarm = $state(false);
+	let openTenM = $state(false);
 
 	onMount(async () => {
 		goto("/do", { replaceState: true });
@@ -146,21 +151,23 @@
 
 		<!-- profile -->
 		<DropdownMenu.Root>
-			<DropdownMenu.Trigger asChild let:builder>
-				<Button
-					builders={[builder]}
-					variant="ghost"
-					class="w-8 h-8 hover:bg-zinc-950 "
-					><Avatar.Root
-						class="w-8 h-8 border-2 shadow-lg text-zinc-500"
-					>
-						<Avatar.Image src="/favicon.png" alt="profile" />
-						<Avatar.Fallback class="font-bold bg-black"
-							>Hi</Avatar.Fallback
+			<DropdownMenu.Trigger asChild >
+				{#snippet children({ builder })}
+								<Button
+						builders={[builder]}
+						variant="ghost"
+						class="w-8 h-8 hover:bg-zinc-950 "
+						><Avatar.Root
+							class="w-8 h-8 border-2 shadow-lg text-zinc-500"
 						>
-					</Avatar.Root></Button
-				>
-			</DropdownMenu.Trigger>
+							<Avatar.Image src="/favicon.png" alt="profile" />
+							<Avatar.Fallback class="font-bold bg-black"
+								>Hi</Avatar.Fallback
+							>
+						</Avatar.Root></Button
+					>
+											{/snippet}
+						</DropdownMenu.Trigger>
 			<DropdownMenu.Content class="w-56">
 				<DropdownMenu.Label>{$auth.email}</DropdownMenu.Label>
 				<DropdownMenu.Separator />
@@ -174,7 +181,7 @@
 </div>
 
 <div class="h-full max-h-[calc(100vh-50px)] w-full">
-	<slot />
+	{@render children?.()}
 </div>
 
 <!-- <TWindicator /> -->

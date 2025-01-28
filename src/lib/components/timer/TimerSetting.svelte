@@ -12,16 +12,21 @@
 	const dispatch = createEventDispatcher();
 	// planRecord에서 record(start, end)를 받아오고, 이를 기반으로 duration계산
 	// duration 및 사용자가 입력한 working과 braking을 기반으로, cycle과 remain을 계산
-	// 각 cycle에 대한 시작시간, 종료시간, 완료여부(false), 남은시간(=working), 공부시간(=0)을 로컬 저장소에 저장 
-	export let record = { start: '', end: '' };
+	
+	interface Props {
+		// 각 cycle에 대한 시작시간, 종료시간, 완료여부(false), 남은시간(=working), 공부시간(=0)을 로컬 저장소에 저장 
+		record?: any;
+	}
 
-	let tooltip = ''; // Tooltip text
-	let working = 25;
-	let breaking = 5;
-	let cycle = 1;
-	let remain = 0;
-	let duration = 0;
-	let durationString = '';
+	let { record = { start: '', end: '' } }: Props = $props();
+
+	let tooltip = $state(''); // Tooltip text
+	let working = $state(25);
+	let breaking = $state(5);
+	let cycle = $state(1);
+	let remain = $state(0);
+	let duration = $state(0);
+	let durationString = $state('');
 
 	onMount(() => {
 		if (record) {
@@ -120,7 +125,7 @@ border-8 border-double border-zinc-50 box-content rounded-2xl shadow-xl
 			>
 				<button
 					class="text-center text-2xl text-zinc-100 hover:text-zinc-300"
-					on:click={() => {
+					onclick={() => {
 						if (working > 10) {
 							working -= 5;
 							updateCycleAndRemain();
@@ -139,7 +144,7 @@ border-8 border-double border-zinc-50 box-content rounded-2xl shadow-xl
 				/>
 				<button
 					class="text-center text-2xl text-zinc-100 hover:text-zinc-300"
-					on:click={() => {
+					onclick={() => {
 						if (working < duration && working >= 10) {
 							working += 5;
 							if (working === duration) working = duration;
@@ -160,7 +165,7 @@ border-8 border-double border-zinc-50 box-content rounded-2xl shadow-xl
 			>
 				<button
 					class="text-center text-2xl text-zinc-100 hover:text-zinc-300"
-					on:click={() => {
+					onclick={() => {
 						if (breaking > 0) {
 							breaking -= 1;
 							updateCycleAndRemain();
@@ -181,7 +186,7 @@ border-8 border-double border-zinc-50 box-content rounded-2xl shadow-xl
 				/>
 				<button
 					class="text-center text-2xl text-zinc-100 hover:text-zinc-300"
-					on:click={() => {
+					onclick={() => {
 						if (breaking <= 0) {
 							breaking = 0;
 							return;

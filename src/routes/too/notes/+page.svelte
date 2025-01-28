@@ -70,17 +70,23 @@
 </script>
 
 <PageTemplete>
-	<div slot="nav" class="translate-x-2 -translate-y-2">
-		<div class="px-2 md:hidden"><Search /></div>
-		<Input
-			placeholder="Search"
-			class="hidden md:block w-[calc(100%-200px)]"
-		/>
-	</div>
-	<div slot="side" class="w-full h-full px-2 py-2">
-		<NoteSide />
-	</div>
-	<div slot="main" class="w-full h-full">
-		<NoteMain />
-	</div>
+	{#snippet nav()}
+		<div  class="translate-x-2 -translate-y-2">
+			<div class="px-2 md:hidden"><Search /></div>
+			<Input
+				placeholder="Search"
+				class="hidden md:block w-[calc(100%-200px)]"
+			/>
+		</div>
+	{/snippet}
+	{#snippet side()}
+		<div  class="w-full h-full px-2 py-2">
+			<NoteSide />
+		</div>
+	{/snippet}
+	{#snippet main()}
+		<div  class="w-full h-full">
+			<NoteMain />
+		</div>
+	{/snippet}
 </PageTemplete>

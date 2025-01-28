@@ -8,7 +8,7 @@
       Pencil,
    } from "lucide-svelte";
    import { Pin, EllipsisVertical, Trash2 } from "lucide-svelte";
-   export let record = {
+   let { record = $bindable({
       pin: true,
       alarm: true,
       item: "note",
@@ -20,7 +20,7 @@
       openChat: false,
 
       category: { title: "Project K", color: "#e46b75" },
-   };
+   }) } = $props();
 </script>
 
 <!-- setting item -->

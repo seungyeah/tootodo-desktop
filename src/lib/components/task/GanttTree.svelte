@@ -1,12 +1,17 @@
 <script lang="ts">
+   import GanttTree from './GanttTree.svelte';
    import { melt, type TreeView } from "@melt-ui/svelte";
    import { getContext } from "svelte";
    import { parseDate } from "@internationalized/date";
    import { getDuration } from "$lib/utils";
 
-   export let treeItems = [];
-   export let totalDays: number;
-   export let level = 0;
+   interface Props {
+      treeItems?: any;
+      totalDays: number;
+      level?: number;
+   }
+
+   let { treeItems = [], totalDays, level = 0 }: Props = $props();
 
    const {
       elements: { item, group },
@@ -94,11 +99,11 @@
                            <div
                               class="absolute top-0.5 w-4 h-4 rotate-45 border border-zinc-900 -z-10 bg-inherit -left-2"
                               class:none={task?.progress_rate <= 0}
-                           />
+></div>
                            <div
                               class="absolute top-0.5 w-4 h-4 rotate-45 border-2 border-zinc-900 -z-10 bg-inherit -right-2"
                               class:complete={task?.progress_rate === 100}
-                           />
+></div>
                         {/if}
                      </div>
                   </div>
@@ -112,7 +117,7 @@
       <tr use:melt={$group({ id: itemId })}>
          <td colspan={totalDays} class="p-0">
             <table class="w-full table-fixed">
-               <svelte:self
+               <GanttTree
                   treeItems={subtasks}
                   {totalDays}
                   level={level + 1}

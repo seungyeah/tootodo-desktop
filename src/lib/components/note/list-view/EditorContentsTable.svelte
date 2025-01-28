@@ -3,8 +3,12 @@
 	import { Label, Badge, Dialog, Button, ScrollArea, Tabs, Table } from "$ui";
 	import { ListTree, Text } from "lucide-svelte";
 	import Input from "$ui/input/input.svelte";
-	export let pages;
-	export let size = "sm";
+	interface Props {
+		pages: any;
+		size?: string;
+	}
+
+	let { pages, size = "sm" }: Props = $props();
 </script>
 
 <div
@@ -46,7 +50,7 @@
 							{#if page.type === "page"}
 								<ListTree size={14} />
 							{:else}
-								<svelte:component this={Text} size={14} />
+								<Text size={14} />
 							{/if}
 						</th>
 						<td class="!m-0 !px-1 !pr-1.5"
