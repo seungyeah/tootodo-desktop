@@ -1,14 +1,11 @@
 import { fontFamily } from "tailwindcss/defaultTheme";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 /** @type {import('tailwindcss').Config} */
 const config = {
-	mode: 'jit',
 	darkMode: ["class"],
 	content: ["./src/**/*.{html,js,svelte,ts}"],
 	safelist: ["dark"],
-	plugins: [
-		require('@tailwindcss/typography'),
-	  ],
 	theme: {
 		container: {
 			center: true,
@@ -18,10 +15,6 @@ const config = {
 			}
 		},
 		extend: {
-			gridTemplateColumns: {
-				// Simple 16 column grid
-				'13': 'repeat(13, minmax(0, 1fr))',
-			},
 			colors: {
 				border: "hsl(var(--border) / <alpha-value>)",
 				input: "hsl(var(--input) / <alpha-value>)",
@@ -56,30 +49,48 @@ const config = {
 					DEFAULT: "hsl(var(--card) / <alpha-value>)",
 					foreground: "hsl(var(--card-foreground) / <alpha-value>)"
 				},
-				pomodoro: {
-					50: '#F8ECEC',
-					100: '#f7d5d8',
-					200: '#f6cace',
-					300: '#f0aab0',
-					400: '#e46b75',
-					500: '#D92B3A',
-					600: '#c32734',
-					700: '#a3202c',
-					800: '#821a23',
-					900: '#6a151c',
-					950:'#501016'
-				},
+				sidebar: {
+					DEFAULT: "hsl(var(--sidebar-background))",
+					foreground: "hsl(var(--sidebar-foreground))",
+					primary: "hsl(var(--sidebar-primary))",
+					"primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+					accent: "hsl(var(--sidebar-accent))",
+					"accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+					border: "hsl(var(--sidebar-border))",
+					ring: "hsl(var(--sidebar-ring))",
+        		},
 			},
 			borderRadius: {
+				xl: "calc(var(--radius) + 4px)",
 				lg: "var(--radius)",
 				md: "calc(var(--radius) - 2px)",
 				sm: "calc(var(--radius) - 4px)"
 			},
 			fontFamily: {
 				sans: [...fontFamily.sans]
-			}
-		}
+			},
+			keyframes: {
+				"accordion-down": {
+					from: { height: "0" },
+					to: { height: "var(--bits-accordion-content-height)" },
+				},
+				"accordion-up": {
+					from: { height: "var(--bits-accordion-content-height)" },
+					to: { height: "0" },
+				},
+				"caret-blink": {
+					"0%,70%,100%": { opacity: "1" },
+					"20%,50%": { opacity: "0" },
+				},
+			},
+			animation: {
+        		"accordion-down": "accordion-down 0.2s ease-out",
+        		"accordion-up": "accordion-up 0.2s ease-out",
+       			"caret-blink": "caret-blink 1.25s ease-out infinite",
+      		},
+		},
 	},
+	plugins: [tailwindcssAnimate],
 };
 
 export default config;

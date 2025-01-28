@@ -4,16 +4,10 @@
 
 	type $$Props = SheetPrimitive.PortalProps;
 
-	interface Props {
-		class?: $$Props["class"];
-		children?: import('svelte').Snippet;
-		[key: string]: any
-	}
-
-	let { class: className = undefined, children, ...rest }: Props = $props();
-	
+	let className: $$Props["class"] = undefined;
+	export { className as class };
 </script>
 
-<SheetPrimitive.Portal class={cn(className)} {...rest}>
-	{@render children?.()}
+<SheetPrimitive.Portal class={cn(className)} {...$$restProps}>
+	<slot />
 </SheetPrimitive.Portal>

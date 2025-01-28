@@ -166,7 +166,7 @@
 							>
 						</Avatar.Root></Button
 					>
-											{/snippet}
+				{/snippet}
 						</DropdownMenu.Trigger>
 			<DropdownMenu.Content class="w-56">
 				<DropdownMenu.Label>{$auth.email}</DropdownMenu.Label>

@@ -1,33 +1,33 @@
 <script lang="ts">
-	import { Slider as SliderPrimitive } from "bits-ui";
+	import { Slider as SliderPrimitive, type WithoutChildrenOrChild } from "bits-ui";
 	import { cn } from "$lib/utils.js";
 
-	type $$Props = SliderPrimitive.Props;
-
-	interface Props {
-		class?: $$Props["class"];
-		value?: $$Props["value"];
-		[key: string]: any
-	}
-
-	let { class: className = undefined, value = $bindable([0]), ...rest }: Props = $props();
-	
+	let {
+		ref = $bindable(null),
+		value = $bindable(),
+		class: className,
+		...restProps
+	}: WithoutChildrenOrChild<SliderPrimitive.RootProps> = $props();
 </script>
 
+<!--
+Discriminated Unions + Destructing (required for bindable) do not
+get along, so we shut typescript up by casting `value` to `never`.
+-->
 <SliderPrimitive.Root
-	bind:value
+	bind:value={value as never}
+	bind:ref
 	class={cn("relative flex w-full touch-none select-none items-center", className)}
-	{...rest}
-	
+	{...restProps}
 >
 	{#snippet children({ thumbs })}
-		<span class="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary">
-			<SliderPrimitive.Range class="absolute h-full bg-primary" />
+		<span class="bg-secondary relative h-2 w-full grow overflow-hidden rounded-full">
+			<SliderPrimitive.Range class="bg-primary absolute h-full" />
 		</span>
 		{#each thumbs as thumb}
 			<SliderPrimitive.Thumb
-				{thumb}
-				class="block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+				index={thumb}
+				class="border-primary bg-background ring-offset-background focus-visible:ring-ring block size-5 rounded-full border-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
 			/>
 		{/each}
 	{/snippet}
