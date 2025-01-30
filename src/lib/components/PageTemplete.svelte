@@ -1,52 +1,81 @@
 <script lang="ts">
-	import { Separator } from "$ui";
-	import {cn} from "$lib/utils";
-	interface Props {
-		openSide?: boolean;
-		nav?: import('svelte').Snippet;
-		side?: import('svelte').Snippet;
-		options?: import('svelte').Snippet<[any]>;
-		main?: import('svelte').Snippet;
-	}
+    import {Separator} from "$ui";
+    import {cn} from "$lib/utils";
+    import {MoonStar} from "lucide-svelte";
+    import {formatTime, currentTime} from "$store";
 
-	let {
-		openSide = true,
-		nav,
-		side,
-		options,
-		main
-	}: Props = $props();
+    interface Props {
+        changeMode?: boolean;
+        side?: import('svelte').Snippet;
+        options?: import('svelte').Snippet<[any]>;
+        main?: import('svelte').Snippet;
+        change_main?: import('svelte').Snippet;
+        main_side?: import('svelte').Snippet;
+    }
+
+    let {
+        changeMode = $bindable(false),
+        change_main,
+        side,
+        main_side,
+        options,
+        main
+    }: Props = $props();
+
+
+    let currentTimeDisplay = $derived(formatTime($currentTime));
 </script>
 
-<div class="h-full m-2">
-	<Separator class="my-2.5" />
-	<div
-		class="fixed top-5 right-0 z-10 w-[calc(100%-504px)] -translate-x-[20px]"
-	>
-		{@render nav?.()}
-	</div>
-	<div
-		class="flex h-[calc(100%-1.6rem)] max-w-full items-center space-x-4 text-sm"
-	>
-		<!-- side -->
-		{#if openSide}
-			<div
-				class=" flex h-full w-2/5 min-w-[260px] max-w-[360px] flex-col items-center justify-start bg-zinc-50"
-			>
-				{@render side?.()}
-			</div>
-		{/if}
+<div class="h-full mx-3  shadow-md bg-zinc-100  shadow-zinc-400 rounded-lg">
+    <div class="fixed top-4 right-4 w-[calc(100%-32px)]">
+        <button
+                onclick={() => (changeMode = !changeMode)}
+                class="rounded-full z-[1] h-[30px] flex text-lg font-digital"
+        >
+            <MoonStar fill="black" class="mr-2"/>
+            {currentTimeDisplay}
+        </button>
+    </div>
 
-		{@render options?.({ class: "h-full", })}
+    <div
+            class="flex h-full space-x-0 max-w-full items-center text-sm"
+    >
 
-		<!-- main: itemlist -->
-		<div
-			class={cn("flex w-full h-full  p-2 space-x-2 overflow-x-auto overflow-y-clip border-4 border-double rounded-lg shadow-md border-zinc-100 shadow-zinc-400", {
-				"max-w-[calc(100%-260px)]": openSide,
-				"max-w-full": !openSide,
+        <!-- side -->
+        {#if changeMode}
+            <div class="flex flex-col w-1/2 min-w-[260px] max-w-[360px] h-full ">
+                <div
+                        class=" flex h-full p-2 pr-0 w-full flex-col items-center justify-start "
+                >
+                    {@render side?.()}
+                </div>
+            </div>
+        {/if}
+
+        {@render options?.({class: "h-full",})}
+
+        <!-- main: itemlist -->
+        <div
+                class={cn("flex w-full h-full p-2 overflow-x-auto overflow-y-clip ", {
+				"max-w-[calc(100%-0px)] pl-0": changeMode,
+				"max-w-full": !changeMode,
 			})}
-		>
-			{@render main?.()}
-		</div>
-	</div>
+        >
+            {#if !changeMode}
+                {@render main_side?.()}
+            {/if}
+
+            <div
+                    class="relative p-2 w-full bg-white h-full rounded-r-lg no-scrollbar overflow-x-auto overflow-y-clip max-w-full"
+            >
+
+                {#if changeMode && change_main}
+                    {@render change_main?.()}
+                {:else}
+                    {@render main?.()}
+                {/if}
+            </div>
+
+        </div>
+    </div>
 </div>

@@ -7,7 +7,6 @@
 
 <script lang="ts">
 	import TaskTree from './TaskTree.svelte';
-	import { run } from 'svelte/legacy';
 
 	import {
 		getLocalTimeZone,
@@ -33,7 +32,7 @@
 		helpers: { isExpanded, isSelected },
 	} = getContext<TreeView>("tree");
 
-	
+	let { level = 1, treeItems = $bindable([]) , scrollPosition = $bindable({ scrollTop: 0, scrollLeft: 0 }) }: Props = $props();
 
 	const todayValue = today(getLocalTimeZone());
 	let cellDuration = {
@@ -87,7 +86,6 @@
 		scrollPosition?: any;
 	}
 
-	let { level = 1, treeItems = [], scrollPosition = { scrollTop: 0, scrollLeft: 0 } }: Props = $props();
 	function handleScroll() {
 		dispatch("scroll", {
 			scrollTop: tableContainer.scrollTop,
@@ -102,7 +100,7 @@
 		}
 	}
 
-	run(() => {
+	$effect(() => {
 		if (tableContainer) {
 			tableContainer.scrollTop = scrollPosition.scrollTop;
 			tableContainer.scrollLeft = scrollPosition.scrollLeft;
@@ -143,11 +141,15 @@
 		console.info("drag end");
 		draggedTask = null;
 	}
+
+	$effect(()=>{
+		console.log(treeItems)
+	})
 </script>
 
 {#key treeItems}
 	<div
-		class="bg-white border-r-[3px] border-l-2 border-zinc-800
+		class="border-zinc-800
 			 h-full max-h-[calc(100%-48px)] w-full min-w-full overflow-x-clip overflow-y-auto"
 		bind:this={tableContainer}
 		onscroll={handleScroll}
@@ -266,24 +268,24 @@
 				</Popover.Root> -->
 
 				<!-- progress rate -->
-				<!-- <div
-					class="w-20 min-w-20 h-[30px] border-b border-r px-1.5"
-					class:group_={$isExpanded(itemId)}
-				>
-					<input
-						class="w-20 translate-y-1.5 shadow opacity-30"
-						class:complete={task?.progress_rate === 100}
-						class:inProgress={task?.progress_rate > 25 &&
-							task?.progress_rate < 100}
-						type="range"
-						step="25"
-						min="0"
-						max="100"
-						value={task?.progress_rate || 0}
-						on:change={(e) =>
-							handleUpdateProgressRate(task, e.target.value)}
-					/>
-				</div> -->
+<!--				<div-->
+<!--					class="w-20 min-w-20 h-[30px] border-b border-r px-1.5"-->
+<!--					class:group_={$isExpanded(itemId)}-->
+<!--				>-->
+<!--					<input-->
+<!--						class="w-20 translate-y-1.5 shadow opacity-30"-->
+<!--						class:complete={task?.progress_rate === 100}-->
+<!--						class:inProgress={task?.progress_rate > 25 &&-->
+<!--							task?.progress_rate < 100}-->
+<!--						type="range"-->
+<!--						step="25"-->
+<!--						min="0"-->
+<!--						max="100"-->
+<!--						value={task?.progress_rate || 0}-->
+<!--						onchange={(e) =>-->
+<!--							handleUpdateProgressRate(task, e.target.value)}-->
+<!--					/>-->
+<!--				</div>-->
 			</div>
 
 			{#if subtasks?.length}

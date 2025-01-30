@@ -13,25 +13,26 @@
       Input,
       RadioGroup,
    } from "$ui";
-   let { itemInfo } = $props();
+   import {cn} from "$lib/utils";
+   let { itemInfo,class:className } = $props();
    let newConnectionTitle = "";
 </script>
 
 {#if itemInfo}
    <HoverCard.Root>
       <HoverCard.Trigger
-         class="rounded-sm focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black"
+         class=" rounded-sm focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black"
       >
          {#if itemInfo.type === "task"}
             <Button
                variant="ghost"
-               class="w-[70px] h-6 px-2 shadow-sm flex items-center justify-start"
+               class={cn("w-[86px]  h-6 px-2 shadow-sm flex items-center justify-start",className)}
                ><CalendarCheck size={15} class="mr-1" />Task</Button
             >
          {:else if itemInfo.type === "habit"}
             <Button
                variant="ghost"
-               class="w-[70px] h-6 px-2 shadow-sm flex items-center justify-start"
+               class="w-[86px] h-6 px-2 shadow-sm flex items-center justify-start"
                ><CalendarDays size={14} class="mr-1" />Habit</Button
             >
          {/if}
@@ -61,7 +62,7 @@
                   <Button
                builders={[builder]}
                variant="ghost"
-               class="w-[70px] h-6 px-2 shadow-sm"
+               class="w-[86px] h-6 px-2 shadow-sm"
                ><CalendarPlus size={14} class="mr-1" /></Button
             >
                         {/snippet}

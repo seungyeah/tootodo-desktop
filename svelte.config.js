@@ -7,18 +7,7 @@ const config = {
 	// Consult https://kit.svelte.dev/docs/integrations#preprocessors
 	// for more information about preprocessors
 	preprocess: sequence([vitePreprocess({}), preprocessMeltUI()]),
-	vitePlugin: {
-			inspector: {
-				// change shortcut
-				toggleKeyCombo: 'meta-shift',
-				// hold and release key to toggle inspector mode
-				holdMode: true,
-				// show or hide the inspector option
-				showToggleButton: 'always',
-				// inspector position
-				toggleButtonPos: 'top-right'
-			}
-	},
+
 	kit: {
 		adapter: adapter({
 			pages: 'build',

@@ -22,21 +22,21 @@
 					onclick={() => (openSide = !openSide)}
 					class="rounded-full z-[1] h-[30px] flex"
 				>
-					<MoonStar fill="black" />
+					<MoonStar fill="black" class="mr-2" />
 					{currentTimeDisplay}
 				</button>
 
 				<div class="flex space-x-1">
 					<Button
 						variant="ghost"
-						class="shadow z-[1] h-[30px] px-2 py-0 -translate-y-0.5 translate-x-1 hover:bg-transparent 
+						class="shadow z-[1] h-[30px] px-2 py-0 -translate-y-0.5 translate-x-1 hover:bg-transparent
 			hover:shadow-lg hover:shadow-zinc-400 hover:-translate-y-1 rounded-full"
 					>
 						<Workflow strokeWidth={2.5} size={16} />
 					</Button>
 					<Button
 						variant="ghost"
-						class="shadow z-[1] h-[30px] px-2 py-0 -translate-y-0.5 translate-x-1 hover:bg-transparent 
+						class="shadow z-[1] h-[30px] px-2 py-0 -translate-y-0.5 translate-x-1 hover:bg-transparent
 		hover:shadow-lg hover:shadow-zinc-400 hover:-translate-y-1 rounded-full"
 					>
 						<Share strokeWidth={2.5} size={16} />

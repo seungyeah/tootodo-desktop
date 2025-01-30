@@ -56,7 +56,7 @@ https://svelte.dev/e/node_invalid_placement -->
 </script>
 
 <ScrollArea
-   class="w-full h-full max-h-full overflow-y-scroll translate-y-1 border-2 border-zinc-800"
+   class="w-full h-full max-h-full overflow-y-scroll border-2 border-zinc-800"
    bind:this={tableContainer}
    on:scroll={handleScroll}
 >

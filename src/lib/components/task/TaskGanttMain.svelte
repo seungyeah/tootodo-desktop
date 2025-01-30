@@ -7,6 +7,8 @@
    import { getContext } from "svelte";
    import { getDatesInRange, getDuration, countMonths } from "$lib/utils";
 
+   let { treeItems = $bindable([]) } = $props()
+
    const days = ["S", "M", "T", "W", "T", "F", "S"];
    const selectedDate = getContext("selectedDateRange");
 
@@ -32,8 +34,6 @@
    // scroll
    import { createEventDispatcher } from "svelte";
    import GanttTree from "./GanttTree.svelte";
-   let { treeItems = [] } = $props();
-
    const dispatch = createEventDispatcher();
    let tableContainer: HTMLElement = $state();
 
@@ -53,7 +53,7 @@
 </script>
 
 <div
-   class="w-full h-full max-h-full overflow-x-scroll overflow-y-scroll translate-y-1 border-2 no-scrollbar border-zinc-800"
+   class="w-full h-full max-h-full overflow-x-scroll overflow-y-scroll border-2 no-scrollbar border-zinc-800"
    bind:this={tableContainer}
    onscroll={handleScroll}
 >

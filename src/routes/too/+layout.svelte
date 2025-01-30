@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
 
 	import { ToggleGroup, Button } from "$ui";
 	import { goto } from "$app/navigation";
 
 	import { page } from "$app/state";
-	import { getThis3WeeksRange, parseDateRangeFromURL } from "$lib/utils";
+	import {type DateRange, getThis3WeeksRange, parseDateRangeFromURL} from "$lib/utils";
 	import { onMount, tick } from "svelte";
+	import {DurationPicker} from "$components/schedule";
 	interface Props {
 		children?: import('svelte').Snippet;
 	}
@@ -33,42 +33,10 @@
 	});
 </script>
 
-<div
-	class="flex flex-col items-center justify-center w-full h-full sm:absolute sm:top-0"
->
-	<div
-		class="relative z-10 flex h-10 w-[calc(100%-460px)] justify-start space-x-2"
-	>
-		<ToggleGroup.Root
-			bind:value={selectedPage}
-			class="flex h-full w-[240px] items-center rounded-xl bg-white shadow-md "
-		>
-			<!-- select item -->
-			<ToggleGroup.Item
-				value="tasks"
-				aria-label="task"
-				class="w-1/3 p-1 ml-2 h-3/4"
-			>
-				<Button variant="ghost" onclick={() => goto("/too/tasks")}>Task</Button>
-			</ToggleGroup.Item>
-			<ToggleGroup.Item
-				value="notes"
-				aria-label="note"
-				class="w-1/3 p-1 h-3/4"
-			>
-				<Button variant="ghost" onclick={() => goto("/too/notes")}>Note</Button>
-			</ToggleGroup.Item>
-			<ToggleGroup.Item
-				value="habits"
-				aria-label="habit"
-				class="w-1/3 p-1 mr-2 h-3/4"
-			>
-				<Button variant="ghost" onclick={() => goto("/too/habits")}>Habit</Button>
-			</ToggleGroup.Item>
-		</ToggleGroup.Root>
+<div class="flex flex-col justify-center w-full h-full sm:absolute sm:top-0">
+	<div class="w-full  h-10 ">
 	</div>
-
-	<div class="h-[calc(100%-60px)] w-full">
+	<div class="h-[calc(100%-70px)]  w-full">
 		{@render children?.()}
 	</div>
 </div>

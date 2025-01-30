@@ -6,7 +6,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 	import PageTemplete from "$components/PageTemplete.svelte";
 	import { type Component, onMount, setContext, tick } from "svelte";
 	import HabitMain from "$components/habit/HabitMain.svelte";
-	import HabitSide from "$components/habit/HabitSide.svelte";
+	import HabitCreate from "$components/habit/HabitCreate.svelte";
 	import HabitSetting from "$components/habit/HabitSetting.svelte";
 	import DurationPicker from "$components/habit/DurationPicker.svelte";
 	import { goto } from "$app/navigation";
@@ -18,9 +18,13 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 		getThisMonthRange,
 		parseMonthRangeFromURL,
 	} from "$lib/utils";
+	import HabitList from "$components/habit/HabitList.svelte";
+	import TwoOptTab from "$components/TwoOptTab.svelte";
 
+
+	let changeMode = $state(false);
 	// data
-	export let data;
+	let data;
 	let habits: Writable<Habit[]> = writable(data?.habits || []);
 	setContext("habits", habits);
 
@@ -123,22 +127,34 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 	});
 </script>
 
-<div class="relative w-full h-full">
-	<PageTemplete>
-		{#snippet nav()}
-			<DurationPicker update={(newRange)=>setQuery(newRange)} />
-		{/snippet}
+	<PageTemplete {changeMode}>
+
 		<!-- haibt list, create habit -->
-		{#snippet side()}
+		{#snippet main_side()}
 		<div
-			class="flex flex-col w-full h-full px-2 py-2"
+			class="flex flex-col w-1/3 h-full "
 			bind:clientWidth={sideComponentWidth}
 		>
-			<HabitSide
-				bind:this={sideComponent}
-				on:scroll={handleScroll}
-				on:create={handleCreateHabit}
-			/>
+			<div class="flex w-full h-10 ">
+				<DurationPicker update={(newRange)=>setQuery(newRange)}/>
+			</div>
+<!--			<HabitCreate-->
+<!--				bind:this={sideComponent}-->
+<!--				on:scroll={handleScroll}-->
+<!--				on:create={handleCreateHabit}-->
+<!--			/>-->
+
+			<TwoOptTab class="w-full h-full mt-2">
+<!--				TODO: scroll 설정-->
+<!--				<div slot="tab-1" bind:this={sideComponent} onscroll={handleScroll}>-->
+<!--				</div>-->
+				{#snippet tab1()}
+					<HabitList></HabitList>
+				{/snippet}
+				{#snippet tab2()}
+					<HabitList></HabitList>
+				{/snippet}
+			</TwoOptTab>
 		</div>
 		{/snippet}
 
@@ -159,13 +175,10 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 
 		<!-- main: gantt chart -->
 		{#snippet main()}
-		<div  class="w-full h-full">
 			<HabitMain
 				bind:this={mainComponent}
 				bind:scrollPosition
 				on:scroll={handleScroll}
 			/>
-		</div>
 		{/snippet}
 	</PageTemplete>
-</div>

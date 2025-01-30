@@ -19,7 +19,8 @@
     let {update} = $props();
 
     const df = new DateFormatter("en-US", {
-        dateStyle: "medium",
+        month: "short",
+        day: "numeric",
     });
 
     let selectedWeekRange: DateRange = $state(getThisWeekRange());
@@ -35,7 +36,7 @@
 </script>
 
 <div
-        class="flex items-center justify-center w-full h-10 space-x-2 -translate-y-0.5"
+        class="flex items-center justify-center w-full  h-9 mt-1.5 space-x-2 translate-x-0"
 >
     <!-- 1week-- -->
     <Button
@@ -58,7 +59,7 @@
     </Button>
 
     <!-- date range picker -->
-    <div class=" w-[260px]  md:w-[40%] min-w-[260px] flex">
+    <div class="w-full flex ">
         <Popover.Root
                 openFocus
                 onOpenChange={(open) => {
@@ -77,16 +78,16 @@
             }
          }}
         >
-            <Popover.Trigger class="w-full">
+            <Popover.Trigger class="w-[196px]">
                 <Button
                         variant="outline"
                         class={cn(
-                     " relative w-full min-w-full text-start text-zinc-600 md:text-center font-semibold ",
+                     " relative w-full h-9 min-w-full text-start text-zinc-600 md:text-center font-semibold ",
                      !selectedDate && "text-muted-foreground",
                   )}
                 >
                     <CalendarIcon class="w-4 h-4 mr-2"/>
-                    <div class="w-full">
+                    <div class="w-full text-start">
                         {selectedDate && selectedWeekRange.start
                             ? df.format(selectedWeekRange.start.toDate())
                             : df.format(
@@ -107,7 +108,7 @@
                     <!-- reset to today -->
                     <Button
                             variant="secondary"
-                            class="z-50 h-6 px-1 shadow absolute top-1.5 right-3"
+                            class="z-50 h-6 px-1 shadow absolute top-1.5 right-1.5"
                             onclick={() => {
                         resetDates();
                      }}

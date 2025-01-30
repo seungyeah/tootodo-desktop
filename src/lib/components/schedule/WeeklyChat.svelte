@@ -187,11 +187,11 @@
 </script>
 
 <div
-	class="relative flex flex-col justify-between h-full bg-white shadow rounded-xl m-2 border-zinc-500"
+	class="relative flex flex-col justify-between h-full bg-white  rounded-xl w-full"
 >
 	<Resizable.PaneGroup
 		direction="vertical"
-		class="flex justify-center w-full py-1 space-x-2  shadow rounded-t-xl rounded-b-xl shadow-zinc-500 border-t-2 border-r-2 border-zinc-500 border-double"
+		class="flex justify-center w-full py-1 space-x-2 rounded-t-xl rounded-b-xl"
 	>
 		<Resizable.Pane minSize={14} class="relative px-1">
 			<div
@@ -230,7 +230,7 @@
 							<Button
 								variant="ghost"
 								class={cn(
-									"absolute top-0.5 h-6 p-1 hover:bg-zinc-200",
+									"absolute top-0.5 h-6 p-1 hover:bg-zinc-300",
 									msg.ask ? "left-0" : "right-0",
 								)}
 								onclick={() => (msg.save = !msg.save)}
@@ -282,7 +282,8 @@
 
 		<Resizable.Handle
 			withHandle
-			class="-translate-x-2 bg-zinc-00 h-3 border border-zinc-600"
+			class="-translate-x-2 h-3 border border-zinc-200"
+			handleClass="absolute left-4"
 		/>
 
 		<Resizable.Pane minSize={20} defaultSize={20} class="w-full p-1 !m-0">

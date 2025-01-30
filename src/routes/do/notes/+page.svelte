@@ -66,21 +66,13 @@
 			],
 		},
 	];
+	const changeMode = $state(true);
 	
 </script>
 
-<PageTemplete>
-	{#snippet nav()}
-		<div  class="translate-x-2 -translate-y-2">
-			<div class="px-2 md:hidden"><Search /></div>
-			<Input
-				placeholder="Search"
-				class="hidden md:block w-[calc(100%-200px)]"
-			/>
-		</div>
-	{/snippet}
+<PageTemplete {changeMode}>
 	{#snippet side()}
-		<div  class="w-full h-full px-2 py-2">
+		<div  class="w-full h-full px-2 py-2 -translate-x-1">
 			<NoteSide />
 		</div>
 	{/snippet}

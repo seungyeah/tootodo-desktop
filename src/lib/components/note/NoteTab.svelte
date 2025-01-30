@@ -43,7 +43,7 @@
       {#each triggers as triggerItem}
          <button
             use:melt={$trigger(triggerItem.id)}
-            class="relative w-3/4 trigger bg-zinc-100"
+            class="py-4 relative w-3/4 trigger bg-zinc-100"
          >
             <svelte:component
                this={triggerItem.icon}
@@ -54,7 +54,7 @@
                <div
                   in:send={{ key: "trigger" }}
                   out:receive={{ key: "trigger" }}
-                  class="absolute bottom-0 w-[80%] -translate-x-1/2 border-2 border-double rounded-full left-1/2 bg-pomodoro-100"
+                  class="h-1 border-none absolute bottom-0 w-[80%] -translate-x-1/2 rounded-full left-1/2 bg-pomodoro-50"
                />
             {/if}
          </button>
@@ -91,7 +91,7 @@
       user-select: none;
 
       border-radius: 0;
-      background-color: theme(colors.zinc.100);
+      background-color: theme(colors.zinc.50);
 
       color: theme(colors.zinc.900);
       font-weight: 500;
@@ -102,10 +102,11 @@
 
       &:focus {
          position: relative;
+
       }
 
       &:focus-visible {
-         @apply z-10 ring-2;
+         @apply z-10 ring-2 ;
       }
 
       &[data-state="active"] {

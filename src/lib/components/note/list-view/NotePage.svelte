@@ -21,9 +21,9 @@
 <Resizable.PaneGroup direction="horizontal" class="gap-2">
    <Resizable.Pane defaultSize={26} minSize={0}>
       <div
-         class=" h-full space-y-1 bg-zinc-50 flex flex-col justify-between p-1"
+         class=" h-full space-y-2 bg-zinc-50 flex flex-col justify-between p-2"
       >
-         <div class="flex flex-col bg-white rounded-lg h-15">
+         <div class=" flex flex-col bg-white rounded-lg h-15">
             <Tabs.Root value="editor" class="w-full h-8 p-1 pt-[5px] ">
                <Tabs.List class="flex space-x-2 p-0 h-7 rounded-b-none">
                   <Tabs.Trigger value="drawings" class="p-1"
@@ -56,19 +56,18 @@
       </div>
    </Resizable.Pane>
    <Resizable.Handle
-      withHandle={true}
-      direction="horizontal"
+      withHandle
       class="border border-dotted border-zinc-500"
    />
    <Resizable.Pane defaultSize={74} minSize={30}>
-      <ScrollArea class="w-full h-[calc(100vh-120px)] font-mono ">
+      <ScrollArea class="w-full h-[calc(100vh-120px)] font-mono p-2 ">
          <!-- pages -->
          {#each note.pages as page}
             <div
-               class="flex flex-col mb-2 p-2 space-x-1 border rounded-md border-zinc-500"
+               class="flex flex-col mb-2 p-2 space-x-1 border rounded-md border-zinc-400 border-dashed"
             >
                <div class="h-7 font-medium">
-                  <Badge class="bg-zinc-100 hover:bg-zinc-100">{page.type}</Badge>
+                  <Badge class="bg-zinc-100">{page.type}</Badge>
                   {page.title}
                </div>
                <div class="-translate-x-0.5">

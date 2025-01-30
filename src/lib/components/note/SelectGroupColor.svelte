@@ -36,8 +36,8 @@
          </Button>
       {/snippet}
    </Popover.Trigger>
-   <Popover.Content class="bg-white w-[330px] translate-y-1 translate-x-2 p-3">
-      <Label class="font-bold text-lg font-digital w-full text-center"
+   <Popover.Content class="bg-white w-[330px] translate-y-4 translate-x-5 p-3">
+      <Label class="font-semibold text-lg w-full text-center"
          >Select Tag Group's Color</Label
       >
       <Separator class="my-1" />

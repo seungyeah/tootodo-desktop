@@ -5,7 +5,7 @@
 	import { createEventDispatcher } from "svelte";
 	import { Button, Input } from "$ui";
 	import { CirclePlus, Hexagon } from "lucide-svelte";
-	import Tab from "./HabitTab.svelte";
+	import Tab from "../TwoOptTab.svelte";
 	import IconPicker from "./IconPicker.svelte";
 	import icons from "$lib/icons";
 	import HabitList from "./HabitList.svelte";
@@ -85,9 +85,9 @@
 </script>
 
 <div class="flex flex-col w-full h-full space-y-2">
-	<!-- add habit -->
+	<!-- create habit -->
 	<form
-		onsubmit={preventDefault(handleSubmit)}
+		onsubmit={handleSubmit}
 		class="relative flex items-center w-full h-9"
 	>
 		<IconPicker
@@ -114,7 +114,7 @@
 			type="text"
 			placeholder={"name : put more than 1 char"}
 			bind:value={newHabit.name}
-			on:keydown={(e) => {
+			onkeydown={(e) => {
 				if (e.key === "Enter" && !e.shiftKey) {
 					e.preventDefault();
 					handleSubmit(e);
@@ -130,17 +130,4 @@
 		>
 	</form>
 
-	<Tab class="w-full h-full">
-		<!-- @migration-task: migrate this slot by hand, `tab-1` is an invalid identifier -->
-		<!-- @migration-task: migrate this slot by hand, `tab-1` is an invalid identifier -->
-		<div slot="tab-1" bind:this={tableContainer} onscroll={handleScroll}>
-			<HabitList></HabitList>
-		</div>
-
-		<!-- @migration-task: migrate this slot by hand, `tab-2` is an invalid identifier -->
-		<!-- @migration-task: migrate this slot by hand, `tab-2` is an invalid identifier -->
-		<div slot="tab-2" bind:this={tableContainer} onscroll={handleScroll}>
-			<HabitList></HabitList>
-		</div>
-	</Tab>
 </div>

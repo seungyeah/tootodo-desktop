@@ -223,7 +223,7 @@
          <Button
             variant="ghost"
             size="sm"
-            class="h-8 px-1 rounded shadow bg-zinc-100 translate-y-0.5"
+            class="h-8 px-1 rounded shadow bg-zinc-50 translate-y-0.5"
             onclick={() => (isAddTagGroupMode = !isAddTagGroupMode)}
          >
             {#if isAddTagGroupMode}
@@ -237,7 +237,7 @@
       {#if isAddTagGroupMode}
          <SelectGroupColor
             bind:tagGroup={newTagGroup}
-            class="absolute shadow h-6 w-6 left-8 rounded-full ml-2 border-zinc-300 border-2 border-dashed text-zinc-100 hover:text-zinc-100"
+            class="absolute shadow h-6 w-6 left-7 top-1.5 rounded-full ml-2 border-zinc-300 border-2 border-dashed text-zinc-100 hover:text-zinc-100"
          >
             {#snippet info()}
                         <div >Select Color</div>

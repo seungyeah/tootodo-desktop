@@ -45,7 +45,7 @@
 	<Dialog.Root open={false}>
 		<Dialog.Trigger class="w-full h-full">
 			<div
-				class="flex flex-col items-start justify-center w-full h-full space-y-1"
+				class="flex flex-col items-start justify-center w-full h-full space-y-1 ml-6"
 			>
 				<Label class="line-clamp-1">
 					{note.title}
@@ -54,6 +54,7 @@
 				<div class="flex space-x-1 -translate-x-1">
 					{#each note.tags as tag}
 						<Badge
+								variant="outline"
 							class=" h-[18px] shadow-sm translate-y-0.5 font-mono  px-1.5  text-xs font-medium border rounded-md border-b-zinc-950/30 border-r-zinc-950/30"
 						>
 							{tag.name}
@@ -82,14 +83,11 @@
 					class=" p-2 border-b-2 border-zinc-600 border-double flex flex-col space-y-2 "
 				>
 					<div
-						class="flex w-full justify-between space-x-1 h-7 items-center"
+						class="relative flex  w-full space-x-1 h-7 justify-center items-center  "
 					>
-						<ItemInfo itemInfo={note.connectedItemInfo} />
-						<div class="font-semibold text-zinc-800">{note.title}</div>
+						<ItemInfo itemInfo={note.connectedItemInfo} class="absolute top-0 left-0"/>
+						<div class="font-semibold text-zinc-800 w-full text-center ">{note.title}</div>
 
-						<Button class="justify-end">
-							<MessageCircle class="px-0.5" /></Button
-						>
 					</div>
 					<div class="flex space-x-1 -translate-x-1">
 						<Button
@@ -98,7 +96,8 @@
 						>
 						{#each note.tags as tag}
 							<Badge
-								class="h-[18px] shadow-sm translate-y-0.5 font-mono  px-1.5 py-0 text-base font-medium border rounded-md border-b-zinc-950/30 border-r-zinc-950/30"
+								variant="outline"
+								class="h-[18px] shadow-sm text-xs translate-y-0.5 font-mono  px-1.5 py-0  font-medium border rounded-md border-b-zinc-950/30 border-r-zinc-950/30"
 							>
 								{tag.name}
 								<span class="ml-1 flex">
