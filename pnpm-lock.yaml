@@ -29,6 +29,9 @@ importers:
       '@tiptap/starter-kit':
         specifier: ^2.11.3
         version: 2.11.3
+      fast-xml-parser:
+        specifier: ^4.5.1
+        version: 4.5.1
       melt:
         specifier: ^0.7.0
         version: 0.7.0(svelte@5.19.3)
@@ -117,6 +120,9 @@ importers:
       svelte-check:
         specifier: 4.0.2
         version: 4.0.2(svelte@5.19.3)(typescript@5.7.3)
+      svelte-headless-table:
+        specifier: ^0.18.3
+        version: 0.18.3(svelte@5.19.3)
       svelte-sonner:
         specifier: 0.3.28
         version: 0.3.28(svelte@5.19.3)
@@ -1268,6 +1274,10 @@ packages:
     resolution: {integrity: sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg==}
     engines: {node: '>=8.6.0'}
 
+  fast-xml-parser@4.5.1:
+    resolution: {integrity: sha512-y655CeyUQ+jj7KBbYMc4FG01V8ZQqjN+gDYGJ50RtfsUB8iG9AmwmwoAgeKLJdmueKKMrH1RJ7yXHTSoczdv5w==}
+    hasBin: true
+
   fastq@1.18.0:
     resolution: {integrity: sha512-QKHXPW0hD8g4UET03SdOdunzSouc9N4AuHdsX8XNcTsuz+yYFILVNIX4l9yHABMhiEI9Db0JTTIpu0wB+Y1QQw==}
 
@@ -1900,6 +1910,9 @@ packages:
     resolution: {integrity: sha512-iq6eVVI64nQQTRYq2KtEg2d2uU7LElhTJwsH4YzIHZshxlgZms/wIc4VoDQTlG/IvVIrBKG06CrZnp0qv7hkcQ==}
     engines: {node: '>=12'}
 
+  strnum@1.0.5:
+    resolution: {integrity: sha512-J8bbNyKKXl5qYcR36TIO8W3mVGVHrmmxsd5PAItGkmyzwJvybiw2IVq5nqd0i4LSNSkB/sx9VHllbfFdr9k1JA==}
+
   style-to-object@1.0.8:
     resolution: {integrity: sha512-xT47I/Eo0rwJmaXC4oilDGDWLohVhR6o/xAQcPQN8q6QBuZVL8qMYL85kLmST5cPjAorwvqIA4qXTRQoYHaL6g==}
 
@@ -1924,10 +1937,30 @@ packages:
       svelte: ^4.0.0 || ^5.0.0-next.0
       typescript: '>=5.0.0'
 
+  svelte-headless-table@0.18.3:
+    resolution: {integrity: sha512-1zVnqXW0dvn6ZceYa94k+ziK+w5Dj9nlWYTQGXBv2JhM0resj9w7CWpclZK1TJwAALfEeH4InPBPO87L5fr+nQ==}
+    peerDependencies:
+      svelte: ^4.0.0
+
+  svelte-keyed@2.0.0:
+    resolution: {integrity: sha512-7TeEn+QbJC2OJrHiuM0T8vMBkms3DNpTE+Ir+NtnVBnBMA78aL4f1ft9t0Hn/pBbD/TnIXi4YfjFRAgtN+DZ5g==}
+    peerDependencies:
+      svelte: ^4.0.0
+
+  svelte-render@2.0.1:
+    resolution: {integrity: sha512-RpB0SurwXm4xhjvHHtjeqMmvd645FURb79GFOotScOSqnKK5vpqBgoBPGC0pp+E/eZgDSQ9rRAdn/+N4ys1mXQ==}
+    peerDependencies:
+      svelte: ^4.0.0
+
   svelte-sonner@0.3.28:
     resolution: {integrity: sha512-K3AmlySeFifF/cKgsYNv5uXqMVNln0NBAacOYgmkQStLa/UoU0LhfAACU6Gr+YYC8bOCHdVmFNoKuDbMEsppJg==}
     peerDependencies:
       svelte: ^3.0.0 || ^4.0.0 || ^5.0.0-next.1
+
+  svelte-subscribe@2.0.1:
+    resolution: {integrity: sha512-eKXIjLxB4C7eQWPqKEdxcGfNXm2g/qJ67zmEZK/GigCZMfrTR3m7DPY93R6MX+5uoqM1FRYxl8LZ1oy4URWi2A==}
+    peerDependencies:
+      svelte: ^4.0.0
 
   svelte-tiptap@2.1.0:
     resolution: {integrity: sha512-CtmBM4RzJ7dibuglG6g8YsiyEiaFWAu6qFuX73STuxKFJqoBuqXQWpJqQRttrUWVp/rrrDFjd08zyC1Zzrl/Qg==}
@@ -3182,6 +3215,10 @@ snapshots:
       merge2: 1.4.1
       micromatch: 4.0.8
 
+  fast-xml-parser@4.5.1:
+    dependencies:
+      strnum: 1.0.5
+
   fastq@1.18.0:
     dependencies:
       reusify: 1.0.4
@@ -3784,6 +3821,8 @@ snapshots:
     dependencies:
       ansi-regex: 6.1.0
 
+  strnum@1.0.5: {}
+
   style-to-object@1.0.8:
     dependencies:
       inline-style-parser: 0.2.4
@@ -3815,7 +3854,27 @@ snapshots:
     transitivePeerDependencies:
       - picomatch
 
+  svelte-headless-table@0.18.3(svelte@5.19.3):
+    dependencies:
+      svelte: 5.19.3
+      svelte-keyed: 2.0.0(svelte@5.19.3)
+      svelte-render: 2.0.1(svelte@5.19.3)
+      svelte-subscribe: 2.0.1(svelte@5.19.3)
+
+  svelte-keyed@2.0.0(svelte@5.19.3):
+    dependencies:
+      svelte: 5.19.3
+
+  svelte-render@2.0.1(svelte@5.19.3):
+    dependencies:
+      svelte: 5.19.3
+      svelte-subscribe: 2.0.1(svelte@5.19.3)
+
   svelte-sonner@0.3.28(svelte@5.19.3):
+    dependencies:
+      svelte: 5.19.3
+
+  svelte-subscribe@2.0.1(svelte@5.19.3):
     dependencies:
       svelte: 5.19.3
 
