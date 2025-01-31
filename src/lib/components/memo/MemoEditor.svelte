@@ -125,7 +125,7 @@
 </script>
 
 {#if editor}
-	<div class="w-full  my-1">
+	<div class="bg-white w-full  my-1">
 		<BubbleMenu editor={$editor}>
 			<div data-test-id="bubble-menu" class="flex">
 				<button
@@ -156,15 +156,14 @@
 		>		
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger
-					class="z-10 absolute -right-[0.6rem] -top-1  h-9 -translate-y-1.5 rounded p-0"
+					class="z-10 absolute -right-[0.6rem] -top-0  -translate-y-1.5 rounded p-0"
 				>
 					<Button
 						variant="ghost"
-						size="sm"
 						class="h-full px-1 py-0 rounded-full hover:bg-zinc-50 "
 					>
 						<Eclipse
-							size={24}
+							style="width:22px; height:22px;"
 							fill={colors.find((c) => c.name === memo.color)?.dark}
 							color="white"
 						/>

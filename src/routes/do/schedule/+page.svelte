@@ -122,7 +122,7 @@
     <!-- side: memo -->
     {#snippet side()}
         <div
-                class="shadow p-2 rounded-l-lg bg-white h-full w-full max-w-full border-b-4 border-double border-zinc-400"
+                class="p-2 px-3 rounded-l-lg bg-white h-full w-full max-w-full border-zinc-400"
         >
             <Memo/>
         </div>
@@ -133,7 +133,7 @@
     {#snippet main_side()}
         <div
                 {...$tree}
-                class="relative flex flex-col space-y-0.5 pt-1  w-1/3 max-w-[300px] min-w-[240px] rounded-l-lg bg-white p-2"
+                class="relative flex flex-col space-y-0.5 pt-1  w-1/3  min-w-[310px] rounded-l-lg bg-white p-2"
         >
             <DurationPicker update={(weekRange:DateRange) => setQuery(weekRange)}/>
             <div

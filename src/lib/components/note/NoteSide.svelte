@@ -213,10 +213,10 @@
    let value = $state("undefined");
 </script>
 
-<div class="flex flex-col w-full h-full space-y-2">
+<div class="flex flex-col w-full h-full space-y-3">
    <!-- add tag -->
    <form
-      onsubmit={preventDefault(handleSubmit)}
+      onsubmit={handleSubmit}
       class="relative flex items-center w-full h-9"
    >
       <div>
@@ -237,11 +237,8 @@
       {#if isAddTagGroupMode}
          <SelectGroupColor
             bind:tagGroup={newTagGroup}
-            class="absolute shadow h-6 w-6 left-7 top-1.5 rounded-full ml-2 border-zinc-300 border-2 border-dashed text-zinc-100 hover:text-zinc-100"
+            class="absolute h-6 w-6 left-7 top-1.5 rounded-full ml-2 border-zinc-300 border border-dashed text-zinc-100 hover:text-zinc-100"
          >
-            {#snippet info()}
-                        <div >Select Color</div>
-                     {/snippet}
          </SelectGroupColor>
       {:else}
          <SelectGroup
@@ -249,15 +246,6 @@
             {tagGroups}
             class="w-[100px] min-w-[100px] max-w-[100px] h-8 ml-1 px-2 text-xs  translate-y-0.5"
          >
-            {#snippet info()}
-                        <div >
-                  <div
-                     class="absolute -top-3.5 font-bold text-xs left-10 text-zinc-500"
-                  >
-                     Select Group
-                  </div>
-               </div>
-                     {/snippet}
          </SelectGroup>
       {/if}
 
@@ -265,7 +253,7 @@
          type="text"
          placeholder={isAddTagGroupMode ? "add new tag Group" : "add new tag"}
          bind:value={newTagGroup.name}
-         on:keydown={(e) => {
+         onkeydown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
                e.preventDefault();
                handleSubmit(e);
@@ -279,7 +267,7 @@
       <Button
          variant="ghost"
          type="submit"
-         class="absolute z-10 p-0 rounded-full botom-0 right-1 hover:bg-zinc-100"
+         class="absolute z-10 p-0 rounded-full botom-0 right-2 hover:bg-zinc-100"
          ><CirclePlus color="#a1a1aa" /></Button
       >
    </form>

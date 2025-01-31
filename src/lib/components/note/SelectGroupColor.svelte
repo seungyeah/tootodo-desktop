@@ -21,20 +21,17 @@
 
 <Popover.Root>
    <Popover.Trigger asChild>
-      {#snippet children({ builder })}
          <div class="absolute -top-3.5 font-bold text-xs left-10 text-zinc-500">
             {@render info?.()}
          </div>
          <Button
-            builders={[builder]}
             variant="ghost"
             size="sm"
-            class={cn(" z-10 p-0   translate-y-0", className)}
+            class={cn(" z-10 p-0 translate-y-0", className)}
          >
             {@const Component = icon}
-            <Component fill={tagGroup.color} class="p-0" size={17} />
+            <Component fill={tagGroup.color} class="" size={17} />
          </Button>
-      {/snippet}
    </Popover.Trigger>
    <Popover.Content class="bg-white w-[330px] translate-y-4 translate-x-5 p-3">
       <Label class="font-semibold text-lg w-full text-center"

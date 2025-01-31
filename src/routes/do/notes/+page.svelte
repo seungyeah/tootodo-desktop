@@ -72,12 +72,12 @@
 
 <PageTemplete {changeMode}>
 	{#snippet side()}
-		<div  class="w-full h-full px-2 py-2 -translate-x-1">
+		<div  class="w-full h-full px-4 border-r border-dashed py-2 bg-white rounded-l-lg">
 			<NoteSide />
 		</div>
 	{/snippet}
 	{#snippet main()}
-		<div  class="w-full h-full">
+		<div  class="w-full h-full px-2">
 			<NoteMain />
 		</div>
 	{/snippet}

@@ -78,7 +78,7 @@
             }
          }}
         >
-            <Popover.Trigger class="w-[196px]">
+            <Popover.Trigger class="w-[230px]">
                 <Button
                         variant="outline"
                         class={cn(

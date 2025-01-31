@@ -91,7 +91,7 @@
       user-select: none;
 
       border-radius: 0;
-      background-color: theme(colors.zinc.50);
+      background-color: theme(colors.zinc.100);
 
       color: theme(colors.zinc.900);
       font-weight: 500;

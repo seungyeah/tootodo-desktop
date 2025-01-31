@@ -7,6 +7,7 @@
     import {currentTime, formatDay} from "$store";
     import {onMount, tick} from "svelte";
     import ScrollArea from "$ui/scroll-area/scroll-area.svelte";
+    import {cn} from "$lib/utils";
 
     let memos = $state([
         {
@@ -123,7 +124,7 @@
 
             <!-- input form-->
             <form
-                    onsubmit={preventDefault(handleSubmit)}
+                    onsubmit={handleSubmit}
                     class="relative flex items-center w-full h-9 mb-2"
             >
                 <DropdownMenu.Root>
@@ -186,18 +187,18 @@
 
             <!-- select color -->
             <Tabs.List
-                    class="pl-2.5 flex w-full justify-evenly bg-zinc-100 rounded-b-none border-2 border-zinc-400 border-dotted"
+                    class="p-2 flex w-full justify-between bg-zinc-50 rounded-b-none border-zinc-200 border-b"
             >
                 <Tabs.Trigger
                         value="all"
-                        class="w-[40px] -translate-x-1.5 scale-75"
+                        class="w-[40px] scale-75 translate-y-0"
                         onclick={() => {
 						newMemo.color = "default";
 					}}
                 >
                     <Button
                             variant="ghost"
-                            class="absolute left-0 my-2 bg-zinc-700 !p-3 hover:bg-zinc-900  "
+                            class="absolute left-0 bg-zinc-700 !p-3 hover:bg-zinc-900  shadow-md"
                     >
                         <Grip color="#fffbeb" fill="white"/>
                     </Button>
@@ -206,7 +207,7 @@
                     <Tabs.Trigger
                             value={color.name}
                             style={`background-color: ${color.light};`}
-                            class="mx-1 rounded-full border-double  border-2 border-zinc-500 shadow-inner h-7 w-7"
+                            class="mx-1 rounded-lg rounded-b-none   h-7 w-7 translate-y-1.5"
                             onclick={() => {
 							newMemo.color = color.name;
 						}}
@@ -224,10 +225,10 @@
             <!-- all -->
             <Tabs.Content
                     value="all"
-                    class="h-full w-full max-h-full overflow-y-auto m-0"
+                    class="h-full w-full max-h-full overflow-y-auto m-0 shadow rounded-b-lg"
             >
                 <ScrollArea
-                        class="h-full max-h-full border-x-2 border-zinc-400 border-dotted w-full px-2.5 pt-0.5 space-y-1"
+                        class="h-full max-h-full border rounded-b-lg border-dashed  border-zinc-400 w-full px-3 py-2 space-y-1 border-t-0"
                 >
                     {#each memos as memo,i}
                         <MemoEditor bind:memo={memos[i]} class=""/>
@@ -237,12 +238,14 @@
 
             <!-- color filter -->
             {#each colors as color}
+                {@const border_color = color.dark}
                 <Tabs.Content
                         value={color.name}
-                        class="h-full w-full max-h-full overflow-y-auto m-0"
+                        class="h-full w-full max-h-full overflow-y-auto m-0 shadow rounded-b-lg"
                 >
                     <ScrollArea
-                            class="h-full max-h-full border-x-2 border-zinc-400 border-dotted w-full px-2.5 pt-0.5 space-y-1"
+                            class={cn("h-full max-h-full border border-dashed rounded-b-lg w-full px-3 py-2 space-y-1 border-t-0")}
+                            style={`border-color: ${border_color}`}
                     >
                         {#each memos as memo,i}
                             {#if memo.color === color.name}

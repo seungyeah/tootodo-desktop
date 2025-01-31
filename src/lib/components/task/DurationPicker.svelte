@@ -51,7 +51,7 @@
         <Popover.Trigger>
             <Button
                     variant="outline"
-                    class={cn('w-[200px] h-9 py-2.5 px-4 min-w-[200px] lg:w-[calc(100%-200px)] justify-start  font-semibold text-zinc-600')}
+                    class={cn('w-[230px] h-9 py-2.5 px-4 min-w-[230px] lg:w-[calc(100%-230px)] justify-start  font-semibold text-zinc-600')}
             >
                 {#if selectedDateRange && selectedDateRange.start}
                     {#if selectedDateRange.end}
