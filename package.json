@@ -51,7 +51,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@sveltejs/vite-plugin-svelte-inspector": "^2.1.0",
 		"@tauri-apps/api": "^2.2.0",
 		"@tiptap/core": "^2.11.3",
 		"@tiptap/extension-bubble-menu": "^2.11.3",
