@@ -27,15 +27,13 @@
 </script>
 
 <div class="h-full mx-3  shadow-md bg-zinc-100  shadow-zinc-400 rounded-lg">
-    <div class="fixed top-4 right-4 w-[calc(100%-32px)]">
         <button
                 onclick={() => (changeMode = !changeMode)}
-                class="rounded-full z-[1] h-[30px] flex text-lg font-digital"
+                class="fixed top-4 right-4 w-[calc(100%-32px)] rounded-full z-[1] h-[30px] flex text-lg font-digital"
         >
             <MoonStar fill="black" class="mr-2"/>
             {currentTimeDisplay}
         </button>
-    </div>
 
     <div
             class="flex h-full space-x-0 max-w-full items-center text-sm"

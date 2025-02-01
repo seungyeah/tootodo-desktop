@@ -47,11 +47,12 @@
   "app": {
     "windows": [
       {
-        "fullscreen": true,
+        "fullscreen": false,
         "height": 834,
-        "resizable": false,
+        "resizable": true,
         "title": "TootoDo",
-        "width": 1194
+        "width": 1194,
+        "minWidth": 1128
       }
     ],
     "security": {
