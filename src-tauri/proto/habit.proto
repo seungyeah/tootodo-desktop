@@ -22,9 +22,9 @@ message HabitModel {
 }
 
 enum HabitStatus {
-    UNKNOWN = 0;
-    INPROGRESS = 1;
-    ARCHIVED = 2;
+    ONGOING = 0;
+    COMPLETED = 1;
+    PENDING = 2;
 }
 
 message HabitRecord {
@@ -32,4 +32,11 @@ message HabitRecord {
     google.protobuf.Duration duration=2;
     google.protobuf.Timestamp start_at = 3;
     google.protobuf.Timestamp end_at = 4;
+}
+
+message Goal{
+    uint32 days = 1;
+    uint32 day_minutes = 2;
+    uint32 start_hour = 3;
+    uint32 start_minutes = 4;
 }

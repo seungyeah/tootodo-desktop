@@ -9,7 +9,7 @@ import "google/protobuf/duration.proto";
 message TaskModel {
     string id = 1;
     string title = 2;
-    bool completed = 3;
+    TaskStatus status = 3;
     bool milestone = 4;
     repeated WorkPlan plans = 5;
 
@@ -23,6 +23,12 @@ message TaskModel {
     repeated string related_notes = 11;
     google.protobuf.Timestamp created_at = 12;
     google.protobuf.Timestamp updated_at = 13;
+}
+
+message TaskStatus{
+    ONGOING = 0;
+    COMPLETED = 1;
+    PENDING = 2;
 }
 
 message WorkPlan{
