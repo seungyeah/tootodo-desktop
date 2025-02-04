@@ -1,24 +1,22 @@
 <script lang="ts">
     import "../app.pcss";
-    import {Button, Breadcrumb, Avatar, DropdownMenu, ToggleGroup} from "$ui";
+    import { Button, Breadcrumb, Avatar, DropdownMenu, ToggleGroup } from "$ui";
     import HeaderNav from "$components/HeaderNav.svelte";
     import TWindicator from "$components/TWindicator.svelte";
-    import {auth, isAuthed, timerOpen} from "$store";
-    import {goto} from "$app/navigation";
-    import {onDestroy, onMount, tick} from "svelte";
-    import {LogOut, Clock} from "lucide-svelte";
-    import {page} from "$app/state";
+    import { goto } from "$app/navigation";
+    import { onDestroy, onMount, tick } from "svelte";
+    import { page } from "$app/state";
     import ShowRecord from "$components/tenMTable/showRecord.svelte";
     import PlanRecord from "$components/tenMTable/planRecord.svelte";
 
     import NProgress from "nprogress";
-    import {afterNavigate, beforeNavigate} from "$app/navigation";
+    import { afterNavigate, beforeNavigate } from "$app/navigation";
     import "nprogress/nprogress.css";
-    import {cn} from "$lib/utils";
+    import { cn } from "$lib/utils";
 
-    let {children} = $props();
+    let { children } = $props();
 
-    onMount(() => console.log(children))
+    onMount(() => console.log(children));
 
     NProgress.configure({
         showSpinner: false,
@@ -35,7 +33,7 @@
     let openTenM = $state(false);
 
     onMount(async () => {
-        await goto("/do/schedule", {replaceState: true});
+        await goto("/do/schedule", { replaceState: true });
 
         if (typeof window !== "undefined")
             document.addEventListener("keydown", handleKeyDown); // keydown 이벤트 리스너 추가
@@ -56,7 +54,7 @@
 <div class="relative flex justify-between w-screen h-12">
     <!-- left menu (navigate page) -->
     <div
-            class="bg-zinc-100 w-fit h-12 top-2.5 flex absolute right-4 z-50 items-center space-x-3 rounded-t-2xl  px-4"
+        class="bg-zinc-100 w-fit h-12 top-2.5 flex absolute right-4 z-50 items-center space-x-3 rounded-t-2xl px-4"
     >
         <!-- backward/forward page -->
         <!-- <HeaderNav/>-->
@@ -65,73 +63,97 @@
             <Breadcrumb.List>
                 <Breadcrumb.Item>
                     <Breadcrumb.Link
-                            href="/too/tasks"
-                            class="text-xl font-bold flex items-center space-x-2 text-foreground translate-y-0.5 hover:text-muted-foreground"
+                        href="/too/tasks"
+                        class="text-xl font-bold flex items-center space-x-2 text-foreground translate-y-0.5 hover:text-muted-foreground"
                     >
-                        <div>
-                            Too
-                        </div>
-                        {#if page.url.pathname.includes(
-                            "too",
-                        )}
+                        <div>Too</div>
+                        {#if page.url.pathname.includes("too")}
                             <ToggleGroup.Root
-                                    class="flex w-[140px] gap-3 translate-y-0 h-9 items-center bg-zinc-100"
+                                class="flex w-[140px] gap-3 translate-y-0 h-9 items-center bg-zinc-100"
                             >
                                 <!-- select item -->
                                 <ToggleGroup.Item
-                                        value="tasks"
-                                        aria-label="task"
-                                        class="w-full p-0 ml-2 h-6"
+                                    value="tasks"
+                                    aria-label="task"
+                                    class="w-full p-0 ml-2 h-6"
                                 >
-                                    <Button variant="ghost" href="/too/tasks"
-                                            class={cn("h-6 rounded-lg hover:bg-white/60",page.url.pathname.includes("tasks")&&"bg-white")}>Task
+                                    <Button
+                                        variant="ghost"
+                                        href="/too/tasks"
+                                        class={cn(
+                                            "h-6 rounded-lg hover:bg-white/60",
+                                            page.url.pathname.includes(
+                                                "tasks",
+                                            ) && "bg-white",
+                                        )}
+                                        >Task
                                     </Button>
                                 </ToggleGroup.Item>
                                 <ToggleGroup.Item
-                                        value="habits"
-                                        aria-label="habit"
-                                        class="w-full p-1 mr-2 h-6"
+                                    value="habits"
+                                    aria-label="habit"
+                                    class="w-full p-1 mr-2 h-6"
                                 >
-                                    <Button variant="ghost" href="/too/habits"
-                                            class={cn("h-6 rounded-lg hover:bg-white/60",page.url.pathname.includes("habits")&&"bg-white")}>Habit
+                                    <Button
+                                        variant="ghost"
+                                        href="/too/habits"
+                                        class={cn(
+                                            "h-6 rounded-lg hover:bg-white/60",
+                                            page.url.pathname.includes(
+                                                "habits",
+                                            ) && "bg-white",
+                                        )}
+                                        >Habit
                                     </Button>
                                 </ToggleGroup.Item>
                             </ToggleGroup.Root>
                         {/if}
                     </Breadcrumb.Link>
                 </Breadcrumb.Item>
-                <Breadcrumb.Separator class="text-zinc-400"/>
+                <Breadcrumb.Separator class="text-zinc-400" />
                 <Breadcrumb.Item>
                     <Breadcrumb.Link
-                            href="/do/schedule"
-                            class="text-xl font-bold flex items-center gap-0 text-foreground translate-y-0.5 hover:text-muted-foreground"
+                        href="/do/schedule"
+                        class="text-xl font-bold flex items-center gap-0 text-foreground translate-y-0.5 hover:text-muted-foreground"
                     >
                         <div>Do</div>
-                        {#if page.url.pathname.includes(
-                            "do",
-                        )}
+                        {#if page.url.pathname.includes("do")}
                             <ToggleGroup.Root
-                                    class="flex gap-3 w-[180px] translate-x-3 justify-center h-9 items-center bg-zinc-100"
+                                class="flex gap-3 w-[180px] translate-x-3 justify-center h-9 items-center bg-zinc-100"
                             >
                                 <!-- select item -->
                                 <ToggleGroup.Item
-                                        value="tasks"
-                                        aria-label="task"
-                                        class="w-full p-1 h-6 ml-5"
+                                    value="tasks"
+                                    aria-label="task"
+                                    class="w-full p-1 h-6 ml-5"
                                 >
-                                    <Button variant="ghost"
-                                            href="/do/schedule"
-                                            class={cn("h-6 rounded-lg hover:bg-white/60",page.url.pathname.includes("schedule")&&"bg-white")}
-                                    >Schedule
+                                    <Button
+                                        variant="ghost"
+                                        href="/do/schedule"
+                                        class={cn(
+                                            "h-6 rounded-lg hover:bg-white/60",
+                                            page.url.pathname.includes(
+                                                "schedule",
+                                            ) && "bg-white",
+                                        )}
+                                        >Schedule
                                     </Button>
                                 </ToggleGroup.Item>
                                 <ToggleGroup.Item
-                                        value="habits"
-                                        aria-label="habit"
-                                        class="w-full p-1 h-6 "
+                                    value="habits"
+                                    aria-label="habit"
+                                    class="w-full p-1 h-6 "
                                 >
-                                    <Button href="/do/notes" variant="ghost"
-                                            class={cn("h-6 rounded-lg hover:bg-white/60",page.url.pathname.includes("notes")&&"bg-white")}>Note
+                                    <Button
+                                        href="/do/notes"
+                                        variant="ghost"
+                                        class={cn(
+                                            "h-6 rounded-lg hover:bg-white/60",
+                                            page.url.pathname.includes(
+                                                "notes",
+                                            ) && "bg-white",
+                                        )}
+                                        >Note
                                     </Button>
                                 </ToggleGroup.Item>
                             </ToggleGroup.Root>
@@ -231,8 +253,9 @@
     }
 
     :global(#nprogress .peg) {
-        box-shadow: 0 0 10px #a3202c,
-        0 0 5px #a3202c;
+        box-shadow:
+            0 0 10px #a3202c,
+            0 0 5px #a3202c;
     }
 
     :root {
