@@ -17,9 +17,11 @@ https://svelte.dev/e/node_invalid_placement -->
 		cellColors = getCellColor();
 	});
 
-	let cellColors = $state(Array.from({ length: 24 }, () => [
-		Array.from({ length: 6 }, () => ({ colorFill: 0, record: null })),
-	]));
+	let cellColors = $state(
+		Array.from({ length: 24 }, () => [
+			Array.from({ length: 6 }, () => ({ colorFill: 0, record: null })),
+		]),
+	);
 
 	// 600
 	let projects = [
@@ -34,7 +36,11 @@ https://svelte.dev/e/node_invalid_placement -->
 		{ color: "#0284c7", id: "p8", title: "프로젝트 8" },
 	];
 
-	let selectedProject = $derived({ color: "#3f3f46", id: "p0", title: "프로젝트 0" });
+	let selectedProject = $derived({
+		color: "#3f3f46",
+		id: "p0",
+		title: "프로젝트 0",
+	});
 
 	let records = $state([
 		{ id: 0, start: "12:10", end: "13:30", dragged: true },
@@ -211,7 +217,7 @@ https://svelte.dev/e/node_invalid_placement -->
 {#if $timerOpen}
 	<Timer />
 {:else}
-	<div class="relative h-full w-full flex-col border-2 border-zinc-900">
+	<div class="relative h-full w-full flex-col border-2 border-neutral-900">
 		<div class="m-2 flex justify-around">
 			{#each ["AM", "PM"] as period, periodIndex}
 				<div class="flex-col shadow">
@@ -280,15 +286,16 @@ https://svelte.dev/e/node_invalid_placement -->
 													<Popover.Root>
 														<Popover.Trigger
 															asChild
-															
 														>
-															{#snippet children({ builder })}
-																														<Button
+															{#snippet children({
+																builder,
+															})}
+																<Button
 																	builders={[
 																		builder,
 																	]}
 																	variant="ghost"
-																	class="h-full w-full !p-0 translate-y-[0.235rem]  relative bg-zinc-100 hover:bg-zinc-500"
+																	class="h-full w-full !p-0 translate-y-[0.235rem]  relative bg-neutral-100 hover:bg-neutral-500"
 																>
 																	<div
 																		class="absolute top-0.5 left-1 w-1 h-2 opacity-90 transform rotate-45 bg-white"
@@ -300,8 +307,8 @@ https://svelte.dev/e/node_invalid_placement -->
 																		class="absolute top-3.5 right-1 w-1 h-2 opacity-90 transform rotate-45 bg-white"
 																	></div>
 																</Button>
-																																												{/snippet}
-																												</Popover.Trigger>
+															{/snippet}
+														</Popover.Trigger>
 														<Popover.Content
 															class="w-auto translate-y-[0.2rem] p-0 "
 														>
@@ -334,12 +341,12 @@ https://svelte.dev/e/node_invalid_placement -->
 											{#key records}
 												{#if getStartRecordPosition(hour, min)}
 													<button
-														class="absolute -top-[1.56rem] left-0 h-6 w-2.5 rounded-r-full border-r-2 border-l border-zinc-100 bg-zinc-500"
+														class="absolute -top-[1.56rem] left-0 h-6 w-2.5 rounded-r-full border-r-2 border-l border-neutral-100 bg-neutral-500"
 													></button>
 												{/if}
 												{#if getEndRecordPosition(hour, min + 10)}
 													<div
-														class="absolute -top-[1.56rem] right-0 h-6 w-2.5 rounded-l-full border-l-2 border-r border-zinc-100 bg-zinc-500"
+														class="absolute -top-[1.56rem] right-0 h-6 w-2.5 rounded-l-full border-l-2 border-r border-neutral-100 bg-neutral-500"
 													></div>
 												{/if}
 											{/key}
@@ -372,6 +379,6 @@ https://svelte.dev/e/node_invalid_placement -->
 		@apply bg-neutral-100;
 	}
 	.activeAMPM {
-		@apply bg-zinc-200;
+		@apply bg-neutral-200;
 	}
 </style>

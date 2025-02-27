@@ -1,26 +1,28 @@
 <script lang="ts">
-	import { Button } from '$ui';
-	import PomoIcon from '$components/PomoIcon.svelte';
-	import TimerLayout from './TimerLayout.svelte';
-	import { ArrowUp, Pause, Play, StepBack, StepForward } from 'lucide-svelte';
+	import { Button } from "$ui";
+	import PomoIcon from "$components/PomoIcon.svelte";
+	import TimerLayout from "./TimerLayout.svelte";
+	import { ArrowUp, Pause, Play, StepBack, StepForward } from "lucide-svelte";
 	import {
 		currentTime,
 		formatTime,
 		timerOpen,
 		timerSetting,
 		timerStatus,
-		timerStopTime
-	} from '$store';
-	import Separator from '$ui/separator/separator.svelte';
-	import { onDestroy, onMount } from 'svelte';
-	import { Time } from '@internationalized/date';
+		timerStopTime,
+	} from "$store";
+	import Separator from "$ui/separator/separator.svelte";
+	import { onDestroy, onMount } from "svelte";
+	import { Time } from "@internationalized/date";
 
 	let worker: Worker;
 
 	let leftSecondsDefault = 25;
 	let stopSeconds = $state(0);
 	let sessionSwitched = false;
-	let records = $state([{ startTime: '', endTime: '', done: false, leftTime: 25, studyTime: 0 }]);
+	let records = $state([
+		{ startTime: "", endTime: "", done: false, leftTime: 25, studyTime: 0 },
+	]);
 
 	onMount(async () => {
 		await initWebWorker();
@@ -29,7 +31,7 @@
 
 		if ($timerStatus.cycle === 0) {
 			records = $timerSetting.cycles;
-			// 타이머 초기화			
+			// 타이머 초기화
 			$timerStatus = {
 				play: true,
 				workSession: true,
@@ -37,7 +39,7 @@
 				startTime: records[0].startTime,
 				endTime: records[0].endTime,
 				leftTime: leftSecondsDefault,
-				studyTime: 0
+				studyTime: 0,
 			};
 		} else {
 			// 이전에 저장된 시간과 현재 시간의 차이 계산
@@ -61,18 +63,19 @@
 		await resetTimer();
 		worker.terminate();
 		// 타이머가 사라질 때의 시간 저장. 다음에 타이머를 다시 열었을 때, 이 시간을 기준으로 타이머를 재개
-		if($timerStatus.cycle <= records.length) $timerStopTime = Date.now();
+		if ($timerStatus.cycle <= records.length) $timerStopTime = Date.now();
 	});
 
 	/////////////////////////////// web worker ///////////////////////////////
 	async function initWebWorker() {
-		if (typeof window !== 'undefined' && window.Worker) {
-			const MyWorker = await import('$lib/worker/timer.worker?worker');
+		if (typeof window !== "undefined" && window.Worker) {
+			const MyWorker = await import("$lib/worker/timer.worker?worker");
 			worker = await new MyWorker.default();
 
 			// Web Worker에서 전달한 타이머 상태 정보를 메인 스레드에서 받아 Svelte 컴포넌트의 상태를 업데이트
 			worker.onmessage = async (e) => {
-				$timerStatus.leftTime = e.data.leftTime || $timerStatus.leftTime;
+				$timerStatus.leftTime =
+					e.data.leftTime || $timerStatus.leftTime;
 				stopSeconds = e.data.stopTime || stopSeconds;
 				if (e.data.leftTime === 0) {
 					await switchSession();
@@ -83,23 +86,29 @@
 
 	async function playTimer() {
 		$timerStatus.play = true;
-		worker.postMessage({ action: 'play', leftTime: $timerStatus.leftTime });
+		worker.postMessage({ action: "play", leftTime: $timerStatus.leftTime });
 	}
 
 	async function stopTimer() {
 		$timerStatus.play = false;
-		worker.postMessage({ action: 'stop', stopTime: stopSeconds, sessionSwitched });
+		worker.postMessage({
+			action: "stop",
+			stopTime: stopSeconds,
+			sessionSwitched,
+		});
 	}
 
 	async function resetTimer() {
-		worker.postMessage({ action: 'reset' });
+		worker.postMessage({ action: "reset" });
 		resetTimerStatus();
 		worker.terminate();
 	}
 
 	/////////////////////////////// functions ///////////////////////////////
 	async function switchSession() {
-		let alarmSound = new Audio('https://freesound.org/data/previews/80/80921_1022651-lq.mp3');
+		let alarmSound = new Audio(
+			"https://freesound.org/data/previews/80/80921_1022651-lq.mp3",
+		);
 		alarmSound.play();
 
 		sessionSwitched = true;
@@ -144,7 +153,7 @@
 		const startTime = new Time(
 			$currentTime.getHours(),
 			$currentTime.getMinutes(),
-			$currentTime.getSeconds()
+			$currentTime.getSeconds(),
 		);
 		const endTime = startTime.add({ minutes: $timerSetting.working });
 
@@ -155,7 +164,7 @@
 			startTime: startTime.toString(),
 			endTime: endTime.toString(),
 			leftTime: leftSecondsDefault,
-			studyTime: 0
+			studyTime: 0,
 		};
 	}
 
@@ -164,10 +173,10 @@
 			play: true,
 			workSession: true,
 			cycle: 0,
-			startTime: '',
-			endTime: '',
+			startTime: "",
+			endTime: "",
 			leftTime: $timerSetting.working * 60,
-			studyTime: 0
+			studyTime: 0,
 		};
 	}
 
@@ -176,18 +185,19 @@
 		let endTime = new Time(
 			$currentTime.getHours(),
 			$currentTime.getMinutes(),
-			$currentTime.getSeconds()
+			$currentTime.getSeconds(),
 		);
 
-		let startTimeParts = startTime.split(':');
+		let startTimeParts = startTime.split(":");
 
 		let timeDiff = endTime.subtract({
 			hours: +startTimeParts[0],
 			minutes: +startTimeParts[1],
-			seconds: +startTimeParts[2]
+			seconds: +startTimeParts[2],
 		});
 
-		let timeDiffSeconds = timeDiff.hour * 3600 + timeDiff.minute * 60 + timeDiff.second;
+		let timeDiffSeconds =
+			timeDiff.hour * 3600 + timeDiff.minute * 60 + timeDiff.second;
 		let duration = Math.floor((timeDiffSeconds - stopSeconds) / 60);
 
 		// 현 cycle의 정보 저장
@@ -196,7 +206,7 @@
 			startTime,
 			endTime: endTime.toString(),
 			leftTime: 0,
-			studyTime: duration
+			studyTime: duration,
 		};
 	}
 
@@ -204,7 +214,7 @@
 		let startTime = new Time(
 			$currentTime.getHours(),
 			$currentTime.getMinutes(),
-			$currentTime.getSeconds()
+			$currentTime.getSeconds(),
 		);
 		let endTime = startTime.add({ minutes: $timerSetting.working });
 
@@ -215,7 +225,7 @@
 				endTime: endTime.toString(),
 				done: false,
 				leftTime: leftSecondsDefault,
-				studyTime: 0
+				studyTime: 0,
 			};
 			startTime = endTime.add({ minutes: $timerSetting.breaking });
 			endTime = startTime.add({ minutes: $timerSetting.working });
@@ -227,15 +237,16 @@
 
 {#if $timerOpen && records}
 	<div
-		class=" flex h-full w-full items-center justify-between rounded-2xl border-8 border-double border-zinc-50
-	bg-zinc-800 shadow-2xl"
+		class=" flex h-full w-full items-center justify-between rounded-2xl border-8 border-double border-neutral-50
+	bg-neutral-800 shadow-2xl"
 	>
 		<!-- timer layout -->
 		<div
-			class="relative m-1 flex aspect-square h-full scale-90 rounded-full bg-zinc-100 p-0 shadow-xl"
+			class="relative m-1 flex aspect-square h-full scale-90 rounded-full bg-neutral-100 p-0 shadow-xl"
 		>
-		
-			<div class="h-full w-full rounded-full shadow-xl shadow-zinc-950">
+			<div
+				class="h-full w-full rounded-full shadow-xl shadow-neutral-950"
+			>
 				<TimerLayout />
 			</div>
 
@@ -250,17 +261,25 @@
 			>
 				{#if $timerStatus.play}
 					<Pause fill="#e4e4e7" color="#e4e4e7" size={44} />
-					<div class="font-digital absolute left-1/2 top-1/2 translate-x-5 font-bold text-zinc-50">
+					<div
+						class="font-digital absolute left-1/2 top-1/2 translate-x-5 font-bold text-neutral-50"
+					>
 						{Math.floor($timerStatus.leftTime / 60)
 							.toString()
-							.padStart(2, '0')}:{($timerStatus.leftTime % 60).toString().padStart(2, '0')}
+							.padStart(2, "0")}:{($timerStatus.leftTime % 60)
+							.toString()
+							.padStart(2, "0")}
 					</div>
 				{:else}
 					<Play fill="#e4e4e7" color="#e4e4e7" size={44} />
-					<div class="font-digital absolute left-1/2 top-1/2 translate-x-5 font-bold text-zinc-400">
+					<div
+						class="font-digital absolute left-1/2 top-1/2 translate-x-5 font-bold text-neutral-400"
+					>
 						{Math.floor(stopSeconds / 60)
 							.toString()
-							.padStart(2, '0')}:{(stopSeconds % 60).toString().padStart(2, '0')}
+							.padStart(2, "0")}:{(stopSeconds % 60)
+							.toString()
+							.padStart(2, "0")}
 					</div>
 				{/if}
 			</Button>
@@ -268,10 +287,10 @@
 			<!-- finish -->
 			<Button
 				variant="ghost"
-				class="absolute -left-2 top-0 z-10  px-1 hover:bg-zinc-200 hover:shadow hover:shadow-zinc-50"
+				class="absolute -left-2 top-0 z-10  px-1 hover:bg-neutral-200 hover:shadow hover:shadow-neutral-50"
 				onclick={async () => {
 					setNewRecordAt($timerStatus.cycle);
-					await resetTimer();					
+					await resetTimer();
 					$timerOpen = false;
 				}}><StepBack color="#52525b" fill="#52525b" size={32} /></Button
 			>
@@ -279,32 +298,44 @@
 			<!-- next session -->
 			<Button
 				variant="ghost"
-				class="absolute -right-2 bottom-0 z-10  px-1  hover:bg-zinc-200 hover:shadow hover:shadow-zinc-50"
+				class="absolute -right-2 bottom-0 z-10  px-1  hover:bg-neutral-200 hover:shadow hover:shadow-neutral-50"
 				onclick={async () => {
 					await switchSession();
-				}}><StepForward color="#52525b" fill="#52525b" size={32} /></Button
+				}}
+				><StepForward
+					color="#52525b"
+					fill="#52525b"
+					size={32}
+				/></Button
 			>
 
 			<!-- goal working time  and project-->
-			<div class="absolute top-2 right-1 flex items-end text-xs text-zinc-100">
-				<div class="p-0 rounded-full w-8 h-8 border-2 border-zinc-100 border-dashed opacity-80"
+			<div
+				class="absolute top-2 right-1 flex items-end text-xs text-neutral-100"
+			>
+				<div
+					class="p-0 rounded-full w-8 h-8 border-2 border-neutral-100 border-dashed opacity-80"
 					style="background-color:{$timerSetting.projectColor}"
 				></div>
-				<div class="absolute w-8 h-7 text-center font-bold text-lg ">
+				<div class="absolute w-8 h-7 text-center font-bold text-lg">
 					{$timerSetting.working}
-					<span class="absolute text-sm bottom-0 translate-x-1">min</span>
+					<span class="absolute text-sm bottom-0 translate-x-1"
+						>min</span
+					>
 				</div>
 			</div>
 		</div>
 
 		<!-- progress -->
-		<div class="text-x relative flex h-full w-[calc(100%-290px)] flex-col py-3">
+		<div
+			class="text-x relative flex h-full w-[calc(100%-290px)] flex-col py-3"
+		>
 			<!-- indicator -->
 
 			<ArrowUp class="absolute right-[3.5rem] top-2 " color="#f7d5d8" />
 			<Separator
 				orientation="vertical"
-				class="absolute right-[4.2rem] top-4 h-[230px] border border-zinc-400"
+				class="absolute right-[4.2rem] top-4 h-[230px] border border-neutral-400"
 			/>
 			<ArrowUp class="absolute bottom-4 right-[3.5rem]" color="#f7d5d8" />
 
@@ -317,38 +348,50 @@
 					{@const endTime = record.endTime.slice(0, 5)}
 					{#key record}
 						<div
-							class="font-digital m-0 flex space-x-4 rounded-full border-b border-zinc-500 p-0 text-center text-sm"
+							class="font-digital m-0 flex space-x-4 rounded-full border-b border-neutral-500 p-0 text-center text-sm"
 						>
 							<!-- pomo icon -->
 							<div
 								class={record.done
-									? 'relative scale-125 opacity-90'
-									: 'relative scale-125 opacity-30'}
+									? "relative scale-125 opacity-90"
+									: "relative scale-125 opacity-30"}
 							>
 								<PomoIcon />
-								<div class="absolute right-1 top-1 text-xs text-zinc-50">{i + 1}</div>
+								<div
+									class="absolute right-1 top-1 text-xs text-neutral-50"
+								>
+									{i + 1}
+								</div>
 							</div>
 
 							<!-- start time -->
-							<div class={record.done ? ' text-zinc-500' : ' text-zinc-100'}>
+							<div
+								class={record.done
+									? " text-neutral-500"
+									: " text-neutral-100"}
+							>
 								{startTime}
 							</div>
 
 							<!-- end time or current time  -->
 							{#if (i === 0 || records[i - 1].done === true) && record.done === false && $timerStatus.workSession}
 								<div
-									class="z-10 -translate-x-0.5 -translate-y-[0.3rem] scale-[115%] rounded-lg border-4 border-dotted bg-zinc-950 px-1.5 py-0.5 text-[1rem] text-pomodoro-500 shadow-xl"
+									class="z-10 -translate-x-0.5 -translate-y-[0.3rem] scale-[115%] rounded-lg border-4 border-dotted bg-neutral-950 px-1.5 py-0.5 text-[1rem] text-pomodoro-500 shadow-xl"
 								>
 									{formatTime($currentTime)}
 								</div>
 							{:else if !$timerStatus.workSession && i === $timerStatus.cycle - 1}
 								<div
-									class="z-10 -translate-x-0.5 -translate-y-[0.3rem] scale-[115%] rounded-lg border-4 border-dotted bg-zinc-950 px-1.5 py-0.5 text-[1rem] text-emerald-500 shadow-xl"
+									class="z-10 -translate-x-0.5 -translate-y-[0.3rem] scale-[115%] rounded-lg border-4 border-dotted bg-neutral-950 px-1.5 py-0.5 text-[1rem] text-emerald-500 shadow-xl"
 								>
 									{formatTime($currentTime)}
 								</div>
 							{:else}
-								<div class={record.done ? 'px-3 pb-1 text-zinc-500' : 'px-3 pb-1 text-zinc-100'}>
+								<div
+									class={record.done
+										? "px-3 pb-1 text-neutral-500"
+										: "px-3 pb-1 text-neutral-100"}
+								>
 									{endTime}
 								</div>
 							{/if}
@@ -375,7 +418,7 @@
 				resetTimerStatus();
 				$timerOpen = false;
 			}}
-			class="font-digital text-2xl font-bold text-zinc-900"
+			class="font-digital text-2xl font-bold text-neutral-900"
 		>
 			No Record, Back to the Setting
 		</Button>

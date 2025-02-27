@@ -8,29 +8,31 @@
       Pencil,
    } from "lucide-svelte";
    import { Pin, EllipsisVertical, Trash2 } from "lucide-svelte";
-   let { record = $bindable({
-      pin: true,
-      alarm: true,
-      item: "note",
-      title: "urgent note",
-      days: [
-         { day: "mon", time: "" },
-         { day: "wed", time: "" },
-      ],
-      openChat: false,
+   let {
+      record = $bindable({
+         pin: true,
+         alarm: true,
+         item: "note",
+         title: "urgent note",
+         days: [
+            { day: "mon", time: "" },
+            { day: "wed", time: "" },
+         ],
+         openChat: false,
 
-      category: { title: "Project K", color: "#e46b75" },
-   }) } = $props();
+         category: { title: "Project K", color: "#e46b75" },
+      }),
+   } = $props();
 </script>
 
 <!-- setting item -->
 <DropdownMenu.Root>
    <DropdownMenu.Trigger>
       <div class="flex flex-col space-y-0.5 h-full justify-between">
-         {#each Array(3) as _}
-            <Circle
+         {#each Array(1) as _}
+            <div
                strokeWidth={6}
-               class="text-zinc-500 w-5 h-[4px] -translate-x-3.5"
+               class="text-neutral-500 w-5 h-[4px] -translate-x-3.5"
             />
          {/each}
       </div>

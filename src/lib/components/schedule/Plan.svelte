@@ -1,24 +1,22 @@
 <script lang="ts">
-   import Plan from './Plan.svelte';
-   import { run } from 'svelte/legacy';
+   import Plan from "./Plan.svelte";
+   import { run } from "svelte/legacy";
 
    import { cn } from "$lib/utils";
    import { Button, ContextMenu, DropdownMenu, Label, Separator } from "$ui";
    import { melt, type TreeView } from "@melt-ui/svelte";
    import { createEventDispatcher, getContext } from "svelte";
-   import type { TreeItem } from "./ScheduleList.svelte";
+   import type { TreeItem } from "./TaskList.svelte";
    const {
       elements: { item, group },
       helpers: { isExpanded, isSelected },
    } = getContext<TreeView>("tree");
 
-   
    const weeks = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
    let scheduledFrom = $state("");
-   
+
    let scheduledTo = $state("");
-   
 
    function handleChildUpdate(event: CustomEvent) {
       const { task, updateData } = event.detail;
@@ -40,17 +38,17 @@
       level = 1,
       treeItems = [],
       record = $bindable({
-      pin: true,
-      alarm: true,
-      item: "note",
-      title: "urgent note",
-      days: [
-         { day: "mon", from: "", to: "" },
-         { day: "wed", from: "", to: "" },
-      ],
-      openChat: false,
-   }),
-      scrollPosition = { scrollTop: 0 }
+         pin: true,
+         alarm: true,
+         item: "note",
+         title: "urgent note",
+         days: [
+            { day: "mon", from: "", to: "" },
+            { day: "wed", from: "", to: "" },
+         ],
+         openChat: false,
+      }),
+      scrollPosition = { scrollTop: 0 },
    }: Props = $props();
    function handleScroll() {
       dispatch("scroll", {
@@ -74,7 +72,7 @@
 {#key treeItems}
    <div
       class={(level !== 1 &&
-         "px-1.5 h-full border-b-2 bg-zinc-50  border-zinc-500 border-double rounded-r-lg shadow") ||
+         "px-1.5 h-full border-b-2 bg-neutral-50  border-neutral-500 border-double rounded-r-lg shadow") ||
          "max-h-full overflow-y-auto no-scrollbar"}
       bind:this={tableContainer}
       onscroll={handleScroll}
@@ -84,7 +82,7 @@
          {@const hasChildren = !!subtasks?.length}
          <!-- schedule weekly -->
          <div
-            class="flex h-11 my-2 border-l-2 border-r-2 rounded border-zinc-500"
+            class="flex h-11 my-2 border-l-2 border-r-2 rounded border-neutral-500"
          >
             {#each weeks as day, i}
                <ContextMenu.Root
@@ -113,11 +111,11 @@
                                 ]);
                         }}
                         class={cn(
-                           "relative bg-white/90 w-full h-full mt-1 border-l border-r border-dotted rounded shadow-sm border-zinc-300 hover:bg-zinc-100/90",
+                           "relative bg-white/90 w-full h-full mt-1 border-l border-r border-dotted rounded shadow-sm border-neutral-300 hover:bg-neutral-100/90",
                            record.days.some((item) => item.day === day)
                               ? level === 1
                                  ? "bg-pomodoro-800/5 "
-                                 : "bg-zinc-400/5"
+                                 : "bg-neutral-400/5"
                               : "",
                         )}
                      >
@@ -126,7 +124,7 @@
                               (item) => item.day === day,
                            )}
                            <div
-                              class="relative text-start w-full py-1 px-2 font-serif text-[0.75rem] font-light leading-3 text-zinc-500"
+                              class="relative text-start w-full py-1 px-2 font-serif text-[0.75rem] font-light leading-3 text-neutral-500"
                            >
                               from:
                               <span class="absolute right-2.5"
@@ -134,7 +132,7 @@
                               >
                            </div>
                            <div
-                              class="text-start w-full py-1 px-2 font-serif text-[0.75rem] font-light leading-3 text-zinc-500"
+                              class="text-start w-full py-1 px-2 font-serif text-[0.75rem] font-light leading-3 text-neutral-500"
                            >
                               to: <span class="absolute right-2.5"
                                  >{to || ""}</span
@@ -155,7 +153,7 @@
                            <Label class="w-12 font-digital">From</Label>
                            <input
                               type="time"
-                              class="w-full h-8 px-2 border rounded-lg border-zinc-300"
+                              class="w-full h-8 px-2 border rounded-lg border-neutral-300"
                               bind:value={scheduledFrom}
                            />
                         </ContextMenu.Item>
@@ -164,7 +162,7 @@
                            <Label class="w-12 font-digital">To</Label>
                            <input
                               type="time"
-                              class="w-full h-8 px-2 border rounded-lg border-zinc-300"
+                              class="w-full h-8 px-2 border rounded-lg border-neutral-300"
                               bind:value={scheduledTo}
                            />
                         </ContextMenu.Item>
@@ -192,6 +190,6 @@
 
 <style>
    .chat {
-      @apply fixed z-50 h-[calc(100vh-110px)] w-1/3 max-w-[430px]   min-w-[250px] rounded-lg  bg-zinc-50 shadow-lg shadow-yellow-950 sm:h-[calc(100vh-80px)];
+      @apply fixed z-50 h-[calc(100vh-110px)] w-1/3 max-w-[430px]   min-w-[250px] rounded-lg  bg-neutral-50 shadow-lg shadow-yellow-950 sm:h-[calc(100vh-80px)];
    }
 </style>

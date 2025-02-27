@@ -86,10 +86,7 @@
 
 <div class="flex flex-col w-full h-full space-y-2">
 	<!-- create habit -->
-	<form
-		onsubmit={handleSubmit}
-		class="relative flex items-center w-full h-9"
-	>
+	<form onsubmit={handleSubmit} class="relative flex items-center w-full h-9">
 		<IconPicker
 			on:update={(e) => (newHabit = handleUpdateIcon(newHabit, e))}
 		>
@@ -98,7 +95,7 @@
 					<Button
 						variant="ghost"
 						size="sm"
-						class="h-8 px-1 rounded shadow bg-zinc-100 translate-y-0.5"
+						class="h-8 px-1 rounded shadow bg-neutral-100 translate-y-0.5"
 					>
 						{#if newHabit.icon.trim() === ""}
 							<Hexagon size={20} strokeWidth={3} />
@@ -125,9 +122,8 @@
 		<Button
 			variant="ghost"
 			type="submit"
-			class="absolute z-10 p-0 rounded-full botom-0 right-1 hover:bg-zinc-100"
+			class="absolute z-10 p-0 rounded-full botom-0 right-1 hover:bg-neutral-100"
 			><CirclePlus color="#a1a1aa" /></Button
 		>
 	</form>
-
 </div>

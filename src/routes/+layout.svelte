@@ -54,7 +54,7 @@
 <div class="relative flex justify-between w-screen h-12">
     <!-- left menu (navigate page) -->
     <div
-        class="bg-zinc-100 w-fit h-12 top-2.5 flex absolute right-4 z-50 items-center space-x-3 rounded-t-2xl px-4"
+        class="bg-neutral-100 w-fit h-12 top-2.5 flex absolute right-4 z-50 items-center space-x-3 rounded-t-2xl px-4"
     >
         <!-- backward/forward page -->
         <!-- <HeaderNav/>-->
@@ -69,7 +69,7 @@
                         <div>Too</div>
                         {#if page.url.pathname.includes("too")}
                             <ToggleGroup.Root
-                                class="flex w-[140px] gap-3 translate-y-0 h-9 items-center bg-zinc-100"
+                                class="flex w-[140px] gap-3 translate-y-0 h-9 items-center bg-neutral-100"
                             >
                                 <!-- select item -->
                                 <ToggleGroup.Item
@@ -110,7 +110,7 @@
                         {/if}
                     </Breadcrumb.Link>
                 </Breadcrumb.Item>
-                <Breadcrumb.Separator class="text-zinc-400" />
+                <Breadcrumb.Separator class="text-neutral-400" />
                 <Breadcrumb.Item>
                     <Breadcrumb.Link
                         href="/do/schedule"
@@ -119,7 +119,7 @@
                         <div>Do</div>
                         {#if page.url.pathname.includes("do")}
                             <ToggleGroup.Root
-                                class="flex gap-3 w-[180px] translate-x-3 justify-center h-9 items-center bg-zinc-100"
+                                class="flex gap-3 w-[180px] translate-x-3 justify-center h-9 items-center bg-neutral-100"
                             >
                                 <!-- select item -->
                                 <ToggleGroup.Item
@@ -166,15 +166,15 @@
 
     <!-- right menu (profile, search, timer) -->
     <!--	<div-->
-    <!--		class="absolute right-0 z-50 flex h-12 w-[200px] items-center justify-evenly space-x-2 rounded-b-2xl rounded-l-2xl bg-zinc-800 px-4"-->
+    <!--		class="absolute right-0 z-50 flex h-12 w-[200px] items-center justify-evenly space-x-2 rounded-b-2xl rounded-l-2xl bg-neutral-800 px-4"-->
     <!--	>-->
     <!--		&lt;!&ndash; timer, tenMplanner &ndash;&gt;-->
     <!--		<Button-->
     <!--			variant="ghost"-->
     <!--			onclick={() => (openTenM = !openTenM)}-->
     <!--			class={openTenM-->
-    <!--				? "-translate-x-1 translate-y-1 scale-105 rounded-full border  border-dotted bg-zinc-900 !p-2 shadow-xl shadow-zinc-500 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200"-->
-    <!--				: "h-8 w-10 !p-1 hover:bg-zinc-900 hover:shadow hover:shadow-zinc-200"}-->
+    <!--				? "-translate-x-1 translate-y-1 scale-105 rounded-full border  border-dotted bg-neutral-900 !p-2 shadow-xl shadow-neutral-500 hover:bg-neutral-900 hover:shadow hover:shadow-neutral-200"-->
+    <!--				: "h-8 w-10 !p-1 hover:bg-neutral-900 hover:shadow hover:shadow-neutral-200"}-->
     <!--			><Clock-->
     <!--				size={26}-->
     <!--				color="white"-->
@@ -189,7 +189,7 @@
     <!--			<div-->
     <!--				class={$timerOpen-->
     <!--					? " relative m-auto  h-[290px] "-->
-    <!--					: "relative m-3 h-[470px] w-[calc(100%-24px)] bg-white border-[6px] border-double border-zinc-900 rounded-lg shadow-lg shadow-zinc-500"}-->
+    <!--					: "relative m-3 h-[470px] w-[calc(100%-24px)] bg-white border-[6px] border-double border-neutral-900 rounded-lg shadow-lg shadow-neutral-500"}-->
     <!--			>-->
     <!--				<ShowRecord />-->
     <!--				<div class="absolute top-0 w-full h-full">-->
@@ -204,9 +204,9 @@
     <!--			<DropdownMenu.Trigger >-->
     <!--					<Button-->
     <!--						variant="ghost"-->
-    <!--						class="w-8 h-8 hover:bg-zinc-950 "-->
+    <!--						class="w-8 h-8 hover:bg-neutral-950 "-->
     <!--						><Avatar.Root-->
-    <!--							class="w-8 h-8 border-2 shadow-lg text-zinc-500"-->
+    <!--							class="w-8 h-8 border-2 shadow-lg text-neutral-500"-->
     <!--						>-->
     <!--							<Avatar.Image src="/favicon.png" alt="profile" />-->
     <!--							<Avatar.Fallback class="font-bold bg-black"-->

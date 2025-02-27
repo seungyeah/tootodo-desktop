@@ -1,5 +1,5 @@
 <script lang="ts">
-   import GanttTree from './GanttTree.svelte';
+   import GanttTree from "./GanttTree.svelte";
    import { melt, type TreeView } from "@melt-ui/svelte";
    import { getContext } from "svelte";
    import { parseDate } from "@internationalized/date";
@@ -84,10 +84,10 @@
             <td {colspan}>
                {#if isTask}
                   <div
-                     class="relative w-full h-full border-t border-b-2 shadow-lg bg-zinc-400 border-zinc-900"
+                     class="relative w-full h-full border-t border-b-2 shadow-lg bg-neutral-400 border-neutral-900"
                   >
                      <div
-                        class="h-5 p-0 m-0 bg-zinc-400"
+                        class="h-5 p-0 m-0 bg-neutral-400"
                         class:task={!task?.milestone}
                         class:complete={task?.progress_rate === 100}
                         class:start={task?.progress_rate > 0 &&
@@ -97,13 +97,13 @@
                      >
                         {#if task?.milestone}
                            <div
-                              class="absolute top-0.5 w-4 h-4 rotate-45 border border-zinc-900 -z-10 bg-inherit -left-2"
+                              class="absolute top-0.5 w-4 h-4 rotate-45 border border-neutral-900 -z-10 bg-inherit -left-2"
                               class:none={task?.progress_rate <= 0}
-></div>
+                           ></div>
                            <div
-                              class="absolute top-0.5 w-4 h-4 rotate-45 border-2 border-zinc-900 -z-10 bg-inherit -right-2"
+                              class="absolute top-0.5 w-4 h-4 rotate-45 border-2 border-neutral-900 -z-10 bg-inherit -right-2"
                               class:complete={task?.progress_rate === 100}
-></div>
+                           ></div>
                         {/if}
                      </div>
                   </div>
@@ -117,11 +117,7 @@
       <tr use:melt={$group({ id: itemId })}>
          <td colspan={totalDays} class="p-0">
             <table class="w-full table-fixed">
-               <GanttTree
-                  treeItems={subtasks}
-                  {totalDays}
-                  level={level + 1}
-               />
+               <GanttTree treeItems={subtasks} {totalDays} level={level + 1} />
             </table>
          </td>
       </tr>
@@ -130,7 +126,7 @@
 
 <style>
    .task {
-      @apply border-r-2 border-l border-zinc-900;
+      @apply border-r-2 border-l border-neutral-900;
    }
    .complete {
       background-color: #7eaf80;

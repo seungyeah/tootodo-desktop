@@ -1,17 +1,14 @@
 <script lang="ts">
     import PageTemplete from "$components/PageTemplete.svelte";
-    import {createTreeView} from "@melt-ui/svelte";
-    import {
-        onMount,
-        setContext,
-    } from "svelte";
+    import { createTreeView } from "@melt-ui/svelte";
+    import { onMount, setContext } from "svelte";
     import TaskGantt from "$components/task/TaskGanttMain.svelte";
     import TaskCreateChat from "$components/task/TaskCreateChat.svelte";
     import DurationPicker from "$components/task/DurationPicker.svelte";
-    import {goto} from "$app/navigation";
-    import {derived, writable, type Writable} from "svelte/store";
-    import {postApi, delApi, patchApi} from "$lib/api.js";
-    import {type Task} from "$lib/schema";
+    import { goto } from "$app/navigation";
+    import { derived, writable, type Writable } from "svelte/store";
+    import { postApi, delApi, patchApi } from "$lib/api.js";
+    import { type Task } from "$lib/schema";
     import {
         type DateRange,
         getThis3WeeksRange,
@@ -23,12 +20,20 @@
         TaskDeleteOption,
         TaskTreeItem,
     } from "$lib/type.js";
-    import {invoke} from "@tauri-apps/api/core";
-    import {page} from "$app/state";
+    import { invoke } from "@tauri-apps/api/core";
+    import { page } from "$app/state";
     import TwoOptTab from "$components/TwoOptTab.svelte";
     import Tab from "$components/TwoOptTab.svelte";
-    import {ScrollArea, Table} from "$ui";
-    import {CalendarDays, Clock, Clock1, Diamond, Milestone, Square, SquareCheck} from "lucide-svelte";
+    import { ScrollArea, Table } from "$ui";
+    import {
+        CalendarDays,
+        Clock,
+        Clock1,
+        Diamond,
+        Milestone,
+        Square,
+        SquareCheck,
+    } from "lucide-svelte";
 
     let changeMode = $state(true);
 
@@ -43,7 +48,7 @@
     });
 
     const {
-        elements: {tree},
+        elements: { tree },
     } = ctx;
 
     setContext("tree", ctx);
@@ -66,13 +71,12 @@
         $selectedDateRange = duration;
         const startDate = duration.start;
         const endDate = duration.end;
-        const searchParams = new URLSearchParams({startDate, endDate});
+        const searchParams = new URLSearchParams({ startDate, endDate });
         goto(`?${searchParams.toString()}`);
-
     }
 
     $effect(() => {
-        const {start, end} = $selectedDateRange;
+        const { start, end } = $selectedDateRange;
 
         invoke("fetch_tasks", {
             startDate: start.toString(),
@@ -84,8 +88,7 @@
             .catch(console.error);
     });
 
-
-    async function handleUpdateTask({task, updateData}) {
+    async function handleUpdateTask({ task, updateData }) {
         console.info("update task", updateData);
 
         // task가 변경되지 않았을 경우, 무시
@@ -99,7 +102,7 @@
         }
 
         // 변경된 task를 api로 전송
-        const {id, parent_id} = task;
+        const { id, parent_id } = task;
 
         try {
             const res = await patchApi({
@@ -167,7 +170,7 @@
             }
         }
 
-        invoke("create_task", {...formattedTask})
+        invoke("create_task", { ...formattedTask })
             .then(async (newTask) => {
                 if (
                     mode === "CREATE_TASK_FROM_TASK" ||
@@ -182,7 +185,7 @@
                             if (!parentItem.subtasks) {
                                 parentItem.subtasks = [];
                             }
-                            parentItem.subtasks.push({task: newTask});
+                            parentItem.subtasks.push({ task: newTask });
                         }
                         return $tasks;
                     });
@@ -190,7 +193,7 @@
                     console.log(newTask);
                     $treeItems = [
                         ...$treeItems,
-                        {task: newTask, subtasks: []},
+                        { task: newTask, subtasks: [] },
                     ];
                 }
 
@@ -200,9 +203,9 @@
     }
 
     async function handleDeleteTask(task: Task, option: TaskDeleteOption) {
-        const {id, parent_id} = task;
+        const { id, parent_id } = task;
         try {
-            await delApi({path: `/tasks/${id}`, data: option});
+            await delApi({ path: `/tasks/${id}`, data: option });
 
             treeItems.update(($tasks) => {
                 if (parent_id) {
@@ -277,7 +280,7 @@
     }
 
     ///////// scroll
-    let scrollPosition = {scrollTop: 0, scrollLeft: 0};
+    let scrollPosition = { scrollTop: 0, scrollLeft: 0 };
     let sideComponent;
     let mainComponent;
 
@@ -293,47 +296,49 @@
 
 <PageTemplete {changeMode}>
     {#snippet side()}
-        <div class="flex flex-col w-[calc(100%-8px)] -translate-x-1 h-full px-2 py-2 ">
+        <div
+            class="flex flex-col w-[calc(100%-8px)] -translate-x-1 h-full px-2 py-2"
+        >
             <TaskCreateChat
-                    on:create={handleCreateTask}
-                    on:update={handleUpdateTask}
+                on:create={handleCreateTask}
+                on:update={handleUpdateTask}
             />
         </div>
     {/snippet}
 
     {#snippet main_side()}
-        <div class="flex flex-col w-1/3 ">
+        <div class="flex flex-col w-1/3">
             <!--filter-->
-            <div class="flex w-full h-10 ">
-                <DurationPicker update={(newRange)=>setQuery(newRange)}/>
+            <div class="flex w-full h-10">
+                <DurationPicker update={(newRange) => setQuery(newRange)} />
             </div>
             <!--task list-->
             <TwoOptTab class="w-full h-full mt-2">
                 {#snippet tab1()}
                     <div
-                            {...$tree}
-                            class=" w-full bg-white h-[calc(100%-70px)] max-h-[calc(100%-70px)] "
+                        {...$tree}
+                        class=" w-full bg-white h-[calc(100%-70px)] max-h-[calc(100%-70px)]"
                     >
                         <TaskTree
-                                bind:treeItems={$treeItems}
-                                bind:this={sideComponent}
-                                bind:scrollPosition
-                                on:scroll={handleScroll}
-                                on:update={handleUpdateTask}
+                            bind:treeItems={$treeItems}
+                            bind:this={sideComponent}
+                            bind:scrollPosition
+                            on:scroll={handleScroll}
+                            on:update={handleUpdateTask}
                         />
                     </div>
                 {/snippet}
                 {#snippet tab2()}
                     <div
-                            {...$tree}
-                            class=" w-full bg-white h-[calc(100%-70px)] max-h-[calc(100%-70px)] "
+                        {...$tree}
+                        class=" w-full bg-white h-[calc(100%-70px)] max-h-[calc(100%-70px)]"
                     >
                         <TaskTree
-                                bind:treeItems={$treeItems}
-                                bind:this={sideComponent}
-                                bind:scrollPosition
-                                on:scroll={handleScroll}
-                                on:update={handleUpdateTask}
+                            bind:treeItems={$treeItems}
+                            bind:this={sideComponent}
+                            bind:scrollPosition
+                            on:scroll={handleScroll}
+                            on:update={handleUpdateTask}
                         />
                     </div>
                 {/snippet}
@@ -343,38 +348,39 @@
 
     {#snippet main()}
         <!-- today position line, gantt chart -->
-        <div
-                {...$tree}
-                class="w-full h-full font-mono"
-        >
+        <div {...$tree} class="w-full h-full font-mono">
             <TaskGantt
-                    bind:this={mainComponent}
-                    on:scroll={handleScroll}
-                    bind:treeItems={$treeItems}
+                bind:this={mainComponent}
+                on:scroll={handleScroll}
+                bind:treeItems={$treeItems}
             />
         </div>
     {/snippet}
 
     {#snippet change_main()}
-        <ScrollArea class="w-full h-full border-2 border-zinc-700 px-2 max-h-full overflow-y-auto">
+        <ScrollArea
+            class="w-full h-full border-2 border-neutral-700 px-2 max-h-full overflow-y-auto"
+        >
             <Table.Root class="relative table-fixed ">
-                <Table.Header >
+                <Table.Header>
                     <Table.Row>
-                        <Table.Head class="w-60  min-w-60 max-w-60 ">Title</Table.Head>
+                        <Table.Head class="w-60  min-w-60 max-w-60 "
+                            >Title</Table.Head
+                        >
                         <Table.Head class="w-7">
-                            <SquareCheck size="20"/>
+                            <SquareCheck size="20" />
                         </Table.Head>
                         <Table.Head class="w-7">
-                            <Milestone size="20"/>
+                            <Milestone size="20" />
                         </Table.Head>
                         <Table.Head class="w-7 ">
-                            <Diamond size="20"/>
+                            <Diamond size="20" />
                         </Table.Head>
                         <Table.Head class="w-full">
-                            <CalendarDays size="20" class="m-auto"/>
+                            <CalendarDays size="20" class="m-auto" />
                         </Table.Head>
                         <Table.Head class="w-32 min-w-32 max-w-32">
-                            <Clock size="20" class="m-auto"/>
+                            <Clock size="20" class="m-auto" />
                         </Table.Head>
                     </Table.Row>
                 </Table.Header>
@@ -384,21 +390,25 @@
                         <Table.Row>
                             <Table.Cell class=" font-medium">INV001</Table.Cell>
                             <Table.Cell>
-                                <Square size="20"/>
+                                <Square size="20" />
                             </Table.Cell>
                             <Table.Cell>
-                                <Square size="20" fill="#b03956" class="text-black/70"/>
+                                <Square
+                                    size="20"
+                                    fill="#b03956"
+                                    class="text-black/70"
+                                />
                             </Table.Cell>
                             <Table.Cell>
-                                <Diamond size="20" fill="black"/>
+                                <Diamond size="20" fill="black" />
                             </Table.Cell>
                             <Table.Cell>from - to</Table.Cell>
-                            <Table.Cell class="font-digital">2:30 / 15:30</Table.Cell>
+                            <Table.Cell class="font-digital"
+                                >2:30 / 15:30</Table.Cell
+                            >
                         </Table.Row>
                     {/each}
-
                 </Table.Body>
-
             </Table.Root>
         </ScrollArea>
     {/snippet}

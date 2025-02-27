@@ -1,11 +1,6 @@
 <script lang="ts">
    import EditorContentsTable from "./EditorContentsTable.svelte";
-   import {
-      Badge,
-      ScrollArea,
-      Tabs,
-      Resizable,
-   } from "$ui";
+   import { Badge, ScrollArea, Tabs, Resizable } from "$ui";
    import Input from "$ui/input/input.svelte";
    import Editor from "$components/note/editor/Editor.svelte";
    import {
@@ -21,7 +16,7 @@
 <Resizable.PaneGroup direction="horizontal" class="gap-2">
    <Resizable.Pane defaultSize={26} minSize={0}>
       <div
-         class=" h-full space-y-2 bg-zinc-50 flex flex-col justify-between p-2"
+         class=" h-full space-y-2 bg-neutral-50 flex flex-col justify-between p-2"
       >
          <div class=" flex flex-col bg-white rounded-lg h-15">
             <Tabs.Root value="editor" class="w-full h-8 p-1 pt-[5px] ">
@@ -45,7 +40,7 @@
             </Tabs.Root>
 
             <Input
-               class="border-zinc-100 font-editor focus-visible:shadow "
+               class="border-neutral-100 font-editor focus-visible:shadow "
                placeholder="page title.."
             />
          </div>
@@ -57,17 +52,17 @@
    </Resizable.Pane>
    <Resizable.Handle
       withHandle
-      class="border border-dotted border-zinc-500"
+      class="border border-dotted border-neutral-500"
    />
    <Resizable.Pane defaultSize={74} minSize={30}>
       <ScrollArea class="w-full h-[calc(100vh-120px)] font-mono p-2 ">
          <!-- pages -->
          {#each note.pages as page}
             <div
-               class="flex flex-col mb-2 p-2 space-x-1 border rounded-md border-zinc-400 border-dashed"
+               class="flex flex-col mb-2 p-2 space-x-1 border rounded-md border-neutral-400 border-dashed"
             >
                <div class="h-7 font-medium">
-                  <Badge class="bg-zinc-100">{page.type}</Badge>
+                  <Badge class="bg-neutral-100">{page.type}</Badge>
                   {page.title}
                </div>
                <div class="-translate-x-0.5">
@@ -78,7 +73,7 @@
                </div>
             </div>
             <button
-               class="w-full rounded bg-zinc-50 text-center h-5 mb-2 hover:bg-zinc-100"
+               class="w-full rounded bg-neutral-50 text-center h-5 mb-2 hover:bg-neutral-100"
             >
                + new page</button
             >

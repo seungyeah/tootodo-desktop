@@ -166,7 +166,7 @@ https://svelte.dev/e/js_parse_error -->
 {#key $tasks}
 	<div
 		class="
-shadow-md bg-white border-r-2 border-l-2 border-zinc-600
+shadow-md bg-white border-r-2 border-l-2 border-neutral-600
 			 h-full max-h-[calc(100%-48px)] w-full max-w-full overflow-x-clip overflow-y-scroll"
 		bind:this={tableContainer}
 		on:scroll={handleScroll}
@@ -267,7 +267,7 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 												{task.startDate.slice(5, 10)}
 											</div>
 											<div
-												class="font-extrabold text-zinc-400"
+												class="font-extrabold text-neutral-400"
 											>
 												~
 											</div>
@@ -276,7 +276,7 @@ shadow-md bg-white border-r-2 border-l-2 border-zinc-600
 											</div>
 										{:else}
 											00-00 <span
-												class="font-extrabold text-zinc-400"
+												class="font-extrabold text-neutral-400"
 												>~</span
 											> 00-00
 										{/if}

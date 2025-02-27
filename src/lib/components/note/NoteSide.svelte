@@ -1,5 +1,5 @@
 <script lang="ts">
-   import { run, preventDefault } from 'svelte/legacy';
+   import { run, preventDefault } from "svelte/legacy";
 
    import { getContext, setContext, tick } from "svelte";
    import { createEventDispatcher } from "svelte";
@@ -215,15 +215,12 @@
 
 <div class="flex flex-col w-full h-full space-y-3">
    <!-- add tag -->
-   <form
-      onsubmit={handleSubmit}
-      class="relative flex items-center w-full h-9"
-   >
+   <form onsubmit={handleSubmit} class="relative flex items-center w-full h-9">
       <div>
          <Button
             variant="ghost"
             size="sm"
-            class="h-8 px-1 rounded shadow bg-zinc-50 translate-y-0.5"
+            class="h-8 px-1 rounded shadow bg-neutral-50 translate-y-0.5"
             onclick={() => (isAddTagGroupMode = !isAddTagGroupMode)}
          >
             {#if isAddTagGroupMode}
@@ -237,16 +234,14 @@
       {#if isAddTagGroupMode}
          <SelectGroupColor
             bind:tagGroup={newTagGroup}
-            class="absolute h-6 w-6 left-7 top-1.5 rounded-full ml-2 border-zinc-300 border border-dashed text-zinc-100 hover:text-zinc-100"
-         >
-         </SelectGroupColor>
+            class="absolute h-6 w-6 left-7 top-1.5 rounded-full ml-2 border-neutral-300 border border-dashed text-neutral-100 hover:text-neutral-100"
+         ></SelectGroupColor>
       {:else}
          <SelectGroup
             bind:value
             {tagGroups}
             class="w-[100px] min-w-[100px] max-w-[100px] h-8 ml-1 px-2 text-xs  translate-y-0.5"
-         >
-         </SelectGroup>
+         ></SelectGroup>
       {/if}
 
       <Input
@@ -267,14 +262,14 @@
       <Button
          variant="ghost"
          type="submit"
-         class="absolute z-10 p-0 rounded-full botom-0 right-2 hover:bg-zinc-100"
+         class="absolute z-10 p-0 rounded-full botom-0 right-2 hover:bg-neutral-100"
          ><CirclePlus color="#a1a1aa" /></Button
       >
    </form>
 
    <Tab defaultValue="tags">
       {#snippet tags()}
-            <div  class="h-full">
+         <div class="h-full">
             <div class="tab-title">Manage Tags</div>
             <ScrollArea class="max-h-[calc(100%-70px)] h-[calc(100%-70px)]  ">
                {#each tagGroups as tagGroup}
@@ -282,10 +277,10 @@
                {/each}
             </ScrollArea>
          </div>
-         {/snippet}
+      {/snippet}
 
       {#snippet list()}
-            <div  class="h-full">
+         <div class="h-full">
             <div class="tab-title">
                Filter Notes by Tags
                <Button
@@ -301,10 +296,10 @@
                {/each}
             </ScrollArea>
          </div>
-         {/snippet}
+      {/snippet}
 
       {#snippet kanban()}
-            <div  class="flex flex-col w-full">
+         <div class="flex flex-col w-full">
             <div class="tab-title">
                Build Kanban Board
                <Button
@@ -316,10 +311,10 @@
 
             <SideOfKanbanView {tagGroups} />
          </div>
-         {/snippet}
+      {/snippet}
 
       {#snippet graph()}
-            <div  class="flex flex-col h-full">
+         <div class="flex flex-col h-full">
             <div class="tab-title">
                Build Classify Map
                <Button
@@ -331,7 +326,7 @@
             <!-- add tag group -->
             <Button
                variant="ghost"
-               class="self-center w-full h-8 p-0 mt-2 font-bold border-t-2 border-double rounded-t-none shadow border-zinc-500"
+               class="self-center w-full h-8 p-0 mt-2 font-bold border-t-2 border-double rounded-t-none shadow border-neutral-500"
                onclick={() => (searchTags = [{}, ...searchTags])}
             >
                <Plus size={20} /></Button
@@ -339,45 +334,45 @@
 
             <ScrollArea class="max-h-[calc(100%-110px)] h-auto min-h-64 ">
                {#each searchTags as _, i (i)}
-                  {@const tagGroup = tagGroups.filter(
-                     (tag) => tag.name === searchTags[i],
-                  )[0] || {}}
+                  {@const tagGroup =
+                     tagGroups.filter((tag) => tag.name === searchTags[i])[0] ||
+                     {}}
                   <div
-                     class="flex flex-col space-y-1 mx-2 mt-2.5 p-2 bg-white border border-dashed rounded-lg shadow-sm border-zinc-500"
+                     class="flex flex-col space-y-1 mx-2 mt-2.5 p-2 bg-white border border-dashed rounded-lg shadow-sm border-neutral-500"
                   >
                      <div class="flex w-full">
                         <SelectGroup bind:value={searchTags[i]} {tagGroups} />
                         <Button
                            class="w-8 p-0"
                            disabled={searchTags.length <= 1}
-                           onclick={() => (searchTags = searchTags.slice(0, -1))}
+                           onclick={() =>
+                              (searchTags = searchTags.slice(0, -1))}
                            ><Minus size={15} /></Button
                         >
                      </div>
                      <div class="flex flex-wrap">
                         {#each tagGroup?.tags || [] as tag}
-                        <Badge
-                           class="m-0.5 w-auto text-nowrap h-5 font-medium rounded-md data-[selected]:bg-zinc-400 "
-                           style={`background-color: ${tagGroup.color};`}
-                        >
-                           {tag}
-                        </Badge>
-                     {/each}
+                           <Badge
+                              class="m-0.5 w-auto text-nowrap h-5 font-medium rounded-md data-[selected]:bg-neutral-400 "
+                              style={`background-color: ${tagGroup.color};`}
+                           >
+                              {tag}
+                           </Badge>
+                        {/each}
                      </div>
-                     
                   </div>
                {/each}
                <div
                   class="w-full mt-2 rounded-b-md z-50 bg-white absolute -bottom-4 h-5 shadow rotate-180"
-></div>
+               ></div>
             </ScrollArea>
          </div>
-         {/snippet}
+      {/snippet}
    </Tab>
 </div>
 
 <style>
    .tab-title {
-      @apply relative  text-center w-full text-[1rem] pt-2 pb-1 font-semibold text-zinc-700;
+      @apply relative  text-center w-full text-[1rem] pt-2 pb-1 font-semibold text-neutral-700;
    }
 </style>

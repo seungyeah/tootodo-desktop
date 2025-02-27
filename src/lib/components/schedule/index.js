@@ -2,11 +2,11 @@ import WeeklyChat  from "./WeeklyChat.svelte";
 import Plan from "./Plan.svelte";
 import DurationPicker from "./DurationPicker.svelte";
 import Result from "./Result.svelte";
-import ScheduleList from "./ScheduleList.svelte";
+import TaskList from "./TaskList.svelte";
 import ScheduleHeader from "./ScheduleHeader.svelte";
 export {
    ScheduleHeader,
-   ScheduleList,
+   TaskList,
    Result,
    WeeklyChat,
    DurationPicker,

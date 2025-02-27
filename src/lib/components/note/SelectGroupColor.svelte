@@ -21,17 +21,17 @@
 
 <Popover.Root>
    <Popover.Trigger asChild>
-         <div class="absolute -top-3.5 font-bold text-xs left-10 text-zinc-500">
-            {@render info?.()}
-         </div>
-         <Button
-            variant="ghost"
-            size="sm"
-            class={cn(" z-10 p-0 translate-y-0", className)}
-         >
-            {@const Component = icon}
-            <Component fill={tagGroup.color} class="" size={17} />
-         </Button>
+      <div class="absolute -top-3.5 font-bold text-xs left-10 text-neutral-500">
+         {@render info?.()}
+      </div>
+      <Button
+         variant="ghost"
+         size="sm"
+         class={cn(" z-10 p-0 translate-y-0", className)}
+      >
+         {@const Component = icon}
+         <Component fill={tagGroup.color} class="" size={17} />
+      </Button>
    </Popover.Trigger>
    <Popover.Content class="bg-white w-[330px] translate-y-4 translate-x-5 p-3">
       <Label class="font-semibold text-lg w-full text-center"
@@ -39,7 +39,7 @@
       >
       <Separator class="my-1" />
       <div
-         class="grid grid-cols-9 data-[highlighted]:bg-zinc-50 translate-x-0.5"
+         class="grid grid-cols-9 data-[highlighted]:bg-neutral-50 translate-x-0.5"
       >
          {#each tailwindColors as color}
             {#each color.shades as shade}

@@ -33,10 +33,13 @@
 	});
 
 	let askMode;
-	let { taskTree = [], record = {
-		title: "happy",
-		openChat: false,
-	} } = $props();
+	let {
+		taskTree = [],
+		record = {
+			title: "happy",
+			openChat: false,
+		},
+	} = $props();
 
 	let messages = $state([
 		{
@@ -145,7 +148,7 @@
 		};
 		await tick(); // DOM 업데이트를 기다림
 		scrollToBottom();
-	}	
+	}
 
 	function scrollToBottom() {
 		if (messageContainer)
@@ -158,7 +161,9 @@
 			icon: Sun,
 			title: "wake up",
 			done: true,
-			doneTime: new Date("Fri Apr 26 2024 10:20:30 GMT+0900 (한국 표준시)"),
+			doneTime: new Date(
+				"Fri Apr 26 2024 10:20:30 GMT+0900 (한국 표준시)",
+			),
 		},
 		{ id: 3, icon: Pill, title: "take pills", done: false, doneTime: "" },
 		{
@@ -173,9 +178,11 @@
 			icon: Dumbbell,
 			title: "workout",
 			done: true,
-			doneTime: new Date("Fri Apr 26 2024 1:50:30 GMT+0900 (한국 표준시)"),
+			doneTime: new Date(
+				"Fri Apr 26 2024 1:50:30 GMT+0900 (한국 표준시)",
+			),
 		},
-	]
+	];
 
 	function handleAskClick() {
 		if (msg.content !== askMsg.content) {
@@ -187,7 +194,7 @@
 </script>
 
 <div
-	class="relative flex flex-col justify-between h-full bg-white  rounded-xl w-full"
+	class="relative flex flex-col justify-between h-full bg-white rounded-xl w-full"
 >
 	<Resizable.PaneGroup
 		direction="vertical"
@@ -201,11 +208,9 @@
 				{#each messages as msg, i}
 					<!-- 하루의 첫 대화 위엔 날짜 표시 -->
 					{#if i === 0 || msg.day !== messages[i - 1].day}
-						<div
-							class="flex justify-center w-full h-8 m-auto my-2 "
-						>
+						<div class="flex justify-center w-full h-8 m-auto my-2">
 							<div
-								class="w-1/2 h-5 my-1.5 font-mono text-xs font-normal text-center border-b  rounded-full text-zinc-500 bg-pomodoro-50"
+								class="w-1/2 h-5 my-1.5 font-mono text-xs font-normal text-center border-b rounded-full text-neutral-500 bg-pomodoro-50"
 							>
 								{msg.day}
 							</div>
@@ -230,7 +235,7 @@
 							<Button
 								variant="ghost"
 								class={cn(
-									"absolute top-0.5 h-6 p-1 hover:bg-zinc-300",
+									"absolute top-0.5 h-6 p-1 hover:bg-neutral-300",
 									msg.ask ? "left-0" : "right-0",
 								)}
 								onclick={() => (msg.save = !msg.save)}
@@ -247,9 +252,9 @@
 							</Button>
 
 							<div
-								class="bg-white/90 font-chat w-full rounded-lg py-1 px-2 text-[0.9rem] font-normal leading-5 text-zinc-800 border-b border-dotted {msg.ask
+								class="bg-white/90 font-chat w-full rounded-lg py-1 px-2 text-[0.9rem] font-normal leading-5 text-neutral-800 border-b border-dotted {msg.ask
 									? 'border-emerald-700 border-r rounded-l-none !rounded-b-lg pl-6'
-									: 'border-zinc-400 border-l rounded-r-none rounded-t-lg pr-6'}"
+									: 'border-neutral-400 border-l rounded-r-none rounded-t-lg pr-6'}"
 							>
 								{msg.content}
 							</div>
@@ -263,7 +268,7 @@
 									</div>
 									<Button
 										variant="ghost"
-										class="absolute bottom-0 w-6 h-6 p-1 right-0.5 hover:bg-zinc-100"
+										class="absolute bottom-0 w-6 h-6 p-1 right-0.5 hover:bg-neutral-100"
 										onclick={handleAskClick}
 									>
 										<CircleArrowOutUpRight
@@ -282,13 +287,13 @@
 
 		<Resizable.Handle
 			withHandle
-			class="-translate-x-2 h-3 border border-zinc-200"
+			class="-translate-x-2 h-3 border border-neutral-200"
 			handleClass="absolute left-4"
 		/>
 
 		<Resizable.Pane minSize={20} defaultSize={20} class="w-full p-1 !m-0">
 			<div
-				class="w-full px-2 h-8 bg-zinc-50 flex justify-between items-center"
+				class="w-full px-2 h-8 bg-neutral-50 flex justify-between items-center"
 			>
 				<Label for="bookmark-mode" class="absolute left-[15px] z-10"
 					><Bookmark size={10} class="text-color-500" /></Label
@@ -324,14 +329,11 @@
 					<ShowBookMarkIcon {messages}></ShowBookMarkIcon>
 
 					<!-- summary -->
-					<ShowSummaryIcon ></ShowSummaryIcon>
+					<ShowSummaryIcon></ShowSummaryIcon>
 				</div>
 			</div>
 
-			<form
-				onsubmit={handleSubmit}
-				class="w-full h-full px-1 pt-1 pb-2"
-			>
+			<form onsubmit={handleSubmit} class="w-full h-full px-1 pt-1 pb-2">
 				<textarea
 					placeholder="Send message"
 					bind:value={newMsg.content}
@@ -340,7 +342,7 @@
 							handleSubmit(e);
 						}
 					}}
-					class=" font-chat  rounded-lg h-[calc(100%-24px)] w-full p-2 text-baseas font-normal focus:shadow"
+					class=" font-chat rounded-lg h-[calc(100%-24px)] w-full p-2 text-baseas font-normal focus:shadow"
 				></textarea>
 			</form>
 		</Resizable.Pane>
@@ -349,27 +351,27 @@
 
 <style>
 	.chat {
-		@apply fixed z-50 h-[calc(100vh-120px)] w-full  min-w-[250px] rounded-lg  bg-zinc-50 shadow-lg shadow-emerald-950 sm:h-[calc(100vh-80px)];
+		@apply fixed z-50 h-[calc(100vh-120px)] w-full  min-w-[250px] rounded-lg  bg-neutral-50 shadow-lg shadow-emerald-950 sm:h-[calc(100vh-80px)];
 	}
 
 	.time {
-		@apply w-[50px] translate-y-1 scale-90 font-mono text-xs font-light text-zinc-400;
+		@apply w-[50px] translate-y-1 scale-90 font-mono text-xs font-light text-neutral-400;
 	}
 
-		/* scroll bar */
-		::-webkit-scrollbar {
+	/* scroll bar */
+	::-webkit-scrollbar {
 		width: 0.5rem;
 	}
 
 	::-webkit-scrollbar-track {
-		@apply bg-zinc-200/80 rounded-full;
+		@apply bg-neutral-200/80 rounded-full;
 	}
 
 	::-webkit-scrollbar-thumb {
-		@apply bg-zinc-400/80 rounded-full;
+		@apply bg-neutral-400/80 rounded-full;
 	}
 
 	::-webkit-scrollbar-thumb:hover {
-		@apply bg-zinc-500/80 rounded-full;
+		@apply bg-neutral-500/80 rounded-full;
 	}
 </style>

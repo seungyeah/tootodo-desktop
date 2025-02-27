@@ -6,7 +6,7 @@
 </script>
 
 <script lang="ts">
-	import TaskTree from './TaskTree.svelte';
+	import TaskTree from "./TaskTree.svelte";
 
 	import {
 		getLocalTimeZone,
@@ -32,7 +32,11 @@
 		helpers: { isExpanded, isSelected },
 	} = getContext<TreeView>("tree");
 
-	let { level = 1, treeItems = $bindable([]) , scrollPosition = $bindable({ scrollTop: 0, scrollLeft: 0 }) }: Props = $props();
+	let {
+		level = 1,
+		treeItems = $bindable([]),
+		scrollPosition = $bindable({ scrollTop: 0, scrollLeft: 0 }),
+	}: Props = $props();
 
 	const todayValue = today(getLocalTimeZone());
 	let cellDuration = {
@@ -142,14 +146,14 @@
 		draggedTask = null;
 	}
 
-	$effect(()=>{
-		console.log(treeItems)
-	})
+	$effect(() => {
+		console.log(treeItems);
+	});
 </script>
 
 {#key treeItems}
 	<div
-		class="border-zinc-800
+		class="border-neutral-800
 			 h-full max-h-[calc(100%-48px)] w-full min-w-full overflow-x-clip overflow-y-auto"
 		bind:this={tableContainer}
 		onscroll={handleScroll}
@@ -176,7 +180,7 @@
 				{#if !hasChildren}
 					<div
 						class={level !== 1
-							? "pl-4 h-full bg-zinc-100 border-b"
+							? "pl-4 h-full bg-neutral-100 border-b"
 							: ""}
 					></div>
 				{/if}
@@ -192,22 +196,18 @@
 					<TaskSettingIcon {task} {hasChildren} />
 					<div
 						class={hasChildren && $isSelected(itemId)
-							? "flex space-x-1 border border-zinc-200 shadow-sm rounded-full py-0.5 px-1.5"
+							? "flex space-x-1 border border-neutral-200 shadow-sm rounded-full py-0.5 px-1.5"
 							: ""}
 					>
 						<!-- Folder icon. -->
 						{#if hasChildren && $isExpanded(itemId)}
-							<FolderOpen
-								class="w-4 h-4"
-							/>
+							<FolderOpen class="w-4 h-4" />
 						{:else if hasChildren}
 							<Folder class="w-4 h-4 " />
 						{/if}
 						<!-- Selected icon. -->
 						{#if $isSelected(itemId)}
-							<ArrowRight
-								class="w-4 h-4 text-pomodoro-500"
-							/>
+							<ArrowRight class="w-4 h-4 text-pomodoro-500" />
 						{/if}
 					</div>
 				</div>
@@ -216,7 +216,7 @@
 				<div class="h-[30px] border-b border-r w-full">
 					<input
 						value={task?.title}
-						class="h-full px-1.5 w-full bg-transparent focus:bg-zinc-50"
+						class="h-full px-1.5 w-full bg-transparent focus:bg-neutral-50"
 						onblur={(e) => handleUpdateTitle(task, e.target.value)}
 					/>
 				</div>
@@ -243,7 +243,7 @@
 									<div class="">
 										{task?.startDate.slice(5, 10)}
 									</div>
-									<div class="font-extrabold text-zinc-400">
+									<div class="font-extrabold text-neutral-400">
 										~
 									</div>
 									<div>
@@ -251,7 +251,7 @@
 									</div>
 								{:else}
 									00-00 <span
-										class="font-extrabold text-zinc-400"
+										class="font-extrabold text-neutral-400"
 										>~</span
 									> 00-00
 								{/if}
@@ -268,24 +268,24 @@
 				</Popover.Root> -->
 
 				<!-- progress rate -->
-<!--				<div-->
-<!--					class="w-20 min-w-20 h-[30px] border-b border-r px-1.5"-->
-<!--					class:group_={$isExpanded(itemId)}-->
-<!--				>-->
-<!--					<input-->
-<!--						class="w-20 translate-y-1.5 shadow opacity-30"-->
-<!--						class:complete={task?.progress_rate === 100}-->
-<!--						class:inProgress={task?.progress_rate > 25 &&-->
-<!--							task?.progress_rate < 100}-->
-<!--						type="range"-->
-<!--						step="25"-->
-<!--						min="0"-->
-<!--						max="100"-->
-<!--						value={task?.progress_rate || 0}-->
-<!--						onchange={(e) =>-->
-<!--							handleUpdateProgressRate(task, e.target.value)}-->
-<!--					/>-->
-<!--				</div>-->
+				<!--				<div-->
+				<!--					class="w-20 min-w-20 h-[30px] border-b border-r px-1.5"-->
+				<!--					class:group_={$isExpanded(itemId)}-->
+				<!--				>-->
+				<!--					<input-->
+				<!--						class="w-20 translate-y-1.5 shadow opacity-30"-->
+				<!--						class:complete={task?.progress_rate === 100}-->
+				<!--						class:inProgress={task?.progress_rate > 25 &&-->
+				<!--							task?.progress_rate < 100}-->
+				<!--						type="range"-->
+				<!--						step="25"-->
+				<!--						min="0"-->
+				<!--						max="100"-->
+				<!--						value={task?.progress_rate || 0}-->
+				<!--						onchange={(e) =>-->
+				<!--							handleUpdateProgressRate(task, e.target.value)}-->
+				<!--					/>-->
+				<!--				</div>-->
 			</div>
 
 			{#if subtasks?.length}
@@ -306,15 +306,15 @@
 
 <style>
 	.group_ {
-		@apply border-r-[3px] border-r-zinc-700 mr-2 ml-[2.5px] rounded-r-md rounded-b-none;
+		@apply border-r-[3px] border-r-neutral-700 mr-2 ml-[2.5px] rounded-r-md rounded-b-none;
 	}
 
 	.group {
-		@apply border-l-2 rounded-b-none ml-1  border-zinc-700;
+		@apply border-l-2 rounded-b-none ml-1  border-neutral-700;
 	}
 
 	.groupChild {
-		@apply border-zinc-500 ml-1 mr-1 border-t  border-dashed;
+		@apply border-neutral-500 ml-1 mr-1 border-t  border-dashed;
 	}
 
 	.draggable {
@@ -439,7 +439,7 @@
 	}
 
 	::-webkit-scrollbar-track {
-		@apply bg-zinc-100;
+		@apply bg-neutral-100;
 	}
 
 	::-webkit-scrollbar-thumb {
@@ -447,6 +447,6 @@
 	}
 
 	::-webkit-scrollbar-thumb:hover {
-		@apply bg-zinc-500 rounded-full;
+		@apply bg-neutral-500 rounded-full;
 	}
 </style>

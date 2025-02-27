@@ -68,7 +68,7 @@
 						</td>
 					</DropdownMenu.Trigger>
 					<DropdownMenu.Content
-						class="border-2 w-[190px] border-double border-zinc-800 "
+						class="border-2 w-[190px] border-double border-neutral-800 "
 						side="bottom"
 						alignOffset={-100}
 						sideOffset={-30}
@@ -116,7 +116,9 @@
 						<DropdownMenu.Group
 							class="flex items-center justify-center pl-8"
 						>
-							<DropdownMenu.Label class="absolute left-0 text-xs ">
+							<DropdownMenu.Label
+								class="absolute left-0 text-xs "
+							>
 								{#if hasChildren}
 									<Ungroup size={20} class="mx-1.5" />
 								{:else}
@@ -158,7 +160,8 @@
 										onclick={openNote(task)}
 										class="relative -translate-y-1"
 										><BookOpen size={20} class="mx-1" />
-										<span class="absolute -left-0.5 -bottom-3.5"
+										<span
+											class="absolute -left-0.5 -bottom-3.5"
 											>open</span
 										></button
 									>
@@ -168,12 +171,14 @@
 										onclick={openNotePageList(task)}
 										class="relative -translate-y-1"
 										><FilePlus size={20} /><span
-											class="absolute -left-1 -bottom-3.5">page</span
+											class="absolute -left-1 -bottom-3.5"
+											>page</span
 										></button
 									>
 								</DropdownMenu.Item>
 							{:else}
-								<DropdownMenu.Label class="absolute text-xs left-1.5"
+								<DropdownMenu.Label
+									class="absolute text-xs left-1.5"
 									><BookPlus size={20} />
 								</DropdownMenu.Label>
 								<DropdownMenu.Item class="h-8 ml-8">
@@ -192,47 +197,56 @@
 						<DropdownMenu.Group
 							class="relative flex items-center justify-center w-full pl-8"
 						>
-							<DropdownMenu.Label class="absolute left-0.5 text-xs"
+							<DropdownMenu.Label
+								class="absolute left-0.5 text-xs"
 								><Trash2 size={20} />
 							</DropdownMenu.Label>
 
 							{#if !hasChildren}
 								<DropdownMenu.Item class="">
-									<button onclick={handleDelete(task, "DELETE_TASK")}
-										>Delete Task</button
+									<button
+										onclick={handleDelete(
+											task,
+											"DELETE_TASK",
+										)}>Delete Task</button
 									>
 								</DropdownMenu.Item>
 							{:else}
-							<div class="flex flex-col w-full items-center justify-center">
-								<div class="text-xs text-zinc-500">
-									task 삭제 시 subtask?
+								<div
+									class="flex flex-col w-full items-center justify-center"
+								>
+									<div class="text-xs text-neutral-500">
+										task 삭제 시 subtask?
+									</div>
+									<div
+										class="flex w-full items-center justify-center"
+									>
+										<DropdownMenu.Item class="">
+											<button
+												onclick={handleDelete(
+													task,
+													"CONVERT_SUBTASK_TO_TASK",
+												)}>task로 전환</button
+											>
+										</DropdownMenu.Item>
+										<DropdownMenu.Item class="">
+											<button
+												onclick={handleDelete(
+													task,
+													"DELETE_ALL_SUBTASK",
+												)}>제거</button
+											>
+										</DropdownMenu.Item>
+									</div>
 								</div>
-								<div class="flex w-full items-center justify-center">
-									<DropdownMenu.Item class="">
-										<button
-											onclick={handleDelete(
-												task,
-												"CONVERT_SUBTASK_TO_TASK",
-											)}>task로 전환</button
-										>
-									</DropdownMenu.Item>
-									<DropdownMenu.Item class="">
-										<button
-											onclick={handleDelete(
-												task,
-												"DELETE_ALL_SUBTASK",
-											)}>제거</button
-										>
-									</DropdownMenu.Item>
-								</div>								
-							</div>							
-								
 							{/if}
 						</DropdownMenu.Group>
 						<DropdownMenu.Separator />
 
 						<!-- etc. (un)set milestone, critical path info, open chat-->
-						<DropdownMenu.Group class="flex items-center justify-center ">
+						<DropdownMenu.Group
+							class="flex items-center justify-center "
+						>
 							<DropdownMenu.Item class="">
 								<button
 									onclick={handleUpdate(
@@ -242,7 +256,9 @@
 									)}
 									><Diamond
 										size={20}
-										fill={task.milestone ? "#e46b75" : "#3f3f46"}
+										fill={task.milestone
+											? "#e46b75"
+											: "#3f3f46"}
 									/></button
 								>
 							</DropdownMenu.Item>

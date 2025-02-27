@@ -72,7 +72,9 @@ https://svelte.dev/e/each_item_invalid_assignment -->
 
 {#key $habits}
    <table class="h-full">
-      <thead class="sticky top-0 z-10 h-0 bg-white border-t-2 border-zinc-500">
+      <thead
+         class="sticky top-0 z-10 h-0 bg-white border-t-2 border-neutral-500"
+      >
       </thead>
       <tbody class="h-full text-center">
          {#if !$habits || $habits.length === 0}
@@ -109,7 +111,7 @@ https://svelte.dev/e/each_item_invalid_assignment -->
                      <td class="h-[30px] border border-t-0 w-full inline-block">
                         <IconPicker
                            on:update={(e) =>
-                              $habits[i] = handleUpdateIcon(habit, e)}
+                              ($habits[i] = handleUpdateIcon(habit, e))}
                         >
                            {#snippet trigger()}
                               <div class="h-[30px]">

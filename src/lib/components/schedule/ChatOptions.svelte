@@ -1,5 +1,5 @@
 <script lang="ts">
-   import { run } from 'svelte/legacy';
+   import { run } from "svelte/legacy";
 
    import { DropdownMenu, Button, ScrollArea } from "$ui";
    interface Props {
@@ -20,9 +20,9 @@
 
 <div class="flex h-full p-1">
    <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild >
+      <DropdownMenu.Trigger asChild>
          {#snippet children({ builder })}
-                  <Button
+            <Button
                builders={[builder]}
                variant="outline"
                class="max-w-72 overflow-clip h-full px-3 text-xs text-start "
@@ -33,8 +33,8 @@
                   {selectedItem.title || "Select " + type}
                {/if}
             </Button>
-                        {/snippet}
-            </DropdownMenu.Trigger>
+         {/snippet}
+      </DropdownMenu.Trigger>
       <DropdownMenu.Content class="h-[300px]" side="top">
          <DropdownMenu.Group>
             <DropdownMenu.Label>Today's {type} List</DropdownMenu.Label>
@@ -51,7 +51,7 @@
                      {#each subtasks as subtask}
                         <DropdownMenu.Item
                            onclick={() => (selectedItem = subtask.task)}
-                           class="border-b border-dashed m-1.5 mr-2.5 ml-4 bg-zinc-50"
+                           class="border-b border-dashed m-1.5 mr-2.5 ml-4 bg-neutral-50"
                         >
                            {subtask.task.title}
                         </DropdownMenu.Item>
@@ -64,9 +64,7 @@
                         class="border-b border-dashed m-1.5 mr-2.5"
                      >
                         {#if item.icon}
-                           <item.icon
-                              class="w-4 h-4 mr-2"
-                           />
+                           <item.icon class="w-4 h-4 mr-2" />
                         {/if}
                         {item.title}
                      </DropdownMenu.Item>

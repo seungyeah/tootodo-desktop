@@ -5,10 +5,9 @@
 		Diamond,
 		MessageCircle,
 		Plus,
-		Trash2,CornerDownRight,
-
-        EllipsisVertical
-
+		Trash2,
+		CornerDownRight,
+		EllipsisVertical,
 	} from "lucide-svelte";
 	import { createEventDispatcher, getContext } from "svelte";
 	import { type Task } from "$lib/schema";
@@ -60,7 +59,9 @@
 		<tbody>
 			{#key tasks}
 				{#each $tasks as task, i}
-					<tr class="z-10 flex h-[30px] items-center border-b border-zinc-400 border-dashed">
+					<tr
+						class="z-10 flex h-[30px] items-center border-b border-neutral-400 border-dashed"
+					>
 						<DropdownMenu.Root>
 							<DropdownMenu.Trigger>
 								<td class="">
@@ -72,41 +73,55 @@
 								</td>
 							</DropdownMenu.Trigger>
 							<DropdownMenu.Content
-								class="border-2 border-double border-zinc-800 "
+								class="border-2 border-double border-neutral-800 "
 								side="left"
 							>
 								<DropdownMenu.Group
 									class="flex items-center justify-center"
 								>
 									<DropdownMenu.Item class="h-8 py-0">
-										<button onclick={handleCreate(task, false)} class="relative h-8 w-7"
-											><Plus size={20} /><span class="absolute bottom-0 right-0">🔻</span>
+										<button
+											onclick={handleCreate(task, false)}
+											class="relative h-8 w-7"
+											><Plus size={20} /><span
+												class="absolute bottom-0 right-0"
+												>🔻</span
+											>
 										</button>
 									</DropdownMenu.Item>
 									<DropdownMenu.Item class="h-8 py-0">
-										<button onclick={handleCreate(task, true)}  class="relative w-6 h-7"
-											><Plus size={20} /><CornerDownRight class="absolute bottom-0 right-0 w-3 h-3"/></button
+										<button
+											onclick={handleCreate(task, true)}
+											class="relative w-6 h-7"
+											><Plus size={20} /><CornerDownRight
+												class="absolute bottom-0 right-0 w-3 h-3"
+											/></button
 										>
 									</DropdownMenu.Item>
-									
-									
 								</DropdownMenu.Group>
-								<DropdownMenu.Separator/>
+								<DropdownMenu.Separator />
 								<DropdownMenu.Group
 									class="flex items-center justify-center "
 								>
-									
 									<DropdownMenu.Item class="">
 										<button
 											onclick={handleUpdate(
 												task,
 												"milestone",
 												!task.milestone,
-											)}><Diamond size={20} fill={task.milestone? "#e46b75":"#3f3f46"}/></button
+											)}
+											><Diamond
+												size={20}
+												fill={task.milestone
+													? "#e46b75"
+													: "#3f3f46"}
+											/></button
 										>
 									</DropdownMenu.Item>
 									<DropdownMenu.Item class="">
-										<button onclick={() => (openChat = !openChat)}
+										<button
+											onclick={() =>
+												(openChat = !openChat)}
 											><MessageCircle size={20} /></button
 										>
 									</DropdownMenu.Item>

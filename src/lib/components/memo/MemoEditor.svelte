@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
+	import { run } from "svelte/legacy";
 
 	import { onMount } from "svelte";
 	import type { Readable } from "svelte/store";
@@ -15,7 +15,6 @@
 	import { Button, DropdownMenu } from "$ui";
 	import { Eclipse, Pin } from "lucide-svelte";
 
-	
 	let editor: Readable<Editor> = $state();
 	let selectedColor = $state("#d1d5db");
 	let content;
@@ -25,13 +24,16 @@
 		memo?: any;
 	}
 
-	let { class: className = undefined, memo = $bindable({
-		date: "2024-04-21",
-		color: "default",
-		title: "Memo Title",
-		content: "",
-		pin: true,
-	}) }: Props = $props();
+	let {
+		class: className = undefined,
+		memo = $bindable({
+			date: "2024-04-21",
+			color: "default",
+			title: "Memo Title",
+			content: "",
+			pin: true,
+		}),
+	}: Props = $props();
 
 	onMount(() => {
 		selectedColor =
@@ -72,7 +74,9 @@
 		$editor.chain().focus().setParagraph().run();
 	};
 
-	let isActive = $derived((name: string, attrs = {}) => $editor.isActive(name, attrs));
+	let isActive = $derived((name: string, attrs = {}) =>
+		$editor.isActive(name, attrs),
+	);
 
 	let menuItems = $derived([
 		{
@@ -109,13 +113,28 @@
 
 	//memo color 300,500,700
 	let colors = [
-		{ name: "default", normal: "#f59e0b", light: "#fcd34d", dark: "#b45309" },
+		{
+			name: "default",
+			normal: "#f59e0b",
+			light: "#fcd34d",
+			dark: "#b45309",
+		},
 		{ name: "rose", normal: "#f43f5e", light: "#fda4af", dark: "#be123c" },
 		// { name: 'orange', normal: '#f97316', light: '#fdba74', dark: '#c2410c' },
-		{ name: "violet", normal: "#8b5cf6", light: "#c4b5fd", dark: "#6d28d9" },
+		{
+			name: "violet",
+			normal: "#8b5cf6",
+			light: "#c4b5fd",
+			dark: "#6d28d9",
+		},
 		{ name: "green", normal: "#22c55e", light: "#86efac", dark: "#15803d" },
 		{ name: "blue", normal: "#3b82f6", light: "#93c5fd", dark: "#1d4ed8" },
-		{ name: "fuchsia", normal: "#d946ef", light: "#f0abfc", dark: "#a21caf" },
+		{
+			name: "fuchsia",
+			normal: "#d946ef",
+			light: "#f0abfc",
+			dark: "#a21caf",
+		},
 	];
 
 	run(() => {
@@ -125,7 +144,7 @@
 </script>
 
 {#if editor}
-	<div class="bg-white w-full  my-1">
+	<div class="bg-white w-full my-1">
 		<BubbleMenu editor={$editor}>
 			<div data-test-id="bubble-menu" class="flex">
 				<button
@@ -153,18 +172,19 @@
 		<div
 			class="relative flex w-full h-8 gap-1 p-2 border-2 border-double shadow-sm rounded-t-md"
 			style="border-color: {selectedColor}; border-bottom: 0;"
-		>		
+		>
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger
 					class="z-10 absolute -right-[0.6rem] -top-0  -translate-y-1.5 rounded p-0"
 				>
 					<Button
 						variant="ghost"
-						class="h-full px-1 py-0 rounded-full hover:bg-zinc-50 "
+						class="h-full px-1 py-0 rounded-full hover:bg-neutral-50 "
 					>
 						<Eclipse
 							style="width:22px; height:22px;"
-							fill={colors.find((c) => c.name === memo.color)?.dark}
+							fill={colors.find((c) => c.name === memo.color)
+								?.dark}
 							color="white"
 						/>
 					</Button>
@@ -172,8 +192,11 @@
 				<DropdownMenu.Content class="-translate-y-2">
 					<DropdownMenu.Group>
 						<DropdownMenu.Item onclick={() => (memo.pin = true)}
-							><Pin size={16} fill="#e4e4e7" class="w-4 h-4 mr-2" />Set
-							pin</DropdownMenu.Item
+							><Pin
+								size={16}
+								fill="#e4e4e7"
+								class="w-4 h-4 mr-2"
+							/>Set pin</DropdownMenu.Item
 						>
 					</DropdownMenu.Group>
 					<DropdownMenu.Separator />
@@ -182,7 +205,7 @@
 							>Set Color</DropdownMenu.Label
 						>
 						<DropdownMenu.Item
-							class="grid grid-cols-3 data-[highlighted]:bg-zinc-50"
+							class="grid grid-cols-3 data-[highlighted]:bg-neutral-50"
 						>
 							{#each colors as color}
 								<Button
@@ -230,7 +253,7 @@
 				{memo.date}
 			</div>
 
-			<EditorContent editor={$editor}/>
+			<EditorContent editor={$editor} />
 		</main>
 	</div>
 {/if}

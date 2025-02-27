@@ -22,14 +22,18 @@
 </script>
 
 {#key tagGroup}
-   <div class="m-2 bg-white border rounded-lg shadow border-zinc-500">
+   <div class="m-2 bg-white border rounded-lg shadow border-neutral-500">
       <div class="flex flex-col items-start justify-center gap-2">
          <div
-            class="flex w-full px-2 py-1 space-x-2 border-b border-dashed rounded-none border-zinc-500"
+            class="flex w-full px-2 py-1 space-x-2 border-b border-dashed rounded-none border-neutral-500"
          >
             <Button class="z-10 w-7 h-6 p-0.5 shadow" variant="ghost"
-               ><SelectGroupColor {tagGroup} class="text-zinc-400 scale-90" icon={Droplet}/></Button
-            >            
+               ><SelectGroupColor
+                  {tagGroup}
+                  class="text-neutral-400 scale-90"
+                  icon={Droplet}
+               /></Button
+            >
             <div class="w-full h-full text-sm translate-y-0.5 font-bold">
                {tagGroup.name}
             </div>
@@ -37,8 +41,7 @@
 
          <div
             use:melt={$root}
-            class="flex gap-1.5 -translate-y-0.5 flex-wrap w-full px-2.5 py-1 bg-white rounded-md text-zinc-700"
-            
+            class="flex gap-1.5 -translate-y-0.5 flex-wrap w-full px-2.5 py-1 bg-white rounded-md text-neutral-700"
          >
             {#each $tags as t}
                <div
@@ -46,13 +49,13 @@
                   class="flex items-center overflow-hidden rounded-md [word-break:break-word]"
                >
                   <Badge
-                     class="flex h-5 items-center font-medium border-r rounded-md border-white/10 px-1.5 bg-inherit rounded-r-none"                     
+                     class="flex h-5 items-center font-medium border-r rounded-md border-white/10 px-1.5 bg-inherit rounded-r-none"
                      style={`background-color: ${tagGroup.color};`}
                      >{t.value}</Badge
                   >
                   <button
                      use:melt={$deleteTrigger(t)}
-                     class="flex items-center h-5 px-1 enabled:hover:bg-zinc-300 rounded-r-md"                     
+                     class="flex items-center h-5 px-1 enabled:hover:bg-neutral-300 rounded-r-md"
                      style={`background-color: ${tagGroup.color};`}
                   >
                      <X size={14} />
@@ -62,14 +65,14 @@
                   use:melt={$edit(t)}
                   class="flex items-center overflow-hidden rounded-md px-1.5 [word-break:break-word]
                 data-[invalid-edit]:focus:!ring-red-500"
-></div>
+               ></div>
             {/each}
 
             <input
                use:melt={$input}
                type="text"
                placeholder="Add tag..."
-               class="font-mono min-w-[4.5rem] p-1 shrink grow basis-0 border-0 text-black outline-none focus:shadow focus:ring-2 focus:ring-zinc-900 focus:rounded-sm data-[invalid]:text-red-500"
+               class="font-mono min-w-[4.5rem] p-1 shrink grow basis-0 border-0 text-black outline-none focus:shadow focus:ring-2 focus:ring-neutral-900 focus:rounded-sm data-[invalid]:text-red-500"
             />
          </div>
       </div>

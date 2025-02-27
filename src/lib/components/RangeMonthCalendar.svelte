@@ -1,10 +1,9 @@
 <script lang="ts">
-   import { run } from 'svelte/legacy';
+   import { run } from "svelte/legacy";
 
    import { Button } from "$ui";
    import { CalendarDate } from "@internationalized/date";
    import { ChevronLeft, ChevronRight } from "lucide-svelte";
-
 
    let { value = $bindable(), initValue } = $props();
    let year;
@@ -60,21 +59,21 @@
                ${
                   value.start || value.end
                      ? value.start?.month < i + 1 && value.end?.month > i + 1
-                        ? "bg-zinc-100"
+                        ? "bg-neutral-100"
                         : (value.start?.month === i + 1 &&
                                value.start?.year === year) ||
                             (value.end?.month === i + 1 &&
                                value.end?.year === year)
-                          ? "bg-zinc-300"
+                          ? "bg-neutral-300"
                           : ""
                      : initValue.start?.month < i + 1 &&
                          initValue.end?.month > i + 1
-                       ? "bg-zinc-100"
+                       ? "bg-neutral-100"
                        : (initValue.end?.month === i + 1 &&
                               initValue.end?.year === year) ||
                            (initValue.start?.month === i + 1 &&
                               initValue.start?.year === year)
-                         ? "bg-zinc-300"
+                         ? "bg-neutral-300"
                          : ""
                }
             `}

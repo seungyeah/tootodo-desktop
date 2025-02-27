@@ -19,7 +19,7 @@
       {#if trigger}{@render trigger()}{:else}Icon{/if}
    </DropdownMenu.Trigger>
    <DropdownMenu.Content
-      class="w-[300px] translate-x-2 border-2 border-double border-zinc-800 "
+      class="w-[300px] translate-x-2 border-2 border-double border-neutral-800 "
    >
       <DropdownMenu.Group>
          <div

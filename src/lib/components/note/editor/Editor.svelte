@@ -12,13 +12,14 @@
 	} from "svelte-tiptap";
 
 	let editor: Readable<Editor> = $state();
-	
+
 	interface Props {
 		class?: $$Props["class"];
 		content?: string;
 	}
 
-	let { class: className = undefined, content = $bindable("") }: Props = $props();
+	let { class: className = undefined, content = $bindable("") }: Props =
+		$props();
 
 	onMount(() => {
 		editor = createEditor({
@@ -53,7 +54,9 @@
 		$editor.chain().focus().setParagraph().run();
 	};
 
-	let isActive = $derived((name: string, attrs = {}) => $editor.isActive(name, attrs));
+	let isActive = $derived((name: string, attrs = {}) =>
+		$editor.isActive(name, attrs),
+	);
 
 	let menuItems = $derived([
 		{
@@ -116,15 +119,15 @@
 
 		<!-- editor tooltip -->
 		<div
-			class="flex h-9 w-full items-center space-x-1 rounded-t-md border border-b-0 border-zinc-200 p-2"
+			class="flex h-9 w-full items-center space-x-1 rounded-t-md border border-b-0 border-neutral-200 p-2"
 		>
 			{#each menuItems as item (item.name)}
 				<button
 					type="button"
 					class={cx(
-						"h-6 w-6 rounded font-bold hover:bg-zinc-950 hover:text-white",
+						"h-6 w-6 rounded font-bold hover:bg-neutral-950 hover:text-white",
 						{
-							"bg-zinc-500 text-white": item.active(),
+							"bg-neutral-500 text-white": item.active(),
 						},
 					)}
 					onclick={item.command}
@@ -137,7 +140,7 @@
 		<!-- editor -->
 		<div
 			class="w-full h-[calc(100%-36px)]
-			border border-zinc-200 rounded-b-md max-y-full overflow-y-auto
+			border border-neutral-200 rounded-b-md max-y-full overflow-y-auto
 			dark:prose-invert font-chat
 			leading-[1.55rem] prose-headings:my-1 prose-headings:font-bold
 			prose-h1:my-2 prose-h1:text-[1.45rem]

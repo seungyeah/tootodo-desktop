@@ -6,17 +6,17 @@
 </script>
 
 <DropdownMenu.Root>
-   <DropdownMenu.Trigger asChild >
+   <DropdownMenu.Trigger asChild>
       {#snippet children({ builder })}
-            <Button
+         <Button
             builders={[builder]}
             variant="ghost"
             size="sm"
             class="w-auto h-8 p-2 text-xs bg-white rounded-lg shadow"
             ><Stamp size={16} />
          </Button>
-               {/snippet}
-      </DropdownMenu.Trigger>
+      {/snippet}
+   </DropdownMenu.Trigger>
    <DropdownMenu.Content class="h-[300px]" side="top">
       <DropdownMenu.Group>
          <DropdownMenu.Label>Summary</DropdownMenu.Label>
@@ -30,7 +30,7 @@
                      >
                         <Button
                            variant="ghost"
-                           class="h-6 p-1 bg-zinc-50 rounded -translate-y-1"
+                           class="h-6 p-1 bg-neutral-50 rounded -translate-y-1"
                         >
                            {day}
                         </Button>

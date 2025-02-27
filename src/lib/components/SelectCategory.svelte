@@ -1,15 +1,9 @@
 <script lang="ts">
-   import {
-      Button,
-      Command,
-      Popover,
-      DropdownMenu,
-      Label,
-   } from "$ui";
+   import { Button, Command, Popover, DropdownMenu, Label } from "$ui";
 
    import { page } from "$app/stores";
    import { Check, ChevronsUpDown, Circle } from "lucide-svelte";
-   import {  tick } from "svelte";
+   import { tick } from "svelte";
 
    import { cn } from "$lib/utils.js";
    import { tailwindColors } from "$lib/tailwindColors";
@@ -80,9 +74,10 @@
    let new_color_hex = $state("#c4b5fd");
    let open = $state(false);
    let value = $state("tootodo");
-   let selectedValue =
-      $derived(categories.find((f) => f.value === value)?.label ??
-      "Select a Category...");
+   let selectedValue = $derived(
+      categories.find((f) => f.value === value)?.label ??
+         "Select a Category...",
+   );
 
    // We want to refocus the trigger button when the user selects
    // an item from the list so users can continue navigating the
@@ -99,22 +94,22 @@
 <div class="relative flex w-44">
    <!-- change category color -->
    <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild 
+      <DropdownMenu.Trigger asChild
          >{#snippet children({ builder })}
-                  <Button
+            <Button
                variant="ghost"
                builders={[builder]}
                class="absolute z-20 px-2 translate-x-1 translate-y-0 -left-3"
                ><Circle fill={new_color_hex} /></Button
-            >               {/snippet}
-            </DropdownMenu.Trigger
-      >
+            >
+         {/snippet}
+      </DropdownMenu.Trigger>
       <DropdownMenu.Content class="bg-white w-[360px]">
          <DropdownMenu.Label>Category Color</DropdownMenu.Label>
          <DropdownMenu.Separator />
          <DropdownMenu.Group>
             <DropdownMenu.Item
-               class="grid grid-cols-13 data-[highlighted]:bg-zinc-50"
+               class="grid grid-cols-13 data-[highlighted]:bg-neutral-50"
             >
                {#each tailwindColors as color}
                   <div class="col-span-2 mr-2 text-xs font-digital">
@@ -138,11 +133,11 @@
    </DropdownMenu.Root>
 
    <!-- select category -->
-   <Popover.Root bind:open >
+   <Popover.Root bind:open>
       {#snippet children({ ids })}
-            <Popover.Trigger asChild >
+         <Popover.Trigger asChild>
             {#snippet children({ builder })}
-                  <Button
+               <Button
                   builders={[builder]}
                   variant="outline"
                   role="combobox"
@@ -152,8 +147,8 @@
                   {selectedValue}
                   <ChevronsUpDown class="w-4 h-4 ml-2 opacity-50 shrink-0" />
                </Button>
-                           {/snippet}
-            </Popover.Trigger>
+            {/snippet}
+         </Popover.Trigger>
          <Popover.Content class="w-[170px] p-0 translate-y-1">
             <Command.Root>
                <Command.Input placeholder="Select Category" />
@@ -178,7 +173,7 @@
                            {category.label}
                         </div>
                         <Label
-                           class="w-5 h-5 border-2 rounded-full border-zinc-900"
+                           class="w-5 h-5 border-2 rounded-full border-neutral-900"
                            style={`background: ${category.color};`}
                         ></Label>
                      </Command.Item>
@@ -186,6 +181,6 @@
                </Command.Group>
             </Command.Root>
          </Popover.Content>
-               {/snippet}
-      </Popover.Root>
+      {/snippet}
+   </Popover.Root>
 </div>

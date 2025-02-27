@@ -26,7 +26,7 @@ https://svelte.dev/e/node_invalid_placement -->
 
    // scroll
    import { createEventDispatcher } from "svelte";
-    import ScrollArea from "$ui/scroll-area/scroll-area.svelte";
+   import ScrollArea from "$ui/scroll-area/scroll-area.svelte";
 
    const dispatch = createEventDispatcher();
    let tableContainer;
@@ -56,7 +56,7 @@ https://svelte.dev/e/node_invalid_placement -->
 </script>
 
 <ScrollArea
-   class="w-full h-full max-h-full overflow-y-scroll border-2 border-zinc-800"
+   class="w-full h-full max-h-full overflow-y-scroll border-2 border-neutral-800"
    bind:this={tableContainer}
    on:scroll={handleScroll}
 >
@@ -65,7 +65,7 @@ https://svelte.dev/e/node_invalid_placement -->
          <tr class="text-center text-[1rem] h-7">
             {#each monthCounts as monthCount}
                <td
-                  class="border-b-2 border-r border-zinc-600"
+                  class="border-b-2 border-r border-neutral-600"
                   colspan={monthCount.count}>{monthCount.month}</td
                >
             {/each}
@@ -75,18 +75,18 @@ https://svelte.dev/e/node_invalid_placement -->
             {#each months.dates as date}
                {@const day = date.toDate().getDay()}
                <td
-                  class="py-0 text-xs border-b-4 border-r border-zinc-600 text-zinc-600"
+                  class="py-0 text-xs border-b-4 border-r border-neutral-600 text-neutral-600"
                >
                   <div
-                  class={day === 0
-                     ? " border-r border-zinc-900 bg-gradient-to-b from-pomodoro-500/10 to-zinc-100"
-                     : day === 6
-                       ? "bg-gradient-to-b from-blue-500/10 to-zinc-100"
-                       : ""}
+                     class={day === 0
+                        ? " border-r border-neutral-900 bg-gradient-to-b from-pomodoro-500/10 to-neutral-100"
+                        : day === 6
+                          ? "bg-gradient-to-b from-blue-500/10 to-neutral-100"
+                          : ""}
                   >
                      <div class="py-0 text-xs">{days[day]}</div>
                      <div
-                        class="-translate-y-0.5 border-[0.5px] border-dotted border-zinc-700"
+                        class="-translate-y-0.5 border-[0.5px] border-dotted border-neutral-700"
                      ></div>
                      <div>{date.toString().split("-")[2]}</div>
                   </div>
@@ -105,8 +105,11 @@ https://svelte.dev/e/node_invalid_placement -->
                         {@const day = date.toDate().getDay()}
                         <td class="w-full border-b border-r border-dashed">
                            <!-- todo: record.start_date와 day가 동일할 경우에만. -->
-                           {#if day%3===0}
-                           <div class="w-3 h-3 m-auto rounded-full" style="background:{habit.color}; opacity:30%"/>
+                           {#if day % 3 === 0}
+                              <div
+                                 class="w-3 h-3 m-auto rounded-full"
+                                 style="background:{habit.color}; opacity:30%"
+                              />
                            {/if}
                         </td>
                      {/each}
