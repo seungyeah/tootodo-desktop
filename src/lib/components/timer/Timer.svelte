@@ -2,7 +2,14 @@
 	import { Button } from "$ui";
 	import PomoIcon from "$components/PomoIcon.svelte";
 	import TimerLayout from "./TimerLayout.svelte";
-	import { ArrowUp, Pause, Play, StepBack, StepForward } from "lucide-svelte";
+	import {
+		ArrowUp,
+		MoveHorizontal,
+		Pause,
+		Play,
+		StepBack,
+		StepForward,
+	} from "lucide-svelte";
 	import {
 		currentTime,
 		formatTime,
@@ -69,27 +76,40 @@
 	/////////////////////////////// web worker ///////////////////////////////
 	async function initWebWorker() {
 		if (typeof window !== "undefined" && window.Worker) {
-			const MyWorker = await import("$lib/worker/timer.worker?worker");
-			worker = await new MyWorker.default();
+			try {
+				const MyWorker = await import(
+					"$lib/worker/timer.worker?worker"
+				);
+				worker = new MyWorker.default();
 
-			// Web Worker에서 전달한 타이머 상태 정보를 메인 스레드에서 받아 Svelte 컴포넌트의 상태를 업데이트
-			worker.onmessage = async (e) => {
-				$timerStatus.leftTime =
-					e.data.leftTime || $timerStatus.leftTime;
-				stopSeconds = e.data.stopTime || stopSeconds;
-				if (e.data.leftTime === 0) {
-					await switchSession();
-				}
-			};
+				worker.onmessage = async (e) => {
+					if (e.data.leftTime !== undefined) {
+						$timerStatus.leftTime = e.data.leftTime;
+					}
+					if (e.data.stopTime !== undefined) {
+						stopSeconds = e.data.stopTime;
+					}
+					if (e.data.leftTime === 0) {
+						await switchSession();
+					}
+				};
+			} catch (error) {
+				console.error("Worker initialization failed:", error);
+			}
 		}
 	}
 
 	async function playTimer() {
+		if (!worker) await initWebWorker();
 		$timerStatus.play = true;
-		worker.postMessage({ action: "play", leftTime: $timerStatus.leftTime });
+		worker.postMessage({
+			action: "play",
+			leftTime: $timerStatus.leftTime,
+		});
 	}
 
 	async function stopTimer() {
+		if (!worker) return;
 		$timerStatus.play = false;
 		worker.postMessage({
 			action: "stop",
@@ -237,24 +257,61 @@
 
 {#if $timerOpen && records}
 	<div
-		class=" flex h-full w-full items-center justify-between rounded-2xl border-8 border-double border-neutral-50
-	bg-neutral-800 shadow-2xl"
+		class="z-20 w-full h-full flex flex-col items-center justify-center space-y-1
+    bg-neutral-950 p-2 text-neutral-100
+    rounded-2xl
+    shadow-[0_0_10px_rgba(0,0,0,0.3),inset_0_0_10px_rgba(255,255,255,0.1)]
+    border-4 border-neutral-800
+    relative
+    before:absolute before:inset-0 before:rounded-xl
+    before:shadow-[inset_0_2px_3px_rgba(255,255,255,0.2),inset_0_-2px_3px_rgba(0,0,0,0.2)]
+    "
 	>
+		<!-- 시계 테두리 효과 -->
+		<div
+			class="absolute -inset-0.5 rounded-2xl bg-gradient-to-b from-neutral-700 to-neutral-900 -z-10"
+		></div>
+
 		<!-- timer layout -->
 		<div
-			class="relative m-1 flex aspect-square h-full scale-90 rounded-full bg-neutral-100 p-0 shadow-xl"
+			class="relative flex aspect-square w-[94.5%] -translate-y-2 items-center justify-center rounded-full p-0 shadow-xl"
 		>
-			<div
-				class="h-full w-full rounded-full shadow-xl shadow-neutral-950"
-			>
+			<div class="h-full w-full rounded-full">
 				<TimerLayout />
 			</div>
 
-			<!-- play/stop -->
+			<!-- finish , reset-->
 			<Button
-				variant="secondary"
-				class="absolute -left-[2.9rem] -top-7 z-50 h-[220px]  w-[220px] translate-x-1/3 translate-y-1/4
-		 rounded-full  border-4  border-amber-950 bg-black/20 p-0 shadow-xl hover:bg-black/60"
+				variant="ghost"
+				class="absolute -left-2 top-1.5 z-10 
+					    w-12 h-12 rounded-full
+					   bg-neutral-700 hover:bg-neutral-700
+					   shadow-[inset_0_2px_4px_rgba(255,255,255,0.1),0_2px_4px_rgba(0,0,0,0.2)]
+					   border border-neutral-700"
+				onclick={async () => {
+					setNewRecordAt($timerStatus.cycle);
+					await resetTimer();
+					$timerOpen = false;
+				}}><StepBack color="white" fill="white" size={24} /></Button
+			>
+
+			<!-- next session -->
+			<Button
+				variant="ghost"
+				class="absolute -right-2 bottom-0 z-10
+					   w-12 h-12 rounded-full
+					   bg-neutral-800 hover:bg-neutral-700
+					   shadow-[inset_0_2px_4px_rgba(255,255,255,0.1),0_2px_4px_rgba(0,0,0,0.2)]
+					   border border-neutral-700"
+				onclick={async () => {
+					await switchSession();
+				}}><StepForward color="white" fill="white" size={24} /></Button
+			>
+
+			<!-- timer operation Button: play/stop -->
+			<Button
+				class="absolute top-7 left-7 z-50 h-[204px]  w-[204px] 
+		 			   rounded-full  border-4  border-neutral-950 bg-black/20 p-0 shadow-xl hover:bg-black/60"
 				onclick={async () => {
 					$timerStatus.play ? await stopTimer() : await playTimer();
 				}}
@@ -262,7 +319,7 @@
 				{#if $timerStatus.play}
 					<Pause fill="#e4e4e7" color="#e4e4e7" size={44} />
 					<div
-						class="font-digital absolute left-1/2 top-1/2 translate-x-5 font-bold text-neutral-50"
+						class="text-2xl font-digital absolute left-1/2 top-1/2 -translate-x-1/2 translate-y-1/2 font-bold text-neutral-50"
 					>
 						{Math.floor($timerStatus.leftTime / 60)
 							.toString()
@@ -273,7 +330,7 @@
 				{:else}
 					<Play fill="#e4e4e7" color="#e4e4e7" size={44} />
 					<div
-						class="font-digital absolute left-1/2 top-1/2 translate-x-5 font-bold text-neutral-400"
+						class="text-2xl font-digital absolute left-1/2 top-1/2 -translate-x-1/2 translate-y-1/2 font-bold text-neutral-300"
 					>
 						{Math.floor(stopSeconds / 60)
 							.toString()
@@ -283,131 +340,86 @@
 					</div>
 				{/if}
 			</Button>
-
-			<!-- finish -->
-			<Button
-				variant="ghost"
-				class="absolute -left-2 top-0 z-10  px-1 hover:bg-neutral-200 hover:shadow hover:shadow-neutral-50"
-				onclick={async () => {
-					setNewRecordAt($timerStatus.cycle);
-					await resetTimer();
-					$timerOpen = false;
-				}}><StepBack color="#52525b" fill="#52525b" size={32} /></Button
-			>
-
-			<!-- next session -->
-			<Button
-				variant="ghost"
-				class="absolute -right-2 bottom-0 z-10  px-1  hover:bg-neutral-200 hover:shadow hover:shadow-neutral-50"
-				onclick={async () => {
-					await switchSession();
-				}}
-				><StepForward
-					color="#52525b"
-					fill="#52525b"
-					size={32}
-				/></Button
-			>
-
-			<!-- goal working time  and project-->
-			<div
-				class="absolute top-2 right-1 flex items-end text-xs text-neutral-100"
-			>
-				<div
-					class="p-0 rounded-full w-8 h-8 border-2 border-neutral-100 border-dashed opacity-80"
-					style="background-color:{$timerSetting.projectColor}"
-				></div>
-				<div class="absolute w-8 h-7 text-center font-bold text-lg">
-					{$timerSetting.working}
-					<span class="absolute text-sm bottom-0 translate-x-1"
-						>min</span
-					>
-				</div>
-			</div>
 		</div>
 
-		<!-- progress -->
-		<div
-			class="text-x relative flex h-full w-[calc(100%-290px)] flex-col py-3"
-		>
-			<!-- indicator -->
-
-			<ArrowUp class="absolute right-[3.5rem] top-2 " color="#f7d5d8" />
-			<Separator
-				orientation="vertical"
-				class="absolute right-[4.2rem] top-4 h-[230px] border border-neutral-400"
-			/>
-			<ArrowUp class="absolute bottom-4 right-[3.5rem]" color="#f7d5d8" />
-
-			<!-- status -->
+		<!-- info -->
+		<div class="relative flex w-full gap-2 h-12">
+			<!-- 작업/휴식 시간 설정 표시 -->
 			<div
-				class="no-scrollbar flex h-full max-h-[calc(100%-20px)] flex-col-reverse justify-start gap-2.5 overflow-x-clip overflow-y-scroll py-1"
+				class="relative h-full w-24 flex space-x-1.5 items-center justify-center
+						bg-neutral-900 rounded-lg
+						border border-neutral-700
+						shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]
+						overflow-hidden
+						p-1 text-neutral-100 text-center font-bold text-sm px-2
+						"
+				style="border-color:{$timerSetting.projectColor}"
 			>
-				{#each records as record, i}
-					{@const startTime = record.startTime.slice(0, 5)}
-					{@const endTime = record.endTime.slice(0, 5)}
-					{#key record}
-						<div
-							class="font-digital m-0 flex space-x-4 rounded-full border-b border-neutral-500 p-0 text-center text-sm"
-						>
-							<!-- pomo icon -->
-							<div
-								class={record.done
-									? "relative scale-125 opacity-90"
-									: "relative scale-125 opacity-30"}
-							>
-								<PomoIcon />
-								<div
-									class="absolute right-1 top-1 text-xs text-neutral-50"
-								>
-									{i + 1}
-								</div>
-							</div>
+				<span class="text-pomodoro-500">{$timerSetting.working}</span>
 
-							<!-- start time -->
-							<div
-								class={record.done
-									? " text-neutral-500"
-									: " text-neutral-100"}
-							>
-								{startTime}
-							</div>
+				<div class="flex-col">
+					<div class="translate-y-1.5 text-xs">
+						{$timerSetting.cycles.length}
+					</div>
+					<MoveHorizontal />
+				</div>
 
-							<!-- end time or current time  -->
-							{#if (i === 0 || records[i - 1].done === true) && record.done === false && $timerStatus.workSession}
-								<div
-									class="z-10 -translate-x-0.5 -translate-y-[0.3rem] scale-[115%] rounded-lg border-4 border-dotted bg-neutral-950 px-1.5 py-0.5 text-[1rem] text-pomodoro-500 shadow-xl"
-								>
-									{formatTime($currentTime)}
-								</div>
-							{:else if !$timerStatus.workSession && i === $timerStatus.cycle - 1}
-								<div
-									class="z-10 -translate-x-0.5 -translate-y-[0.3rem] scale-[115%] rounded-lg border-4 border-dotted bg-neutral-950 px-1.5 py-0.5 text-[1rem] text-emerald-500 shadow-xl"
-								>
-									{formatTime($currentTime)}
-								</div>
-							{:else}
-								<div
-									class={record.done
-										? "px-3 pb-1 text-neutral-500"
-										: "px-3 pb-1 text-neutral-100"}
-								>
-									{endTime}
-								</div>
-							{/if}
-						</div>
-					{/key}
-				{/each}
+				<span class="text-success">{$timerSetting.breaking}</span>
+				,
+				<span class="text-blue-500">{$timerSetting.remain}</span>
 			</div>
 
-			<!-- start, end -->
-			<div
-				class="font-digital flex h-[22px] w-full -translate-x-1.5 justify-start text-pomodoro-300"
-			>
-				<div class="w-[32px]"></div>
-				<div class="w-[60px] text-center font-extrabold">Start</div>
-				<div class="w-[20px] text-center font-extrabold"></div>
-				<div class=" w-[60px] text-center font-extrabold">End</div>
+			<!-- 현재 세션 정보 -->
+			<div class="flex-1 grid grid-cols-3 gap-1">
+				<!-- 현재 사이클 상태 -->
+				<div
+					class="bg-neutral-900 rounded-lg px-3
+							border border-neutral-700
+							shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]
+							flex items-center justify-between"
+				>
+					<div class="flex flex-col items-start">
+						<span class="text-[0.65rem] text-neutral-400"
+							>Cycle</span
+						>
+						<!-- 사이클 수 표시 -->
+						<div
+							class="h-5 w-full
+						rounded-full bg-neutral-800
+						flex items-center justify-center
+						text-xs font-bold
+						shadow-[inset_0_1px_2px_rgba(255,255,255,0.1)]"
+						>
+							{$timerStatus.cycle}/{$timerSetting.cycles.length}
+						</div>
+					</div>
+				</div>
+
+				<!-- 시작 시간 -->
+				<div
+					class="bg-neutral-900 rounded-lg
+							border border-neutral-700
+							shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]
+							flex flex-col items-center justify-center"
+				>
+					<span class="text-[0.65rem] text-neutral-400">Start</span>
+					<span class="font-digital text-sm">
+						{$timerStatus.startTime.slice(0, 5)}
+					</span>
+				</div>
+
+				<!-- 목표 종료 시간 -->
+				<div
+					class="bg-neutral-900 rounded-lg
+							border border-neutral-700
+							shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]
+							flex flex-col items-center justify-center"
+				>
+					<span class="text-[0.65rem] text-neutral-400">Goal</span>
+					<span class="font-digital text-sm">
+						{$timerStatus.endTime.slice(0, 5)}
+					</span>
+				</div>
 			</div>
 		</div>
 	</div>

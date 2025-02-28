@@ -165,7 +165,7 @@
     </div>
 
     <!-- right menu (profile, search, timer) -->
-    <!--	<div-->
+    <!-- <div-->
     <!--		class="absolute right-0 z-50 flex h-12 w-[200px] items-center justify-evenly space-x-2 rounded-b-2xl rounded-l-2xl bg-neutral-800 px-4"-->
     <!--	>-->
     <!--		&lt;!&ndash; timer, tenMplanner &ndash;&gt;-->
@@ -223,7 +223,7 @@
     <!--					<DropdownMenu.Shortcut>⇧⌘Q</DropdownMenu.Shortcut>-->
     <!--				</DropdownMenu.Item>-->
     <!--			</DropdownMenu.Content>-->
-    <!--		</DropdownMenu.Root>-->
+    <!--		</DropdownMenu.Root> -->
     <!--	</div>-->
 </div>
 
@@ -247,15 +247,15 @@
     }
 
     :global(#nprogress .bar) {
-        background: #a3202c !important;
+        background: hsl(208 70% 34%) !important;
         height: 2px;
         opacity: 60%;
     }
 
     :global(#nprogress .peg) {
         box-shadow:
-            0 0 10px #a3202c,
-            0 0 5px #a3202c;
+            0 0 10px hsl(208 70% 34%),
+            0 0 5px hsl(208 70% 34%);
     }
 
     :root {

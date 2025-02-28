@@ -25,7 +25,7 @@
             <Button
                builders={[builder]}
                variant="outline"
-               class="max-w-72 overflow-clip h-full px-3 text-xs text-start "
+               class="max-w-72 overflow-clip h-full px-3 text-sm text-start "
             >
                {#if selectedItem.icon}
                   <selectedItem.icon class="w-3 h-3" />

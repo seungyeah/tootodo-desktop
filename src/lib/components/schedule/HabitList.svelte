@@ -3,10 +3,8 @@
     import { Dumbbell, Globe, Pill, Sun } from "lucide-svelte";
 </script>
 
-<Label class="font-bold">Ongoing Habit List</Label>
-
 <div
-    class="h-20 flex justify-start items-center space-x-2 p-2 mt-1
+    class="h-20 flex justify-start items-center space-x-2 p-2
             max-w-full overflow-x-auto overflow-y-clip
             rounded-lg shadow-md bg-white"
 >
@@ -62,26 +60,9 @@
 </div>
 
 <style>
-    .today {
-        @apply p-1 h-[calc(100%+10px)] -translate-y-1.5 shadow-lg text-neutral-950 border-[3px] border-neutral-100 border-double;
-    }
-
-    .chat {
-        @apply fixed z-50 h-[calc(100vh-120px)] w-full  min-w-[250px] rounded-lg  bg-neutral-50 shadow-lg shadow-emerald-950 sm:h-[calc(100vh-80px)];
-    }
-
-    .time {
-        @apply w-[50px] translate-y-1 scale-90 font-mono text-xs font-light text-neutral-400;
-    }
-
-    :global(.transition-all) {
-        transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
     /* scroll bar */
     ::-webkit-scrollbar {
-        width: 0.3rem;
-        height: 0.4rem;
+        height: 0.3rem;
     }
 
     ::-webkit-scrollbar-track {

@@ -1,8 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: `<tr>` cannot be a child of `<table>`. `<table>` only allows these children: `<caption>`, `<colgroup>`, `<tbody>`, `<thead>`, `<tfoot>`, `<style>`, `<script>`, `<template>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
-https://svelte.dev/e/node_invalid_placement -->
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { timerOpen } from "$store";
+	import { currentTime, timerOpen } from "$store";
 
 	// 200
 	let projects = [
@@ -78,60 +76,80 @@ https://svelte.dev/e/node_invalid_placement -->
 
 		return cellColors;
 	}
+
+	function getCurrentTimePosition(hour, min) {
+		return $currentTime
+			? $currentTime.getHours() === hour &&
+					$currentTime.getMinutes() === min
+			: false;
+	}
 </script>
 
 {#if !$timerOpen}
-	<div class="relative h-full w-full flex-col border-2 border-neutral-900">
-		<div class="m-2 flex justify-around">
-			{#each ["AM", "PM"] as period, periodIndex}
-				<div class="flex-col mx-1.5">
-					<div class="w-full text-center text-xl font-bold">
-						{period}
-					</div>
-					<table class="h-[410px]">
-						<thead>
+	<div class="flex justify-around h-full w-full space-x-1.5">
+		{#each ["AM", "PM"] as period, periodIndex}
+			<div class="flex-col w-full">
+				<div class="w-full text-center text-xs font-bold">
+					{period}
+				</div>
+				<table class="w-full h-full border-collapse">
+					<thead
+						class="leading-3 bg-neutral-700 border-b border-r border-neutral-700"
+					>
+						<tr>
+							<th class="p-0 border !border-neutral-700"
+								><div
+									class="h-1 w-1 translate-x-1 rounded-full bg-white"
+								></div></th
+							>
+							{#each columns as column}
+								<th
+									colspan="10"
+									class="p-0 w-2 text-[0.5rem] border text-neutral-50 !border-neutral-700"
+									>{column + 10}</th
+								>
+							{/each}
+						</tr>
+					</thead>
+					<tbody>
+						{#each hours.slice(periodIndex * 12, (periodIndex + 1) * 12) as hour}
 							<tr>
-								<th></th>
-								{#each columns as column}
-									<th
-										colspan="10"
-										class="!w-[27px] px-1 text-sm"
-										>{column + 10}</th
+								<th
+									rowspan="2"
+									class="font-normal text-[0.56rem] leading-[6px] w-4"
+									>{hour}</th
+								>
+								{#each minutes as min}
+									<td
+										class="relative !border-0 !m-0 !h-4 !p-0"
+										class:minutes-td={min % 10 === 0}
 									>
+										{#key $currentTime}
+											{#if getCurrentTimePosition(hour, min)}
+												<div
+													class="absolute left-0 -top-1 h-[calc(100%+10px)] w-1 transform bg-secondary
+											"
+												/>
+											{/if}
+										{/key}
+									</td>
 								{/each}
 							</tr>
-						</thead>
-						<tbody>
-							{#each hours.slice(periodIndex * 12, (periodIndex + 1) * 12) as hour}
-								<tr>
-									<th rowspan="2" class="px-1.5">{hour}</th>
-									{#each minutes as min}
-										<td
-											class={min % 10 === 0
-												? " !border-0 !border-l !m-0 !h-[25px] !p-0"
-												: "!border-0 !m-0 !h-[25px]  !p-0"}
-										></td>
-									{/each}
-								</tr>
-								<tr>
-									{#each minutes as min}
-										{@const color =
-											cellColors[hour][0][min]}
-										<td
-											class="!border-0 py-[0.18rem]"
-											class:colored={cellColors[hour][0][
-												min
-											]}
-											style="background-color: {color}"
-										></td>
-									{/each}
-								</tr>
-							{/each}
-						</tbody>
-					</table>
-				</div>
-			{/each}
-		</div>
+							<tr>
+								{#each minutes as min}
+									{@const color = cellColors[hour][0][min]}
+									<td
+										class="!border-0 h-1"
+										class:colored={cellColors[hour][0][min]}
+										style="background-color: {color}"
+									></td>
+								{/each}
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
+		{/each}
 	</div>
 {/if}
 
@@ -144,5 +162,9 @@ https://svelte.dev/e/node_invalid_placement -->
 
 	.colored {
 		background: #52525b;
+	}
+
+	.minutes-td {
+		border-left-width: 1px !important;
 	}
 </style>

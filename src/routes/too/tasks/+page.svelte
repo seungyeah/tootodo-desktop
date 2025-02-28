@@ -307,7 +307,7 @@
     {/snippet}
 
     {#snippet main_side()}
-        <div class="flex flex-col w-1/3">
+        <div class="flex flex-col w-1/3 min-w-[320px]">
             <!--filter-->
             <div class="flex w-full h-10">
                 <DurationPicker update={(newRange) => setQuery(newRange)} />

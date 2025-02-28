@@ -200,7 +200,7 @@
 		direction="vertical"
 		class="flex justify-center w-full py-1 space-x-2 rounded-t-xl rounded-b-xl"
 	>
-		<Resizable.Pane minSize={14} class="relative px-1">
+		<Resizable.Pane minSize={22.5} class="relative px-1">
 			<div
 				bind:this={messageContainer}
 				class="h-full max-h-[calc(100%-8px)] w-full flex-col space-y-1 overflow-y-auto px-1 pb-3 bg-pomodoro-50/50 rounded-lg"
@@ -219,7 +219,7 @@
 
 					<!-- msg -->
 					<div
-						class="flex items-end px-2 py-0.5 space-y-1 {msg.ask
+						class="flex items-end px-2 py-0.5 space-y-1.5 {msg.ask
 							? 'justify-start'
 							: 'justify-end'}"
 					>
@@ -252,7 +252,7 @@
 							</Button>
 
 							<div
-								class="bg-white/90 font-chat w-full rounded-lg py-1 px-2 text-[0.9rem] font-normal leading-5 text-neutral-800 border-b border-dotted {msg.ask
+								class="bg-white/90 font-chat w-full rounded-lg py-1 px-2 text-base font-normal leading-6 text-neutral-800 border-b border-dotted {msg.ask
 									? 'border-emerald-700 border-r rounded-l-none !rounded-b-lg pl-6'
 									: 'border-neutral-400 border-l rounded-r-none rounded-t-lg pr-6'}"
 							>
@@ -291,9 +291,13 @@
 			handleClass="absolute left-4"
 		/>
 
-		<Resizable.Pane minSize={20} defaultSize={20} class="w-full p-1 !m-0">
+		<Resizable.Pane
+			minSize={22.5}
+			defaultSize={22.5}
+			class="w-full p-1 !m-0"
+		>
 			<div
-				class="w-full px-2 h-8 bg-neutral-50 flex justify-between items-center"
+				class="w-full px-2 h-10 bg-neutral-50 flex justify-between items-center"
 			>
 				<Label for="bookmark-mode" class="absolute left-[15px] z-10"
 					><Bookmark size={10} class="text-color-500" /></Label
@@ -333,7 +337,10 @@
 				</div>
 			</div>
 
-			<form onsubmit={handleSubmit} class="w-full h-full px-1 pt-1 pb-2">
+			<form
+				onsubmit={handleSubmit}
+				class="w-full h-full px-1 pt-1 pb-2 text-base"
+			>
 				<textarea
 					placeholder="Send message"
 					bind:value={newMsg.content}
@@ -342,7 +349,7 @@
 							handleSubmit(e);
 						}
 					}}
-					class=" font-chat rounded-lg h-[calc(100%-24px)] w-full p-2 text-baseas font-normal focus:shadow"
+					class=" font-chat rounded-lg h-[calc(100%-30px)] w-full p-2 text-base font-normal"
 				></textarea>
 			</form>
 		</Resizable.Pane>

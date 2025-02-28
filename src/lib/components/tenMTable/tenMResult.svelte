@@ -60,7 +60,7 @@
         },
     ];
 
-    const hours = Array.from({ length: 20 }, (_, i) => i);
+    const hours = Array.from({ length: 24 }, (_, i) => i);
     const columns = [0, 10, 20, 30, 40, 50];
     const minutes = Array.from({ length: 60 }, (_, i) => i);
 
@@ -105,13 +105,6 @@
         });
         return habit ? habit.icon : null;
     }
-
-    function getCurrentTimePosition(hour, min) {
-        return $currentTime
-            ? $currentTime.getHours() === hour &&
-                  $currentTime.getMinutes() === min
-            : false;
-    }
 </script>
 
 <table class="w-full h-full border-collapse">
@@ -121,22 +114,25 @@
         <tr>
             <th class="p-0 border !border-neutral-700"
                 ><div
-                    class="h-1 w-1 translate-x-1 rounded-full bg-white"
+                    class="h-1 w-1 translate-x-1 rounded-full bg-neutral-50"
                 ></div></th
             >
             {#each columns as column}
                 <th
                     colspan="10"
-                    class="p-0 w-2 text-[0.45rem] border text-neutral-50 !border-neutral-700"
+                    class="p-0 w-2 text-[0.5rem] border text-neutral-50 !border-neutral-700 translate-y-0.5"
                     >{column + 10}</th
                 >
             {/each}
         </tr>
     </thead>
-    <tbody class="!border-white">
+    <tbody class="border-x">
         {#each hours as hour}
-            <tr class="">
-                <th class="text-[0.45rem] leading-3">{hour}</th>
+            <tr>
+                <th
+                    class="text-[0.5rem] leading-[6px] bg-neutral-100 text-center text-neutral-500"
+                    >{hour}</th
+                >
                 {#each minutes as min}
                     {@const color = cellColors[hour][0][min]}
                     <td
@@ -154,14 +150,6 @@
                                 class="absolute w-5 h-5 -top-0.5 left-0  z-[1] rounded-full  border-2 border-white text-neutral-950 bg-white/70 p-0.5 shadow-md "
                             />
                         {/if}
-
-                        <!-- {#key $currentTime}-->
-                        <!--	{#if getCurrentTimePosition(hour, min)}-->
-                        <!--		<div-->
-                        <!--			class="absolute -left-0.5 -top-1 z-[1] h-[calc(100%+8px)] w-1 transform bg-pomodoro-950"-->
-                        <!--		/>-->
-                        <!--	{/if}-->
-                        <!--{/key}-->
                     </td>
                 {/each}
             </tr>

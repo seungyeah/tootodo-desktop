@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from "$ui";
-	import { Milestone, Trash2 } from "lucide-svelte";
+	import { Milestone, MoveHorizontal, Trash2 } from "lucide-svelte";
 	import { onMount } from "svelte";
 	import PomoIcon from "$components/PomoIcon.svelte";
 	import { timerSetting, currentTime } from "$store";
@@ -117,33 +117,61 @@
 </script>
 
 <div
-	class="z-20 w-[220px] flex-col items-center justify-center space-y-1 bg-neutral-900 p-2 text-white
-border-8 border-double border-neutral-50 box-content rounded-2xl shadow-xl
-"
+	class="z-20 w-[240px] flex-col items-center justify-center space-y-1
+    bg-neutral-950 p-2 text-white
+    rounded-2xl
+    shadow-[0_0_10px_rgba(0,0,0,0.3),inset_0_0_10px_rgba(255,255,255,0.1)]
+    border-4 border-neutral-800
+    relative
+    before:absolute before:inset-0 before:rounded-xl
+    before:shadow-[inset_0_2px_3px_rgba(255,255,255,0.2),inset_0_-2px_3px_rgba(0,0,0,0.2)]
+    "
 >
-	<div class="font-digital text-center w-full">
+	<!-- 시계 테두리 효과 -->
+	<div
+		class="absolute -inset-0.5 rounded-2xl bg-gradient-to-b from-neutral-700 to-neutral-900 -z-10"
+	></div>
+
+	<div class="font-digital text-center w-full relative">
+		<!-- 윗부분 볼트 장식 -->
+		<div
+			class="absolute -top-1 -left-1 w-2 h-2 rounded-full bg-neutral-600 shadow-inner"
+		></div>
+		<div
+			class="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-neutral-600 shadow-inner"
+		></div>
+
 		{tooltip}
+
 		<Button
-			class="absolute right-4 top-3 p-1 aspect-square h-7 bg-neutral-950 text-pomodoro-200
-			border-2 border-pomodoro-400 rounded-xl border-double
-			hover:bg-pomodoro-500 hover:text-white   "
+			class="absolute -left-1 top-5 p-1 aspect-square h-7  z-20
+            bg-neutral-950 text-pomodoro-500
+            rounded-xl 
+            hover:bg-pomodoro-500 hover:text-white
+            shadow-[inset_0_1px_2px_rgba(255,255,255,0.1)]"
 			onclick={removeRecord}
 		>
 			<Trash2 size={16} />
 		</Button>
 	</div>
+
+	<!-- 나머지 내용의 스타일도 수정 -->
 	<div
-		class="flex-col space-y-2 border-2 border-dotted border-white px-1 py-2"
+		class="flex-col space-y-2 border-2 border-dotted border-neutral-700 px-1 py-2 rounded-xl
+        bg-gradient-to-b from-neutral-950 to-neutral-900
+        shadow-[inset_0_1px_3px_rgba(0,0,0,0.5)]
+        relative z-10"
 	>
 		<!-- working time control  -->
 		<div class="flex justify-center space-x-2">
-			<span class="leading-8 text-pomodoro-300">WorKing</span>
+			<span class="leading-8 text-pomodoro-400">WorKing</span>
 			<div
 				class="flex h-[32px] w-[100px] items-center justify-between rounded-lg bg-neutral-600 px-2 py-1"
 			>
 				<button
-					class="text-center text-2xl text-neutral-100 hover:text-neutral-300"
-					onclick={() => {
+					type="button"
+					class="z-20 relative text-center text-2xl text-neutral-100 hover:text-neutral-300 w-6 h-8"
+					on:click={() => {
 						if (working > 10) {
 							working -= 5;
 							updateCycleAndRemain();
@@ -161,8 +189,9 @@ border-8 border-double border-neutral-50 box-content rounded-2xl shadow-xl
 					max={duration}
 				/>
 				<button
-					class="text-center text-2xl text-neutral-100 hover:text-neutral-300"
-					onclick={() => {
+					type="button"
+					class="z-20 relative text-center text-2xl text-neutral-100 hover:text-neutral-300 w-6 h-8"
+					on:click={() => {
 						if (working < duration && working >= 10) {
 							working += 5;
 							if (working === duration) working = duration;
@@ -177,13 +206,14 @@ border-8 border-double border-neutral-50 box-content rounded-2xl shadow-xl
 
 		<!-- breaking time control -->
 		<div class="flex w-full justify-center space-x-2">
-			<span class="leading-8 text-emerald-300">BreaKing</span>
+			<span class="leading-8 text-success">BreaKing</span>
 			<div
 				class="flex h-[32px] w-[100px] items-center justify-between rounded-lg bg-neutral-700 px-2 py-1"
 			>
 				<button
-					class="text-center text-2xl text-neutral-100 hover:text-neutral-300"
-					onclick={() => {
+					type="button"
+					class="z-20 relative text-center text-2xl text-neutral-100 hover:text-neutral-300 w-6 h-8"
+					on:click={() => {
 						if (breaking > 0) {
 							breaking -= 1;
 							updateCycleAndRemain();
@@ -203,8 +233,9 @@ border-8 border-double border-neutral-50 box-content rounded-2xl shadow-xl
 					max={20}
 				/>
 				<button
-					class="text-center text-2xl text-neutral-100 hover:text-neutral-300"
-					onclick={() => {
+					type="button"
+					class="z-20 relative text-center text-2xl text-neutral-100 hover:text-neutral-300 w-6 h-8"
+					on:click={() => {
 						if (breaking <= 0) {
 							breaking = 0;
 							return;
@@ -224,26 +255,41 @@ border-8 border-double border-neutral-50 box-content rounded-2xl shadow-xl
 	</div>
 
 	<!-- check duration, -> start timer button -->
-	<div class="m-1 flex space-x-2 relative">
+	<div class="flex space-x-2 relative">
 		<div class="font-digital flex-col">
 			<div class="flex space-x-1">
 				<Milestone />
 				<div class="text-end">{durationString}</div>
 			</div>
-			<div class="w-full text-end text-lg">
-				(<span class="text-pomodoro-300">{working}</span>+<span
-					class="text-emerald-400">{breaking}</span
-				>)*{cycle}+<span class="text-blue-200">{remain}</span>
+			<!-- <div class="w-full text-end text-lg">
+				(<span class="text-pomodoro-400">{working}</span>+<span
+					class="text-success">{breaking}</span
+				>)*{cycle}+<span class="text-blue-500">{remain}</span>
+			</div> -->
+			<div class="w-full text-end text-lg flex relative space-x-2.5">
+				<span class="text-pomodoro-400">{working}</span>
+				<span class="absolute -top-1 left-[30px] text-base"
+					>{cycle}</span
+				>
+				<span class="translate-y-2"><MoveHorizontal /></span>
+				<span class="text-success">{breaking}</span>
+				,
+				<span class="text-blue-500">{remain}</span>
 			</div>
 		</div>
 		<!-- start timer -->
 		<Button
 			variant="outline"
-			class="absolute -top-1.5  right-0 m-2 px-4 h-12 w-18 text-2xl font-bold font-digital text-black shadow-inner shadow-neutral-400 "
+			class="absolute top-1 right-0 h-11 w-[84px] text-2xl font-bold font-digital text-black"
 			onclick={() => {
 				storeTimerSetting();
 				$timerOpen = true;
-			}}>D<PomoIcon />!</Button
+			}}
+			>D
+			<span
+				class="translate-y-0 border-2 rounded-full p-0.5 border-neutral-700"
+				><PomoIcon /></span
+			>!</Button
 		>
 	</div>
 </div>
@@ -253,5 +299,33 @@ border-8 border-double border-neutral-50 box-content rounded-2xl shadow-xl
 	input[type="number"]::-webkit-outer-spin-button {
 		-webkit-appearance: none;
 		margin: 0;
+	}
+
+	/* 유리 효과 */
+	.font-digital {
+		position: relative;
+		background: linear-gradient(
+			180deg,
+			rgba(255, 255, 255, 0.1) 0%,
+			rgba(255, 255, 255, 0.05) 100%
+		);
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+
+	/* 입체감을 위한 그림자 효과 */
+	input[type="number"] {
+		box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	button {
+		transition: transform 0.1s ease;
+		position: relative;
+		z-index: 20;
+	}
+
+	button:active {
+		transform: scale(0.95);
 	}
 </style>

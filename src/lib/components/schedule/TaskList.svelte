@@ -71,15 +71,17 @@
 {#key treeItems}
     <div
         class={(level !== 1 &&
-            " pl-2 bg-neutral-50 border-b-2  border-neutral-500 border-double rounded-l-lg shadow") ||
-            "h-full max-h-full overflow-y-auto overflow-x-clip no-scrollbar p-2 space-y-1"}
+            " pl-2 bg-neutral-50 border-b-2  border-neutral-500 border-double rounded-l-lg shadow-sm") ||
+            "h-full max-h-full overflow-y-auto overflow-x-clip no-scrollbar p-2 space-y-1.5"}
         bind:this={tableContainer}
         on:scroll
     >
         {#each treeItems as { task, subtasks }}
             {@const itemId = `${task?.id}`}
             {@const hasChildren = !!subtasks?.length}
-            <div class="flex flex-col h-9 rounded-b-md bg-white shadow">
+            <div
+                class="flex flex-col h-9 rounded-md bg-white shadow-sm border border-neutral-100"
+            >
                 <div class="relative flex items-center h-9">
                     <div
                         class={cn(
@@ -132,7 +134,7 @@
                             {/if}
 
                             <div
-                                class="w-full text-start self-center text-xs font-sans line-clamp-2 leading-[1.1rem]"
+                                class="w-full text-start self-center text-sm font-sans line-clamp-2 leading-[1.1rem]"
                             >
                                 {task?.title}
                             </div>

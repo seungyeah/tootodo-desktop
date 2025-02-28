@@ -7,10 +7,8 @@
     let { newTaskTitle = $bindable(), onSubmit = () => {} } = $props();
 </script>
 
-<Label class="font-bold ">+ Task & Habit</Label>
-
 <div
-    class="flex space-x-2 h-full mt-1
+    class="flex space-x-2 h-full
             bg-white p-2 rounded-lg shadow-md"
 >
     <Textarea

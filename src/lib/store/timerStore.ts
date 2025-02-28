@@ -69,17 +69,17 @@ export default function timerStore<T = any>(options: TimerOptions<T> = {}) {
 }
 
 export function formatTime(date) {
-    if (!date) {
-        return '--:--'; 
-    }
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+  if (!date) {
+    return '--:--';
+  }
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
 }
 
 export function formatTimeFull(date) {
   if (!date) {
-      return '__ --:-- '; 
+    return '__ --:-- ';
   }
   const AMPM = date.getHours() >= 12 ? 'PM' : 'AM';
   const hours = date.getHours().toString().padStart(2, '0');
@@ -89,11 +89,12 @@ export function formatTimeFull(date) {
 
 export function formatDay(date) {
   if (!date) {
-      return '____-__-__';      
+    return '____-__-__';
   }
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const day = date.getDate().toString().padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
-export const currentTime = timerStore();
+
+export const currentTime = timerStore({ initial: new Date() });

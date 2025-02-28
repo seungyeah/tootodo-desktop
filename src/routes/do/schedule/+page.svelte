@@ -1,9 +1,8 @@
 <script lang="ts">
-    import { Button } from "$ui";
+    import { Button, Label } from "$ui";
     import PageTemplete from "$components/PageTemplete.svelte";
     import {
         endOfMonth,
-        endOfWeek,
         getLocalTimeZone,
         startOfWeek,
         today,
@@ -18,7 +17,7 @@
     import Memo from "$components/memo/Memo.svelte";
     import { currentTime } from "$store";
     import { createTreeView } from "@melt-ui/svelte";
-    import { setContext } from "svelte";
+    import { onMount, setContext } from "svelte";
 
     import { writable } from "svelte/store";
     import { invoke } from "@tauri-apps/api/core";
@@ -31,28 +30,26 @@
     import WeeklyTaskPlan from "$components/schedule/WeeklyTaskPlan.svelte";
     import HabitList from "$components/schedule/HabitList.svelte";
     import AddTaskOrHabit from "$components/schedule/AddTaskOrHabit.svelte";
+    import ShowRecord from "$components/tenMTable/showRecord.svelte";
+    import PlanRecord from "$components/tenMTable/planRecord.svelte";
+    import PomoIcon from "$components/PomoIcon.svelte";
+
+    const weeks = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
     let data = $state({ tasks: [] });
     let changeMode = $state(false);
     let weekRange = writable<DateRange>(getThisWeekRange());
-    const weeks = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    let selectedWeek = $state(null);
+    let selectedDay = $state($currentTime?.getDay() - 1 || null);
     let isTransitioning = $state(false);
-
-    function setQuery(duration) {
-        $weekRange = duration;
-        const startDate = $weekRange.start;
-        const endDate = $weekRange.end;
-        const searchParams = new URLSearchParams({ startDate, endDate });
-        goto(`?${searchParams.toString()}`);
-    }
-
     let monday_date = $derived(
         $weekRange?.start?.day ||
             startOfWeek(today(getLocalTimeZone()), "fr-FR").day,
     );
 
-    $effect(() => {
+    onMount(() => {
+        $weekRange = parseDateRangeFromURL() || getThisWeekRange();
+        setQuery($weekRange);
+
         invoke("fetch_tasks", {
             startDate: $weekRange.start.toString(),
             endDate: $weekRange.end.toString(),
@@ -62,6 +59,14 @@
             })
             .catch(console.error);
     });
+
+    function setQuery(duration) {
+        $weekRange = duration;
+        const startDate = $weekRange.start;
+        const endDate = $weekRange.end;
+        const searchParams = new URLSearchParams({ startDate, endDate });
+        goto(`?${searchParams.toString()}`);
+    }
 
     // treeview
     let treeItems = $derived(writable(data?.tasks || []));
@@ -128,7 +133,7 @@
     function handleWeekSelect(weekIndex) {
         isTransitioning = true;
         setTimeout(() => {
-            selectedWeek = weekIndex;
+            selectedDay = weekIndex;
             isTransitioning = false;
         }, 400); // match transition duration
     }
@@ -136,7 +141,7 @@
     function handleBackToWeekly() {
         isTransitioning = true;
         setTimeout(() => {
-            selectedWeek = null;
+            selectedDay = null;
             isTransitioning = false;
         }, 400);
     }
@@ -155,10 +160,10 @@
     <!-- main: schedule-->
     <!-- weekly -->
     {#snippet main_side()}
-        {#if selectedWeek === null}
+        {#if selectedDay === null}
             <div
                 {...$tree}
-                class="h-full relative flex flex-col space-y-4 pt-1 w-1/3 min-w-[310px] rounded-l-lg p-2 pr-3.5"
+                class="h-full relative flex flex-col space-y-4 pt-1 w-1/3 min-w-[320px] rounded-l-lg p-2 pr-3.5"
             >
                 <DurationPicker
                     update={(weekRange: DateRange) => setQuery(weekRange)}
@@ -166,7 +171,7 @@
 
                 <!-- task list -->
                 <div
-                    class="flex-col flex h-[calc(40%+50px)] min-h-[calc(40%+50px)] space-y-1.5 -translate-y-1 p-0 w-full rounded-lg shadow-md bg-white"
+                    class="flex-col flex h-[calc(40%+48px)] min-h-[calc(40%+48px)] space-y-1.5 -translate-y-1 p-0 w-full rounded-lg shadow-md bg-white"
                 >
                     <TaskList
                         bind:this={taskListComponent}
@@ -192,13 +197,16 @@
                     </div>
                 </div>
 
-                <div class="h-[92px] flex flex-col">
+                <div class="h-[106px] flex flex-col space-y-1">
+                    <Label class="font-bold text-base">Ongoing Habit List</Label
+                    >
                     <HabitList />
                 </div>
 
                 <div
-                    class="h-[calc(60%-226px)] min-h-[calc(60%-226px)] flex flex-col"
+                    class="h-[calc(60%-240px)] min-h-[calc(60%-240px)] flex flex-col space-y-1"
                 >
+                    <Label class="font-bold text-base">+ Task & Habit</Label>
                     <AddTaskOrHabit
                         bind:newTaskTitle
                         onSubmit={handleCreateTask}
@@ -207,17 +215,75 @@
             </div>
         {:else}
             <div
-                class="h-full relative flex flex-col space-y-0.5 pt-1 w-1/3 min-w-[310px] rounded-l-lg bg-white p-2"
+                {...$tree}
+                class="h-full relative flex flex-col justify-between space-y-4 pt-1 w-1/3 min-w-[320px] rounded-l-lg p-2 pr-3.5"
             >
-                <Button
-                    variant="ghost"
-                    class="self-start mb-2"
-                    onclick={handleBackToWeekly}>← Back to Weekly</Button
+                <div class="flex-col h-[calc(100%-380px)] space-y-4">
+                    <div
+                        class="flex items-center justify-between h-10 border-b-2"
+                    >
+                        <Button
+                            variant="ghost"
+                            class="self-start mb-2"
+                            onclick={handleBackToWeekly}>←</Button
+                        >
+                        <h2 class="text-lg font-digital">
+                            {weeks[selectedDay]}, {monday_date + selectedDay}
+                        </h2>
+                    </div>
+                    <!-- task list -->
+                    <div
+                        class="flex-col flex h-[calc(100%-40px)] min-h-[calc(100%-40px)] space-y-1.5 -translate-y-1 p-0 w-full rounded-lg shadow-md bg-white"
+                    >
+                        <TaskList
+                            bind:this={taskListComponent}
+                            treeItems={$treeItems}
+                            on:scroll={handleScroll}
+                        />
+                        <!-- task filter -->
+                        <div
+                            class="flex justify-between items-center p-4 bg-neutral-100 h-10 rounded-b-lg"
+                        >
+                            Critical Path
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                class="aspect-square rounded-full bg-white h-7"
+                            ></Button>
+                            Status
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                class="aspect-square rounded-full bg-white h-7"
+                            ></Button>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="flex flex-col w-full space-y-1 h-[352px] min-h-[352px] max-h-[352px]"
                 >
-                <h2 class="text-lg font-semibold mb-4">
-                    {weeks[selectedWeek]} Details
-                </h2>
-                <!-- Add your week detail components here -->
+                    <Label
+                        class="flex font-bold items-center text-base space-x-1.5"
+                    >
+                        <PomoIcon /> <span>Pomodoro Timer</span>
+                    </Label>
+                    <div
+                        class="relative h-[330px] min-h-[330px] max-h-[330px] flex flex-col p-2 pb-6 bg-white rounded-2xl shadow-md"
+                    >
+                        <div
+                            class="absolute top-0 w-[calc(100%-16px)] h-[calc(100%-32px)] my-2"
+                        >
+                            <ShowRecord />
+                        </div>
+                        <!-- plan record and start timer directly -->
+                        <div
+                            class="absolute top-0 w-[calc(100%-16px)] h-[calc(100%-32px)] my-2 z-50"
+                        >
+                            <PlanRecord />
+                        </div>
+                    </div>
+                </div>
             </div>
         {/if}
     {/snippet}
@@ -226,12 +292,12 @@
         <div class="relative w-full h-full overflow-hidden">
             <div
                 class="w-full h-full transition-transform duration-300 ease-in-out"
-                class:translate-x-[-100%]={selectedWeek !== null ||
+                class:translate-x-[-100%]={selectedDay !== null ||
                     isTransitioning}
             >
                 <div
                     class="grid grid-cols-[7] grid-flow-col gap-1 w-full h-full p-2 max-w-full overflow-x-clip
-                    border-2 border-neutral-700"
+                     border-[3px] border-double border-neutral-200 rounded-xl"
                 >
                     {#each weeks as week, i}
                         {@const isToday = i === $currentTime?.getDay() - 1}
@@ -291,15 +357,17 @@
                 </div>
             </div>
 
-            {#if selectedWeek !== null || isTransitioning}
+            {#if selectedDay !== null || isTransitioning}
                 <div
-                    class="absolute top-0 left-0 w-full h-full border-2 border-neutral-700 transition-transform duration-300 ease-in-out"
-                    class:translate-x-0={selectedWeek !== null}
+                    class="absolute top-0 left-0 w-full h-full rounded-xl
+                    border-[3px] border-double border-neutral-200
+                    transition-transform duration-300 ease-in-out"
+                    class:translate-x-0={selectedDay !== null}
                     class:translate-x-[100%]={isTransitioning &&
-                        selectedWeek === null}
+                        selectedDay === null}
                 >
                     <WeeklyChat
-                        weekIndex={selectedWeek}
+                        weekIndex={selectedDay}
                         weekTasks={$treeItems.filter((item) => true)}
                     />
                 </div>
@@ -310,7 +378,7 @@
 
 <style>
     .today {
-        @apply p-1 h-[calc(100%+8px)] -translate-y-2 shadow-lg text-neutral-950 border-[3px] border-neutral-100 border-double;
+        @apply p-1 h-[calc(100%+10px)] -translate-y-1.5 shadow-lg text-neutral-950 border-[3px] border-neutral-100 border-double;
     }
 
     .chat {
