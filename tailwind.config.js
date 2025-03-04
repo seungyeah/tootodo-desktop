@@ -16,26 +16,26 @@ const config = {
 		},
 		extend: {
 			colors: {
-        table: {
-                primary: {
-                  DEFAULT: "hsl(var(--table-primary) / <alpha-value>)",
-                  hover: "hsl(var(--table-primary-hover) / <alpha-value>)"
-                },
-                secondary: {
-                  DEFAULT: "hsl(var(--table-secondary) / <alpha-value>)",
-                  hover: "hsl(var(--table-secondary-hover) / <alpha-value>)"
-                },
-                row: {
-                  even: {
-                    DEFAULT: "hsl(var(--table-row-even) / <alpha-value>)",
-                    hover: "hsl(var(--table-row-even-hover) / <alpha-value>)"
-                  },
-                  odd: {
-                    DEFAULT: "hsl(var(--table-row-odd) / <alpha-value>)",
-                    hover: "hsl(var(--table-row-odd-hover) / <alpha-value>)"
-                  }
-                }
-              },
+				table: {
+					primary: {
+						DEFAULT: "hsl(var(--table-primary) / <alpha-value>)",
+						hover: "hsl(var(--table-primary-hover) / <alpha-value>)"
+					},
+					secondary: {
+						DEFAULT: "hsl(var(--table-secondary) / <alpha-value>)",
+						hover: "hsl(var(--table-secondary-hover) / <alpha-value>)"
+					},
+					row: {
+						even: {
+							DEFAULT: "hsl(var(--table-row-even) / <alpha-value>)",
+							hover: "hsl(var(--table-row-even-hover) / <alpha-value>)"
+						},
+						odd: {
+							DEFAULT: "hsl(var(--table-row-odd) / <alpha-value>)",
+							hover: "hsl(var(--table-row-odd-hover) / <alpha-value>)"
+						}
+					}
+				},
 				border: "hsl(var(--border) / <alpha-value>)",
 				input: "hsl(var(--input) / <alpha-value>)",
 				ring: "hsl(var(--ring) / <alpha-value>)",
@@ -48,6 +48,11 @@ const config = {
 				secondary: {
 					DEFAULT: "hsl(var(--secondary) / <alpha-value>)",
 					foreground: "hsl(var(--secondary-foreground) / <alpha-value>)"
+				},
+				success: {
+
+					DEFAULT: "hsl(var(--success) / <alpha-value>)",
+					foreground: "hsl(var(--success-foreground) / <alpha-value>)"
 				},
 				destructive: {
 					DEFAULT: "hsl(var(--destructive) / <alpha-value>)",
@@ -90,7 +95,7 @@ const config = {
 					700: '#a3202c',
 					800: '#821a23',
 					900: '#6a151c',
-					950:'#501016'
+					950: '#501016'
 				},
 			},
 			borderRadius: {
