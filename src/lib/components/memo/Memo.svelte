@@ -1,6 +1,4 @@
 <script lang="ts">
-    import { run, preventDefault } from "svelte/legacy";
-
     import { Tabs, Button, Input, DropdownMenu } from "$ui";
     import { CirclePlus, Droplet, Grip } from "lucide-svelte";
     import MemoEditor from "./MemoEditor.svelte";
@@ -249,7 +247,7 @@
                 class="h-full w-full max-h-full overflow-y-auto m-0 shadow rounded-b-lg"
             >
                 <ScrollArea
-                    class="h-full max-h-full border rounded-b-lg border-dashed  border-neutral-400 w-full px-3 py-2 space-y-1 border-t-0"
+                    class="h-full max-h-full border-[3px] rounded-b-lg border-double  border-neutral-200 w-full px-3 py-2 space-y-1 border-t-0"
                 >
                     {#each memos as memo, i}
                         <MemoEditor bind:memo={memos[i]} class="" />
@@ -259,16 +257,16 @@
 
             <!-- color filter -->
             {#each colors as color}
-                {@const border_color = color.dark}
+                {@const border_color = color.light}
                 <Tabs.Content
                     value={color.name}
                     class="h-full w-full max-h-full overflow-y-auto m-0 shadow rounded-b-lg"
                 >
                     <ScrollArea
                         class={cn(
-                            "h-full max-h-full border border-dashed rounded-b-lg w-full px-3 py-2 space-y-1 border-t-0",
+                            "h-full max-h-full border-[3px] border-double rounded-b-lg w-full px-3 py-2 space-y-1 border-t-0",
                         )}
-                        style={`border-color: ${border_color}`}
+                        style={`border-color: ${border_color}; `}
                     >
                         {#each memos as memo, i}
                             {#if memo.color === color.name}

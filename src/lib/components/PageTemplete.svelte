@@ -37,7 +37,7 @@
     <div class="flex h-full space-x-0 max-w-full items-center text-sm">
         <!-- side -->
         {#if changeMode}
-            <div class="flex flex-col w-1/2 min-w-[260px] max-w-[360px] h-full">
+            <div class="flex flex-col w-1/3 min-w-[374px] h-full">
                 <div
                     class=" flex h-full p-2 pr-0 w-full flex-col items-center justify-start"
                 >

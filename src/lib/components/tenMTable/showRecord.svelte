@@ -127,7 +127,7 @@
 										{#key $currentTime}
 											{#if getCurrentTimePosition(hour, min)}
 												<div
-													class="absolute left-0 -top-1 h-[calc(100%+10px)] w-1 transform bg-secondary
+													class="absolute left-0 -top-1 h-[calc(100%+10px)] w-1 transform bg-neutral-950
 											"
 												/>
 											{/if}

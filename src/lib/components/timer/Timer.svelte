@@ -358,14 +358,14 @@
 				<span class="text-pomodoro-500">{$timerSetting.working}</span>
 
 				<div class="flex-col">
-					<div class="translate-y-1.5 text-xs">
+					<div class="translate-y-2 text-xs text-neutral-200">
 						{$timerSetting.cycles.length}
 					</div>
-					<MoveHorizontal />
+					<MoveHorizontal size={20} />
 				</div>
 
 				<span class="text-success">{$timerSetting.breaking}</span>
-				,
+				<span>,</span>
 				<span class="text-blue-500">{$timerSetting.remain}</span>
 			</div>
 
@@ -378,19 +378,17 @@
 							shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]
 							flex items-center justify-between"
 				>
-					<div class="flex flex-col items-start">
+					<div class="flex flex-col items-start w-full">
 						<span class="text-[0.65rem] text-neutral-400"
 							>Cycle</span
 						>
 						<!-- 사이클 수 표시 -->
 						<div
-							class="h-5 w-full
-						rounded-full bg-neutral-800
-						flex items-center justify-center
-						text-xs font-bold
-						shadow-[inset_0_1px_2px_rgba(255,255,255,0.1)]"
+							class="h-5 w-full m-auto
+							flex justify-center items-center
+						text-sm font-bold"
 						>
-							{$timerStatus.cycle}/{$timerSetting.cycles.length}
+							{$timerStatus.cycle} /{$timerSetting.cycles.length}
 						</div>
 					</div>
 				</div>

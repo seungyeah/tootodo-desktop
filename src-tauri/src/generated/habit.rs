@@ -38,12 +38,25 @@ pub struct HabitRecord {
     pub end_at: ::core::option::Option<::prost_wkt_types::Timestamp>,
 }
 #[derive(serde::Serialize, serde::Deserialize)]
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Goal {
+    #[prost(uint32, tag = "1")]
+    pub days: u32,
+    #[prost(uint32, tag = "2")]
+    pub day_minutes: u32,
+    #[prost(uint32, tag = "3")]
+    pub start_hour: u32,
+    #[prost(uint32, tag = "4")]
+    pub start_minutes: u32,
+}
+#[derive(serde::Serialize, serde::Deserialize)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum HabitStatus {
-    Unknown = 0,
-    Inprogress = 1,
-    Archived = 2,
+    Ongoing = 0,
+    Completed = 1,
+    Pending = 2,
 }
 impl HabitStatus {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -52,17 +65,17 @@ impl HabitStatus {
     /// (if the ProtoBuf definition does not change) and safe for programmatic use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
-            HabitStatus::Unknown => "UNKNOWN",
-            HabitStatus::Inprogress => "INPROGRESS",
-            HabitStatus::Archived => "ARCHIVED",
+            HabitStatus::Ongoing => "ONGOING",
+            HabitStatus::Completed => "COMPLETED",
+            HabitStatus::Pending => "PENDING",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
-            "UNKNOWN" => Some(Self::Unknown),
-            "INPROGRESS" => Some(Self::Inprogress),
-            "ARCHIVED" => Some(Self::Archived),
+            "ONGOING" => Some(Self::Ongoing),
+            "COMPLETED" => Some(Self::Completed),
+            "PENDING" => Some(Self::Pending),
             _ => None,
         }
     }

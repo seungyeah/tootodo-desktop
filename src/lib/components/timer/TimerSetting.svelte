@@ -155,7 +155,6 @@
 		</Button>
 	</div>
 
-	<!-- 나머지 내용의 스타일도 수정 -->
 	<div
 		class="flex-col space-y-2 border-2 border-dotted border-neutral-700 px-1 py-2 rounded-xl
         bg-gradient-to-b from-neutral-950 to-neutral-900
@@ -268,7 +267,8 @@
 			</div> -->
 			<div class="w-full text-end text-lg flex relative space-x-2.5">
 				<span class="text-pomodoro-400">{working}</span>
-				<span class="absolute -top-1 left-[30px] text-base"
+				<span
+					class="absolute -top-1 left-[31px] text-sm text-neutral-200"
 					>{cycle}</span
 				>
 				<span class="translate-y-2"><MoveHorizontal /></span>

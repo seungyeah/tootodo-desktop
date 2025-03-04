@@ -36,7 +36,7 @@ impl TaskModel {
             milestone: false,
             created_at: Some(timestamp.clone()),
             updated_at: Some(timestamp),
-            completed: false,
+            status: TaskStatus::Ongoing as i32,
             plans: vec![WorkPlan {
                 start_date,
                 end_date,

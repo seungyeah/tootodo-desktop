@@ -52,7 +52,8 @@
         "resizable": true,
         "title": "TootoDo",
         "width": 1194,
-        "minWidth": 1128
+        "minWidth": 1128,
+        "minHeight": 788
       }
     ],
     "security": {

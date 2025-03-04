@@ -33,13 +33,16 @@
     import ShowRecord from "$components/tenMTable/showRecord.svelte";
     import PlanRecord from "$components/tenMTable/planRecord.svelte";
     import PomoIcon from "$components/PomoIcon.svelte";
+    import { ChevronLeft } from "lucide-svelte";
 
     const weeks = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
     let data = $state({ tasks: [] });
     let changeMode = $state(false);
     let weekRange = writable<DateRange>(getThisWeekRange());
-    let selectedDay = $state($currentTime?.getDay() - 1 || null);
+    let selectedDay = $state(null);
+    // let selectedDay = $state($currentTime?.getDay() - 1 || null);
+
     let isTransitioning = $state(false);
     let monday_date = $derived(
         $weekRange?.start?.day ||
@@ -49,7 +52,9 @@
     onMount(() => {
         $weekRange = parseDateRangeFromURL() || getThisWeekRange();
         setQuery($weekRange);
+    });
 
+    $effect(() => {
         invoke("fetch_tasks", {
             startDate: $weekRange.start.toString(),
             endDate: $weekRange.end.toString(),
@@ -219,18 +224,16 @@
                 class="h-full relative flex flex-col justify-between space-y-4 pt-1 w-1/3 min-w-[320px] rounded-l-lg p-2 pr-3.5"
             >
                 <div class="flex-col h-[calc(100%-380px)] space-y-4">
-                    <div
-                        class="flex items-center justify-between h-10 border-b-2"
+                    <Button
+                        variant="ghost"
+                        class="mb-2 flex items-center justify-between h-10 w-full border-b-2"
+                        onclick={handleBackToWeekly}
                     >
-                        <Button
-                            variant="ghost"
-                            class="self-start mb-2"
-                            onclick={handleBackToWeekly}>←</Button
-                        >
+                        <ChevronLeft />
                         <h2 class="text-lg font-digital">
                             {weeks[selectedDay]}, {monday_date + selectedDay}
-                        </h2>
-                    </div>
+                        </h2></Button
+                    >
                     <!-- task list -->
                     <div
                         class="flex-col flex h-[calc(100%-40px)] min-h-[calc(100%-40px)] space-y-1.5 -translate-y-1 p-0 w-full rounded-lg shadow-md bg-white"
@@ -297,7 +300,7 @@
             >
                 <div
                     class="grid grid-cols-[7] grid-flow-col gap-1 w-full h-full p-2 max-w-full overflow-x-clip
-                     border-[3px] border-double border-neutral-200 rounded-xl"
+                     border-2 border-neutral-200 rounded-xl"
                 >
                     {#each weeks as week, i}
                         {@const isToday = i === $currentTime?.getDay() - 1}
@@ -360,7 +363,7 @@
             {#if selectedDay !== null || isTransitioning}
                 <div
                     class="absolute top-0 left-0 w-full h-full rounded-xl
-                    border-[3px] border-double border-neutral-200
+                    border-2 border-neutral-200
                     transition-transform duration-300 ease-in-out"
                     class:translate-x-0={selectedDay !== null}
                     class:translate-x-[100%]={isTransitioning &&

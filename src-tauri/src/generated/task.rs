@@ -7,8 +7,8 @@ pub struct TaskModel {
     pub id: ::prost::alloc::string::String,
     #[prost(string, tag = "2")]
     pub title: ::prost::alloc::string::String,
-    #[prost(bool, tag = "3")]
-    pub completed: bool,
+    #[prost(enumeration = "TaskStatus", tag = "3")]
+    pub status: i32,
     #[prost(bool, tag = "4")]
     pub milestone: bool,
     #[prost(message, repeated, tag = "5")]
@@ -71,4 +71,34 @@ pub struct CriticalPath {
     pub color: ::prost::alloc::string::String,
     #[prost(string, repeated, tag = "4")]
     pub task_ids: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
+#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum TaskStatus {
+    Ongoing = 0,
+    Completed = 1,
+    Pending = 2,
+}
+impl TaskStatus {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            TaskStatus::Ongoing => "ONGOING",
+            TaskStatus::Completed => "COMPLETED",
+            TaskStatus::Pending => "PENDING",
+        }
+    }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "ONGOING" => Some(Self::Ongoing),
+            "COMPLETED" => Some(Self::Completed),
+            "PENDING" => Some(Self::Pending),
+            _ => None,
+        }
+    }
 }

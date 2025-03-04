@@ -130,7 +130,7 @@
         {#each hours as hour}
             <tr>
                 <th
-                    class="text-[0.5rem] leading-[6px] bg-neutral-100 text-center text-neutral-500"
+                    class="text-[0.5rem] leading-[0px] bg-neutral-100 text-center text-neutral-500"
                     >{hour}</th
                 >
                 {#each minutes as min}
