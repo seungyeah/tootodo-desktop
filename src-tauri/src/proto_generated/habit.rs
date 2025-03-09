@@ -16,12 +16,14 @@ pub struct HabitModel {
     #[prost(message, repeated, tag = "6")]
     pub records: ::prost::alloc::vec::Vec<HabitRecord>,
     #[prost(message, optional, tag = "7")]
+    pub goal: ::core::option::Option<Goal>,
+    #[prost(message, optional, tag = "8")]
     pub chat: ::core::option::Option<super::chat::ChatModel>,
-    #[prost(string, repeated, tag = "8")]
+    #[prost(string, repeated, tag = "9")]
     pub related_notes: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-    #[prost(message, optional, tag = "9")]
-    pub created_at: ::core::option::Option<::prost_wkt_types::Timestamp>,
     #[prost(message, optional, tag = "10")]
+    pub created_at: ::core::option::Option<::prost_wkt_types::Timestamp>,
+    #[prost(message, optional, tag = "11")]
     pub updated_at: ::core::option::Option<::prost_wkt_types::Timestamp>,
 }
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -31,24 +33,18 @@ pub struct HabitRecord {
     #[prost(string, tag = "1")]
     pub date: ::prost::alloc::string::String,
     #[prost(message, optional, tag = "2")]
-    pub duration: ::core::option::Option<::prost_wkt_types::Duration>,
-    #[prost(message, optional, tag = "3")]
     pub start_at: ::core::option::Option<::prost_wkt_types::Timestamp>,
-    #[prost(message, optional, tag = "4")]
-    pub end_at: ::core::option::Option<::prost_wkt_types::Timestamp>,
+    #[prost(string, tag = "3")]
+    pub msg: ::prost::alloc::string::String,
 }
 #[derive(serde::Serialize, serde::Deserialize)]
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Goal {
     #[prost(uint32, tag = "1")]
-    pub days: u32,
+    pub days_per_week: u32,
     #[prost(uint32, tag = "2")]
-    pub day_minutes: u32,
-    #[prost(uint32, tag = "3")]
-    pub start_hour: u32,
-    #[prost(uint32, tag = "4")]
-    pub start_minutes: u32,
+    pub start_at: u32,
 }
 #[derive(serde::Serialize, serde::Deserialize)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]

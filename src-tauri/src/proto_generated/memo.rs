@@ -10,7 +10,7 @@ pub struct MemoModel {
     #[prost(enumeration = "Color", tag = "3")]
     pub color: i32,
     #[prost(bool, tag = "5")]
-    pub fixed: bool,
+    pub pinned: bool,
     #[prost(string, tag = "6")]
     pub content: ::prost::alloc::string::String,
     #[prost(message, optional, tag = "7")]

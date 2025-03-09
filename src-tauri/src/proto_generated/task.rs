@@ -9,14 +9,14 @@ pub struct TaskModel {
     pub title: ::prost::alloc::string::String,
     #[prost(enumeration = "TaskStatus", tag = "3")]
     pub status: i32,
-    #[prost(bool, tag = "4")]
-    pub milestone: bool,
+    #[prost(uint32, tag = "4")]
+    pub progress_rate: u32,
     #[prost(message, repeated, tag = "5")]
     pub plans: ::prost::alloc::vec::Vec<WorkPlan>,
-    #[prost(string, tag = "6")]
-    pub parent_id: ::prost::alloc::string::String,
-    #[prost(message, repeated, tag = "7")]
-    pub critical_paths: ::prost::alloc::vec::Vec<CriticalPathInfo>,
+    #[prost(message, repeated, tag = "6")]
+    pub subtasks: ::prost::alloc::vec::Vec<SubtaskModel>,
+    #[prost(message, optional, tag = "7")]
+    pub critical_path: ::core::option::Option<CriticalPathInfo>,
     #[prost(message, repeated, tag = "8")]
     pub work_days: ::prost::alloc::vec::Vec<WorkDay>,
     #[prost(uint32, tag = "9")]
@@ -29,6 +29,19 @@ pub struct TaskModel {
     pub created_at: ::core::option::Option<::prost_wkt_types::Timestamp>,
     #[prost(message, optional, tag = "13")]
     pub updated_at: ::core::option::Option<::prost_wkt_types::Timestamp>,
+}
+#[derive(serde::Serialize, serde::Deserialize)]
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SubtaskModel {
+    #[prost(string, tag = "1")]
+    pub id: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub title: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub date: ::prost::alloc::string::String,
+    #[prost(string, tag = "4")]
+    pub time: ::prost::alloc::string::String,
 }
 #[derive(serde::Serialize, serde::Deserialize)]
 #[allow(clippy::derive_partial_eq_without_eq)]
