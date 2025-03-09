@@ -6,7 +6,7 @@ fn main() {
         .extern_path(".google.protobuf.Timestamp", "::prost_wkt_types::Timestamp")
         .extern_path(".google.protobuf.Duration", "::prost_wkt_types::Duration")
         .extern_path(".google.protobuf.Value", "::prost_wkt_types::Value");
-    config.out_dir("src/generated"); // 생성된 파일을 특정 디렉토리에 저장
+    config.out_dir("src/proto_generated"); // 생성된 파일을 특정 디렉토리에 저장
     config
         .compile_protos(
             &[

@@ -27,6 +27,9 @@ pub enum AppError {
 
     #[error("Unexpected error: {0}")]
     Other(String),
+
+    #[error("Invalid input error: {0}")]
+    InvalidInput(String),
 }
 
 #[derive(Error, Debug, Serialize)]
@@ -63,17 +66,5 @@ impl From<rocksdb::Error> for DBError {
 impl From<std::string::FromUtf8Error> for DBError {
     fn from(error: std::string::FromUtf8Error) -> Self {
         DBError::KeyDecodeError(error.to_string())
-    }
-}
-
-impl From<String> for AppError {
-    fn from(error: String) -> Self {
-        AppError::Other(error)
-    }
-}
-
-impl From<&str> for AppError {
-    fn from(error: &str) -> Self {
-        AppError::Other(error.to_string())
     }
 }
