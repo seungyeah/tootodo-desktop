@@ -9,14 +9,12 @@
     } from "@internationalized/date";
     import {
         WeeklyChat,
-        Plan,
         Result,
         TaskList,
         DurationPicker,
     } from "$components/schedule";
     import Memo from "$components/memo/Memo.svelte";
     import { currentTime } from "$store";
-    import { createTreeView } from "@melt-ui/svelte";
     import { onMount, setContext } from "svelte";
 
     import { writable } from "svelte/store";
@@ -34,15 +32,17 @@
     import PlanRecord from "$components/tenMTable/planRecord.svelte";
     import PomoIcon from "$components/PomoIcon.svelte";
     import { ChevronLeft } from "lucide-svelte";
+    import type { Task } from "$lib/schema";
 
     const weeks = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-    let data = $state({ tasks: [] });
+    let tasks = $state<Task[]>([]);
+    $inspect(tasks);
     let changeMode = $state(false);
     let weekRange = writable<DateRange>(getThisWeekRange());
-    let selectedDay = $state(null);
-    // let selectedDay = $state($currentTime?.getDay() - 1 || null);
-
+    // let selectedDay = $state(null);
+    let selectedDay = $state($currentTime?.getDay() - 1 || null);
+    let newTaskTitle = $state("");
     let isTransitioning = $state(false);
     let monday_date = $derived(
         $weekRange?.start?.day ||
@@ -59,8 +59,9 @@
             startDate: $weekRange.start.toString(),
             endDate: $weekRange.end.toString(),
         })
-            .then((tasks) => {
-                data.tasks = tasks;
+            .then((data) => {
+                tasks = data;
+                console.log(tasks);
             })
             .catch(console.error);
     });
@@ -73,31 +74,17 @@
         goto(`?${searchParams.toString()}`);
     }
 
-    // treeview
-    let treeItems = $derived(writable(data?.tasks || []));
-    setContext("treeItems", treeItems);
-
-    const ctx = createTreeView({
-        defaultExpanded: [],
-    });
-
-    const {
-        elements: { tree },
-    } = ctx;
-
-    setContext("tree", ctx);
-
-    function sort_tasks() {
-        // duration 기준으로 정렬 (startDate가 빠른 것부터 정렬 -> endDate가 느린것부터 정렬)
-        return (a, b) => {
-            const diff = new Date(a.startDate) - new Date(b.startDate);
-            if (diff === 0) {
-                return new Date(b.endDate) - new Date(a.endDate);
-            } else {
-                return diff;
-            }
-        };
-    }
+    // function sort_tasks() {
+    //     // duration 기준으로 정렬 (startDate가 빠른 것부터 정렬 -> endDate가 느린것부터 정렬)
+    //     return (a, b) => {
+    //         const diff = new Date(a.startDate) - new Date(b.startDate);
+    //         if (diff === 0) {
+    //             return new Date(b.endDate) - new Date(a.endDate);
+    //         } else {
+    //             return diff;
+    //         }
+    //     };
+    // }
 
     ///////// scroll
     let scrollPosition = $state({ scrollTop: 0 });
@@ -121,16 +108,14 @@
     }
 
     // handle task
-    let newTaskTitle = $state("");
-
     function handleCreateTask() {
-        invoke("create_task", {
+        invoke("plugin:task:create_task", {
             title: newTaskTitle,
-            parent_id: "",
+            subtasks: [],
             startDate: $weekRange.start.toString(),
             endDate: $weekRange.end.toString(),
         }).then((newTask) => {
-            $treeItems = [...$treeItems, { task: newTask, subtasks: [] }];
+            tasks.push(newTask);
             newTaskTitle = "";
         });
     }
@@ -167,7 +152,6 @@
     {#snippet main_side()}
         {#if selectedDay === null}
             <div
-                {...$tree}
                 class="h-full relative flex flex-col space-y-4 pt-1 w-1/3 min-w-[320px] rounded-l-lg p-2 pr-3.5"
             >
                 <DurationPicker
@@ -180,7 +164,7 @@
                 >
                     <TaskList
                         bind:this={taskListComponent}
-                        treeItems={$treeItems}
+                        {tasks}
                         on:scroll={handleScroll}
                     />
                     <!-- task filter -->
@@ -220,7 +204,6 @@
             </div>
         {:else}
             <div
-                {...$tree}
                 class="h-full relative flex flex-col justify-between space-y-4 pt-1 w-1/3 min-w-[320px] rounded-l-lg p-2 pr-3.5"
             >
                 <div class="flex-col h-[calc(100%-380px)] space-y-4">
@@ -240,7 +223,7 @@
                     >
                         <TaskList
                             bind:this={taskListComponent}
-                            treeItems={$treeItems}
+                            {tasks}
                             on:scroll={handleScroll}
                         />
                         <!-- task filter -->
@@ -269,7 +252,7 @@
                     <Label
                         class="flex font-bold items-center text-base space-x-1.5"
                     >
-                        <PomoIcon /> <span>Pomodoro Timer</span>
+                        <span class="translate-x-1">D</span><PomoIcon />
                     </Label>
                     <div
                         class="relative h-[330px] min-h-[330px] max-h-[330px] flex flex-col p-2 pb-6 bg-white rounded-2xl shadow-md"
@@ -343,7 +326,7 @@
                                 <div class="h-[calc(100%-52px)] rounded-md">
                                     <WeeklyTaskPlan
                                         bind:this={weeklyTaskPlanComponents[i]}
-                                        treeItems={$treeItems}
+                                        {tasks}
                                         on:scroll={handleScroll}
                                     ></WeeklyTaskPlan>
                                 </div>
@@ -353,7 +336,7 @@
                             <div
                                 class="h-[calc(60%-56px)] min-h-[calc(60%-56px)] rounded-md"
                             >
-                                <Result taskTree={$treeItems} />
+                                <Result />
                             </div>
                         </div>
                     {/each}
@@ -371,7 +354,7 @@
                 >
                     <WeeklyChat
                         weekIndex={selectedDay}
-                        weekTasks={$treeItems.filter((item) => true)}
+                        weekTasks={tasks.filter((item) => true)}
                     />
                 </div>
             {/if}
