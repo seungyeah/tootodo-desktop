@@ -16,6 +16,33 @@ const config = {
 		},
 		extend: {
 			colors: {
+        grid: { 
+          background: "hsl(var(--grid-background) / <alpha-value>)",
+          foreground: "hsl(var(--grid-foreground) / <alpha-value>)",
+          border: "hsl(var(--grid-border) / <alpha-value>)",
+          overlay: "hsl(var(--grid-overlay) / <alpha-value>)",
+          primary: "hsl(var(--grid-primary) / <alpha-value>)",
+          secondary: "hsl(var(--grid-secondary) / <alpha-value>)",
+          accent: "hsl(var(--grid-accent) / <alpha-value>)",
+        },
+				grid: {
+					background: "hsl(var(--grid-background) / <alpha-value>)",
+					foreground: "hsl(var(--grid-foreground) / <alpha-value>)",
+					border: "hsl(var(--grid-border) / <alpha-value>)",
+					overlay: "hsl(var(--grid-overlay) / <alpha-value>)",
+					primary: "hsl(var(--grid-primary) / <alpha-value>)",
+					secondary: "hsl(var(--grid-secondary) / <alpha-value>)",
+					accent: "hsl(var(--grid-accent) / <alpha-value>)",
+				},
+				grid: {
+					background: "hsl(var(--grid-background) / <alpha-value>)",
+					foreground: "hsl(var(--grid-foreground) / <alpha-value>)",
+					border: "hsl(var(--grid-border) / <alpha-value>)",
+					overlay: "hsl(var(--grid-overlay) / <alpha-value>)",
+					primary: "hsl(var(--grid-primary) / <alpha-value>)",
+					secondary: "hsl(var(--grid-secondary) / <alpha-value>)",
+					accent: "hsl(var(--grid-accent) / <alpha-value>)",
+				},
 				table: {
 					primary: {
 						DEFAULT: "hsl(var(--table-primary) / <alpha-value>)",
