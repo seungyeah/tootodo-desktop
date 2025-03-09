@@ -1,39 +1,36 @@
 syntax = "proto3";
 
-package note;
+package weekly;
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
+import "task.proto";
+import "habit.proto";
 
 message WeeklyModel {
-    string id = 1;
-    uint32 year = 2;
-    uint32 week = 3;
-    repeated TaskWithSchedule tasks_with_schedule = 4;
-    repeated InprogressHabit habits_inprogress = 5;
-    repeated string prompts = 6;
-    repeated DailyRecord weekly_records = 7;
+    uint32 year = 1;
+    uint32 week = 2;
+    repeated TaskWithSchedule tasks = 3;
+    repeated OngoingHabit habits = 4;
+    repeated DailyRecord records = 5;
 }
 
-message TaskWithSchedule{
-    string task_id=1;
-    string task_name=2;
-    repeated TaskSchedule task_schedules= 3;
-    bool fixed = 4;
+message TaskWithSchedule {
+    string id=1;
+    string name=2;
+    string critical_path_color=3;
+    repeated task.SubtaskModel subtasks= 4;
+    bool pinned = 5;
 }
 
-message TaskSchedule {
-    Week weekday = 1;
-    google.protobuf.Timestamp start_at = 2;
-    google.protobuf.Timestamp end_at = 3;
+message OngoingHabit {
+    string id =1;
+    string icon=2;
+    string color=3;
+    habit.Goal goal = 4;
 }
 
-message InprogressHabit{
-    string habit_id =1;
-    string habit_icon=2;
-}
-
-message DailyRecord{
+message DailyRecord {
     Week weekday = 1;
     string summary = 2;
     repeated DailyMsg msgs = 3;
@@ -63,11 +60,11 @@ message TimerCycle{
 enum DailyMsgType {
     TEXT = 0;
     QUESTION = 1;
-    ANSWER = 2;
-    IMAGE = 3;
+    TIMER = 2;
+    SUMMARY = 3;
   }
 
-enum Week{
+enum Week {
     UNKNOWN=0;
     MON=1;
     TUE=2;

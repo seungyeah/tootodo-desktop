@@ -4,7 +4,6 @@ package habit;
 
 import "chat.proto";
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/duration.proto";
 
 message HabitModel {
     string id = 1;
@@ -13,12 +12,13 @@ message HabitModel {
     string color = 4;
     HabitStatus status = 5;
     repeated HabitRecord records = 6;
+    Goal goal = 7;
 
-    chat.ChatModel chat = 7;
-    repeated string related_notes = 8;
+    chat.ChatModel chat = 8;
+    repeated string related_notes = 9;
 
-    google.protobuf.Timestamp created_at = 9;
-    google.protobuf.Timestamp updated_at = 10;
+    google.protobuf.Timestamp created_at = 10;
+    google.protobuf.Timestamp updated_at = 11;
 }
 
 enum HabitStatus {
@@ -29,14 +29,11 @@ enum HabitStatus {
 
 message HabitRecord {
     string date=1;
-    google.protobuf.Duration duration=2;
-    google.protobuf.Timestamp start_at = 3;
-    google.protobuf.Timestamp end_at = 4;
+    google.protobuf.Timestamp start_at = 2;
+    string msg = 3;
 }
 
 message Goal{
-    uint32 days = 1;
-    uint32 day_minutes = 2;
-    uint32 start_hour = 3;
-    uint32 start_minutes = 4;
+    uint32 days_per_week = 1;
+    uint32 start_at = 2;
 }

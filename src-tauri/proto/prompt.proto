@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package prompt;
+
+message PromptModel{
+    string id = 1;
+    string title = 2;
+    string content = 3;
+    string purpose = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+}

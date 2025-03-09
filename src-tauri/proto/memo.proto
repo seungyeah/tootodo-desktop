@@ -9,7 +9,7 @@ message MemoModel{
 
     string title = 2;
     Color color = 3;
-    bool fixed = 5;
+    bool pinned = 5;
     string content = 6;
 
     google.protobuf.Timestamp created_at = 7;
