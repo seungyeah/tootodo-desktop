@@ -3,7 +3,6 @@ import { twMerge } from "tailwind-merge";
 import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
 import { CalendarDate, endOfMonth, parseDate, startOfMonth, startOfWeek } from "@internationalized/date";
-import type TreeItem from "$lib/components/task/TaskTree.svelte";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));

@@ -1,16 +1,10 @@
 <script lang="ts">
-	import { run, preventDefault } from "svelte/legacy";
-
 	import { getContext, tick } from "svelte";
-	import { createEventDispatcher } from "svelte";
 	import { Button, Input } from "$ui";
 	import { CirclePlus, Hexagon } from "lucide-svelte";
-	import Tab from "../TwoOptTab.svelte";
 	import IconPicker from "./IconPicker.svelte";
 	import icons from "$lib/icons";
-	import HabitList from "./HabitList.svelte";
 
-	const dispatch = createEventDispatcher();
 	// new habit
 	function resetNewHabit() {
 		newHabit = {
@@ -20,13 +14,10 @@
 		};
 	}
 
-	let newHabit;
-	run(() => {
-		newHabit = {
-			name: "",
-			icon: "Hexagon",
-			color: "#09090b",
-		};
+	let newHabit = $state({
+		name: "",
+		icon: "Hexagon",
+		color: "#09090b",
 	});
 
 	async function handleSubmit(
@@ -65,23 +56,6 @@
 		}
 		return habit;
 	}
-
-	// scroll
-	let tableContainer: HTMLElement = $state();
-
-	function handleScroll() {
-		dispatch("scroll", {
-			scrollTop: tableContainer.scrollTop,
-			scrollLeft: tableContainer.scrollLeft,
-		});
-	}
-
-	export function updateScrollPosition(scrollPosition) {
-		if (tableContainer) {
-			tableContainer.scrollTop = scrollPosition.scrollTop;
-			tableContainer.scrollLeft = scrollPosition.scrollLeft;
-		}
-	}
 </script>
 
 <div class="flex flex-col w-full h-full space-y-2">
@@ -95,7 +69,7 @@
 					<Button
 						variant="ghost"
 						size="sm"
-						class="h-8 px-1 rounded shadow bg-neutral-100 translate-y-0.5"
+						class="h-8 px-2 rounded shadow bg-neutral-100 translate-y-0.5"
 					>
 						{#if newHabit.icon.trim() === ""}
 							<Hexagon size={20} strokeWidth={3} />
@@ -117,13 +91,13 @@
 					handleSubmit(e);
 				}
 			}}
-			class="my-2 ml-2 h-9 w-full scale-y-95 rounded-r-full p-2 pr-9 text-[0.9rem] font-normal focus:shadow"
+			class="my-2 ml-2 h-9 w-full scale-y-95 border-0 border-b p-2 pr-9 text-base font-normal focus:shadow"
 		/>
-		<Button
+		<!-- <Button
 			variant="ghost"
 			type="submit"
 			class="absolute z-10 p-0 rounded-full botom-0 right-1 hover:bg-neutral-100"
 			><CirclePlus color="#a1a1aa" /></Button
-		>
+		> -->
 	</form>
 </div>

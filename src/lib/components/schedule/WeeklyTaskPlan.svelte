@@ -1,20 +1,14 @@
 <script lang="ts">
     import { Button, Input } from "$ui";
-    import {
-        AlarmClockPlus,
-        Grid2x2Plus,
-        ListPlusIcon,
-        Plus,
-        X,
-    } from "lucide-svelte";
-    import type { TreeItem } from "./TaskList.svelte";
+    import { Grid2x2Plus, X } from "lucide-svelte";
+    import type { Task } from "$lib/schema";
 
     let container: HTMLElement;
 
     interface Props {
-        treeItems?: TreeItem[];
+        tasks?: Task[];
     }
-    let { treeItems = [] }: Props = $props();
+    let { tasks = [] }: Props = $props();
 
     export function updateScrollPosition(pos: { scrollTop: number }) {
         if (container && pos) {
@@ -51,7 +45,7 @@
     class="h-full max-h-full overflow-auto no-scrollbar"
 >
     <div class="flex flex-col space-y-1.5">
-        {#each Array.from({ length: treeItems.length }) as _, index}
+        {#each Array.from({ length: tasks.length }) as _, index}
             <div class="relative group h-9">
                 <Button
                     variant="ghost"

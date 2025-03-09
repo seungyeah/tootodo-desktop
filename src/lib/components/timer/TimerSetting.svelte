@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { Button } from "$ui";
-	import { Milestone, MoveHorizontal, Trash2 } from "lucide-svelte";
+	import {
+		Milestone,
+		MoveHorizontal,
+		StepForward,
+		Trash2,
+	} from "lucide-svelte";
 	import { onMount } from "svelte";
 	import PomoIcon from "$components/PomoIcon.svelte";
 	import { timerSetting, currentTime } from "$store";
@@ -254,7 +259,7 @@
 	</div>
 
 	<!-- check duration, -> start timer button -->
-	<div class="flex space-x-2 relative">
+	<div class="flex space-x-2 relative px-2">
 		<div class="font-digital flex-col">
 			<div class="flex space-x-1">
 				<Milestone />
@@ -279,17 +284,15 @@
 		</div>
 		<!-- start timer -->
 		<Button
-			variant="outline"
-			class="absolute top-1 right-0 h-11 w-[84px] text-2xl font-bold font-digital text-black"
+			variant="ghost"
+			class="absolute top-1 right-0 h-11 w-[84px]  
+			   bg-neutral-800 hover:bg-neutral-700
+			   shadow-[inset_0_2px_4px_rgba(255,255,255,0.1),0_2px_4px_rgba(0,0,0,0.2)]
+			   border border-neutral-700"
 			onclick={() => {
 				storeTimerSetting();
 				$timerOpen = true;
-			}}
-			>D
-			<span
-				class="translate-y-0 border-2 rounded-full p-0.5 border-neutral-700"
-				><PomoIcon /></span
-			>!</Button
+			}}><StepForward color="white" fill="white" size={24} /></Button
 		>
 	</div>
 </div>

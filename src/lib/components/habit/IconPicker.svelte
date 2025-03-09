@@ -18,9 +18,7 @@
    <DropdownMenu.Trigger class=" h-9 -translate-y-0.5 rounded p-0">
       {#if trigger}{@render trigger()}{:else}Icon{/if}
    </DropdownMenu.Trigger>
-   <DropdownMenu.Content
-      class="w-[300px] translate-x-2 border-2 border-double border-neutral-800 "
-   >
+   <DropdownMenu.Content class="w-[300px] translate-x-8 border-2 ">
       <DropdownMenu.Group>
          <div
             class="grid grid-flow-row auto-rows-max grid-cols-6 gap-2 p-2 w-full h-[200px] h-max-[200px] overflow-y-auto"

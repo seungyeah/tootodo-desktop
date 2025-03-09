@@ -1,7 +1,7 @@
 <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 800 800"
-    class="w-[24px] h-[24px]"
+    class="w-[16px] h-[16px]"
 >
     <!-- 토마토 그림자 -->
     <ellipse cx="400" cy="700" rx="350" ry="100" fill="rgba(0,0,0,0.1)" />

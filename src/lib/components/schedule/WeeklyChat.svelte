@@ -299,23 +299,23 @@
 			<div
 				class="w-full px-2 h-10 bg-neutral-50 flex justify-between items-center"
 			>
-				<Label for="bookmark-mode" class="absolute left-[15px] z-10"
+				<Label for="bookmark-mode" class="absolute left-[16.5px] z-10"
 					><Bookmark size={10} class="text-color-500" /></Label
 				>
 				<Switch
 					id="bookmark-mode"
 					onclick={() => (newMsg.save = !newMsg.save)}
-					class="w-8 h-5 data-[state=checked]:bg-pomodoro-500/50"
+					class="w-10 h-5 data-[state=checked]:bg-pomodoro-500/50"
 					checked={newMsg.save}
 				/>
 
-				<Label for="ask-mode" class="absolute left-[55px] z-10"
+				<Label for="ask-mode" class="absolute left-[59px] z-10"
 					><Bot size={10} class="text-color-600" /></Label
 				>
 				<Switch
 					id="ask-mode"
 					onclick={() => (newMsg.ask = !newMsg.ask)}
-					class="w-8 h-5 data-[state=checked]:bg-emerald-600/50"
+					class="w-10 h-5 data-[state=checked]:bg-emerald-600/50"
 					checked={newMsg.ask}
 				/>
 
