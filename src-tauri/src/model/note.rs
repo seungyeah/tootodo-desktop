@@ -1,4 +1,4 @@
 include!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/src/generated/note.rs"
+    "/src/proto_generated/note.rs"
 ));
