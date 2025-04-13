@@ -1,7 +1,7 @@
 import { writable, derived } from 'svelte/store';
 import { getApi, delApi, postApi } from '$lib/api';
 import { goto } from '$app/navigation';
-import { loginSchema,registerSchema } from '$lib/schema.js';
+import { loginSchema, registerSchema } from '$lib/schemom.js';
 
 
 const setAuth = () => {
@@ -17,7 +17,7 @@ const setAuth = () => {
 		createdAt: ''
 	};
 
-	const { subscribe, set} = writable({ ...initValues });
+	const { subscribe, set } = writable({ ...initValues });
 
 	const register = async (userData) => {
 		const result = registerSchema.safeParse(userData);
@@ -134,7 +134,7 @@ const setAuth = () => {
 			console.log('구글 로그인 완료')
 			alert('구글 로그인 완료');
 			goto('/do');
-			getUserInfo();			
+			getUserInfo();
 		} catch (e) {
 			alert('구글 로그인시 오류가 발생했습니다. ' + e);
 			goto('/login', { replaceState: true });

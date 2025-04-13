@@ -15,10 +15,8 @@
     } from "$components/schedule";
     import Memo from "$components/memo/Memo.svelte";
     import { currentTime } from "$store";
-    import { onMount, setContext } from "svelte";
-
+    import { onMount } from "svelte";
     import { writable } from "svelte/store";
-    import { invoke } from "@tauri-apps/api/core";
     import {
         type DateRange,
         getThisWeekRange,
@@ -32,12 +30,15 @@
     import PlanRecord from "$components/tenMTable/planRecord.svelte";
     import PomoIcon from "$components/PomoIcon.svelte";
     import { ChevronLeft } from "lucide-svelte";
-    import type { Task } from "$lib/schema";
+    import tasks, {
+        handleFetchTasks,
+        handleCreateTask,
+    } from "$lib/handler/tasks.svelte";
 
     const weeks = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-    let tasks = $state<Task[]>([]);
-    $inspect(tasks);
+    // Use tasks.raw instead of tasks.value to get the raw array instead of the proxy
+    $inspect(tasks.raw);
     let changeMode = $state(false);
     let weekRange = writable<DateRange>(getThisWeekRange());
     // let selectedDay = $state(null);
@@ -55,15 +56,10 @@
     });
 
     $effect(() => {
-        invoke("fetch_tasks", {
-            startDate: $weekRange.start.toString(),
-            endDate: $weekRange.end.toString(),
-        })
-            .then((data) => {
-                tasks = data;
-                console.log(tasks);
-            })
-            .catch(console.error);
+        handleFetchTasks(
+            $weekRange.start.toString(),
+            $weekRange.end.toString(),
+        );
     });
 
     function setQuery(duration) {
@@ -73,18 +69,6 @@
         const searchParams = new URLSearchParams({ startDate, endDate });
         goto(`?${searchParams.toString()}`);
     }
-
-    // function sort_tasks() {
-    //     // duration 기준으로 정렬 (startDate가 빠른 것부터 정렬 -> endDate가 느린것부터 정렬)
-    //     return (a, b) => {
-    //         const diff = new Date(a.startDate) - new Date(b.startDate);
-    //         if (diff === 0) {
-    //             return new Date(b.endDate) - new Date(a.endDate);
-    //         } else {
-    //             return diff;
-    //         }
-    //     };
-    // }
 
     ///////// scroll
     let scrollPosition = $state({ scrollTop: 0 });
@@ -107,20 +91,7 @@
         });
     }
 
-    // handle task
-    function handleCreateTask() {
-        invoke("plugin:task:create_task", {
-            title: newTaskTitle,
-            subtasks: [],
-            startDate: $weekRange.start.toString(),
-            endDate: $weekRange.end.toString(),
-        }).then((newTask) => {
-            tasks.push(newTask);
-            newTaskTitle = "";
-        });
-    }
-
-    function handleWeekSelect(weekIndex) {
+    function handleWeekSelectAnimation(weekIndex) {
         isTransitioning = true;
         setTimeout(() => {
             selectedDay = weekIndex;
@@ -128,7 +99,7 @@
         }, 400); // match transition duration
     }
 
-    function handleBackToWeekly() {
+    function handleBackToWeeklyAnimation() {
         isTransitioning = true;
         setTimeout(() => {
             selectedDay = null;
@@ -164,7 +135,7 @@
                 >
                     <TaskList
                         bind:this={taskListComponent}
-                        {tasks}
+                        tasks={tasks.raw}
                         on:scroll={handleScroll}
                     />
                     <!-- task filter -->
@@ -198,7 +169,13 @@
                     <Label class="font-bold text-base">+ Task & Habit</Label>
                     <AddTaskOrHabit
                         bind:newTaskTitle
-                        onSubmit={handleCreateTask}
+                        onSubmit={async () => {
+                            await handleCreateTask(
+                                newTaskTitle,
+                                $weekRange.start?.toString(),
+                                $weekRange.end?.toString(),
+                            );
+                        }}
                     />
                 </div>
             </div>
@@ -210,7 +187,7 @@
                     <Button
                         variant="ghost"
                         class="mb-2 flex items-center justify-between h-10 w-full border-b-2"
-                        onclick={handleBackToWeekly}
+                        onclick={handleBackToWeeklyAnimation}
                     >
                         <ChevronLeft />
                         <h2 class="text-lg font-digital">
@@ -223,7 +200,7 @@
                     >
                         <TaskList
                             bind:this={taskListComponent}
-                            {tasks}
+                            tasks={tasks.raw}
                             on:scroll={handleScroll}
                         />
                         <!-- task filter -->
@@ -283,7 +260,7 @@
             >
                 <div
                     class="grid grid-cols-[7] grid-flow-col gap-1 w-full h-full p-2 max-w-full overflow-x-clip
-                     border-2 border-neutral-200 rounded-xl"
+                    border-2 border-neutral-200 rounded-xl"
                 >
                     {#each weeks as week, i}
                         {@const isToday = i === $currentTime?.getDay() - 1}
@@ -295,7 +272,7 @@
                                 <!-- date -->
                                 <button
                                     class="px-1.5 h-11 w-full font-digital text-center text-base text-neutral-950"
-                                    onclick={() => handleWeekSelect(i)}
+                                    onclick={() => handleWeekSelectAnimation(i)}
                                 >
                                     <span class="mr-1">
                                         {week}
@@ -326,7 +303,7 @@
                                 <div class="h-[calc(100%-52px)] rounded-md">
                                     <WeeklyTaskPlan
                                         bind:this={weeklyTaskPlanComponents[i]}
-                                        {tasks}
+                                        tasks={tasks.raw}
                                         on:scroll={handleScroll}
                                     ></WeeklyTaskPlan>
                                 </div>
@@ -354,7 +331,7 @@
                 >
                     <WeeklyChat
                         weekIndex={selectedDay}
-                        weekTasks={tasks.filter((item) => true)}
+                        weekTasks={tasks.raw.filter((item) => true)}
                     />
                 </div>
             {/if}

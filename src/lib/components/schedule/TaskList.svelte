@@ -1,21 +1,16 @@
 <script lang="ts">
-    import type { Task } from "$lib/schema";
+    import type { TaskModel } from "$lib/schema/index";
     import Chat from "./Chat.svelte";
 
     import TaskItem from "./TaskItem.svelte";
 
     interface Props {
         // items
-        tasks?: Task[];
+        tasks?: TaskModel[];
         record?: any;
     }
 
     let { tasks = [] }: Props = $props();
-
-    // 자식 컴포넌트(self)에서 발생한 이벤트를 처리하고 상위로 전달하는 함수
-    function handleChildUpdate(event: CustomEvent) {
-        const { task, updateData } = event.detail;
-    }
 
     // scroll
     let tableContainer: HTMLElement = $state();
@@ -34,7 +29,6 @@
         on:scroll
     >
         {#each tasks as task}
-            {@const itemId = `${task?.id}`}
             <div
                 class="flex flex-col h-9 rounded-md bg-white shadow-sm border border-neutral-100"
             >

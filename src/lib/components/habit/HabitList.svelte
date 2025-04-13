@@ -6,7 +6,7 @@ https://svelte.dev/e/each_item_invalid_assignment -->
    import { GripVertical } from "lucide-svelte";
    import IconPicker from "./IconPicker.svelte";
    import icons from "$lib/icons";
-   import { type Habit } from "$lib/schema";
+   import { HabitTypes } from "$lib/schema/index";
 
    // habit/+page.svelte에서 정의됨
    const habits = getContext("habits");
@@ -15,7 +15,7 @@ https://svelte.dev/e/each_item_invalid_assignment -->
    // update
    const handleUpdateHabit = getContext("handleUpdateHabit");
 
-   function handleUpdateName(habit: Habit, name: String) {
+   function handleUpdateName(habit: HabitTypes.HabitModel, name: String) {
       const updateData = {
          name: name,
       };

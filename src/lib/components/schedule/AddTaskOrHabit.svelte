@@ -6,7 +6,7 @@
     import HabitCreate from "$components/habit/HabitCreate.svelte";
 
     let { newTaskTitle = $bindable(), onSubmit = () => {} } = $props();
-    let selectedType = $state("habit");
+    let selectedType = $state("task");
     let habitGoalFrequency = $state(7);
 </script>
 

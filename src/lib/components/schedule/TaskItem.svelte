@@ -1,4 +1,5 @@
 <script lang="ts">
+   import { handleDeleteTask } from "$lib/handler/tasks.svelte";
    import { Button, DropdownMenu, Popover, RangeCalendar } from "$ui";
    import Input from "$ui/input/input.svelte";
    import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
@@ -224,13 +225,31 @@
          </DropdownMenu.Item>
 
          <!-- delete -->
-         <Trash2 size={20} class="mr-2 absolute left-4 bottom-3" />
-
+         <Trash2
+            size={18}
+            class="mr-2 absolute left-4 bottom-3"
+            fill="#e4e4e7"
+            color="#52525b"
+         />
          <div
-            class="relative flex w-[calc(100%-48px)] justify-between items-center translate-x-[48px]"
+            class=" flex w-[calc(100%-52px)] justify-between items-center translate-x-[48px]"
          >
-            <DropdownMenu.Item class="w-1/2">list</DropdownMenu.Item>
-            <DropdownMenu.Item class="w-1/2">self</DropdownMenu.Item>
+            <DropdownMenu.Item class="w-1/2"
+               ><button
+                  class="w-full"
+                  onclick={async () => await handleDeleteTask(task.id)}
+               >
+                  List
+               </button></DropdownMenu.Item
+            >
+            <DropdownMenu.Item class="w-1/2">
+               <button
+                  class="w-full"
+                  onclick={async () => await handleDeleteTask(task.id)}
+               >
+                  Self
+               </button>
+            </DropdownMenu.Item>
          </div>
       </DropdownMenu.Group>
    </DropdownMenu.Content>
