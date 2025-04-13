@@ -7,6 +7,8 @@ mod utils;
 
 use std::path::PathBuf;
 use store::AppDB;
+
+pub use model::handlers::*;
 use tauri::generate_context;
 use tauri_api::path::data_dir;
 
@@ -20,9 +22,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Tauri 앱 실행
     tauri::Builder::default()
         .manage(app_db) // AppDB를 State로 등록
-        .plugin(model::habit::habit_plugin())
-        .plugin(model::memo::memo_plugin())
-        .plugin(model::task::task_plugin())
+        .invoke_handler(tauri::generate_handler![
+            create_task,
+            get_task,
+            update_task,
+            fetch_tasks,
+            delete_task,
+        ])
         .run(generate_context!())
         .expect("error while running tauri application");
 

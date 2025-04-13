@@ -28,8 +28,12 @@ message TaskModel {
 message SubtaskModel {
     string id = 1;
     string title = 2;
-    string date = 3;
-    string time = 4;
+    repeated SubtaskSchedule schedule = 3;
+}
+
+message SubtaskSchedule {
+    string date = 1;
+    string time = 2;
 }
 
 enum TaskStatus{

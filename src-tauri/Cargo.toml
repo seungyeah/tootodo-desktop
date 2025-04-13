@@ -31,11 +31,12 @@ uuid = { version = "1.11.0", features = ["v7"] }
 chrono = "0.4.31"
 prost-types = "0.12.3"
 specta = "=2.0.0-rc.22"
-specta-typescript = "0.0.9"
-tauri-specta = { version = "=2.0.0-rc.21", features = ["derive", "typescript"] }
 prost-wkt-types = "0.5.0"
 prost-wkt = "0.4.2"
 tauri-api = "0.7.6"
+inventory = "0.2.3"
+specta-typescript = "0.0.9"
+tauri-specta = { version = "=2.0.0-rc.21", features = ["derive", "typescript"] }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.

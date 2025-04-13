@@ -4,30 +4,11 @@ package weekly;
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
-import "task.proto";
-import "habit.proto";
 
 message WeeklyModel {
     uint32 year = 1;
     uint32 week = 2;
-    repeated TaskWithSchedule tasks = 3;
-    repeated OngoingHabit habits = 4;
-    repeated DailyRecord records = 5;
-}
-
-message TaskWithSchedule {
-    string id=1;
-    string name=2;
-    string critical_path_color=3;
-    repeated task.SubtaskModel subtasks= 4;
-    bool pinned = 5;
-}
-
-message OngoingHabit {
-    string id =1;
-    string icon=2;
-    string color=3;
-    habit.Goal goal = 4;
+    repeated DailyRecord daily_records = 5;
 }
 
 message DailyRecord {

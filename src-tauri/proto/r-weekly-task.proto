@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package r-weekly-task;
+
+import "task.proto";
+import "weekly.proto";
+
+message WeeklyTaskRelation{
+    uint32 year = 1;
+    uint32 week = 2;
+    string task_id = 3;
+
+    string task_title = 4;
+    string task_critical_path_color = 5;
+
+    repeated task.SubtaskModel subtasks = 6;
+    bool isPinned = 7;
+    string total_time = 8;
+}

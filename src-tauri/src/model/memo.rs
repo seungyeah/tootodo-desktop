@@ -1,7 +1,5 @@
 use prost::Message;
 use prost_wkt_types::Timestamp;
-use specta::specta;
-use tauri::plugin::TauriPlugin;
 use tauri::{command, State};
 use uuid::Uuid;
 
@@ -13,18 +11,6 @@ include!(concat!(
     env!("CARGO_MANIFEST_DIR"),
     "/src/proto_generated/memo.rs"
 ));
-
-pub fn memo_plugin<R: tauri::Runtime>() -> TauriPlugin<R> {
-    tauri::plugin::Builder::new("memo")
-        .invoke_handler(tauri::generate_handler![
-            create_memo,
-            get_memo,
-            update_memo,
-            fetch_memos,
-            delete_memo,
-        ])
-        .build()
-}
 
 impl MemoModel {
     pub fn new(title: String, color: i32) -> Self {
@@ -43,7 +29,6 @@ impl MemoModel {
 }
 
 #[command]
-#[specta]
 pub async fn create_memo(
     db: State<'_, AppDB>,
     title: String,
@@ -65,7 +50,6 @@ pub async fn create_memo(
 }
 
 #[command]
-#[specta]
 pub async fn get_memo(db: State<'_, AppDB>, id: String) -> Result<MemoModel> {
     let key = id.as_bytes();
     let memo = db.get("memo", key)?;
@@ -83,7 +67,6 @@ pub async fn get_memo(db: State<'_, AppDB>, id: String) -> Result<MemoModel> {
 }
 
 #[command]
-#[specta]
 pub async fn update_memo(
     db: State<'_, AppDB>,
     id: String,
@@ -137,7 +120,6 @@ pub async fn update_memo(
 }
 
 #[command]
-#[specta]
 pub async fn fetch_memos(
     db: State<'_, AppDB>,
     pinned_only: Option<bool>,
@@ -174,7 +156,6 @@ pub async fn fetch_memos(
 }
 
 #[command]
-#[specta]
 pub async fn delete_memo(db: State<'_, AppDB>, id: String) -> Result<()> {
     let key = id.as_bytes();
     db.delete("memo", key)

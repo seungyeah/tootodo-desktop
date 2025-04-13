@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package r-weekly-habit;
+
+import "habit.proto";
+import "weekly.proto";
+
+message WeeklyHabitRelation{
+    uint32 year = 1;
+    uint32 week = 2;
+    string habit_id = 3;
+
+    string habit_icon = 4;
+    string habit_color = 5;
+
+    habit.Goal goal = 6;
+
+    bool isOnging = 7;
+    weekly. records = 9;
+}

@@ -1,8 +1,6 @@
 use prost::Message;
 use prost_wkt_types::Timestamp;
 use serde::Deserialize;
-use specta::specta;
-use tauri::plugin::TauriPlugin;
 use tauri::{command, State};
 use uuid::Uuid;
 
@@ -14,20 +12,6 @@ include!(concat!(
     env!("CARGO_MANIFEST_DIR"),
     "/src/proto_generated/habit.rs"
 ));
-
-pub fn habit_plugin<R: tauri::Runtime>() -> TauriPlugin<R> {
-    tauri::plugin::Builder::new("habit")
-        .invoke_handler(tauri::generate_handler![
-            create_habit,
-            get_habit,
-            update_habit_record,
-            update_habit,
-            update_habit_notes,
-            fetch_habits,
-            delete_habit,
-        ])
-        .build()
-}
 
 impl HabitModel {
     pub fn new(name: String, icon: String, color: String, goal: Option<Goal>) -> Self {
@@ -50,7 +34,6 @@ impl HabitModel {
 }
 
 #[command]
-#[specta]
 pub async fn create_habit(
     db: State<'_, AppDB>,
     name: String,
@@ -75,7 +58,6 @@ pub async fn create_habit(
 }
 
 #[command]
-#[specta]
 pub async fn get_habit(db: State<'_, AppDB>, id: String) -> Result<HabitModel> {
     let key = id.as_bytes();
     let habit = db.get("habit", key)?;
@@ -102,7 +84,6 @@ pub struct HabitUpdateData {
 }
 
 #[command]
-#[specta]
 pub async fn update_habit(
     db: State<'_, AppDB>,
     id: String,
@@ -161,7 +142,6 @@ pub async fn update_habit(
 }
 
 #[command]
-#[specta]
 pub async fn update_habit_record(
     db: State<'_, AppDB>,
     id: String,
@@ -214,7 +194,6 @@ pub async fn update_habit_record(
 }
 
 #[command]
-#[specta]
 pub async fn update_habit_notes(
     db: State<'_, AppDB>,
     id: String,
@@ -269,7 +248,6 @@ pub async fn update_habit_notes(
 }
 
 #[command]
-#[specta]
 pub async fn fetch_habits(db: State<'_, AppDB>, status: Option<i32>) -> Result<Vec<HabitModel>> {
     let habits = db.fetch::<HabitModel>("habit")?;
 
@@ -287,7 +265,6 @@ pub async fn fetch_habits(db: State<'_, AppDB>, status: Option<i32>) -> Result<V
 }
 
 #[command]
-#[specta]
 pub async fn delete_habit(db: State<'_, AppDB>, id: String) -> Result<()> {
     let key = id.as_bytes();
     db.delete("habit", key)

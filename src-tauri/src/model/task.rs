@@ -3,8 +3,6 @@
 use prost::Message;
 use prost_wkt_types::Timestamp;
 use serde::{Deserialize, Serialize};
-use specta::specta;
-use tauri::plugin::TauriPlugin;
 use tauri::{command, State};
 use uuid::Uuid;
 
@@ -16,22 +14,6 @@ include!(concat!(
     env!("CARGO_MANIFEST_DIR"),
     "/src/proto_generated/task.rs"
 ));
-
-pub fn task_plugin<R: tauri::Runtime>() -> TauriPlugin<R> {
-    tauri::plugin::Builder::new("task")
-        .invoke_handler(tauri::generate_handler![
-            create_task,
-            get_task,
-            fetch_tasks,
-            delete_task,
-            update_task,
-            update_task_notes,
-            update_subtask,
-            delete_subtask,
-            update_work_day,
-        ])
-        .build()
-}
 
 impl TaskModel {
     pub fn new(
@@ -66,7 +48,6 @@ impl TaskModel {
 }
 
 #[command]
-#[specta]
 pub async fn create_task(
     db: State<'_, AppDB>,
     title: String,
@@ -90,7 +71,6 @@ pub async fn create_task(
 }
 
 #[command]
-#[specta]
 pub async fn get_task(db: State<'_, AppDB>, id: String) -> Result<TaskModel> {
     let key = id.as_bytes();
     let task = db.get("task", key)?;
@@ -124,7 +104,6 @@ pub struct TaskTreeItem {
 // }
 
 #[command]
-#[specta]
 pub async fn fetch_tasks(
     db: State<'_, AppDB>,
     start_date: String,
@@ -185,7 +164,6 @@ pub struct TaskUpdateData {
 }
 
 #[command]
-#[specta]
 pub async fn update_task(
     db: State<'_, AppDB>,
     id: String,
@@ -223,10 +201,6 @@ pub async fn update_task(
                 task.plans = plans;
             }
 
-            if let Some(subtasks) = task_data.subtasks {
-                task.subtasks = subtasks;
-            }
-
             if task_data.critical_path.is_some() {
                 task.critical_path = task_data.critical_path;
             }
@@ -251,7 +225,6 @@ pub async fn update_task(
 }
 
 #[command]
-#[specta]
 pub async fn update_task_notes(
     db: State<'_, AppDB>,
     id: String,
@@ -305,7 +278,6 @@ pub async fn update_task_notes(
 }
 
 #[command]
-#[specta]
 pub async fn update_subtask(
     db: State<'_, AppDB>,
     task_id: String,
@@ -350,7 +322,6 @@ pub async fn update_subtask(
 }
 
 #[command]
-#[specta]
 pub async fn delete_subtask(
     db: State<'_, AppDB>,
     task_id: String,
@@ -387,7 +358,6 @@ pub async fn delete_subtask(
 }
 
 #[command]
-#[specta]
 pub async fn update_work_day(
     db: State<'_, AppDB>,
     id: String,
@@ -440,7 +410,6 @@ pub async fn update_work_day(
 }
 
 #[command]
-#[specta]
 pub async fn delete_task(db: State<'_, AppDB>, id: String) -> Result<()> {
     let key = id.as_bytes();
     db.delete("task", key)
